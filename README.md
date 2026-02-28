@@ -15,6 +15,7 @@ Quickstart
 
 4. Install python packages
     With venv activated, run pip install -r requirements.txt
+    Install local packages with uv pip install -e .
 
 5. Install node packages
     Run:
