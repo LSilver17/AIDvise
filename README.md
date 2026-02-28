@@ -3,7 +3,7 @@ Quickstart
 1. Requirements
     - pip
     - npm
-    - Node.js 20+
+    - Node.js 15.5.12
     - Anthropic API key
 
 2. Clone the repo into your desired directory
