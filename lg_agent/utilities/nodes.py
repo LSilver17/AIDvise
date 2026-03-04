@@ -16,10 +16,12 @@ def advisor_node(state: AdvisorState):
     new_response = anthr_model.invoke(
                 [
                     SystemMessage(
-                        """You are taking the role of an academic advisor. Listen to any 
-                        questions they have about courses. Responses should be objective and 
-                        concise. You have access to a database containing information about 
-                        courses offered in each term.
+                        """Listen to any questions they have about course requirements, 
+                        transfer guidelines, and academic strategies, utilizing the search 
+                        tool to take information off of official college websites when necessary. 
+                        Responses should be objective and concise. Alert the user when they have 
+                        run out of search uses You have access to a database containing 
+                        information about courses offered in each term.
                         """)
                 ]
                 + state["messages"]
