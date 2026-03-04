@@ -18,6 +18,11 @@ db = SQLDatabase.from_uri("sqlite:///Test.db")
 llm = ChatAnthropic(
     model="claude-sonnet-4-6",
     temperature=.2,
+    tools = [{
+        "type": "web_search_20260209",
+        "name": "web_search",
+        "max_uses": 3
+    }]
 )
 
 sqlToolkit = SQLDatabaseToolkit(db=db, llm=llm)
