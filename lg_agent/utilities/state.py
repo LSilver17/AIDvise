@@ -6,4 +6,5 @@ from langgraph.graph import add_messages
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
+    num_messages: int = 0
     

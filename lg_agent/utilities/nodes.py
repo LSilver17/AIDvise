@@ -21,6 +21,11 @@ except Exception as exc:
 llm = ChatAnthropic(
     model="claude-sonnet-4-6",
     temperature=.2,
+    tools= [{
+        "type": "web_search_20260209",
+        "name": "web_search",
+        "max_uses": 3
+    }]
 )
 
 
@@ -28,7 +33,7 @@ ChatBot = create_sql_agent(
     llm,
     db=db,
     verbose=True,
-    agent_executor_kwargs={"handle_parsing_errors": True},
+    agent_executor_kwargs={"handle_parsing_errors": True}
 )
 
 def advisor_node(state: AdvisorState):
@@ -57,6 +62,6 @@ def advisor_node(state: AdvisorState):
 
     output_text = result.get("output") if isinstance(result, dict) else str(result)
     return {
-        "messages": [AIMessage(content=output_text or "")]
+        "messages": [AIMessage(content=output_text or "")],
+        "num_messages": state.get("num_messages", 0) + 1
     }
-
