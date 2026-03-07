@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eeeadf;
+  --foreground: #101010;
+  --accent: #ff5d1d;
+}
+
+.orangeBG {
+  background-color: var(--accent);
+}
+
+.nightBG {
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
 @theme inline {
