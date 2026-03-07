@@ -3,10 +3,7 @@ from langchain_core.messages import AIMessage
 from langchain_anthropic import ChatAnthropic
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
-try:
-    from .state import AdvisorState
-except ImportError:
-    from state import AdvisorState
+from lg_agent.utilities.state import AdvisorState
 
 load_dotenv()
 
