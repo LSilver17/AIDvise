@@ -1,6 +1,8 @@
 # import dependencies
 import sqlite3
 
+conn = None
+
 try:
     # Connect to sqlite database
     conn = sqlite3.connect('Test.db')
@@ -248,8 +250,14 @@ try:
     print(f'MeetTimes with valid section FK: {cursor.fetchone()[0]}')
     
 except sqlite3.Error as e:
-    # Handle any database errors
-    print(f"An error occurred: {e}")
+    raise RuntimeError(
+        f"Database setup failed for 'Test.db': {e}. "
+        "Check schema definitions, foreign key constraints, and seed data values."
+    ) from e
+except Exception as e:
+    raise RuntimeError(
+        f"Unexpected error while initializing 'Test.db': {e}"
+    ) from e
 finally:
     # Ensure the connection is closed
     if conn:
