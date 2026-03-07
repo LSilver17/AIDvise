@@ -3,14 +3,14 @@ Quickstart
 1. Requirements
     - pip
     - npm
-    - Node.js 20+
+    - Node.js 15.5.12
     - Anthropic API key
 
 2. Clone the repo into your desired directory
 
 3. Create & activate your virtual environment
     In project directory, run:
-        pip -m venv venv
+        pip -m venv .venv
     and activate with .venv\Scripts\activate
 
 4. Install python packages

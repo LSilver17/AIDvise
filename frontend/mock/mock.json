@@ -1,0 +1,22 @@
+{
+    "name": "Joe",
+    "major": "Computer Science",
+    "alerts": [
+        {
+            "message": "You have a new alert",
+            "status": "Unseen"
+        },
+        {
+            "message": "You have an old alert",
+            "status": "Seen"
+        },
+        {
+            "message": "You have a new alert",
+            "status": "Unseen"
+        },
+        {
+            "message": "You have an old alert",
+            "status": "Seen"
+        }
+    ]
+}
