@@ -8,6 +8,7 @@ wheels/
 
 # Virtual environments
 .venv/
+venv/
 .env
 
 # LangGraph API
@@ -16,3 +17,6 @@ wheels/
 # Node
 node_modules/
 .next/
+
+# Data
+frontend/mock
