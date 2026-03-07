@@ -6,7 +6,6 @@ import { alerts } from "@/mock/mock.json";
 const userAlerts: Alert[] = [];
 
 if (alerts.length != 0) {
-
     alerts.forEach(curr => {
         var status = ((stat: string) => 
             stat == "Unseen" ? 0 : 1)
@@ -23,7 +22,7 @@ export default function Alerts () {
                 <ul>
                     {
                         userAlerts.map((alert, i) => (
-                            <li>{alert.getStatus()}: {alert.getMessage()}</li>
+                            <li key={i}>{alert.getStatus()}: {alert.getMessage()}</li>
                         ))
                     }
                 </ul>
