@@ -17,6 +17,3 @@ venv/
 # Node
 node_modules/
 .next/
-
-# Data
-frontend/mock

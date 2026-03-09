@@ -1,7 +1,6 @@
 import { ScrollArea, Text, Box, Flex } from "@radix-ui/themes";
-import { AlertStatus, Alert } from "@/app/utils/alert"
+import { AlertStatus, Alert } from "@/app/lib/alert"
 import { alerts } from "@/mock/mock.json";
-
 
 const userAlerts: Alert[] = [];
 

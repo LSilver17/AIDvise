@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 
 // Components
-import { Flex, Box, Button, Separator } from "@radix-ui/themes"
+import { Flex, Box, Button, Separator } from "@radix-ui/themes";
 
 // User Components
-import Sidebar from "./components/aside";
+import Sidebar from "@/app/components/navigation/aside";
+import SignOut from "@/app/components/features/signout";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -22,7 +26,11 @@ export const metadata: Metadata = {
   description: "User dashboard",
 };
 
-export default function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
+export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
+  const session = await getServerSession(authOptions);
+  if(!session) {
+    redirect("/login");
+  }
   return (
     <Flex direction="column" height="100vh" width="100vw">
       <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
@@ -33,8 +41,8 @@ export default function DashboardLayout({ children, }: Readonly<{children: React
           {children}  
         </Flex>  
       </Flex>
-      <Flex className="orangeBG" direction="row" height="100px" flexShrink="0">
-
+      <Flex className="orangeBG" direction="row" height="100px" flexShrink="0" justify="end">
+        <SignOut/>
       </Flex>
     </Flex>
   );
