@@ -10,7 +10,7 @@ Quickstart
 
 3. Create & activate your virtual environment
     In project directory, run:
-        pip -m venv .venv
+        python -m venv .venv
     and activate with .venv\Scripts\activate
 
 4. Install python packages
