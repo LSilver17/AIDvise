@@ -29,9 +29,7 @@ def get_events() -> list:
         return events
 
     except Exception as exc:
-        raise RuntimeError(
-            "Failed to connect to the SQLite database at 'Test.db'. Ensure that the file exists and is accessible."
-        ) from exc
+        raise RuntimeError("Failed to fetch upcoming events.") from exc
     finally:
         # Ensure the connection is closed
         if conn:
@@ -76,9 +74,7 @@ def get_interests(userID: str) -> list:
         return interests
 
     except Exception as exc:
-        raise RuntimeError(
-            "Failed to connect to the SQLite database at 'Test.db'. Ensure that the file exists and is accessible."
-        ) from exc
+        raise RuntimeError("Failed to fetch student interests.") from exc
     finally:
         # Ensure the connection is closed
         if conn:
@@ -125,9 +121,7 @@ def get_relevant_events(userID: str) -> list:
         return relevant_events
 
     except Exception as exc:
-        raise RuntimeError(
-            "Failed to connect to the SQLite database at 'Test.db'. Ensure that the file exists and is accessible."
-        ) from exc
+        raise RuntimeError("Failed to fetch relevant events.") from exc
     finally:
         # Ensure the connection is closed
         if conn:
