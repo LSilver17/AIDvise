@@ -3,6 +3,10 @@
 import LoginForm from "@/app/components/features/loginform";
 import { SubmitEventHandler } from "react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { getSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/router"
 
 export default function Login () {
     const handler: SubmitEventHandler<HTMLFormElement> = async (event) => {
@@ -21,14 +25,13 @@ export default function Login () {
         const response = await signIn("credentials", {
             username: username,
             password: password,
-            redirect: true,
             callbackUrl: '/dashboard/home'
         });
-        
+
         // Handle request response
         if(response) {
             if (!(response.ok)) {
-                console.log("Invalid");
+                console.log("Invalid login.");
             }
         }
     }

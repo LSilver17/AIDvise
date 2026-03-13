@@ -1,10 +1,9 @@
 import { Button, Flex } from "@radix-ui/themes"
-import Logo from "@/app/components/visual/logo";
+import Logo from "@/app/components/visual/logo"
 import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
 import NavButton from "@/app/components/navigation/navbutton";
 
-export default function LoginPage ({ children, }: Readonly<{children: React.ReactNode;}>) {
+export default function CreationPage ({ children, }: Readonly<{children: React.ReactNode;}>) {
     return (
         <Flex height="100vh" width="100vw" direction="column" justify="center" align="center" gap="9">
             <Flex width="30%" height="20%" justify="center" align="center" className="orangeBG">
@@ -13,8 +12,8 @@ export default function LoginPage ({ children, }: Readonly<{children: React.Reac
             <Flex width="30%" height="40%" justify="center" align="center" className="orangeBG"> 
                 {children}
             </Flex>
-            <NavButton href="/signup">
-                Sign up
+            <NavButton href="/login">
+                Log in
             </NavButton>
         </Flex>
     );

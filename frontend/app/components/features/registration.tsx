@@ -9,7 +9,7 @@ type Props = {
     onSubmit: SubmitEventHandler<HTMLFormElement>;
 }
 
-export default function LoginForm({onSubmit} : Props) {
+export default function RegistrationForm({onSubmit} : Props) {
     return (
         <Form.Root onSubmit={onSubmit}>
             <Flex justify="center" direction="column" gap="6">
@@ -36,7 +36,7 @@ export default function LoginForm({onSubmit} : Props) {
                 <Flex justify="center" width="100%" direction="column" align="center">
                     <Form.Submit asChild>
                         <button className="nightBG">
-                            Login
+                            Create Account
                         </button>
                     </Form.Submit>
                 </Flex>
