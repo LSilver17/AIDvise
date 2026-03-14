@@ -98,7 +98,10 @@ try:
     cursor.execute(
         '''CREATE TABLE IF NOT EXISTS Advisors(
             ID INTEGER PRIMARY KEY,
-            Name TEXT NOT NULL
+            Name TEXT NOT NULL,
+            UserID INTEGER NOT NULL UNIQUE,
+            FOREIGN KEY (UserID) REFERENCES Users(ID)
+                ON DELETE CASCADE
         )'''
     )
 
@@ -150,7 +153,7 @@ try:
     cursor.execute(
         '''CREATE TABLE IF NOT EXISTS RelevantEvents(
             ID INTEGER PRIMARY KEY,
-            Urgency INTEGER NOT NULL,
+            UrgencyLevel TEXT NOT NULL,
             EventID INTEGER NOT NULL,
             StudentID INTEGER NOT NULL,
             FOREIGN KEY (StudentID) REFERENCES Students(ID)
