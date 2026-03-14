@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import json
 
 
 def clean_text(text: str) -> str:
@@ -71,14 +72,34 @@ PROGRAM_PAGES = [
         "subject_hint": "RCP"
     },
     {
+        "program_name": "Computer Science Transfer",
+        "url": "https://www.qcc.edu/computer-and-information-technology/computer-science-transfer",
+        "subject_hint": "CSC"
+    },
+    {
         "program_name": "Dental Hygiene",
         "url": "https://www.qcc.edu/healthcare/dental-hygiene",
         "subject_hint": "DEN"
     },
     {
         "program_name": "Early Childhood Education",
-        "url": "https://www.qcc.edu/education-childcare/early-childhood-education",
+        "url": "https://www.qcc.edu/education/early-childhood-education",
         "subject_hint": "ECE"
+    },
+    {
+        "program_name": "Nurse Education",
+        "url": "https://www.qcc.edu/healthcare/nurse-education",
+        "subject_hint": "NUR"
+    },
+    {
+        "program_name": "Interactive Media",
+        "url": "https://www.qcc.edu/computer-and-information-technology/interactive-media-digital-design-option",
+        "subject_hint": "IMD"
+    },
+    {
+        "program_name": "Entrepreneurship and Small Business Management",
+        "url": "https://www.qcc.edu/business-financial-and-hospitality-management/entrepreneurship-and-small-business-management",
+        "subject_hint": "MGT"
     }
 ]
 
@@ -106,3 +127,7 @@ if __name__ == "__main__":
 
     print(f"\nGrand total courses scraped: {len(all_courses)}")
 
+    with open("qcc_courses.json", "w", encoding="utf-8") as f:
+        json.dump(all_courses, f, indent=2)
+
+    print("Saved results to qcc_courses.json")
