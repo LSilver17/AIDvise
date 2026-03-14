@@ -16,7 +16,7 @@ def get_events() -> list:
         # Query for upcoming events
         cursor.execute(
             '''
-            SELECT Name, Description, StartDate, EndDate, StartTime, EndTime, Location
+            SELECT ID, Name, Description, StartDate, EndDate, StartTime, EndTime, Location
             FROM Events
             WHERE StartDate >= DATE('now')
             ORDER BY StartDate ASC
@@ -24,7 +24,7 @@ def get_events() -> list:
         )
 
         # Fetch all results
-        events = cursor.fetchall()
+        events = [dict(ID=row[0], Name=row[1], Description=row[2], StartDate=row[3], EndDate=row[4], StartTime=row[5], EndTime=row[6], Location=row[7]) for row in cursor.fetchall()]
 
         return events
 
@@ -69,7 +69,7 @@ def get_interests(userID: str) -> list:
         )
 
         # Fetch all results
-        interests = cursor.fetchall()
+        interests = [row[0] for row in cursor.fetchall()]
 
         return interests
 
@@ -116,7 +116,7 @@ def get_relevant_events(userID: str) -> list:
         )
 
         # Fetch all results
-        relevant_events = cursor.fetchall()
+        relevant_events = [dict(Name=row[0], Description=row[1], StartDate=row[2], EndDate=row[3], StartTime=row[4], EndTime=row[5], Location=row[6], Urgency=row[7]) for row in cursor.fetchall()]
 
         return relevant_events
 
@@ -125,4 +125,4 @@ def get_relevant_events(userID: str) -> list:
     finally:
         # Ensure the connection is closed
         if conn:
-            conn.close()            
+            conn.close()
