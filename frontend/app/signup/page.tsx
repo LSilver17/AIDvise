@@ -3,9 +3,12 @@
 import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
 import { SubmitEventHandler } from "react";
 import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 // User Components
-import RegistrationForm from "@/app/components/features/registration";
+import RegistrationForm from "@/app/components/features/forms/formlayout";
+import FormField from "@/app/components/features/forms/formfield";
+import FormSubmit from "@/app/components/features/forms/formsubmit";
 
 export default function SignUp () {
     // Form submission handler
@@ -41,8 +44,13 @@ export default function SignUp () {
     }
     
     return (
-        <> 
-            <RegistrationForm onSubmit={handler}></RegistrationForm>
-        </>
+        <RegistrationForm onSubmit={handler}>
+            <FormField label="Username" inputName="username" message="Please enter a username."/>
+            <FormField label="Password" inputName="password" message="Please enter a password." isPassword/>
+            <FormField label="Password" inputName="password" message="Please enter a password." isPassword/>
+            <FormSubmit>
+                Create Account
+            </FormSubmit>
+        </RegistrationForm>
     );
 }

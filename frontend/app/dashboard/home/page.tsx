@@ -1,7 +1,9 @@
+import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
+
 export default function Home () {
     return(
-        <>
-        Home
-        </>
+        <DashboardLayout>
+            Home
+        </DashboardLayout>
     );
 }
