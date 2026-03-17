@@ -1,27 +1,26 @@
 Folder Structure
 data_pipeline/
-├── saved_pages/
-│   └── registration_page.html        # Manually saved HTML from QCC course offerings page
-├── scrape_registration_sections.py   # Parses HTML and extracts course data
-├── registration_sections.json        # Scraped course data (1,227 sections)
-├── create_registration_db.py         # Initializes the SQLite database from JSON
-├── update_registration_db.py         # Updates the database with fresh scraped data
-├── view_registration_db.py           # Query and inspect the database
-└── README_registration_pipeline.md   # This file
+├── saved_pages/                        # gitignored — not needed anymore
+├── scrape_registration_sections.py     # legacy scraper (manual HTML save)
+├── refresh_registration.py             # main script — scrapes + updates DB
+├── create_registration_db.py           # run once to initialize DB
+├── view_registration_db.py             # inspect and query the DB
+├── registration_sections.json          # scraped course data (committed to repo)
+├── registration.db                     # gitignored — generated locally
+└── README_registration_pipeline.md     # this file
 
 How It Works
-QCC Course Offerings Page
-        ↓  (manual HTML save)
-saved_pages/registration_page.html
-        ↓  (scrape_registration_sections.py)
-registration_sections.json
-        ↓  (create_registration_db.py)
+QCC Course Offerings Page (Jenzabar Portal)
+        ↓  refresh_registration.py (automated via Playwright)
+registration_sections.json       ← committed to repo
+        ↓  create_registration_db.py (run once)
 registration.db
         ↓
 Backend API → AI Advising Agent → Frontend
 
 Install dependencies:
-pip install beautifulsoup4
+pip install beautifulsoup4 playwright
+playwright install chromium
 
 Scrape the page
 python scrape_registration_sections.py
@@ -32,4 +31,7 @@ python create_registration_db.py
 Creates registration.db with a fully indexed schema.
 
 Update the database (run after every re-scrape)
-python update_registration_db.py
+python refresh_registration.py
+
+Inspect the database
+python view_registration_db.py
