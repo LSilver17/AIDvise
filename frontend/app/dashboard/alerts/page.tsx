@@ -1,11 +1,16 @@
+"use client"
+
 import { ScrollArea, Text, Box, Flex } from "@radix-ui/themes";
-import { AlertStatus, Alert } from "@/app/lib/alert"
+import { AlertStatus, UserAlert} from "@/app/lib/alert"
 import { alerts } from "@/mock/mock.json";
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
+import AlertLayout from "@/app/components/layout/alertlayout"
+import SingleAlert from "@/app/components/features/alert"
+import DashTitle from "@/app/components/visual/title"
 // TODO: import from DB
 
 // final alerts list
-const userAlerts: Alert[] = [];
+const userAlerts: UserAlert[] = [];
 
 // TODO: populate list with DB alerts instead of JSON alerts
 if (alerts.length != 0) {
@@ -14,7 +19,7 @@ if (alerts.length != 0) {
         var status = ((stat: string) => 
             stat == "Unseen" ? 0 : 1)
         (curr.status);
-        var alert = new Alert(curr.message, status);
+        var alert = new UserAlert(curr.message, status);
         userAlerts.push(alert);
     })
 }
@@ -22,17 +27,14 @@ if (alerts.length != 0) {
 export default function Alerts () {
     return (
         <DashboardLayout>
-            <ScrollArea type="scroll" style = {{width: "100%", height: "100%", minHeight: "0"}}>
-                <Box className="nightBG">
-                    <ul>
-                        {
-                            userAlerts.map((alert, i) => (
-                                <li key={i}>{alert.getStatus()}: {alert.getMessage()}</li>
-                            ))
-                        }
-                    </ul>
-                </Box>
-            </ScrollArea>
+            <DashTitle size="8">
+                Alerts
+            </DashTitle>
+            <AlertLayout >
+                {userAlerts.map(x => (
+                    <SingleAlert status={x.getStatus()} content={x.getMessage()}/>
+                ))}
+            </AlertLayout>
         </DashboardLayout>
     );
 }

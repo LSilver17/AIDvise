@@ -3,7 +3,7 @@ export enum AlertStatus {
     Seen
 }
 
-export class Alert {
+export class UserAlert {
     public constructor(message: string = "Empty", status: AlertStatus = AlertStatus.Unseen) {
         this.message = message;
         this.status = status;

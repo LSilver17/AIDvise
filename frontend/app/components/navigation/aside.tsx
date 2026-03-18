@@ -1,7 +1,7 @@
 "use client"
 
 // Library Imports
-import { Flex, Button, Separator } from "@radix-ui/themes";
+import { Flex, Button, Separator, Em } from "@radix-ui/themes";
 import { HomeIcon, BellIcon, ChatBubbleIcon, PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
@@ -9,16 +9,16 @@ import { useRouter } from "next/navigation";
 import SidebarButton from "@/app/components/navigation/navbutton";
 import Logo from "@/app/components/visual/logo"
 import SignOut from "@/app/components/features/signout"
+import DashTitle from "@/app/components/visual/title"
 
 export default function Sidebar () {
     const router = useRouter();
     return (
-        <Flex direction="column" justify="start" align="stretch" p="4" flexGrow="1" gapY="5" className="bg-orange-500">
+        <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="bg-orange-500">
             {/*Logo Section*/}
-            <Flex direction="column" justify="start" align="center" gapY="5">
-                <Logo size="8"/>
-                <Separator orientation="horizontal" size="4"/>
-            </Flex>
+            <DashTitle size="8">
+                <Em>advise.</Em>
+            </DashTitle>
             {/*Main Dashboard*/}
             <Flex direction="column" justify="start" align="stretch" gapY="5" flexGrow="1">
                 <SidebarButton href="/dashboard/home">
