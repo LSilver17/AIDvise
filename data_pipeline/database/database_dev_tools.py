@@ -22,7 +22,7 @@ def setup_database():
                 EndDate DATE NOT NULL,
                 Year INTEGER NOT NULL,
                 Season TEXT NOT NULL,
-                Number INTEGER
+                Num INTEGER
             )'''
         )
         cursor.execute(
@@ -32,18 +32,19 @@ def setup_database():
                 Code INTEGER NOT NULL,
                 Description TEXT NOT NULL,
                 Credits INTEGER NOT NULL,
-                TermID INTEGER NOT NULL,
-                FOREIGN KEY (TermID) REFERENCES Terms(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Terms(ID)
                     ON DELETE CASCADE
             )'''
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS CourseRequirements(
                 ID INTEGER PRIMARY KEY,
-                RequiredCourseID INTEGER NOT NULL,
-                RequiredGrade REAL,
-                CourseID INTEGER NOT NULL,
-                FOREIGN KEY (CourseID) REFERENCES CoursesOffered(ID)
+                Department TEXT NOT NULL,
+                Code INTEGER NOT NULL,
+                Grade REAL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES CoursesOffered(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -56,8 +57,8 @@ def setup_database():
                 SeatsLeft INTEGER NOT NULL,
                 Modality TEXT NOT NULL,
                 Location TEXT,
-                CourseID INTEGER NOT NULL,
-                FOREIGN KEY (CourseID) REFERENCES CoursesOffered(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES CoursesOffered(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -67,8 +68,8 @@ def setup_database():
                 Day TEXT NOT NULL,
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
-                SectionID INTEGER NOT NULL,
-                FOREIGN KEY (SectionID) REFERENCES Sections(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Sections(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -114,10 +115,10 @@ def setup_database():
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
-                UserID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
-                FOREIGN KEY (UserID) REFERENCES Users(ID)
+                FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -126,8 +127,8 @@ def setup_database():
                 ID INTEGER PRIMARY KEY,
                 Title TEXT NOT NULL,
                 Type TEXT NOT NULL,
-                StudentID INTEGER NOT NULL,
-                FOREIGN KEY (StudentID) REFERENCES Students(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -135,8 +136,8 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Interests(
                 ID INTEGER PRIMARY KEY,
                 Interest TEXT NOT NULL,
-                StudentID INTEGER NOT NULL,
-                FOREIGN KEY (StudentID) REFERENCES Students(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -145,8 +146,8 @@ def setup_database():
                 ID INTEGER PRIMARY KEY,
                 Log TEXT NOT NULL,
                 Timestamp DATETIME NOT NULL,
-                StudentID INTEGER NOT NULL,
-                FOREIGN KEY (StudentID) REFERENCES Students(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -155,8 +156,8 @@ def setup_database():
                 ID INTEGER PRIMARY KEY,
                 Urgency INTEGER NOT NULL,
                 EventID INTEGER NOT NULL,
-                StudentID INTEGER NOT NULL,
-                FOREIGN KEY (StudentID) REFERENCES Students(ID)
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE,
                 FOREIGN KEY (EventID) REFERENCES Events(ID)
                     ON DELETE CASCADE
@@ -169,128 +170,6 @@ def setup_database():
     except Exception as e:
         raise RuntimeError(
             f"Failed to set up database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
-# Utility function to view the database hierarchy and contents in a readable format
-def view_database_hierarchy():
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
-        conn.row_factory = sqlite3.Row
-
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-        
-        terms = cursor.execute(
-			'''
-			SELECT TermID, Year, Season, Num
-			FROM Terms
-			ORDER BY Year, Season, Num, TermID
-			''',
-		).fetchall()
-        
-        print(f'Database: {database}')
-        print('Hierarchy: Terms -> CoursesOffered -> (CourseRequirements, Sections -> MeetTimes)\n')
-        
-        for term in terms:
-            summer_part = f' {term["Num"]}' if term['Season'] == 'Summer' and term['Num'] else ''
-            print(f'Term {term["TermID"]}: {term["Season"]}{summer_part} {term["Year"]}')
-            
-            courses = cursor.execute(
-				'''
-				SELECT CourseID, Department, Code, Description, Credits
-				FROM CoursesOffered
-				WHERE TermID = ?
-				ORDER BY Department, Code, CourseID
-				''',
-				(term['TermID'],),
-			).fetchall()
-            
-            if not courses:
-                print('  └─ (no courses)')
-                continue
-            
-            for course in courses:
-                print(
-					f'  ├─ Course {course["CourseID"]}: '
-					f'{course["Department"]} {course["Code"]} '
-					f'({course["Credits"]} cr) - {course["Description"]}'
-				)
-                
-                requirements = cursor.execute(
-					'''
-					SELECT RequirementID, Department, Code, Grade
-					FROM CourseRequirements
-					WHERE CourseID = ?
-					ORDER BY RequirementID
-					''',
-					(course['CourseID'],),
-				).fetchall()
-                
-                if requirements:
-                    for req in requirements:
-                        req_code = req['Code'] if req['Code'] is not None else 'N/A'
-                        req_grade = req['Grade'] if req['Grade'] is not None else 'N/A'
-                        print(
-							f'  │  ├─ Requirement {req["RequirementID"]}: '
-							f'{req["Department"]} {req_code} min grade {req_grade}'
-						)
-                else:
-                    print('  │  ├─ (no requirements)')
-                
-                sections = cursor.execute(
-					'''
-					SELECT SectionID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modalim, Location
-					FROM Sections
-					WHERE CourseID = ?
-					ORDER BY SectionNum, SectionID
-					''',
-					(course['CourseID'],),
-				).fetchall()
-                
-                if not sections:
-                    print('  │  └─ (no sections)')
-                    continue
-                
-                for section in sections:
-                    location = section['Location'] if section['Location'] else 'TBD'
-                    print(
-						f'  │  └─ Section {section["SectionID"]} '
-						f'(#{section["SectionNum"]}): '
-						f'{section["Instructor"]}, {section["Modalim"]}, {location}, '
-						f'{section["SeatsLeft"]}/{section["MaxSeats"]} seats left'
-					)
-                    
-                    meet_times = cursor.execute(
-						'''
-						SELECT MeetTimeID, Day, StartTime, EndTime
-						FROM MeetTimes
-						WHERE SectionID = ?
-						ORDER BY MeetTimeID
-						''',
-						(section['SectionID'],),
-					).fetchall()
-                    
-                    if meet_times:
-                        for meet in meet_times:
-                            print(
-								f'  │     └─ MeetTime {meet["MeetTimeID"]}: '
-								f'{meet["Day"]} {meet["StartTime"]}-{meet["EndTime"]}'
-						    )
-                    else:
-                        print('  │     └─ (no meet times)')
-                
-            print()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to view database hierarchy: {e}"
         ) from e
     
     finally:
@@ -331,7 +210,7 @@ def add_new_term(json_file: str):
 def insert_basic_test_data():
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect('Test.db')
+        conn = sqlite3.connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -339,7 +218,7 @@ def insert_basic_test_data():
         # Insert dummy test data
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Terms (TermID, Year, Season, Num)
+            INSERT OR IGNORE INTO Terms (ID, Year, Season, Num)
             VALUES (?, ?, ?, ?)
             ''',
             [
@@ -352,7 +231,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
             VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
@@ -364,7 +243,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
             VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
@@ -376,7 +255,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
             VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
@@ -388,7 +267,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
             VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
@@ -400,7 +279,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CourseRequirements (RequirementID, Department, Code, Grade, CourseID)
+            INSERT OR IGNORE INTO CourseRequirements (ID, Department, Code, Grade, ParentID)
             VALUES (?, ?, ?, ?, ?)
             ''',
             [
@@ -425,7 +304,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Sections (SectionID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modalim, Location, CourseID)
+            INSERT OR IGNORE INTO Sections (ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modality, Location, ParentID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''',
             [
@@ -446,7 +325,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO MeetTimes (MeetTimeID, Day, StartTime, EndTime, SectionID)
+            INSERT OR IGNORE INTO MeetTimes (ID, Day, StartTime, EndTime, ParentID)
             VALUES (?, ?, ?, ?, ?)
             ''',
             [
@@ -490,28 +369,28 @@ def insert_basic_test_data():
         cursor.execute('''
             SELECT COUNT(*)
             FROM CoursesOffered c
-            JOIN Terms t ON c.TermID = t.TermID
+            JOIN Terms t ON c.ParentID = t.ID
         ''')
         print(f'Courses with valid term FK: {cursor.fetchone()[0]}')
 
         cursor.execute('''
             SELECT COUNT(*)
             FROM CourseRequirements r
-            JOIN CoursesOffered c ON r.CourseID = c.CourseID
+            JOIN CoursesOffered c ON r.ParentID = c.ID
         ''')
         print(f'Requirements with valid course FK: {cursor.fetchone()[0]}')
 
         cursor.execute('''
             SELECT COUNT(*)
             FROM Sections s
-            JOIN CoursesOffered c ON s.CourseID = c.CourseID
+            JOIN CoursesOffered c ON s.ParentID = c.ID
         ''')
         print(f'Sections with valid course FK: {cursor.fetchone()[0]}')
 
         cursor.execute('''
             SELECT COUNT(*)
             FROM MeetTimes m
-            JOIN Sections s ON m.SectionID = s.SectionID
+            JOIN Sections s ON m.ParentID = s.ID
         ''')
         print(f'MeetTimes with valid section FK: {cursor.fetchone()[0]}')
 

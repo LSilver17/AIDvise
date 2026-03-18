@@ -1,48 +1,34 @@
 from dotenv import load_dotenv
 from langchain_core.messages import AIMessage
 from langchain_anthropic import ChatAnthropic
-from langchain_community.utilities import SQLDatabase
-from langchain_community.agent_toolkits import create_sql_agent
 from lg_agent.utilities.state import AdvisorState
+from schemas import AdvisorOutputSchema
 
 load_dotenv()
-
-try:
-    db = SQLDatabase.from_uri("sqlite:///Test.db")
-except Exception as exc:
-    raise RuntimeError(
-        "Failed to initialize database connection from URI 'sqlite:///Test.db'. "
-        "Verify that the SQLite file exists and is readable."
-    ) from exc
 
 llm = ChatAnthropic(
     model="claude-sonnet-4-6",
     temperature=.2,
-    tools= [{
-        "type": "web_search_20260209",
-        "name": "web_search",
-        "max_uses": 3
-    }]
 )
 
+def advisor_node(state: AdvisorState) -> AdvisorState:
+    """Base node for the academic advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
+    
+    structured_llm = llm.with_structured_output(AdvisorOutputSchema)
 
-ChatBot = create_sql_agent(
-    llm,
-    db=db,
-    verbose=True,
-    agent_executor_kwargs={"handle_parsing_errors": True}
-)
-
-def advisor_node(state: AdvisorState):
-    """Takes the role of an academic advisor, augmented with search tools to deliver information about colleges"""
-
-    system_prompt = (
-        "Listen to any questions they have about course requirements, transfer guidelines, "
-        "and academic strategies, utilizing the search tool to take information off official "
-        "college websites when necessary. Responses should be objective and concise. Alert "
-        "the user when they have run out of search uses. You have access to a database "
-        "containing information about courses offered in each term."
-    )
+    system_prompt = ("""
+        Listen to any questions the user has about course requirements, transfer guidelines, 
+        and academic strategies. If you can answer the question directly, do so. If you need 
+        to query the database to answer the question, set the 'requires_database' field to True 
+        and specify what information you need from the database in the 'info_needed_db' field. 
+        If you need to perform a web search to answer the question, set the 'requires_web_search' 
+        field to True and specify what information you need to search for in the 'info_needed_web' 
+        field. If you can answer the question directly, provide a clear and concise answer in the 
+        'answer' field and set both 'requires_database' and 'requires_web_search' to False, while 
+        leaving the 'info_needed_db' and 'info_needed_web' fields blank. Otherwise, leave the 
+        'answer' field blank. Always set the 'requires_database' and 'requires_web_search' 
+        fields accurately based on the information you need to answer the question.
+    """)
 
     recent_messages = state["messages"][-10:]
     conversation_lines = []
@@ -54,11 +40,12 @@ def advisor_node(state: AdvisorState):
             content = " ".join(str(item) for item in content)
         conversation_lines.append(f"{role}: {content}")
 
-    input_text = f"{system_prompt}\n\nConversation:\n" + "\n".join(conversation_lines)
-    result = ChatBot.invoke({"input": input_text})
+    input = f"{system_prompt}\n\nConversation:\n" + "\n".join(conversation_lines)
+    result = structured_llm.invoke(input)
 
-    output_text = result.get("output") if isinstance(result, dict) else str(result)
-    return {
-        "messages": [AIMessage(content=output_text or "")],
-        "num_messages": state.get("num_messages", 0) + 1
-    }
+    state["current_step"] = result
+    artificial_response = AIMessage(content=result.json())
+    state["messages"].append(artificial_response)
+    state["num_messages"] += 1
+
+    return state

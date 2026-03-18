@@ -9,7 +9,7 @@ def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: str) -
 
     # Get the entry from the target table that corresponds to the target and add its fields and values to the results
     for row in cursor.execute(f"SELECT * FROM {table} WHERE ID = ?", (targetID,)):
-        for idx, col in enumerate(cursor.description):
+        for idx, col in enumerate(cursor.description) if col[0] != "ID" and col[0] != "ParentID" and row[idx] is not None else []:
             entry[col[0]] = row[idx]
 
     # Find all tables that reference target as a foreign key
@@ -75,3 +75,32 @@ def _format_hierarchy_node(node: dict, depth: int = 0) -> str:
 # Utility function convert output of get_data_with_hierarchy into a readable string format
 def hierarchy_data_to_string(hierarchy_data: dict) -> str:
     return _format_hierarchy_node(hierarchy_data)
+
+# Utility function to get data with hierarchy as a string
+def get_data_with_hierarchy_string(cursor: sqlite3.Cursor, table: str, targetID: str) -> str:
+    hierarchy_data = get_data_with_hierarchy(cursor, table, targetID)
+    return hierarchy_data_to_string(hierarchy_data)
+
+# Utility function to get IDs of entries in a table based on a field value
+def get_ids_by_field_value(cursor: sqlite3.Cursor, table: str, field: str, value: str) -> list:
+    cursor.execute(f"SELECT ID FROM {table} WHERE {field} = ?", (value,))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
+
+# Utility function to get all entries in a table that match a filter condition on a field, and return their IDs as a list
+def get_ids_by_field_filter(cursor: sqlite3.Cursor, table: str, field: str, filter_value: str) -> list:
+    cursor.execute(f"SELECT ID FROM {table} WHERE {field} LIKE ?", (f"%{filter_value}%",))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
+
+# Utility function to get IDs of all entries in a table that reference a target entry as a foreign key, and return these IDs as a list
+def get_ids_by_parent(cursor: sqlite3.Cursor, table: str, targetID: str) -> list:
+    cursor.execute(f"SELECT ID FROM {table} WHERE ParentID = ?", (targetID,))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
+
+# Utility function to get IDs of all students that are advised by a target advisor, and return these IDs as a list
+def get_students_by_advisor(cursor: sqlite3.Cursor, advisorID: str) -> list:
+    cursor.execute("SELECT ID FROM Students WHERE AdvisorID = ?", (advisorID,))
+    results = cursor.fetchall()
+    return [row[0] for row in results]

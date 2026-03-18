@@ -1,6 +1,9 @@
-from dotenv import load_dotenv
-from langchain_anthropic import ChatAnthropic
-from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.tools import tool
-from langgraph.prebuilt import ToolNode, ToolRuntime
-from lg_agent.utilities.state import AdvisorState
+import sqlite3
+
+# Database query tools
+@tool("search_for_courses", return_direct=True)
+def search_for_courses(cursor: sqlite3.Cursor, filter: str) -> str:
+    """Retrieve all relevant info on courses matching a filter"""
+
+    
