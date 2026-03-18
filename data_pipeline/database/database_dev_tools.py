@@ -2,8 +2,7 @@ import json
 import sqlite3
 import os
 
-database = "Test.db"
-conn = None
+database = "AdvisingDB.db"
 
 # Utility function to set up the database with the required tables and schema
 def setup_database():
@@ -177,11 +176,6 @@ def setup_database():
         if conn:
             conn.close()
 
-# Utility function to fetch all results from a query
-def fetch_all(cursor: sqlite3.Cursor, query: str, params: tuple = ()):
-	cursor.execute(query, params)
-	return cursor.fetchall()
-
 # Utility function to view the database hierarchy and contents in a readable format
 def view_database_hierarchy():
     try:
@@ -193,14 +187,13 @@ def view_database_hierarchy():
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
         
-        terms = fetch_all(
-			cursor,
+        terms = cursor.execute(
 			'''
 			SELECT TermID, Year, Season, Num
 			FROM Terms
 			ORDER BY Year, Season, Num, TermID
 			''',
-		)
+		).fetchall()
         
         print(f'Database: {database}')
         print('Hierarchy: Terms -> CoursesOffered -> (CourseRequirements, Sections -> MeetTimes)\n')
@@ -209,8 +202,7 @@ def view_database_hierarchy():
             summer_part = f' {term["Num"]}' if term['Season'] == 'Summer' and term['Num'] else ''
             print(f'Term {term["TermID"]}: {term["Season"]}{summer_part} {term["Year"]}')
             
-            courses = fetch_all(
-				cursor,
+            courses = cursor.execute(
 				'''
 				SELECT CourseID, Department, Code, Description, Credits
 				FROM CoursesOffered
@@ -218,7 +210,7 @@ def view_database_hierarchy():
 				ORDER BY Department, Code, CourseID
 				''',
 				(term['TermID'],),
-			)
+			).fetchall()
             
             if not courses:
                 print('  └─ (no courses)')
@@ -231,8 +223,7 @@ def view_database_hierarchy():
 					f'({course["Credits"]} cr) - {course["Description"]}'
 				)
                 
-                requirements = fetch_all(
-					cursor,
+                requirements = cursor.execute(
 					'''
 					SELECT RequirementID, Department, Code, Grade
 					FROM CourseRequirements
@@ -240,7 +231,7 @@ def view_database_hierarchy():
 					ORDER BY RequirementID
 					''',
 					(course['CourseID'],),
-				)
+				).fetchall()
                 
                 if requirements:
                     for req in requirements:
@@ -253,8 +244,7 @@ def view_database_hierarchy():
                 else:
                     print('  │  ├─ (no requirements)')
                 
-                sections = fetch_all(
-					cursor,
+                sections = cursor.execute(
 					'''
 					SELECT SectionID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modalim, Location
 					FROM Sections
@@ -262,7 +252,7 @@ def view_database_hierarchy():
 					ORDER BY SectionNum, SectionID
 					''',
 					(course['CourseID'],),
-				)
+				).fetchall()
                 
                 if not sections:
                     print('  │  └─ (no sections)')
@@ -277,8 +267,7 @@ def view_database_hierarchy():
 						f'{section["SeatsLeft"]}/{section["MaxSeats"]} seats left'
 					)
                     
-                    meet_times = fetch_all(
-						cursor,
+                    meet_times = cursor.execute(
 						'''
 						SELECT MeetTimeID, Day, StartTime, EndTime
 						FROM MeetTimes
@@ -286,7 +275,7 @@ def view_database_hierarchy():
 						ORDER BY MeetTimeID
 						''',
 						(section['SectionID'],),
-					)
+					).fetchall()
                     
                     if meet_times:
                         for meet in meet_times:
