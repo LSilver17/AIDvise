@@ -1,12 +1,9 @@
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { user } from "@/mock/mock.json"
-import { User } from "@/app/lib/user"
 import bcrypt from "bcrypt";
-// TODO: import user database
 
-let userCred = Object.assign(new User(), user);
+import { validate_credentials } from "@/app/lib/account_db_utils";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -18,27 +15,16 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 // Validates credentials, returning user object if valid and null otherwise
-                if (userCred.getPassword() == credentials?.password && 
-                    userCred.getUser() == credentials?.username) {
-                    return {
-                        id: "1",
-                        name: userCred.getUser(),
-                    };
-                }
-                /*
-                Replace above validation with:
-                // compare username with database username
-                const saltRounds = 14;
-                bcrypt.genSalt(saltRounds, function(err, salt) {
-                    bcrypt.hash(password, salt, function(err, hash) {
-                        // Compare with hashed password stored in database
-                    });
-                });
-                (Return the same user object as already implemented, although
-                 you can implement a user id creation system if desired)
-                */
+                let user = null;
 
-                return null;
+                // Type safety guard
+                if((credentials?.username !== undefined) && (credentials?.password !== undefined)) {
+                    user = await validate_credentials(credentials.username, credentials.password);
+                }
+                
+                if (!user) return null;
+
+                return user;
             }
         }),
     ],

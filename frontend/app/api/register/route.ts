@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-// TODO: import database
+
+import { create_user } from "@/app/lib/account_db_utils";
 
 export async function POST(req: Request) {
     const saltRounds = 14;

@@ -1,7 +1,8 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import bcrypt from "bcrypt";
 
-export async function validate_credentials(username: string, password: string): Promise<boolean> {
+export async function validate_credentials(username: string, password: string) {
     let db;
     try {
         db = await open({
@@ -12,19 +13,22 @@ export async function validate_credentials(username: string, password: string): 
 
         const credential = await db.get('SELECT username, password FROM Users WHERE username = ?', username);
 
-        if (!credential) {
-            throw new Error("Username not found");
+        // Compares passwords with shared salt algorithm
+        let valid = await bcrypt.compare(password, credential.password);
+
+        if (!credential || !valid) {
+            return null;
         }
 
-        // hash the input password and compare it with the stored password
-        const hashed_password = password;
-
-        return hashed_password === credential.password;
+        return  {
+            username: credential.username,
+            // account_type
+            id: "1",
+        };
 
     } catch (e) {
         console.error(`Database error: ${e}`);
-        return false;
-    } finally {
+        return null;
         if (db) {
             await db.close();
         }

@@ -39,7 +39,7 @@ def clean_text(text):
     return " ".join(text.split()).strip()
 
 def parse_seats(s):
-    m = re.search(r"(\d+)\s*[/∕]\s*(\d+)", s)
+    m = re.search("(\d+)\s*[/∕]\s*(\d+)", s)
     return {"open": int(m.group(1)), "total": int(m.group(2))} if m else {"open": None, "total": None}
 
 def parse_details(s):
@@ -56,7 +56,7 @@ def parse_details(s):
     return result
 
 def parse_course_code(code):
-    m = re.match(r"([A-Z]+)\s+(\d+)-(\w+)", code)
+    m = re.match("([A-Z]+)\s+(\d+)-(\w+)", code)
     return {"department": m.group(1), "number": m.group(2), "section": m.group(3)} if m else {"department": None, "number": None, "section": None}
 
 def parse_html(html):
