@@ -13,7 +13,7 @@ export default function Chat() {
         title: "Academic Advisor",
         initial: `Hi, ${data.name}! How can I assist you today?`,
       }}
-     className="w-full h-full dark"
+     className="w-full h-full"
     />
   );
 }

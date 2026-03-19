@@ -23,7 +23,10 @@ Quickstart
         cd frontend
         npm install
 
-6. Begin hosting
+6. Configure .env
+    Setup .env and .env.local according to example files
+
+7. Begin hosting
     - In root directory, run:
         npx @langchain/langgraph-cli dev --port 8123 --no-browser 
     - In frontend directory, run:

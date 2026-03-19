@@ -98,7 +98,10 @@ try:
     cursor.execute(
         '''CREATE TABLE IF NOT EXISTS Advisors(
             ID INTEGER PRIMARY KEY,
-            Name TEXT NOT NULL
+            Name TEXT NOT NULL,
+            UserID INTEGER NOT NULL UNIQUE,
+            FOREIGN KEY (UserID) REFERENCES Users(ID)
+                ON DELETE CASCADE
         )'''
     )
 
@@ -150,7 +153,7 @@ try:
     cursor.execute(
         '''CREATE TABLE IF NOT EXISTS RelevantEvents(
             ID INTEGER PRIMARY KEY,
-            Urgency INTEGER NOT NULL,
+            UrgencyLevel TEXT NOT NULL,
             EventID INTEGER NOT NULL,
             StudentID INTEGER NOT NULL,
             FOREIGN KEY (StudentID) REFERENCES Students(ID)
@@ -163,15 +166,8 @@ try:
     # Commit the changes to the database
     conn.commit()
     
-except sqlite3.Error as e:
-    raise RuntimeError(
-        f"Database setup failed for 'Test.db': {e}. "
-        "Check schema definitions, foreign key constraints, and seed data values."
-    ) from e
-except Exception as e:
-    raise RuntimeError(
-        f"Unexpected error while initializing 'Test.db': {e}"
-    ) from e
+except Exception as exc:
+    raise RuntimeError("Failed to set up the database.") from exc
 finally:
     # Ensure the connection is closed
     if conn:

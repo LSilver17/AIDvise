@@ -28,31 +28,152 @@ def print_hierarchy(db_path: Path) -> None:
 	cursor = conn.cursor()
 
 	try:
-		terms = fetch_all(
+		print(f'Database: {db_path}')
+
+		# ── Advisors -> Students -> (MajorsAndMinors, Interests, ChatLogs, RelevantEvents -> Events) ──
+		print('\n══ ADVISORS ══')
+		print('Hierarchy: Users(Advisor) -> Advisors -> Students -> (MajorsAndMinors, Interests, ChatLogs, RelevantEvents -> Events)\n')
+
+		advisors = fetch_all(
 			cursor,
 			'''
-			SELECT TermID, Year, Season, Num
-			FROM Terms
-			ORDER BY Year, Season, Num, TermID
+			SELECT a.ID, a.Name, u.Username
+			FROM Advisors a
+			JOIN Users u ON a.UserID = u.ID
+			ORDER BY a.ID
 			''',
 		)
 
-		print(f'Database: {db_path}')
+		for advisor in advisors:
+			print(f'Advisor {advisor["ID"]}: {advisor["Name"]} (user: {advisor["Username"]})')
+
+			students = fetch_all(
+				cursor,
+				'''
+				SELECT s.ID, s.Name, s.GPA, s.CreditsEarned, s.IntendedGraduationTerm, u.Username
+				FROM Students s
+				JOIN Users u ON s.UserID = u.ID
+				WHERE s.AdvisorID = ?
+				ORDER BY s.ID
+				''',
+				(advisor['ID'],),
+			)
+
+			if not students:
+				print('  └─ (no students)')
+				continue
+
+			for student in students:
+				gpa = student['GPA'] if student['GPA'] is not None else 'N/A'
+				credits_earned = student['CreditsEarned'] if student['CreditsEarned'] is not None else 'N/A'
+				grad_term = student['IntendedGraduationTerm'] if student['IntendedGraduationTerm'] else 'N/A'
+				print(
+					f'  ├─ Student {student["ID"]}: {student["Name"]} '
+					f'(user: {student["Username"]}, GPA: {gpa}, '
+					f'Credits: {credits_earned}, Grad: {grad_term})'
+				)
+
+				majors_minors = fetch_all(
+					cursor,
+					'''
+					SELECT ID, Title, Type
+					FROM MajorsAndMinors
+					WHERE StudentID = ?
+					ORDER BY Type, Title
+					''',
+					(student['ID'],),
+				)
+
+				if majors_minors:
+					for mm in majors_minors:
+						print(f'  │  ├─ {mm["Type"]}: {mm["Title"]}')
+				else:
+					print('  │  ├─ (no majors/minors)')
+
+				interests = fetch_all(
+					cursor,
+					'''
+					SELECT ID, Interest
+					FROM Interests
+					WHERE StudentID = ?
+					ORDER BY ID
+					''',
+					(student['ID'],),
+				)
+
+				if interests:
+					interest_list = ', '.join(i['Interest'] for i in interests)
+					print(f'  │  ├─ Interests: {interest_list}')
+				else:
+					print('  │  ├─ Interests: (none)')
+
+				chat_logs = fetch_all(
+					cursor,
+					'''
+					SELECT ID, Log, Timestamp
+					FROM ChatLogs
+					WHERE StudentID = ?
+					ORDER BY Timestamp
+					''',
+					(student['ID'],),
+				)
+
+				if chat_logs:
+					for log in chat_logs:
+						print(f'  │  ├─ ChatLog {log["ID"]} [{log["Timestamp"]}]: {log["Log"]}')
+				else:
+					print('  │  ├─ (no chat logs)')
+
+				relevant_events = fetch_all(
+					cursor,
+					'''
+					SELECT re.ID, re.UrgencyLevel, e.Name, e.StartDate, e.StartTime, e.Location
+					FROM RelevantEvents re
+					JOIN Events e ON re.EventID = e.ID
+					WHERE re.StudentID = ?
+					ORDER BY re.UrgencyLevel, e.StartDate
+					''',
+					(student['ID'],),
+				)
+
+				if relevant_events:
+					for re_row in relevant_events:
+						loc = re_row['Location'] if re_row['Location'] else 'TBD'
+						print(
+							f'  │  └─ Event {re_row["ID"]} [{re_row["UrgencyLevel"]}]: '
+							f'{re_row["Name"]} on {re_row["StartDate"]} at {re_row["StartTime"]}, {loc}'
+						)
+				else:
+					print('  │  └─ (no relevant events)')
+
+		print()
+
+		# ── Terms -> CoursesOffered -> (CourseRequirements, Sections -> MeetTimes) ──
+		print('\n══ COURSE CATALOG ══')
 		print('Hierarchy: Terms -> CoursesOffered -> (CourseRequirements, Sections -> MeetTimes)\n')
 
+		terms = fetch_all(
+			cursor,
+			'''
+			SELECT ID, Year, Season, Number
+			FROM Terms
+			ORDER BY Year, Season, Number, ID
+			''',
+		)
+
 		for term in terms:
-			summer_part = f' {term["Num"]}' if term['Season'] == 'Summer' and term['Num'] else ''
-			print(f'Term {term["TermID"]}: {term["Season"]}{summer_part} {term["Year"]}')
+			summer_part = f' {term["Number"]}' if term['Season'] == 'Summer' and term['Number'] else ''
+			print(f'Term {term["ID"]}: {term["Season"]}{summer_part} {term["Year"]}')
 
 			courses = fetch_all(
 				cursor,
 				'''
-				SELECT CourseID, Department, Code, Description, Credits
+				SELECT ID, Department, Code, Description, Credits
 				FROM CoursesOffered
 				WHERE TermID = ?
-				ORDER BY Department, Code, CourseID
+				ORDER BY Department, Code, ID
 				''',
-				(term['TermID'],),
+				(term['ID'],),
 			)
 
 			if not courses:
@@ -61,7 +182,7 @@ def print_hierarchy(db_path: Path) -> None:
 
 			for course in courses:
 				print(
-					f'  ├─ Course {course["CourseID"]}: '
+					f'  ├─ Course {course["ID"]}: '
 					f'{course["Department"]} {course["Code"]} '
 					f'({course["Credits"]} cr) - {course["Description"]}'
 				)
@@ -69,21 +190,20 @@ def print_hierarchy(db_path: Path) -> None:
 				requirements = fetch_all(
 					cursor,
 					'''
-					SELECT RequirementID, Department, Code, Grade
+					SELECT ID, RequiredCourseID, RequiredGrade
 					FROM CourseRequirements
 					WHERE CourseID = ?
-					ORDER BY RequirementID
+					ORDER BY ID
 					''',
-					(course['CourseID'],),
+					(course['ID'],),
 				)
 
 				if requirements:
 					for req in requirements:
-						req_code = req['Code'] if req['Code'] is not None else 'N/A'
-						req_grade = req['Grade'] if req['Grade'] is not None else 'N/A'
+						req_grade = req['RequiredGrade'] if req['RequiredGrade'] is not None else 'N/A'
 						print(
-							f'  │  ├─ Requirement {req["RequirementID"]}: '
-							f'{req["Department"]} {req_code} min grade {req_grade}'
+							f'  │  ├─ Requirement {req["ID"]}: '
+							f'CourseID {req["RequiredCourseID"]} min grade {req_grade}'
 						)
 				else:
 					print('  │  ├─ (no requirements)')
@@ -91,12 +211,12 @@ def print_hierarchy(db_path: Path) -> None:
 				sections = fetch_all(
 					cursor,
 					'''
-					SELECT SectionID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modalim, Location
+					SELECT ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modality, Location
 					FROM Sections
 					WHERE CourseID = ?
-					ORDER BY SectionNum, SectionID
+					ORDER BY SectionNum, ID
 					''',
-					(course['CourseID'],),
+					(course['ID'],),
 				)
 
 				if not sections:
@@ -106,33 +226,33 @@ def print_hierarchy(db_path: Path) -> None:
 				for section in sections:
 					location = section['Location'] if section['Location'] else 'TBD'
 					print(
-						f'  │  └─ Section {section["SectionID"]} '
+						f'  │  └─ Section {section["ID"]} '
 						f'(#{section["SectionNum"]}): '
-						f'{section["Instructor"]}, {section["Modalim"]}, {location}, '
+						f'{section["Instructor"]}, {section["Modality"]}, {location}, '
 						f'{section["SeatsLeft"]}/{section["MaxSeats"]} seats left'
 					)
 
 					meet_times = fetch_all(
 						cursor,
 						'''
-						SELECT MeetTimeID, Day, StartTime, EndTime
+						SELECT ID, Day, StartTime, EndTime
 						FROM MeetTimes
 						WHERE SectionID = ?
-						ORDER BY MeetTimeID
+						ORDER BY ID
 						''',
-						(section['SectionID'],),
+						(section['ID'],),
 					)
 
 					if meet_times:
 						for meet in meet_times:
 							print(
-								f'  │     └─ MeetTime {meet["MeetTimeID"]}: '
+								f'  │     └─ MeetTime {meet["ID"]}: '
 								f'{meet["Day"]} {meet["StartTime"]}-{meet["EndTime"]}'
 							)
 					else:
 						print('  │     └─ (no meet times)')
 
-			print()
+		print()
 
 	finally:
 		conn.close()

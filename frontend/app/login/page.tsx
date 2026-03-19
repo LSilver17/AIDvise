@@ -1,12 +1,10 @@
 "use client"
 
-import LoginForm from "@/app/components/features/loginform";
 import { SubmitEventHandler } from "react";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
-import { getSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/router"
+import LoginForm from "@/app/components/features/forms/formlayout";
+import FormField from "@/app/components/features/forms/formfield";
+import FormSubmit from "@/app/components/features/forms/formsubmit";
 
 export default function Login () {
     const handler: SubmitEventHandler<HTMLFormElement> = async (event) => {
@@ -36,8 +34,12 @@ export default function Login () {
         }
     }
     return (
-        <>
-            <LoginForm onSubmit={handler}/>
-        </>
+        <LoginForm onSubmit={handler}>
+            <FormField label="Enter Username" inputName="username" message="Please enter a username."/>
+            <FormField label="Enter Password" inputName="password" message="Please enter a password." isPassword/>
+            <FormSubmit>
+                Sign In
+            </FormSubmit>
+        </LoginForm>
     );
 }

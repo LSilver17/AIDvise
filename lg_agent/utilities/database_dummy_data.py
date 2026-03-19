@@ -6,100 +6,168 @@ conn = None
 try:
     # Connect to sqlite database
     conn = sqlite3.connect('Test.db')
+    conn.execute('PRAGMA foreign_keys = ON')
 
     # Create a cursor object to execute SQL commands
     cursor = conn.cursor()
 
-    # Insert dummy test data
+    # Insert dummy test data in FK-safe order (parents before children)
     cursor.executemany(
         '''
-        INSERT OR IGNORE INTO Terms (TermID, Year, Season, Num)
-        VALUES (?, ?, ?, ?)
+        INSERT OR IGNORE INTO Terms (ID, StartDate, EndDate, Year, Season, Number)
+        VALUES (?, ?, ?, ?, ?, ?)
         ''',
         [
-            (1, 2026, 'Spring', None),
-            (2, 2026, 'Fall', None),
-            (3, 2026, 'Summer', 1),
-            (4, 2026, 'Summer', 2),
+            (1, '2026-01-12', '2026-05-08', 2026, 'Spring', None),
+            (2, '2026-08-24', '2026-12-11', 2026, 'Fall', None),
+            (3, '2026-05-18', '2026-06-26', 2026, 'Summer', 1),
+            (4, '2026-06-29', '2026-08-07', 2026, 'Summer', 2),
         ],
     )
 
     cursor.executemany(
         '''
-        INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
+        INSERT OR IGNORE INTO Users (ID, Username, Password, AccountType)
+        VALUES (?, ?, ?, ?)
+        ''',
+        [
+            (1, 'alex_student', 'pass1234', 'Student'),
+            (2, 'bri_student', 'pass1234', 'Student'),
+            (3, 'casey_student', 'pass1234', 'Student'),
+            (4, 'emily_advisor', 'pass1234', 'Advisor'),
+            (5, 'james_advisor', 'pass1234', 'Advisor'),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO Advisors (ID, Name, UserID)
+        VALUES (?, ?, ?)
+        ''',
+        [
+            (1, 'Dr. Emily Carter', 4),
+            (2, 'Prof. James Nguyen', 5),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO Students (
+            ID,
+            Name,
+            GPA,
+            CreditsEarned,
+            IntendedGraduationTerm,
+            AdvisorID,
+            UserID
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''',
+        [
+            (1, 'Alex Johnson', 3.42, 45, 'Spring 2028', 1, 1),
+            (2, 'Brianna Lee', 3.78, 78, 'Fall 2027', 2, 2),
+            (3, 'Casey Patel', 3.15, 30, 'Spring 2029', 1, 3),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO MajorsAndMinors (ID, Title, Type, StudentID)
+        VALUES (?, ?, ?, ?)
+        ''',
+        [
+            (1, 'Computer Science', 'Major', 1),
+            (2, 'Mathematics', 'Minor', 1),
+            (3, 'Computer Science', 'Major', 2),
+            (4, 'Data Science', 'Minor', 2),
+            (5, 'Computer Science', 'Major', 3),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO Interests (ID, Interest, StudentID)
+        VALUES (?, ?, ?)
+        ''',
+        [
+            (1, 'Artificial Intelligence', 1),
+            (2, 'Cybersecurity', 1),
+            (3, 'Software Engineering', 2),
+            (4, 'Human-Computer Interaction', 2),
+            (5, 'Data Analytics', 3),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO Events (
+            ID,
+            Name,
+            Description,
+            StartDate,
+            EndDate,
+            StartTime,
+            EndTime,
+            Location
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        [
+            (1, 'Resume Workshop', 'Career services resume review session.', '2026-03-20', '2026-03-20', '15:00', '16:30', 'Career Center 101'),
+            (2, 'AI Research Talk', 'Guest lecture on practical LLM systems.', '2026-03-28', '2026-03-28', '13:00', '14:30', 'Science Hall 220'),
+            (3, 'Internship Fair', 'Regional tech internship networking event.', '2026-04-05', '2026-04-05', '10:00', '14:00', 'Student Union Ballroom'),
+        ],
+    )
+
+    cursor.executemany(
+        '''
+        INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, TermID)
         VALUES (?, ?, ?, ?, ?, ?)
         ''',
         [
             (1, 'CSC', 212, 'Data Structures and Algorithms', 3, 1),
             (2, 'CSC', 251, 'Computer Organization and Architecture', 3, 1),
-            (3, 'MTH', 231, 'Discrete Mathematics', 3, 1)
-        ],
-    )
-
-    cursor.executemany(
-        '''
-        INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
-        VALUES (?, ?, ?, ?, ?, ?)
-        ''',
-        [
+            (3, 'MTH', 231, 'Discrete Mathematics', 3, 1),
             (4, 'CSC', 310, 'Database Systems', 3, 2),
             (5, 'CSC', 340, 'Artificial Intelligence', 3, 2),
-            (6, 'CSC', 450, 'Software Engineering', 3, 2)
-        ],
-    )
-
-    cursor.executemany(
-        '''
-        INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
-        VALUES (?, ?, ?, ?, ?, ?)
-        ''',
-        [
+            (6, 'CSC', 450, 'Software Engineering', 3, 2),
             (7, 'CSC', 212, 'Data Structures and Algorithms', 3, 3),
             (8, 'CSC', 251, 'Computer Organization and Architecture', 3, 3),
-            (9, 'MTH', 231, 'Discrete Mathematics', 3, 3)
-        ],
-    )
-
-    cursor.executemany(
-        '''
-        INSERT OR IGNORE INTO CoursesOffered (CourseID, Department, Code, Description, Credits, TermID)
-        VALUES (?, ?, ?, ?, ?, ?)
-        ''',
-        [
+            (9, 'MTH', 231, 'Discrete Mathematics', 3, 3),
             (10, 'CSC', 212, 'Data Structures and Algorithms', 3, 4),
             (11, 'CSC', 251, 'Computer Organization and Architecture', 3, 4),
-            (12, 'MTH', 231, 'Discrete Mathematics', 3, 4)
+            (12, 'MTH', 231, 'Discrete Mathematics', 3, 4),
         ],
     )
 
     cursor.executemany(
         '''
-        INSERT OR IGNORE INTO CourseRequirements (RequirementID, Department, Code, Grade, CourseID)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO CourseRequirements (ID, RequiredCourseID, RequiredGrade, CourseID)
+        VALUES (?, ?, ?, ?)
         ''',
         [
-            (1, 'CSC', 101, 2.0, 1),
-            (2, 'CSC', 101, 2.0, 2),
-            (3, 'MTH', 101, 2.0, 3),
-            (4, 'CSC', 212, 2.0, 4),
-            (5, 'CSC', 212, 2.0, 5),
-            (6, 'CSC', 310, 2.0, 6),
-            (7, 'CSC', 101, 2.0, 7),
-            (8, 'CSC', 101, 2.0, 8),
-            (9, 'MTH', 101, 2.0, 9),
-            (10, 'CSC', 101, 2.0, 10),
-            (11, 'CSC', 101, 2.0, 11),
-            (12, 'MTH', 101, 2.0, 12),
-            (13, 'CSC', 251, 2.0, 5),
-            (14, 'CSC', 251, 2.0, 6),
-            (15, 'CSC', 212, 2.0, 11),
-            (16, 'CSC', 212, 2.0, 12),
-        ]
+            (1, 101, 2.0, 1),
+            (2, 101, 2.0, 2),
+            (3, 101, 2.0, 3),
+            (4, 1, 2.0, 4),
+            (5, 1, 2.0, 5),
+            (6, 4, 2.0, 6),
+            (7, 101, 2.0, 7),
+            (8, 101, 2.0, 8),
+            (9, 101, 2.0, 9),
+            (10, 101, 2.0, 10),
+            (11, 101, 2.0, 11),
+            (12, 101, 2.0, 12),
+            (13, 2, 2.0, 5),
+            (14, 2, 2.0, 6),
+            (15, 1, 2.0, 11),
+            (16, 1, 2.0, 12),
+        ],
     )
 
     cursor.executemany(
         '''
-        INSERT OR IGNORE INTO Sections (SectionID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modalim, Location, CourseID)
+        INSERT OR IGNORE INTO Sections (ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modality, Location, CourseID)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''',
         [
@@ -115,12 +183,12 @@ try:
             (10, 1, 'Dr. Smith', 35, 10, 'In Person', 'Science Hall 201', 10),
             (11, 1, 'Dr. Nguyen', 30, 8, 'In Person', 'Tech Building 115', 11),
             (12, 1, 'Dr. Patel', 40, 13, 'In Person', 'Math Center 302', 12),
-        ]
+        ],
     )
 
     cursor.executemany(
         '''
-        INSERT OR IGNORE INTO MeetTimes (MeetTimeID, Day, StartTime, EndTime, SectionID)
+        INSERT OR IGNORE INTO MeetTimes (ID, Day, StartTime, EndTime, SectionID)
         VALUES (?, ?, ?, ?, ?)
         ''',
         [
@@ -148,14 +216,28 @@ try:
             (22, 'Thursday', '11:00', '12:15', 11),
             (23, 'Monday', '13:00', '14:15', 12),
             (24, 'Wednesday', '13:00', '14:15', 12),
-        ]
+        ],
     )
 
     # Commit the changes to the database
     conn.commit()
 
     # Quick verification for FK-linked hierarchy
-    table_names = ['Terms', 'CoursesOffered', 'CourseRequirements', 'Sections', 'MeetTimes']
+    table_names = [
+        'Terms',
+        'Users',
+        'Advisors',
+        'Students',
+        'MajorsAndMinors',
+        'Interests',
+        'Events',
+        'RelevantEvents',
+        'ChatLogs',
+        'CoursesOffered',
+        'CourseRequirements',
+        'Sections',
+        'MeetTimes',
+    ]
     for table_name in table_names:
         cursor.execute(f'SELECT COUNT(*) FROM {table_name}')
         row_count = cursor.fetchone()[0]
@@ -164,40 +246,84 @@ try:
     cursor.execute('''
         SELECT COUNT(*)
         FROM CoursesOffered c
-        JOIN Terms t ON c.TermID = t.TermID
+        JOIN Terms t ON c.TermID = t.ID
     ''')
     print(f'Courses with valid term FK: {cursor.fetchone()[0]}')
 
     cursor.execute('''
         SELECT COUNT(*)
         FROM CourseRequirements r
-        JOIN CoursesOffered c ON r.CourseID = c.CourseID
+        JOIN CoursesOffered c ON r.CourseID = c.ID
     ''')
     print(f'Requirements with valid course FK: {cursor.fetchone()[0]}')
 
     cursor.execute('''
         SELECT COUNT(*)
         FROM Sections s
-        JOIN CoursesOffered c ON s.CourseID = c.CourseID
+        JOIN CoursesOffered c ON s.CourseID = c.ID
     ''')
     print(f'Sections with valid course FK: {cursor.fetchone()[0]}')
 
     cursor.execute('''
         SELECT COUNT(*)
         FROM MeetTimes m
-        JOIN Sections s ON m.SectionID = s.SectionID
+        JOIN Sections s ON m.SectionID = s.ID
     ''')
     print(f'MeetTimes with valid section FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM Students st
+        JOIN Users u ON st.UserID = u.ID
+    ''')
+    print(f'Students with valid user FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM Students st
+        LEFT JOIN Advisors a ON st.AdvisorID = a.ID
+        WHERE st.AdvisorID IS NULL OR a.ID IS NOT NULL
+    ''')
+    print(f'Students with valid advisor FK/NULL: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM Advisors a
+        JOIN Users u ON a.UserID = u.ID
+    ''')
+    print(f'Advisors with valid user FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM MajorsAndMinors mm
+        JOIN Students st ON mm.StudentID = st.ID
+    ''')
+    print(f'Majors/Minors with valid student FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM Interests i
+        JOIN Students st ON i.StudentID = st.ID
+    ''')
+    print(f'Interests with valid student FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM ChatLogs cl
+        JOIN Students st ON cl.StudentID = st.ID
+    ''')
+    print(f'Chat logs with valid student FK: {cursor.fetchone()[0]}')
+
+    cursor.execute('''
+        SELECT COUNT(*)
+        FROM RelevantEvents re
+        JOIN Students st ON re.StudentID = st.ID
+        JOIN Events e ON re.EventID = e.ID
+    ''')
+    print(f'Relevant events with valid event/student FK: {cursor.fetchone()[0]}')
     
-except sqlite3.Error as e:
-    raise RuntimeError(
-        f"Database setup failed for 'Test.db': {e}. "
-        "Check schema definitions, foreign key constraints, and seed data values."
-    ) from e
-except Exception as e:
-    raise RuntimeError(
-        f"Unexpected error while initializing 'Test.db': {e}"
-    ) from e
+except Exception as exc:
+    raise RuntimeError("Failed to insert dummy data into the database.") from exc
 finally:
     # Ensure the connection is closed
     if conn:
