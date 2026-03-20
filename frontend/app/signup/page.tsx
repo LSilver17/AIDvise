@@ -22,6 +22,7 @@ export default function SignUp () {
         // Entered user and password
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
+        const account_type = formData.get("account_type") as string;
 
         // Sends POST request to registration endpoint
         const response = await fetch("/api/register", {
@@ -29,6 +30,7 @@ export default function SignUp () {
             body: JSON.stringify({
                 username: username,
                 password: password,
+                account_type: account_type,
             }),
         });
 
