@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 // User Components
 import RegistrationForm from "@/app/components/features/forms/formlayout";
 import FormField from "@/app/components/features/forms/formfield";
+import SelectField from "@/app/components/features/forms/formfieldsel";
 import FormSubmit from "@/app/components/features/forms/formsubmit";
 
 export default function SignUp () {
@@ -50,6 +51,7 @@ export default function SignUp () {
             <FormField label="Username" inputName="username" message="Please enter a username."/>
             <FormField label="Password" inputName="password" message="Please enter a password." isPassword/>
             <FormField label="Password" inputName="password" message="Please enter a password." isPassword/>
+            <SelectField inputName="account_type" message="Please select an account type."/>
             <FormSubmit>
                 Create Account
             </FormSubmit>
