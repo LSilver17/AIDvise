@@ -1,4 +1,6 @@
 import json
+import re
+import re
 import sqlite3
 import os
 
@@ -19,8 +21,6 @@ def setup_database():
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Terms(
                 ID INTEGER PRIMARY KEY,
-                StartDate DATE NOT NULL,
-                EndDate DATE NOT NULL,
                 Year INTEGER NOT NULL,
                 Season TEXT NOT NULL,
                 Number INTEGER
@@ -31,6 +31,7 @@ def setup_database():
                 ID INTEGER PRIMARY KEY,
                 Department TEXT NOT NULL,
                 Code INTEGER NOT NULL,
+                Name TEXT NOT NULL,
                 Description TEXT NOT NULL,
                 Credits INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -54,9 +55,12 @@ def setup_database():
                 ID INTEGER PRIMARY KEY,
                 SectionNum INTEGER NOT NULL,
                 Instructor TEXT NOT NULL,
+                StartDate DATE NOT NULL,
+                EndDate DATE NOT NULL,
+                Status TEXT NOT NULL,
                 MaxSeats INTEGER NOT NULL,
                 SeatsLeft INTEGER NOT NULL,
-                Modality TEXT NOT NULL,
+                Method TEXT NOT NULL,
                 Location TEXT,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES CoursesOffered(ID)
@@ -236,7 +240,7 @@ def view_database_course_hierarchy():
                 
                 requirements = cursor.execute(
 					'''
-					SELECT ID, Department, Code, Grade
+					SELECT ID, Department, Code, Name, Description, Credits, ParentID
 					FROM CourseRequirements
 					WHERE ParentID = ?
 					ORDER BY ID
@@ -257,7 +261,7 @@ def view_database_course_hierarchy():
                 
                 sections = cursor.execute(
 					'''
-					SELECT ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modality, Location
+					SELECT ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Method, Location
 					FROM Sections
 					WHERE ParentID = ?
 					ORDER BY SectionNum, ID
@@ -274,7 +278,7 @@ def view_database_course_hierarchy():
                     print(
 						f'  │  └─ Section {section["ID"]} '
 						f'(#{section["SectionNum"]}): '
-						f'{section["Instructor"]}, {section["Modality"]}, {location}, '
+						f'{section["Instructor"]}, {section["Method"]}, {location}, '
 						f'{section["SeatsLeft"]}/{section["MaxSeats"]} seats left'
 					)
                     
@@ -454,7 +458,108 @@ def add_new_term(json_file: str):
         with open(json_file, 'r') as f:
             term_data = json.load(f)
 
-        # TODO: make the rest of this once json has added term info
+        # TODO: Once term info is added to the JSON, make code to add the new term to the Terms table and get its ID to use as the ParentID for the courses.
+
+        # Add the courses for the new term to the CoursesOffered table, linking them to the term via ParentID
+        for course in term_data['Courses']:
+            #check if course already exists for the term to avoid duplicates
+            existing_course = cursor.execute(
+                '''
+                SELECT ID
+                FROM CoursesOffered
+                WHERE Department = ? AND Code = ? AND ParentID = ?
+                ''',
+                (course['Department'], course['Code'], course['ParentID'])
+            ).fetchone()
+
+            # if the course doesn't already exist for the term, insert it into the CoursesOffered table with the appropriate ParentID linking it to the term
+            if not existing_course:
+                cursor.execute(
+                    '''
+                    INSERT INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ''',
+                    (
+                        course['department'],
+                        int(course['course_number']),
+                        course['name'],
+                        "lorem ipsum",  # TODO: change this placeholder description once we add descriptions to the JSON
+                        float(course['credits']),
+                        1 # TODO: change this placeholder ParentID to link to the correct term based on the JSON data once we add term info to the JSON
+                    )
+                )
+
+                # TODO: Once requirements are added to the JSON, make code to add them to the CourseRequirements table for each course, linking them to the course via ParentID
+            
+            # add the specific section of the course to the Sections table, linking it to the course via ParentID
+            cursor.execute(
+                '''
+                INSERT INTO Sections (SectionNum, Instructor, StartDate, EndDate, MaxSeats, SeatsLeft, Method, Location, ParentID)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''',
+                (
+                    int(course['section']),
+                    course['instructor'],
+                    int(course['begin_date']),
+                    int(course['end_date']),
+                    course['status'],
+                    int(course['seats_total']),
+                    int(course['seats_open']),
+                    course['method'],
+                    course['location'],
+                    (existing_course['ID'] if existing_course else cursor.lastrowid)
+                )
+            )
+
+            section_id = cursor.lastrowid
+            
+            # seperate days from times since the JSON format has them combined and we need to split them to fit our schema
+            day_initials, time_unsplit = course['days_time'].split()
+            start_time = time_unsplit[:5]
+            if time_unsplit[5] == '-':
+                end_time = time_unsplit[6:]
+            else:
+                start_time_am_pm = time_unsplit[5:7]
+                end_time = time_unsplit[7:]
+                end_time_am_pm = time_unsplit[7:9]
+
+            # convert start and end times to 24 hour format based on the AM/PM indicators
+            if start_time_am_pm:
+                if start_time == '12:00':
+                    start_time = '00:00'
+                else:
+                    start_time = f'{int(start_time[:2]) + 12}:{start_time[3:]}'
+
+            if end_time_am_pm == 'PM':
+                if end_time == '12:00':
+                    end_time = '00:00'
+                else:
+                    end_time = f'{int(end_time[:2]) + 12}:{end_time[3:]}'
+
+            # Seperate each day initiall from the string of day initials
+            day_list = list(day_initials)
+
+            # Convert day initials to full day names
+            day_mapping = {
+                'M': 'Monday',
+                'T': 'Tuesday',
+                'W': 'Wednesday',
+                'R': 'Thursday',
+                'F': 'Friday'
+            }
+
+            for day_initials, i in day_list:
+                day_list[i] = day_mapping[day_initials]
+
+            # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
+            for day in day_list:
+                cursor.execute(
+                    '''
+                    INSERT INTO MeetTimes (Day, StartTime, EndTime, ParentID)
+                    VALUES (?, ?, ?, ?)
+                    ''',
+                    (day, start_time, end_time, section_id)
+                )
 
         # Commit the changes to the database
         conn.commit()
@@ -494,49 +599,49 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, 'CSC', 212, 'Data Structures and Algorithms', 3, 1),
-                (2, 'CSC', 251, 'Computer Organization and Architecture', 3, 1),
-                (3, 'MTH', 231, 'Discrete Mathematics', 3, 1)
+                (1, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 1),
+                (2, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 1),
+                (3, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 1)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (4, 'CSC', 310, 'Database Systems', 3, 2),
-                (5, 'CSC', 340, 'Artificial Intelligence', 3, 2),
-                (6, 'CSC', 450, 'Software Engineering', 3, 2)
+                (4, 'CSC', 310, 'Database Systems', 'A study of database systems and their applications', 3, 2),
+                (5, 'CSC', 340, 'Artificial Intelligence', 'An introduction to artificial intelligence and its applications', 3, 2),
+                (6, 'CSC', 450, 'Software Engineering', 'A study of software engineering principles and practices', 3, 2)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (7, 'CSC', 212, 'Data Structures and Algorithms', 3, 3),
-                (8, 'CSC', 251, 'Computer Organization and Architecture', 3, 3),
-                (9, 'MTH', 231, 'Discrete Mathematics', 3, 3)
+                (7, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 3),
+                (8, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 3),
+                (9, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 3)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (10, 'CSC', 212, 'Data Structures and Algorithms', 3, 4),
-                (11, 'CSC', 251, 'Computer Organization and Architecture', 3, 4),
-                (12, 'MTH', 231, 'Discrete Mathematics', 3, 4)
+                (10, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 4),
+                (11, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 4),
+                (12, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 4)
             ],
         )
 
@@ -567,7 +672,7 @@ def insert_basic_test_data():
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Sections (ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Modality, Location, ParentID)
+            INSERT OR IGNORE INTO Sections (ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Method, Location, ParentID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''',
             [

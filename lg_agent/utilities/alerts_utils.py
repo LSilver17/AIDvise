@@ -1,6 +1,8 @@
 # import dependencies
 import sqlite3
 
+database = 'AdvisorDB.db'
+
 def get_events() -> list:
     """Returns a list of upcoming events."""
    
@@ -8,7 +10,7 @@ def get_events() -> list:
 
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect('Test.db')
+        conn = sqlite3.connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -42,7 +44,7 @@ def get_interests(userID: str) -> list:
 
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect('Test.db')
+        conn = sqlite3.connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -87,7 +89,7 @@ def get_relevant_events(userID: str) -> list:
 
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect('Test.db')
+        conn = sqlite3.connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
