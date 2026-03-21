@@ -18,7 +18,7 @@ export default function AccountLayout({ children, href, buttText}: PropTypes) {
             </Flex>
             <Flex 
                 width="20%" 
-                height="40%" 
+                height="50%" 
                 justify="center" 
                 align="center" 
                 className="bg-orange-500" 
