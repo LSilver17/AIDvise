@@ -2,9 +2,10 @@
 
 import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
 import { SubmitEventHandler } from "react";
-import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // User Components
 import RegistrationForm from "@/app/components/features/forms/formlayout";
@@ -18,6 +19,7 @@ import { FormError, registrationValidationTests } from "@/app/lib/form_test_case
 import { alert_popup } from "@/app/lib/alert_popup";
 
 export default function SignUp () {
+    const router = useRouter();
 
     const [errors, setErrors] = useState<ErrorTypes>({});
 
@@ -58,7 +60,7 @@ export default function SignUp () {
             if(response) {
                 if (response.ok) {
                     // redirect to login if creation succeeded
-                    redirect('/login');
+                    router.push('/login');
                 } else {
                     throw new FormError({
                         api_error: `API Request Failure: ${data.error}`,

@@ -31,8 +31,8 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <AlertLayout >
-                {userAlerts.map(x => (
-                    <SingleAlert status={x.getStatus()} content={x.getMessage()}/>
+                {userAlerts.map((x,i) => (
+                    <SingleAlert key={i} status={x.getStatus()} content={x.getMessage()}/>
                 ))}
             </AlertLayout>
         </DashboardLayout>

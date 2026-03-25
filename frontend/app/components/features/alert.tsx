@@ -6,9 +6,10 @@ type Props = {
     content: string;
     status: AlertStatus;
     courseOpening?: boolean;
+    key: number;
 }
 
-export default function SingleAlert({content, status, courseOpening}: Props) {
+export default function SingleAlert({content, status, courseOpening, key}: Props) {
     courseOpening = courseOpening ?? false;
     return (
         <Flex direction="column" width = "500px">

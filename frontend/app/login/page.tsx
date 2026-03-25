@@ -7,6 +7,8 @@ import FormField from "@/app/components/features/forms/formfield";
 import FormSubmit from "@/app/components/features/forms/formsubmit";
 import { useState } from "react";
 import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Library
 import type { ErrorTypes } from "@/app/lib/form_test_cases";
@@ -14,10 +16,11 @@ import { FormError, loginValidationTests } from "@/app/lib/form_test_cases";
 import { alert_popup } from "@/app/lib/alert_popup";
 
 export default function Login () {
-    const [errors, setErrors] = useState<{
-        username?: string,
-        password?: string,
-    }>({});
+    const router = useRouter();
+    
+    const [errors, setErrors] = useState<ErrorTypes>({});
+
+    // TODO: Redirect to dashboard if there is an active session
 
     const handler: SubmitEventHandler<HTMLFormElement> = async (event) => {
         
@@ -33,11 +36,9 @@ export default function Login () {
 
         try {
             const errorCheck = loginValidationTests(username, password);
-
             if(errorCheck) {
                 throw errorCheck;
             }
-
             // Send sign in request to API endpoint, redirecting to dashboard if valid
             const response = await signIn("credentials", {
                 username: username,
@@ -46,9 +47,10 @@ export default function Login () {
             });
 
             // Handle request response
+            
             if(response) {
                 if(response.ok) {
-                    redirect('/dashboard/home');
+                    router.push('dashboard/home');
                 }
                 else {
                     throw new FormError({
