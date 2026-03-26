@@ -1,4 +1,143 @@
 import sqlite3
+from lg_agent.utilities import schemas
+
+# Utility function to get course ID by course code
+def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
+    department, number = course_code.split()
+
+    cursor.execute("SELECT ID FROM Courses WHERE Department = ? AND Number = ?", (department, number))
+    result = cursor.fetchone()
+    return result[0] if result else None
+
+# Utility function to get course ID by course title
+def get_courseID_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
+    cursor.execute("SELECT ID FROM Courses WHERE Title = ?", (course_title,))
+    result = cursor.fetchone()
+    return result[0] if result else None
+
+# Utility function to filter courses based on certain criteria and return their IDs as a list
+def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilters) -> list:
+    query = "SELECT ID FROM Courses"
+    params = []
+
+    # If a term filter is specified, add a JOIN to the Sections table and conditions to the query to filter by the specified terms
+    if filters.terms:
+        query += " as c JOIN terms as t ON c.ParentID = t.ID WHERE 1=1"
+        term_conditions = []
+        for term in filters.terms:
+            term_condition = "(t.Year = ? AND t.Season = ?"
+            params.extend([term.year, term.season])
+            if term.number is not None:
+                term_condition += " AND t.Number = ?"
+                params.append(term.number)
+            term_condition += ")"
+            term_conditions.append(term_condition)
+        query += " AND (" + " OR ".join(term_conditions) + ")"
+    else:
+        query += " WHERE 1=1"
+
+    # If a department filter is specified, add a condition to the query to filter by department
+    if filters.departments:
+        query += " AND Department IN ({})".format(",".join("?" for _ in filters.departments))
+        params.extend(filters.departments)
+
+    # If a credit filter is specified, add a condition to the query to filter by number of credits
+    if filters.credits:
+        condition = filters.credits.condition
+        query += f" AND Credits {condition} ?"
+        params.append(filters.credits.credits)
+
+    # Execute the query with the specified conditions and return the IDs of the matching courses as a list
+    cursor.execute(query, tuple(params))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
+
+def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFilters) -> list:
+    query = "SELECT ID FROM Sections"
+    params = []
+
+    # If a course code and/or term filter is specified, add a JOIN to the Courses table
+    if filters.course_codes or filters.terms:
+        query += " as s JOIN Courses as c ON s.ParentID = c.ID"
+
+    # If a meet time filter is specified, add a JOIN to the MeetTimes table
+    if filters.meet_times:
+        query += " JOIN MeetTimes as mt ON s.ID = mt.ParentID"
+
+    # If a term filter is specified, add a JOIN to the Terms table and conditions to the query to filter by the specified terms
+    if filters.terms:
+        query += " JOIN Terms as t ON c.ParentID = t.ID WHERE 1=1"
+        term_conditions = []
+        for term in filters.terms:
+            term_condition = "(t.Year = ? AND t.Season = ?"
+            params.extend([term.year, term.season])
+            if term.number is not None:
+                term_condition += " AND t.Number = ?"
+                params.append(term.number)
+            term_condition += ")"
+            term_conditions.append(term_condition)
+        query += " AND (" + " OR ".join(term_conditions) + ")"
+    else:
+        query += " WHERE 1=1"
+    
+    # If a course code filter is specified, add conditions to the query to filter by the specified course codes
+    if filters.course_codes:
+        course_code_conditions = []
+        for course_code in filters.course_codes:
+            department, number = course_code.split()
+            course_code_conditions.append("(c.Department = ? AND c.Number = ?)")
+            params.extend([department, number])
+        query += " AND (" + " OR ".join(course_code_conditions) + ")"
+    
+    # If an instructor filter is specified, add conditions to the query to filter by the specified instructors
+    if filters.instructors:
+        instructor_conditions = []
+        for instructor in filters.instructors:
+            instructor_conditions.append("(s.Instructor = ?)")
+            params.append(instructor)
+        query += " AND (" + " OR ".join(instructor_conditions) + ")"
+    
+    # If a teaching method filter is specified, add conditions to the query to filter by the specified teaching methods
+    if filters.teaching_methods:
+        teaching_method_conditions = []
+        for method in filters.teaching_methods:
+            teaching_method_conditions.append("(s.TeachingMethod = ?)")
+            params.append(method)
+        query += " AND (" + " OR ".join(teaching_method_conditions) + ")"
+
+    # If an enrollment capacity filter is specified, add a condition to the query to filter by enrollment capacity
+    if filters.enrollment_capacity:
+        condition = filters.enrollment_capacity.condition
+        query += f" AND s.EnrollmentCapacity {condition} ?"
+        params.append(filters.enrollment_capacity.enrollment)
+
+    # If a current enrollment filter is specified, add a condition to the query to filter by current enrollment
+    if filters.enrollment:
+        condition = filters.enrollment.condition
+        query += f" AND s.CurrentEnrollment {condition} ?"
+        params.append(filters.enrollment.enrollment)
+
+    # If a location filter is specified, add conditions to the query to filter by the specified locations
+    if filters.locations:
+        location_conditions = []
+        for location in filters.locations:
+            location_conditions.append("(s.Location = ?)")
+            params.append(location)
+        query += " AND (" + " OR ".join(location_conditions) + ")"
+    
+    # If a meet time filter is specified, add conditions to the query to filter by the specified meet times
+    if filters.meet_times:
+        meet_time_conditions = []
+        for meet_time in filters.meet_times:
+            meet_time_condition = "(mt.Days = ? AND mt.StartTime = ? AND mt.EndTime = ?)"
+            params.extend([meet_time.days, meet_time.start_time, meet_time.end_time])
+            meet_time_conditions.append(meet_time_condition)
+        query += " AND (" + " OR ".join(meet_time_conditions) + ")"
+
+    # Execute the query with the specified conditions and return the IDs of the matching sections as a list
+    cursor.execute(query, tuple(params))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
 
 # Utility function to recursively get all data related to a target entry in a table based on the hierarchy of the database schema, starting from the target entry and including all entries that reference it as a foreign key, along with their relevant linked data based on the hierarchy, and returning this information in a structured format that indicates the relationships between the data
 def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: str) -> dict:
@@ -84,12 +223,6 @@ def get_data_with_hierarchy_string(cursor: sqlite3.Cursor, table: str, targetID:
 # Utility function to get IDs of entries in a table based on a field value
 def get_ids_by_field_value(cursor: sqlite3.Cursor, table: str, field: str, value: str) -> list:
     cursor.execute(f"SELECT ID FROM {table} WHERE {field} = ?", (value,))
-    results = cursor.fetchall()
-    return [row[0] for row in results]
-
-# Utility function to get all entries in a table that match a filter condition on a field, and return their IDs as a list
-def get_ids_by_field_filter(cursor: sqlite3.Cursor, table: str, field: str, filter_value: str) -> list:
-    cursor.execute(f"SELECT ID FROM {table} WHERE {field} LIKE ?", (f"%{filter_value}%",))
     results = cursor.fetchall()
     return [row[0] for row in results]
 
