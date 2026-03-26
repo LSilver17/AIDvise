@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
@@ -16,24 +17,25 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 // Validates credentials, returning user object if valid and null otherwise
-                let user = null;
+                let loginResponse = null;
 
                 // Type safety guard
                 if((credentials?.username !== undefined) && (credentials?.password !== undefined)) {
-                    user = await validate_credentials(credentials.username, credentials.password);
-                }
-
-                // TODO: PLEASE REMOVE
-                if((credentials?.username !== undefined) && (credentials?.password !== undefined) && (credentials?.username == "test_user") && (credentials?.password == "password123")) {
-                    user = {
-                        username: credentials.username,
-                        id: "1",
-                    }
+                    loginResponse = await validate_credentials(credentials.username, credentials.password);
                 }
                 
-                if (!user) return null;
-
-                return user;
+                if (loginResponse?.success) {
+                    const user = {
+                        username: loginResponse.username,
+                        account_type: loginResponse.account_type,
+                        id: loginResponse.id
+                    }
+                    return user;
+                } 
+                
+                
+                console.log(`Login error: ${loginResponse?.error}`);
+                return null;
             }
         }),
     ],
