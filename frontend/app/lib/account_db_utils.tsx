@@ -13,16 +13,17 @@ type CreationResult =
     | {success:true, id:string, username: string, account_type: string}
     | {success:false, error:string};
 
+//TODO: open actual db file
 export async function validate_credentials(username: string, password: string): Promise<LoginResult | null> {
     let db;
     try {
         db = await open({
-            filename: 'Test.db',
+            filename: 'AdvisorDB.db',
             driver: sqlite3.Database
         });
         await db.exec('PRAGMA foreign_keys = ON');
 
-        const credential = await db.get('SELECT username, password, account_type FROM Users WHERE username = ?', username);
+        const credential = await db.get('SELECT Username, Password, Username, ID FROM Users WHERE username = ?', username);
 
         // Compares passwords with shared salt algorithm
         let valid = await bcrypt.compare(password, credential.password);
@@ -31,10 +32,11 @@ export async function validate_credentials(username: string, password: string): 
             return null;
         }
 
+        // TODO: Create unique user ID
         const userCred: LoginResult = {
-            username: credential.username,
-            account_type: credential.account_type,
-            id: "1",
+            username: credential.Username,
+            account_type: credential.Username,
+            id: credential.ID,
         };
 
         return userCred;
@@ -74,11 +76,14 @@ export async function create_user(username: string, password: string, account_ty
         const hash = await bcrypt.hash(password, salt);
         await db.run('INSERT INTO Users (username, password, account_type) VALUES (?, ?, ?)', username, hash, account_type);
 
+        // Pull inserted credentials to return in the session
+        const credential = await db.get('SELECT Username, Password, Username, ID FROM Users WHERE username = ?', username);
+
         const result: CreationResult = {
             success: true,
-            username: username,
-            account_type: account_type,
-            id: "1",
+            username: credential.Username,
+            account_type: credential.Username,
+            id: credential.ID,
         }
 
         return result;
