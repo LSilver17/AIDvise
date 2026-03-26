@@ -20,7 +20,7 @@ def setup_database():
         # Create the course related tables if they do not exist
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Terms(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Year INTEGER NOT NULL,
                 Season TEXT NOT NULL,
                 Number INTEGER
@@ -28,7 +28,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS CoursesOffered(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Department TEXT NOT NULL,
                 Code INTEGER NOT NULL,
                 Name TEXT NOT NULL,
@@ -41,7 +41,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS CourseRequirements(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Department TEXT NOT NULL,
                 Code INTEGER NOT NULL,
                 Grade REAL,
@@ -52,7 +52,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Sections(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 SectionNum INTEGER NOT NULL,
                 Instructor TEXT NOT NULL,
                 StartDate DATE NOT NULL,
@@ -69,7 +69,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS MeetTimes(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Day TEXT NOT NULL,
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
@@ -82,7 +82,7 @@ def setup_database():
         # Create user authentication table
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Users(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL,
                 AccountType TEXT NOT NULL
@@ -92,7 +92,7 @@ def setup_database():
         # Create event related tables if they do not exist
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Events(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Name TEXT NOT NULL,
                 Description TEXT NOT NULL,
                 StartDate DATE NOT NULL,
@@ -106,7 +106,7 @@ def setup_database():
         # Create advisor related tables if they do not exist TODO: decide what other info we should add to this
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Advisors(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Name TEXT NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
@@ -117,7 +117,7 @@ def setup_database():
         # Create student related tables if they do not exist
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Students(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Name TEXT NOT NULL,
                 GPA REAL,
                 CreditsEarned INTEGER,
@@ -132,7 +132,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS MajorsAndMinors(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Title TEXT NOT NULL,
                 Type TEXT NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -142,7 +142,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Interests(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Interest TEXT NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
@@ -151,7 +151,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Log TEXT NOT NULL,
                 Timestamp DATETIME NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -161,7 +161,7 @@ def setup_database():
         )
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS RelevantEvents(
-                ID INTEGER PRIMARY KEY,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Urgency INTEGER NOT NULL,
                 EventID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
