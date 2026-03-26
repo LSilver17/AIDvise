@@ -586,141 +586,141 @@ def insert_basic_test_data():
         # Insert dummy test data for course hierarchy
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Terms (ID, StartDate, EndDate, Year, Season, Number)
+            INSERT OR IGNORE INTO Terms (Year, Season, Number)
+            VALUES (?, ?, ?)
+            ''',
+            [
+                (2026, 'Spring', None),
+                (2026, 'Fall', None),
+                (2026, 'Summer', 1),
+                (2026, 'Summer', 2),
+            ],
+        )
+
+        cursor.executemany(
+            '''
+            INSERT OR IGNORE INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
             VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, '2026-1-26', '2026-5-19', 2026, 'Spring', None),
-                (2, '2026-9-9', '2026-12-22', 2026, 'Fall', None),
-                (3, '2026-5-26', '2026-7-1', 2026, 'Summer', 1),
-                (4, '2026-7-7', '2026-8-12', 2026, 'Summer', 2),
+                ('CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 1),
+                ('CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 1),
+                ('MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 1)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 1),
-                (2, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 1),
-                (3, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 1)
+                ('CSC', 310, 'Database Systems', 'A study of database systems and their applications', 3, 2),
+                ('CSC', 340, 'Artificial Intelligence', 'An introduction to artificial intelligence and its applications', 3, 2),
+                ('CSC', 450, 'Software Engineering', 'A study of software engineering principles and practices', 3, 2)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
-                (4, 'CSC', 310, 'Database Systems', 'A study of database systems and their applications', 3, 2),
-                (5, 'CSC', 340, 'Artificial Intelligence', 'An introduction to artificial intelligence and its applications', 3, 2),
-                (6, 'CSC', 450, 'Software Engineering', 'A study of software engineering principles and practices', 3, 2)
+                ('CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 3),
+                ('CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 3),
+                ('MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 3)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
-                (7, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 3),
-                (8, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 3),
-                (9, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 3)
+                ('CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 4),
+                ('CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 4),
+                ('MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 4)
             ],
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO CoursesOffered (ID, Department, Code, Name, Description, Credits, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO CourseRequirements (Department, Code, Grade, ParentID)
+            VALUES (?, ?, ?, ?)
             ''',
             [
-                (10, 'CSC', 212, 'Data Structures and Algorithms', 'A study of data structures and algorithms for problem-solving', 3, 4),
-                (11, 'CSC', 251, 'Computer Organization and Architecture', 'An introduction to computer organization and architecture', 3, 4),
-                (12, 'MTH', 231, 'Discrete Mathematics', 'A study of discrete mathematical structures and their applications', 3, 4)
-            ],
-        )
-
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO CourseRequirements (ID, Department, Code, Grade, ParentID)
-            VALUES (?, ?, ?, ?, ?)
-            ''',
-            [
-                (1, 'CSC', 101, 2.0, 1),
-                (2, 'CSC', 101, 2.0, 2),
-                (3, 'MTH', 101, 2.0, 3),
-                (4, 'CSC', 212, 2.0, 4),
-                (5, 'CSC', 212, 2.0, 5),
-                (6, 'CSC', 310, 2.0, 6),
-                (7, 'CSC', 101, 2.0, 7),
-                (8, 'CSC', 101, 2.0, 8),
-                (9, 'MTH', 101, 2.0, 9),
-                (10, 'CSC', 101, 2.0, 10),
-                (11, 'CSC', 101, 2.0, 11),
-                (12, 'MTH', 101, 2.0, 12),
-                (13, 'CSC', 251, 2.0, 5),
-                (14, 'CSC', 251, 2.0, 6),
-                (15, 'CSC', 212, 2.0, 11),
-                (16, 'CSC', 212, 2.0, 12),
+                ('CSC', 101, 2.0, 1),
+                ('CSC', 101, 2.0, 2),
+                ('MTH', 101, 2.0, 3),
+                ('CSC', 212, 2.0, 4),
+                ('CSC', 212, 2.0, 5),
+                ('CSC', 310, 2.0, 6),
+                ('CSC', 101, 2.0, 7),
+                ('CSC', 101, 2.0, 8),
+                ('MTH', 101, 2.0, 9),
+                ('CSC', 101, 2.0, 10),
+                ('CSC', 101, 2.0, 11),
+                ('MTH', 101, 2.0, 12),
+                ('CSC', 251, 2.0, 5),
+                ('CSC', 251, 2.0, 6),
+                ('CSC', 212, 2.0, 11),
+                ('CSC', 212, 2.0, 12),
             ]
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Sections (ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Method, Location, ParentID)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO Sections (SectionNum, Instructor, StartDate, EndDate, Status, MaxSeats, SeatsLeft, Method, Location, ParentID)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, 1, 'Dr. Smith', 35, 7, 'In Person', 'Science Hall 201', 1),
-                (2, 1, 'Dr. Nguyen', 30, 10, 'In Person', 'Tech Building 115', 2),
-                (3, 1, 'Dr. Patel', 40, 12, 'In Person', 'Math Center 302', 3),
-                (4, 1, 'Dr. Carter', 32, 8, 'Hybrid', 'Science Hall 220', 4),
-                (5, 1, 'Dr. Rivera', 28, 4, 'Online', 'Online', 5),
-                (6, 1, 'Dr. Lopez', 30, 9, 'In Person', 'Engineering 101', 6),
-                (7, 1, 'Dr. Smith', 35, 11, 'In Person', 'Science Hall 201', 7),
-                (8, 1, 'Dr. Nguyen', 30, 6, 'In Person', 'Tech Building 115', 8),
-                (9, 1, 'Dr. Patel', 40, 14, 'In Person', 'Math Center 302', 9),
-                (10, 1, 'Dr. Smith', 35, 10, 'In Person', 'Science Hall 201', 10),
-                (11, 1, 'Dr. Nguyen', 30, 8, 'In Person', 'Tech Building 115', 11),
-                (12, 1, 'Dr. Patel', 40, 13, 'In Person', 'Math Center 302', 12),
+                (1, 'Dr. Smith', 35, 7, 'Open', 30, 25, 'In Person', 'Science Hall 201', 1),
+                (1, 'Dr. Nguyen', 30, 10, 'Open', 25, 20, 'In Person', 'Tech Building 115', 2),
+                (1, 'Dr. Patel', 40, 12, 'Open', 25, 20, 'In Person', 'Math Center 302', 3),
+                (1, 'Dr. Carter', 32, 8, 'Hybrid', 25, 20, 'Hybrid', 'Science Hall 220', 4),
+                (1, 'Dr. Rivera', 28, 4, 'Online', 25, 20, 'Online', 'Online', 5),
+                (1, 'Dr. Lopez', 30, 9, 'Open', 25, 20, 'In Person', 'Engineering 101', 6),
+                (1, 'Dr. Smith', 35, 11, 'Open', 30, 25, 'In Person', 'Science Hall 201', 7),
+                (1, 'Dr. Nguyen', 30, 6, 'Open', 25, 20, 'In Person', 'Tech Building 115', 8),
+                (1, 'Dr. Patel', 40, 14, 'Open', 25, 20, 'In Person', 'Math Center 302', 9),
+                (1, 'Dr. Carter', 32, 10, 'Hybrid', 25, 20, 'Hybrid', 'Science Hall 220', 10),
+                (1, 'Dr. Rivera', 28, 5, 'Online', 25, 20, 'Online', 'Online', 11),
+                (1, 'Dr. Lopez', 30, 13, 'Open', 25, 20, 'In Person', 'Engineering 101', 12),
             ]
         )
 
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO MeetTimes (ID, Day, StartTime, EndTime, ParentID)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO MeetTimes (Day, StartTime, EndTime, ParentID)
+            VALUES (?, ?, ?, ?)
             ''',
             [
-                (1, 'Monday', '09:00', '10:15', 1),
-                (2, 'Wednesday', '09:00', '10:15', 1),
-                (3, 'Tuesday', '11:00', '12:15', 2),
-                (4, 'Thursday', '11:00', '12:15', 2),
-                (5, 'Monday', '13:00', '14:15', 3),
-                (6, 'Wednesday', '13:00', '14:15', 3),
-                (7, 'Tuesday', '09:30', '10:45', 4),
-                (8, 'Thursday', '09:30', '10:45', 4),
-                (9, 'Monday', '18:00', '19:15', 5),
-                (10, 'Wednesday', '18:00', '19:15', 5),
-                (11, 'Tuesday', '14:00', '15:15', 6),
-                (12, 'Thursday', '14:00', '15:15', 6),
-                (13, 'Monday', '09:00', '10:15', 7),
-                (14, 'Wednesday', '09:00', '10:15', 7),
-                (15, 'Tuesday', '11:00', '12:15', 8),
-                (16, 'Thursday', '11:00', '12:15', 8),
-                (17, 'Monday', '13:00', '14:15', 9),
-                (18, 'Wednesday', '13:00', '14:15', 9),
-                (19, 'Monday', '09:00', '10:15', 10),
-                (20, 'Wednesday', '09:00', '10:15', 10),
-                (21, 'Tuesday', '11:00', '12:15', 11),
-                (22, 'Thursday', '11:00', '12:15', 11),
-                (23, 'Monday', '13:00', '14:15', 12),
-                (24, 'Wednesday', '13:00', '14:15', 12),
+                ('Monday', '09:00', '10:15', 1),
+                ('Wednesday', '09:00', '10:15', 1),
+                ('Tuesday', '11:00', '12:15', 2),
+                ('Thursday', '11:00', '12:15', 2),
+                ('Monday', '13:00', '14:15', 3),
+                ('Wednesday', '13:00', '14:15', 3),
+                ('Tuesday', '09:30', '10:45', 4),
+                ('Thursday', '09:30', '10:45', 4),
+                ('Monday', '18:00', '19:15', 5),
+                ('Wednesday', '18:00', '19:15', 5),
+                ('Tuesday', '14:00', '15:15', 6),
+                ('Thursday', '14:00', '15:15', 6),
+                ('Monday', '09:00', '10:15', 7),
+                ('Wednesday', '09:00', '10:15', 7),
+                ('Tuesday', '11:00', '12:15', 8),
+                ('Thursday', '11:00', '12:15', 8),
+                ('Monday', '13:00', '14:15', 9),
+                ('Wednesday', '13:00', '14:15', 9),
+                ('Monday', '09:00', '10:15', 10),
+                ('Wednesday', '09:00', '10:15', 10),
+                ('Tuesday', '11:00', '12:15', 11),
+                ('Thursday', '11:00', '12:15', 11),
+                ('Monday', '13:00', '14:15', 12),
+                ('Wednesday', '13:00', '14:15', 12),
             ]
         )
 
@@ -728,7 +728,6 @@ def insert_basic_test_data():
         cursor.executemany(
             '''
             INSERT OR IGNORE INTO Events (
-                ID,
                 Name,
                 Description,
                 StartDate,
@@ -737,43 +736,42 @@ def insert_basic_test_data():
                 EndTime,
                 Location
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, 'Resume Workshop', 'Career services resume review session.', '2026-03-20', '2026-03-20', '15:00', '16:30', 'Career Center 101'),
-                (2, 'AI Research Talk', 'Guest lecture on practical LLM systems.', '2026-03-28', '2026-03-28', '13:00', '14:30', 'Science Hall 220'),
-                (3, 'Internship Fair', 'Regional tech internship networking event.', '2026-04-05', '2026-04-05', '10:00', '14:00', 'Student Union Ballroom'),
+                ('Resume Workshop', 'Career services resume review session.', '2026-03-20', '2026-03-20', '15:00', '16:30', 'Career Center 101'),
+                ('AI Research Talk', 'Guest lecture on practical LLM systems.', '2026-03-28', '2026-03-28', '13:00', '14:30', 'Science Hall 220'),
+                ('Internship Fair', 'Regional tech internship networking event.', '2026-04-05', '2026-04-05', '10:00', '14:00', 'Student Union Ballroom'),
             ],
         )
 
         # Insert dummy test data for users hierarchy
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Users (ID, Username, Password, AccountType)
-            VALUES (?, ?, ?, ?)
+            INSERT OR IGNORE INTO Users (Username, Password, AccountType)
+            VALUES (?, ?, ?)
             ''',
             [
-                (1, 'alex_student', 'pass1234', 'Student'),
-                (2, 'bri_student', 'pass1234', 'Student'),
-                (3, 'casey_student', 'pass1234', 'Student'),
-                (4, 'emily_advisor', 'pass1234', 'Advisor'),
-                (5, 'james_advisor', 'pass1234', 'Advisor'),
+                ('alex_student', 'pass1234', 'Student'),
+                ('bri_student', 'pass1234', 'Student'),
+                ('casey_student', 'pass1234', 'Student'),
+                ('emily_advisor', 'pass1234', 'Advisor'),
+                ('james_advisor', 'pass1234', 'Advisor'),
             ],
         )
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO Advisors (ID, Name, ParentID)
-            VALUES (?, ?, ?)
+            INSERT OR IGNORE INTO Advisors (Name, ParentID)
+            VALUES (?, ?)
             ''',
             [
-                (1, 'Dr. Emily Carter', 4),
-                (2, 'Prof. James Nguyen', 5),
+                ('Dr. Emily Carter', 4),
+                ('Prof. James Nguyen', 5),
             ],
         )
         cursor.executemany(
             '''
             INSERT OR IGNORE INTO Students (
-                ID,
                 Name,
                 GPA,
                 CreditsEarned,
@@ -781,38 +779,38 @@ def insert_basic_test_data():
                 AdvisorID,
                 ParentID
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             ''',
             [
-                (1, 'Alex Johnson', 3.42, 45, 'Spring 2028', 1, 1),
-                (2, 'Brianna Lee', 3.78, 78, 'Fall 2027', 2, 2),
-                (3, 'Casey Patel', 3.15, 30, 'Spring 2029', 1, 3),
+                ('Alex Johnson', 3.42, 45, 'Spring 2028', 1, 1),
+                ('Brianna Lee', 3.78, 78, 'Fall 2027', 2, 2),
+                ('Casey Patel', 3.15, 30, 'Spring 2029', 1, 3),
             ],
         )
         cursor.executemany(
             '''
-            INSERT OR IGNORE INTO MajorsAndMinors (ID, Title, Type, ParentID)
-            VALUES (?, ?, ?, ?)
-            ''',
-            [
-                (1, 'Computer Science', 'Major', 1),
-                (2, 'Mathematics', 'Minor', 1),
-                (3, 'Computer Science', 'Major', 2),
-                (4, 'Data Science', 'Minor', 2),
-                (5, 'Computer Science', 'Major', 3),
-            ],
-        )
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO Interests (ID, Interest, ParentID)
+            INSERT OR IGNORE INTO MajorsAndMinors (Title, Type, ParentID)
             VALUES (?, ?, ?)
             ''',
             [
-                (1, 'Artificial Intelligence', 1),
-                (2, 'Cybersecurity', 1),
-                (3, 'Software Engineering', 2),
-                (4, 'Human-Computer Interaction', 2),
-                (5, 'Data Analytics', 3),
+                ('Computer Science', 'Major', 1),
+                ('Mathematics', 'Minor', 1),
+                ('Computer Science', 'Major', 2),
+                ('Data Science', 'Minor', 2),
+                ('Computer Science', 'Major', 3),
+            ],
+        )
+        cursor.executemany(
+            '''
+            INSERT OR IGNORE INTO Interests (Interest, ParentID)
+            VALUES (?, ?)
+            ''',
+            [
+                ('Artificial Intelligence', 1),
+                ('Cybersecurity', 1),
+                ('Software Engineering', 2),
+                ('Human-Computer Interaction', 2),
+                ('Data Analytics', 3),
             ],
         )
 
@@ -917,11 +915,6 @@ def insert_basic_test_data():
             JOIN Events e ON re.ParentID = e.ID
         ''')
         print(f'Relevant events with valid event/student FK: {cursor.fetchone()[0]}')
-
-    except sqlite3.Error as e:
-        raise RuntimeError(
-            f"Failed to insert test data into database: {e}"
-        ) from e
     
     except Exception as e:
         raise RuntimeError(
@@ -932,3 +925,6 @@ def insert_basic_test_data():
         # Ensure the connection is closed
         if conn:
             conn.close()
+
+setup_database()
+insert_basic_test_data()
