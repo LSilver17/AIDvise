@@ -6,31 +6,30 @@ import type { Responsive } from "@radix-ui/themes/props"
 import type { MouseEventHandler } from "react"
 import ThemeProvider from "@/app/components/features/themeprovider";
 import "@radix-ui/themes/styles.css";
-import DefaultButton from "@/app/components/features/default_button"
 
 type ButtonProps = {
     href?: string;
     children: React.ReactNode;
     size?: Responsive<"4" | "1" | "2" | "3"> | undefined;
     onClick?: MouseEventHandler<HTMLButtonElement>;
+    variant?: "classic" | "solid" | "soft" | "surface" | "outline" | "ghost" | undefined;
 }
 
-export default function NavButton({href, children, size, onClick,}: ButtonProps) {
-    const router = useRouter();
-    href = href ?? "/";
+export default function AppButton({variant, size, onClick, children} : ButtonProps) {
     size = size ?? "4";
-    onClick = onClick ?? (() => router.push(href));
-    const activePath = usePathname() === href;
+    variant = variant ?? "solid";
     return (
-        <DefaultButton 
+        <Button 
             size={size} 
-            onClick={onClick}
-            variant={activePath ? "surface": "solid"}
+            onClick={onClick} 
+            radius="full" 
+            style={{
+                cursor:"pointer"
+            }} 
+            color="orange" 
+            variant={variant}
         >
-            <Flex direction="row" justify="start" align="center" gap="3" width="100%">
-                {children}
-            </Flex>
-        </DefaultButton>
-        
+            {children}
+        </Button>
     );
 }

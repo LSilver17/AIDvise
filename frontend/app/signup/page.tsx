@@ -17,6 +17,7 @@ import FormSubmit from "@/app/components/features/forms/formsubmit";
 import type { ErrorTypes } from "@/app/lib/form_test_cases";
 import { FormError, registrationValidationTests } from "@/app/lib/form_test_cases";
 import { alert_popup } from "@/app/lib/alert_popup";
+import type { AccountType } from '@/app/lib/account_type'
 
 export default function SignUp () {
     const router = useRouter();
@@ -35,7 +36,7 @@ export default function SignUp () {
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
         const conf_password = formData.get("conf_password") as string;
-        const account_type = formData.get("account_type") as string;
+        const account_type = formData.get("account_type") as AccountType;
 
         try {
             const errorCheck = registrationValidationTests(username, password, conf_password, account_type);

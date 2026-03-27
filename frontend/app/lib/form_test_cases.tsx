@@ -1,3 +1,4 @@
+import type { AccountType } from '@/app/lib/account_type'
 
 export type ErrorTypes = {
     username?: string,
@@ -17,7 +18,7 @@ export class FormError extends Error {
     }
 }
 
-export function registrationValidationTests(username: string, password: string, conf_password: string, account_type: string): FormError | null {
+export function registrationValidationTests(username: string, password: string, conf_password: string, account_type: AccountType): FormError | null {
     let errorFlag: boolean = false;
 
     let ePass, eCheckPass, eUsername, eAccount : string = "";

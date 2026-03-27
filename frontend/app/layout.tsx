@@ -5,7 +5,7 @@ import ClientSession from "@/app/components/features/clientsession";
 import "@copilotkit/react-ui/styles.css";
 import "@radix-ui/themes/styles.css";
 import "./globals.css";
-import authCheck from "@/app/lib/authCheck";
+import { authCheck } from "@/app/lib/authCheck";
 import ThemeProvider from "@/app/components/features/themeprovider";
 
 const geistSans = Geist({

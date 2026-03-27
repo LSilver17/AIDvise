@@ -11,7 +11,7 @@ import SignOut from "@/app/components/features/signout";
 import ClientSession from "@/app/components/features/clientsession";
 
 // Helpers
-import authCheck from "@/app/lib/authCheck";
+import {authCheck} from "@/app/lib/authCheck";
 
 // Hooks & Types
 import { getSession } from "next-auth/react";
@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
   return (
     <Flex direction="column" height="100vh" width="100vw">
       <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-        <Flex flexShrink="1" minHeight="0" minWidth="250px" maxWidth="250px" overflow="hidden">
+        <Flex flexShrink="1" minHeight="0" minWidth="300px" maxWidth="300px" overflow="hidden">
           <Sidebar/>
         </Flex>
         <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
