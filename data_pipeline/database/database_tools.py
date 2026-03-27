@@ -107,8 +107,8 @@ def setup_database():
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL,
-                ParentID INTEGER NOT NULL,
+                Name TEXT,
+                ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
             )'''
@@ -118,12 +118,12 @@ def setup_database():
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Students(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL,
+                Name TEXT,
                 GPA REAL,
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
-                ParentID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
@@ -742,75 +742,6 @@ def insert_basic_test_data():
                 ('Resume Workshop', 'Career services resume review session.', '2026-03-20', '2026-03-20', '15:00', '16:30', 'Career Center 101'),
                 ('AI Research Talk', 'Guest lecture on practical LLM systems.', '2026-03-28', '2026-03-28', '13:00', '14:30', 'Science Hall 220'),
                 ('Internship Fair', 'Regional tech internship networking event.', '2026-04-05', '2026-04-05', '10:00', '14:00', 'Student Union Ballroom'),
-            ],
-        )
-
-        # Insert dummy test data for users hierarchy
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO Users (Username, Password, AccountType)
-            VALUES (?, ?, ?)
-            ''',
-            [
-                ('alex_student', 'pass1234', 'Student'),
-                ('bri_student', 'pass1234', 'Student'),
-                ('casey_student', 'pass1234', 'Student'),
-                ('emily_advisor', 'pass1234', 'Advisor'),
-                ('james_advisor', 'pass1234', 'Advisor'),
-            ],
-        )
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO Advisors (Name, ParentID)
-            VALUES (?, ?)
-            ''',
-            [
-                ('Dr. Emily Carter', 4),
-                ('Prof. James Nguyen', 5),
-            ],
-        )
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO Students (
-                Name,
-                GPA,
-                CreditsEarned,
-                IntendedGraduationTerm,
-                AdvisorID,
-                ParentID
-            )
-            VALUES (?, ?, ?, ?, ?, ?)
-            ''',
-            [
-                ('Alex Johnson', 3.42, 45, 'Spring 2028', 1, 1),
-                ('Brianna Lee', 3.78, 78, 'Fall 2027', 2, 2),
-                ('Casey Patel', 3.15, 30, 'Spring 2029', 1, 3),
-            ],
-        )
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO MajorsAndMinors (Title, Type, ParentID)
-            VALUES (?, ?, ?)
-            ''',
-            [
-                ('Computer Science', 'Major', 1),
-                ('Mathematics', 'Minor', 1),
-                ('Computer Science', 'Major', 2),
-                ('Data Science', 'Minor', 2),
-                ('Computer Science', 'Major', 3),
-            ],
-        )
-        cursor.executemany(
-            '''
-            INSERT OR IGNORE INTO Interests (Interest, ParentID)
-            VALUES (?, ?)
-            ''',
-            [
-                ('Artificial Intelligence', 1),
-                ('Cybersecurity', 1),
-                ('Software Engineering', 2),
-                ('Human-Computer Interaction', 2),
-                ('Data Analytics', 3),
             ],
         )
 
