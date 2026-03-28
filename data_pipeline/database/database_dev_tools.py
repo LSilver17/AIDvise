@@ -170,6 +170,8 @@ def setup_database(database: str = DATABASE):
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
+                LastEventCheck DATETIME,
+                LastSectionStatusCheck DATETIME,
                 ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
@@ -216,7 +218,7 @@ def setup_database(database: str = DATABASE):
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Log TEXT NOT NULL,
-                Timestamp DATETIME NOT NULL,
+                Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -232,6 +234,29 @@ def setup_database(database: str = DATABASE):
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE,
                 FOREIGN KEY (EventID) REFERENCES Events(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+        # Table to track which sections each student is tracking for course opening alerts
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS TrackedSections(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                SectionID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
+                    ON DELETE CASCADE,
+            )'''
+        )
+
+        # Table for course opening alerts
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS SectionStatusChanges(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                SectionID INTEGER NOT NULL,
+                OldStatus TEXT NOT NULL,
+                NewStatus TEXT NOT NULL,
+                ChangeTime DATETIME NOT NULL,
+                FOREIGN KEY (SectionID) REFERENCES Sections(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -273,68 +298,50 @@ def reset_majors_and_minors_catalog(database: str = DATABASE):
 
 # Utility function to reset the terms and courses offered tables
 def reset_terms_and_courses(database: str = DATABASE):
-    try:
-        with __connect(database) as conn:
-            # Create a cursor object to execute SQL commands
-            cursor = conn.cursor()
+    with __connect(database) as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
 
-            # Drop terms and courses offered tables
-            cursor.execute('DROP TABLE IF EXISTS Terms')
-            cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
-            cursor.execute('DROP TABLE IF EXISTS Sections')
-            cursor.execute('DROP TABLE IF EXISTS MeetTimes')
+        # Drop terms and courses offered tables
+        cursor.execute('DROP TABLE IF EXISTS Terms')
+        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+        cursor.execute('DROP TABLE IF EXISTS Sections')
+        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
 
-            # Commit the changes to the database
-            conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset terms and courses in database: {e}"
-        ) from e
+        # Commit the changes to the database
+        conn.commit()
 
-# Utility function to reset the events tables
+# Utility function to view the course hierarchy and contents in a readable format
 def reset_events(database: str = DATABASE):
-    try:
-        with __connect(database) as conn:
-            # Create a cursor object to execute SQL commands
-            cursor = conn.cursor()
+    with __connect(database) as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
 
-            # Drop events tables
-            cursor.execute('DROP TABLE IF EXISTS Events')
-            cursor.execute('DROP TABLE IF EXISTS EventDates')
+        # Drop events tables
+        cursor.execute('DROP TABLE IF EXISTS Events')
+        cursor.execute('DROP TABLE IF EXISTS EventDates')
 
-            # Commit the changes to the database
-            conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset events in database: {e}"
-        ) from e
+        # Commit the changes to the database
+        conn.commit()
 
 # Utility function to reset the users, advisors, and students tables
 def reset_users(database: str = DATABASE):
-    try:
-        with __connect(database) as conn:
-            # Create a cursor object to execute SQL commands
-            cursor = conn.cursor()
-
-            # Drop users, advisors, and students tables
-            cursor.execute('DROP TABLE IF EXISTS Users')
-            cursor.execute('DROP TABLE IF EXISTS Advisors')
-            cursor.execute('DROP TABLE IF EXISTS Students')
-            cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-            cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
-            cursor.execute('DROP TABLE IF EXISTS Interests')
-            cursor.execute('DROP TABLE IF EXISTS ChatLogs')
-            cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
-
-            # Commit the changes to the database
-            conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset users in database: {e}"
-        ) from e
+    with __connect(database) as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+        
+        # Drop users, advisors, and students tables
+        cursor.execute('DROP TABLE IF EXISTS Users')
+        cursor.execute('DROP TABLE IF EXISTS Advisors')
+        cursor.execute('DROP TABLE IF EXISTS Students')
+        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+        cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
+        cursor.execute('DROP TABLE IF EXISTS Interests')
+        cursor.execute('DROP TABLE IF EXISTS ChatLogs')
+        cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
+        
+        # Commit the changes to the database
+        conn.commit()
 
 # Utility function to reset all tables in the database except for course catalog tables
 def reset_all(database: str = DATABASE):
@@ -343,6 +350,33 @@ def reset_all(database: str = DATABASE):
     reset_terms_and_courses(database)
     reset_events(database)
     reset_users(database)
+
+def create_triggers():
+    with __connect(database) as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Create trigger to log section status changes for course opening alerts
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS LogSectionStatusChange
+            AFTER UPDATE OF Status ON Sections
+            FOR EACH ROW
+            WHEN NEW.Status != OLD.Status
+            BEGIN
+                INSERT INTO SectionStatusChanges (SectionID, OldStatus, NewStatus, ChangeTime)
+                VALUES (OLD.ID, OLD.Status, NEW.Status, CURRENT_TIMESTAMP);
+            END;
+            '''
+        )
+
+        # Commit the changes to the database
+        conn.commit()
+
+# Utility function to fetch all results from a query
+def fetch_all(cursor: sqlite3.Cursor, query: str, params: tuple = ()):
+	cursor.execute(query, params)
+	return cursor.fetchall()
 
 # Utility function to populate the course catalog in the database from a JSON file containing course information
 def populate_course_catalog(database: str = DATABASE, json_file: str = "courses.json"):
