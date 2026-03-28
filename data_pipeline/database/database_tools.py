@@ -99,7 +99,8 @@ def setup_database():
                 EndDate DATE NOT NULL,
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
-                Location TEXT
+                Location TEXT,
+                AddedTimeStamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )'''
         )
 
@@ -123,6 +124,8 @@ def setup_database():
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
+                LastEventCheck DATETIME,
+                LastSectionStatusCheck DATETIME,
                 ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
@@ -153,7 +156,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Log TEXT NOT NULL,
-                Timestamp DATETIME NOT NULL,
+                Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -171,6 +174,29 @@ def setup_database():
                     ON DELETE CASCADE
             )'''
         )
+        # Table to track which sections each student is tracking for course opening alerts
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS TrackedSections(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                SectionID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
+                    ON DELETE CASCADE,
+            )'''
+        )
+
+        # Table for course opening alerts
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS SectionStatusChanges(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                SectionID INTEGER NOT NULL,
+                OldStatus TEXT NOT NULL,
+                NewStatus TEXT NOT NULL,
+                ChangeTime DATETIME NOT NULL,
+                FOREIGN KEY (SectionID) REFERENCES Sections(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
 
         # Commit the changes to the database
         conn.commit()
@@ -178,6 +204,42 @@ def setup_database():
     except Exception as e:
         raise RuntimeError(
             f"Failed to set up database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+def create_triggers():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+        conn.execute('PRAGMA foreign_keys = ON')
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Create trigger to log section status changes for course opening alerts
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS LogSectionStatusChange
+            AFTER UPDATE OF Status ON Sections
+            FOR EACH ROW
+            WHEN NEW.Status != OLD.Status
+            BEGIN
+                INSERT INTO SectionStatusChanges (SectionID, OldStatus, NewStatus, ChangeTime)
+                VALUES (OLD.ID, OLD.Status, NEW.Status, CURRENT_TIMESTAMP);
+            END;
+            '''
+        )
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to create triggers: {e}"
         ) from e
     
     finally:
