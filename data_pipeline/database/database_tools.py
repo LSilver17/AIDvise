@@ -17,47 +17,111 @@ def setup_database():
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Create the course related tables if they do not exist
+        # Table with all courses offered by the college
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS Courses(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                Department TEXT NOT NULL,
+                Code INTEGER NOT NULL,
+                Name TEXT NOT NULL UNIQUE,
+                Description TEXT NOT NULL,
+                Credits INTEGER NOT NULL,
+            )'''
+        )
+        # Table for required courses for each course, linked to the course via ParentID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS CourseRequiredCourses(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+        # Table for options for required courses for each course, linked to the requirement via ParentID foreign key and to the course via CourseID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS CourseRequiredCourseOptions(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                CourseID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (ParentID) REFERENCES CourseRequiredCourses(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+        # Table for miscellaneous course requirements (such as placement test scores), linked to the course via ParentID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS MiscCourseRequirements(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                Requirement TEXT NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+
+        # Create tables for all majors/minors offered at the college
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS MajorsAndMinors(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                Title TEXT NOT NULL,
+                Description TEXT NOT NULL,
+                CreditsRequired INTEGER NOT NULL,
+                Type TEXT NOT NULL CHECK(Type IN ('Major', 'Minor'))
+            )'''
+        )
+        # Table for required courses for each major/minor, linked to the major/minor via ParentID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS MajorMinorRequiredCourses(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES MajorsAndMinors(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+        # Table for options for required courses for each major/minor, linked to the requirement via ParentID foreign key and to the course via CourseID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS MajorMinorRequiredCourseOptions(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                CourseID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (ParentID) REFERENCES MajorMinorRequiredCourses(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+
+        # Table for upcoming terms (semesters) offered at the college
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Terms(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Year INTEGER NOT NULL,
                 Season TEXT NOT NULL,
                 Number INTEGER
             )'''
         )
+        # Table for courses offered in each term, linked to the term via ParentID foreign key and to the course via CourseID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS CoursesOffered(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Department TEXT NOT NULL,
-                Code INTEGER NOT NULL,
-                Name TEXT NOT NULL,
-                Description TEXT NOT NULL,
-                Credits INTEGER NOT NULL,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                CourseID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
+                FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE,
                 FOREIGN KEY (ParentID) REFERENCES Terms(ID)
                     ON DELETE CASCADE
             )'''
         )
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS CourseRequirements(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Department TEXT NOT NULL,
-                Code INTEGER NOT NULL,
-                Grade REAL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES CoursesOffered(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
+        # Table for specific sections of each course offered in a term, linked to the course offering via ParentID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Sections(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 SectionNum INTEGER NOT NULL,
                 Instructor TEXT NOT NULL,
                 StartDate DATE NOT NULL,
                 EndDate DATE NOT NULL,
-                Status TEXT NOT NULL,
+                Status TEXT NOT NULL CHECK(Status IN ('Open', 'Closed', 'Reopened')),
                 MaxSeats INTEGER NOT NULL,
                 SeatsLeft INTEGER NOT NULL,
                 Method TEXT NOT NULL,
@@ -67,9 +131,10 @@ def setup_database():
                     ON DELETE CASCADE
             )'''
         )
+        # Table for meeting times for each section, linked to the section via ParentID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS MeetTimes(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Day TEXT NOT NULL,
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
@@ -79,34 +144,42 @@ def setup_database():
             )'''
         )
 
-        # Create user authentication table
+        # Table for users of the advising system (students and advisors), with a field to distinguish between the two types of users and a unique constraint on the username
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Users(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL,
-                AccountType TEXT NOT NULL
+                AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor'))
             )'''
         )
 
-        # Create event related tables if they do not exist
+        # Table for upcoming events related to the college
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Events(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT NOT NULL,
                 Description TEXT NOT NULL,
-                StartDate DATE NOT NULL,
-                EndDate DATE NOT NULL,
+            )'''
+        )
+        # Table for specific dates/times for each event, linked to the event via ParentID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS EventDates(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                Date DATE NOT NULL,
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
-                Location TEXT
+                Location TEXT,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Events(ID)
+                    ON DELETE CASCADE
             )'''
         )
 
-        # Create advisor related tables if they do not exist TODO: decide what other info we should add to this
+        # Table for advisors, linked to the Users table via ParentID foreign key with a unique constraint to ensure a 1-1 relationship between users and advisors
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Advisors(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
                 ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
@@ -114,10 +187,10 @@ def setup_database():
             )'''
         )
 
-        # Create student related tables if they do not exist
+        # Table for students, linked to the Users table via ParentID foreign key with a unique constraint to ensure a 1-1 relationship between users and students, and linked to advisors via AdvisorID foreign key with a SET NULL on delete to allow students to remain in the system without an advisor if their advisor is deleted
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Students(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
                 GPA REAL,
                 CreditsEarned INTEGER,
@@ -130,28 +203,44 @@ def setup_database():
                     ON DELETE CASCADE
             )'''
         )
+        # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the MajorsAndMinors table via MajorMinorID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS MajorsAndMinors(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Title TEXT NOT NULL,
-                Type TEXT NOT NULL,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                MajorMinorID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
+                FOREIGN KEY (MajorMinorID) REFERENCES MajorsAndMinors(ID)
+                    ON DELETE CASCADE,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
             )'''
         )
+        # Table for courses taken by each student, linked to the student via ParentID foreign key and to the Courses table via CourseID foreign key
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS CoursesTaken(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                CourseID INTEGER NOT NULL,
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
+                    ON DELETE CASCADE
+            )'''
+        )
+        # Table for interests for each student, linked to the student via ParentID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Interests(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Interest TEXT NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
             )'''
         )
+        # Table for chat logs between each student and the chatbot, linked to the student via ParentID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Log TEXT NOT NULL,
                 Timestamp DATETIME NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -159,9 +248,10 @@ def setup_database():
                     ON DELETE CASCADE
             )'''
         )
+        # Table for relevant events for each student, linked to the student via ParentID foreign key and to the Events table via EventID foreign key
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS RelevantEvents(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Urgency INTEGER NOT NULL,
                 EventID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -185,128 +275,38 @@ def setup_database():
         if conn:
             conn.close()
 
-# Utility function to fetch all results from a query
-def fetch_all(cursor: sqlite3.Cursor, query: str, params: tuple = ()):
-	cursor.execute(query, params)
-	return cursor.fetchall()
-
-# Utility function to view the course hierarchy and contents in a readable format
-def view_database_course_hierarchy():
+# Utility function to reset (most) tables in the database 
     try:
         # Connect to sqlite database
         conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
-        conn.row_factory = sqlite3.Row
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
-        
-        terms = cursor.execute(
-			'''
-			SELECT ID, Year, Season, Number
-			FROM Terms
-			ORDER BY Year, Season, Number, ID
-			''',
-		).fetchall()
-        
-        print(f'Database: {database}')
-        print('\n══ COURSE HIERARCHY ══')
-        print('Hierarchy: Terms -> CoursesOffered -> (CourseRequirements, Sections -> MeetTimes)\n')
-        
-        for term in terms:
-            summer_part = f' {term["Number"]}' if term['Season'] == 'Summer' and term['Number'] else ''
-            print(f'Term {term["ID"]}: {term["Season"]}{summer_part} {term["Year"]}')
-            
-            courses = cursor.execute(
-				'''
-				SELECT ID, Department, Code, Description, Credits
-				FROM CoursesOffered
-				WHERE ParentID = ?
-				ORDER BY Department, Code, ID
-				''',
-				(term['ID'],),
-			).fetchall()
-            
-            if not courses:
-                print('  └─ (no courses)')
-                continue
-            
-            for course in courses:
-                print(
-					f'  ├─ Course {course["ID"]}: '
-					f'{course["Department"]} {course["Code"]} '
-					f'({course["Credits"]} cr) - {course["Description"]}'
-				)
-                
-                requirements = cursor.execute(
-					'''
-					SELECT ID, Department, Code, Name, Description, Credits, ParentID
-					FROM CourseRequirements
-					WHERE ParentID = ?
-					ORDER BY ID
-					''',
-					(course['ID'],),
-				).fetchall()
 
-                if requirements:
-                    for req in requirements:
-                        req_code = req['Code'] if req['Code'] is not None else 'N/A'
-                        req_grade = req['Grade'] if req['Grade'] is not None else 'N/A'
-                        print(
-							f'  │  ├─ Requirement {req["ID"]}: '
-							f'{req["Department"]} {req_code} min grade {req_grade}'
-						)
-                else:
-                    print('  │  ├─ (no requirements)')
-                
-                sections = cursor.execute(
-					'''
-					SELECT ID, SectionNum, Instructor, MaxSeats, SeatsLeft, Method, Location
-					FROM Sections
-					WHERE ParentID = ?
-					ORDER BY SectionNum, ID
-					''',
-					(course['ID'],),
-				).fetchall()
+        # Drop all tables in the database
+        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
+        cursor.execute('DROP TABLE IF EXISTS Courses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
+        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
+        cursor.execute('DROP TABLE IF EXISTS Terms')
+        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+        cursor.execute('DROP TABLE IF EXISTS Sections')
+        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
+        cursor.execute('DROP TABLE IF EXISTS Users')
+        cursor.execute('DROP TABLE IF EXISTS Events')
+        cursor.execute('DROP TABLE IF EXISTS EventDates')
+        cursor.execute('DROP TABLE IF EXISTS Advisors')
+        cursor.execute('DROP TABLE IF EXISTS Students')
 
-                if not sections:
-                    print('  │  └─ (no sections)')
-                    continue
-                
-                for section in sections:
-                    location = section['Location'] if section['Location'] else 'TBD'
-                    print(
-						f'  │  └─ Section {section["ID"]} '
-						f'(#{section["SectionNum"]}): '
-						f'{section["Instructor"]}, {section["Method"]}, {location}, '
-						f'{section["SeatsLeft"]}/{section["MaxSeats"]} seats left'
-					)
-                    
-                    meet_times = fetch_all(
-						cursor,
-						'''
-						SELECT ID, Day, StartTime, EndTime
-						FROM MeetTimes
-						WHERE ParentID = ?
-						ORDER BY ID
-						''',
-						(section['ID'],),
-					)
-                    
-                    if meet_times:
-                        for meet in meet_times:
-                            print(
-								f'  │     └─ MeetTime {meet["ID"]}: '
-								f'{meet["Day"]} {meet["StartTime"]}-{meet["EndTime"]}'
-						    )
-                    else:
-                        print('  │     └─ (no meet times)')
-                
-            print()
+        # Commit the changes to the database
+        conn.commit()
     
     except Exception as e:
         raise RuntimeError(
-            f"Failed to view course hierarchy: {e}"
+            f"Failed to reset database: {e}"
         ) from e
     
     finally:
@@ -314,8 +314,190 @@ def view_database_course_hierarchy():
         if conn:
             conn.close()
 
-# Utility function to view the advisor-student hierarchy and contents in a readable format
-def view_advisors_to_students_hierarchy():
+# Utility function to populate the course catalog in the database from a JSON file containing course information
+def populate_course_catalog(json_file: str):
+    # TODO: implement this function once we have a JSON file with course info to work with
+    pass
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop course catalog tables
+        cursor.execute('DROP TABLE IF EXISTS Courses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
+        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset course catalog in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to populate the majors and minors catalog in the database from a JSON file containing major/minor information
+def populate_majors_and_minors_catalog(json_file: str):
+    # TODO: implement this function once we have a JSON file with major/minor info to work with
+    pass
+
+# Utility function to reset the course catalog tables
+def reset_course_catalog():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop course catalog tables
+        cursor.execute('DROP TABLE IF EXISTS Courses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
+        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset course catalog in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to reset the majors and minors catalog tables
+def reset_majors_and_minors_catalog():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop majors and minors catalog tables
+        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset majors and minors catalog in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to reset the terms and courses offered tables
+def reset_terms_and_courses():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop terms and courses offered tables
+        cursor.execute('DROP TABLE IF EXISTS Terms')
+        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+        cursor.execute('DROP TABLE IF EXISTS Sections')
+        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset terms and courses in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to reset the events tables
+def reset_events():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop events tables
+        cursor.execute('DROP TABLE IF EXISTS Events')
+        cursor.execute('DROP TABLE IF EXISTS EventDates')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset events in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to reset the users, advisors, and students tables
+def reset_users():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop users, advisors, and students tables
+        cursor.execute('DROP TABLE IF EXISTS Users')
+        cursor.execute('DROP TABLE IF EXISTS Advisors')
+        cursor.execute('DROP TABLE IF EXISTS Students')
+        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+        cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
+        cursor.execute('DROP TABLE IF EXISTS Interests')
+        cursor.execute('DROP TABLE IF EXISTS ChatLogs')
+        cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
+
+        # Commit the changes to the database
+        conn.commit()
+    
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to reset users in database: {e}"
+        ) from e
+    
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+# Utility function to reset all tables in the database except for course catalog tables
+def reset_all():
+    reset_course_catalog()
+    reset_majors_and_minors_catalog()
+    reset_terms_and_courses()
+    reset_events()
+    reset_users()
+
     try:
         # Connect to sqlite database
         conn = sqlite3.connect(database)
@@ -445,6 +627,7 @@ def view_advisors_to_students_hierarchy():
             conn.close()
 
 # Utility function to add a new term and its courses/sections from a JSON file
+# TODO: update this to follow new database structure
 def add_new_term(json_file: str):
     try:
         # Connect to sqlite database
@@ -574,8 +757,6 @@ def add_new_term(json_file: str):
         if conn:
             conn.close()
 
-# Utility function to insert basic test data into the database for development/testing purposes
-def insert_basic_test_data():
     try:
         # Connect to sqlite database
         conn = sqlite3.connect(database)
@@ -856,6 +1037,3 @@ def insert_basic_test_data():
         # Ensure the connection is closed
         if conn:
             conn.close()
-
-setup_database()
-insert_basic_test_data()
