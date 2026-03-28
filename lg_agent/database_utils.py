@@ -59,26 +59,6 @@ def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
     for idx, col in enumerate(cursor.description):
         course_info[col[0]] = cursor.fetchone()[idx]
     
-    # Get info from CourseRequiredCourses
-    cursor.execute("SELECT RequirementType, ID FROM CourseRequiredCourses WHERE ParentID = ?", (course_id,))
-    requirement_cells = cursor.fetchall()
-    # Get info from CourseRequiredCourseOptions (allows for multiple options for a requirement, e.g. "one of the following 3 courses is required")
-    for requirement_cell in requirement_cells:
-        requirement_type = requirement_cell[0]
-        requirement_id = requirement_cell[1]
-        cursor.execute("SELECT CourseID FROM CourseRequiredCourseOptions WHERE ParentID = ?", (requirement_id,))
-        option_course_ids = [row[0] for row in cursor.fetchall()]
-        course_info[requirement_type] = []
-        # Get course department/code and title for each option course ID and add this info to the course_info under the appropriate requirement type
-        for option_course_id in option_course_ids:
-            cursor.execute("SELECT Department, Number, Title FROM Courses WHERE ID = ?", (option_course_id,))
-            option_course_info = cursor.fetchone()
-            course_info[requirement_type].append({
-                "Department": option_course_info[0],
-                "Number": option_course_info[1],
-                "Title": option_course_info[2]
-            })
-    
     return course_info
 
 # Utility function to filter sections based on certain criteria and return their IDs as a list

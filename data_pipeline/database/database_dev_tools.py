@@ -26,38 +26,7 @@ def setup_database():
                 Name TEXT NOT NULL UNIQUE,
                 Description TEXT NOT NULL,
                 Credits INTEGER NOT NULL,
-            )'''
-        )
-        # Table for required courses for each course, linked to the course via ParentID foreign key
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS CourseRequiredCourses(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                RequirementType TEXT NOT NULL CHECK(RequirementType IN ('Prerequisite', 'Corequisite')),
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES Courses(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
-        # Table for options for required courses for each course, linked to the requirement via ParentID foreign key and to the course via CourseID foreign key
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS CourseRequiredCourseOptions(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                CourseID INTEGER NOT NULL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (CourseID) REFERENCES Courses(ID)
-                    ON DELETE CASCADE,
-                FOREIGN KEY (ParentID) REFERENCES CourseRequiredCourses(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
-        # Table for miscellaneous course requirements (such as placement test scores), linked to the course via ParentID foreign key
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS MiscCourseRequirements(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                Requirement TEXT NOT NULL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES Courses(ID)
-                    ON DELETE CASCADE
+                Requirements TEXT
             )'''
         )
 
