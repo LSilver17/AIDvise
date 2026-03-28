@@ -2,6 +2,7 @@ from typing_extensions import TypedDict
 from typing import Annotated
 from langchain_core.messages import AnyMessage
 from langgraph.graph import add_messages
+from datetime import datetime
 from utilities.schemas import RelevantEventsSchema
 
 # States for the AdvisorAgent
