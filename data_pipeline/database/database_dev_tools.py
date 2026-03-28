@@ -32,6 +32,7 @@ def setup_database():
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS CourseRequiredCourses(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                RequirementType TEXT NOT NULL CHECK(RequirementType IN ('Prerequisite', 'Corequisite')),
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Courses(ID)
                     ON DELETE CASCADE

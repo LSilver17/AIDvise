@@ -9,7 +9,7 @@ import sqlite3
 def course_query_tool_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
     course_id = database_utils.get_courseID_by_code(cursor, course_code)
     if course_id:
-        course_info = database_utils.get_data_with_hierarchy_string(cursor, "Courses", course_id)
+        course_info = database_utils.get_course_info_by_id(cursor, course_id)
         return course_info
     else:
         return f"No course found with code {course_code}."
@@ -18,7 +18,7 @@ def course_query_tool_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
 def course_query_tool_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
     course_id = database_utils.get_courseID_by_title(cursor, course_title)
     if course_id:
-        course_info = database_utils.get_data_with_hierarchy_string(cursor, "Courses", course_id)
+        course_info = database_utils.get_course_info_by_id(cursor, course_id)
         return course_info
     else:
         return f"No course found with title {course_title}."
@@ -29,7 +29,7 @@ def course_filter_tool(cursor: sqlite3.Cursor, filters: schemas.CourseFilters = 
     if course_ids:
         courses_info = []
         for course_id in course_ids:
-            course_info = database_utils.get_data_with_hierarchy_string(cursor, "Courses", course_id)
+            course_info = database_utils.get_course_info_by_id(cursor, course_id)
             courses_info.append(course_info)
         return "\n\n".join(courses_info)
     else:
