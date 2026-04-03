@@ -68,7 +68,7 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Year INTEGER NOT NULL,
                 Season TEXT NOT NULL,
-                Num INTEGER
+                Number INTEGER
             )'''
         )
         # Table for courses offered in each term, linked to the term via ParentID foreign key and to the course via CourseID foreign key
