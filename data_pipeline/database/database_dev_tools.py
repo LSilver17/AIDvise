@@ -129,7 +129,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Events(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT NOT NULL,
-                Description TEXT NOT NULL,
+                Description TEXT NOT NULL
             )'''
         )
         # Table for specific dates/times for each event, linked to the event via ParentID foreign key
@@ -238,45 +238,6 @@ def setup_database():
     except Exception as e:
         raise RuntimeError(
             f"Failed to set up database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
-# Utility function to reset (most) tables in the database 
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop all tables in the database
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
-        cursor.execute('DROP TABLE IF EXISTS Courses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
-        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
-        cursor.execute('DROP TABLE IF EXISTS Terms')
-        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
-        cursor.execute('DROP TABLE IF EXISTS Sections')
-        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
-        cursor.execute('DROP TABLE IF EXISTS Users')
-        cursor.execute('DROP TABLE IF EXISTS Events')
-        cursor.execute('DROP TABLE IF EXISTS EventDates')
-        cursor.execute('DROP TABLE IF EXISTS Advisors')
-        cursor.execute('DROP TABLE IF EXISTS Students')
-
-        # Commit the changes to the database
-        conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset database: {e}"
         ) from e
     
     finally:
