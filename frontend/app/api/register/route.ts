@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-import { create_user } from "@/app/lib/account_db_utils";
+// Lib
+import { create_user } from "@/app/lib/account/account_db_utils";
 
 export async function POST(req: Request) {
 

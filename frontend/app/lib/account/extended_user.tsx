@@ -1,6 +1,6 @@
 import { JWT } from "next-auth/jwt"
 import NextAuth, { DefaultSession, User } from "next-auth";
-import type { AccountType } from '@/app/lib/account_type'
+import type { AccountType } from '@/app/lib/account/account_type'
 
 // Expands user object to access more data from session
 declare module "next-auth" {

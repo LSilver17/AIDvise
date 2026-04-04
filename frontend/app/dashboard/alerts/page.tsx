@@ -1,10 +1,9 @@
 "use client"
 
 import { ScrollArea, Text, Box, Flex } from "@radix-ui/themes";
-import { AlertStatus, UserAlert} from "@/app/lib/alert"
+import { AlertStatus, UserAlert} from "@/app/lib/alerts/alert"
 import { alerts } from "@/mock/mock.json";
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
-import AlertLayout from "@/app/components/layout/alertlayout"
 import SingleAlert from "@/app/components/features/alert"
 import DashTitle from "@/app/components/visual/title"
 // TODO: import from DB
@@ -30,11 +29,13 @@ export default function Alerts () {
             <DashTitle size="8">
                 Alerts
             </DashTitle>
-            <AlertLayout >
-                {userAlerts.map((x,i) => (
-                    <SingleAlert key={i} status={x.getStatus()} content={x.getMessage()}/>
-                ))}
-            </AlertLayout>
+            <Flex direction="column">
+                {
+                    userAlerts.map((x,i) => (
+                        <SingleAlert key={i} status={x.getStatus()} content={x.getMessage()}/>
+                    ))
+                }
+            </Flex>
         </DashboardLayout>
     );
 }

@@ -5,7 +5,7 @@ import ClientSession from "@/app/components/features/clientsession";
 import "@copilotkit/react-ui/styles.css";
 import "@radix-ui/themes/styles.css";
 import "./globals.css";
-import { authCheck } from "@/app/lib/authCheck";
+import { authSession } from "@/app/lib/account/authSession";
 import ThemeProvider from "@/app/components/features/themeprovider";
 
 const geistSans = Geist({
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
-  const session = await authCheck();
+  const session = await authSession();
   return (
     <html lang="en">
       <body

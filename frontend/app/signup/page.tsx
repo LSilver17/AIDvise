@@ -14,10 +14,10 @@ import SelectField from "@/app/components/features/forms/formfieldsel";
 import FormSubmit from "@/app/components/features/forms/formsubmit";
 
 // Library
-import type { ErrorTypes } from "@/app/lib/form_test_cases";
-import { FormError, registrationValidationTests } from "@/app/lib/form_test_cases";
-import { alert_popup } from "@/app/lib/alert_popup";
-import type { AccountType } from '@/app/lib/account_type'
+import type { ErrorTypes } from "@/app/lib/form/form_test_cases";
+import { FormError, registrationValidationTests } from "@/app/lib/form/form_test_cases";
+import { alert_popup } from "@/app/lib/alerts/alert_popup";
+import type { AccountType } from '@/app/lib/account/account_type'
 
 export default function SignUp () {
     const router = useRouter();
@@ -46,7 +46,7 @@ export default function SignUp () {
             }
 
             // Sends POST request to registration endpoint
-            const response = await fetch("/api/register", {
+            const response = await fetch(`/api/register`, {
                 method: "POST",
                 body: JSON.stringify({
                     username: username,

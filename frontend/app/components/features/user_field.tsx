@@ -1,0 +1,110 @@
+"use client"
+
+// Next
+import { alert_popup } from "@/app/lib/alerts/alert_popup";
+
+// Components
+import { Flex, Separator } from "@radix-ui/themes"
+import { Pencil1Icon, PaperPlaneIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { UserField } from "@/app/lib/account/user_fields";
+import { Form } from "radix-ui"
+import Button from "@/app/components/features/default_button"
+
+// User
+import FormField from "@/app/components/features/forms/formfield";
+import { AccountDetailFormValidation } from "@/app/lib/form/form_test_cases";
+import { update_user_entry } from "@/app/lib/account/account_db_utils";
+import { useUserData } from "@/app/lib/account/user_context";
+
+// Hooks
+import { SubmitEventHandler, useState } from "react"
+
+type AccountFieldPropTypes = {
+    field: UserField,
+    fieldName: string,
+    children?: React.ReactNode,
+}
+
+export default function AccountField({field, children, fieldName}: AccountFieldPropTypes) {
+    const [isEditing, setIsEditing] = useState(false);
+    const {userData, userMetadata} = useUserData();
+
+    if (field.data == undefined) {
+        field.data = "Empty";
+    }
+    const width = "400px"
+    const submitHandler : SubmitEventHandler<HTMLFormElement> = async (event) => {
+        const formData = new FormData(event.currentTarget);
+        const newVal = formData.get(`${field.title}`) as string;
+        
+        //TODO: handle db errors
+        try {
+            if(!newVal) {
+                throw Error("No new value")
+            }
+            const fieldVal = AccountDetailFormValidation(newVal);
+            const result = await update_user_entry(userData, userMetadata, fieldVal, fieldName);
+            if(!result?.success) {
+                throw Error(result?.error);
+            } else if (!result) {
+                throw Error("Unknown error");
+            }
+        } catch(e: any) {
+            alert_popup(`ERROR: ${e.message}`);
+        }
+        setIsEditing(false);
+    }
+    return (
+        <Form.Root onSubmit={submitHandler}>
+            <Flex direction="row" gap="2" align="center">
+                <Flex direction="column" maxWidth={width} minWidth={width} minHeight="40px" maxHeight="40px" gap="2">
+                    <Flex direction="row" maxWidth={width} minWidth={width} gap="2">
+                        {
+                            !isEditing ?
+                            (
+                                <>
+                                    <Flex justify="start">
+                                        {field?.title}:
+                                    </Flex>
+                                    <Flex justify="end" flexGrow="1">
+                                        {field?.data}
+                                    </Flex>
+                                </>
+                            ) :
+                            (
+                                <FormField label={field.title} inputName={field.title} hasMissingMessage={false}/>
+                            )
+                        }
+                    </Flex>
+                    {!isEditing ? <Separator orientation="horizontal" size="4"/> : null}
+                    
+                </Flex>
+                {
+                    isEditing ? 
+                    (
+                        <>
+                            <Form.Submit asChild>
+                                <Button size="1">
+                                    <PaperPlaneIcon/>
+                                </Button>
+                            </Form.Submit>
+                            <Button size="1" onClick={() => setIsEditing(false)}>
+                                <Cross2Icon/>
+                            </Button>
+                        </>
+                    )
+                    : (
+                        <>
+                            {
+                                field.editable ? 
+                                <Button size="1" onClick={() => setIsEditing(true)}>
+                                    <Pencil1Icon/>
+                                </Button> : <></>
+                            }
+                        </>
+                    )
+                }
+            </Flex>
+        </Form.Root>
+    );
+}

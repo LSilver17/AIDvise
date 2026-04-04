@@ -1,15 +1,14 @@
 import { Flex, Text } from "@radix-ui/themes";
-import { AlertStatus } from "@/app/lib/alert"
+import { AlertStatus } from "@/app/lib/alerts/alert"
 import AlertTitle from "@/app/components/visual/title"
 
 type Props = {
     content: string;
     status: AlertStatus;
     courseOpening?: boolean;
-    key: number;
 }
 
-export default function SingleAlert({content, status, courseOpening, key}: Props) {
+export default function SingleAlert({content, status, courseOpening}: Props) {
     courseOpening = courseOpening ?? false;
     return (
         <Flex direction="column" width = "500px">

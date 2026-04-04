@@ -11,9 +11,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 // Library
-import type { ErrorTypes } from "@/app/lib/form_test_cases";
-import { FormError, loginValidationTests } from "@/app/lib/form_test_cases";
-import { alert_popup } from "@/app/lib/alert_popup";
+import type { ErrorTypes } from "@/app/lib/form/form_test_cases";
+import { FormError, loginValidationTests } from "@/app/lib/form/form_test_cases";
+import { alert_popup } from "@/app/lib/alerts/alert_popup";
 
 export default function Login () {
     const router = useRouter();

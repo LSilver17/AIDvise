@@ -1,7 +1,7 @@
 "use client"
 
 // Library Imports
-import { Flex, Button, Separator, Em } from "@radix-ui/themes";
+import { Flex, Button, Separator, Em, ScrollArea } from "@radix-ui/themes";
 import { HomeIcon, BellIcon, ChatBubbleIcon, PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
@@ -31,7 +31,7 @@ export default function Sidebar () {
                     <ChatBubbleIcon/>Chat
                 </SidebarButton>
                 <SidebarButton href="/dashboard/account">
-                    <PersonIcon/>AccountPH
+                    <PersonIcon/>Account
                 </SidebarButton>
             </Flex><Flex direction="column" justify="end" align="stretch" gapY="5" flexGrow="1" pb="3">
                 <SignOut/>
