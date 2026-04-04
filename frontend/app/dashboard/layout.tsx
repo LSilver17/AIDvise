@@ -5,17 +5,15 @@ import { Geist, Geist_Mono } from "next/font/google";
 // Components
 import { Flex, Box, Button, Separator } from "@radix-ui/themes";
 
-// User Components
+// Library
 import Sidebar from "@/app/components/navigation/aside";
-import SignOut from "@/app/components/features/signout";
-import ClientSession from "@/app/components/features/clientsession";
+import { UserContextProvider } from "@/app/lib/account/user_context";
+import { getUserObject } from "@/app/lib/account/account_db_utils";
+import type { UserMetadata } from "@/app/lib/account/account_db_utils";
 
 // Helpers
-import {authCheck} from "@/app/lib/authCheck";
-
-// Hooks & Types
-import { getSession } from "next-auth/react";
-import type { Session } from "next-auth";
+import {authSession} from "@/app/lib/account/authSession";
+import { useUserData } from "@/app/lib/account/user_context";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -33,10 +31,22 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
-  const session = await authCheck();
+  const session = await authSession();
   if(!session) {
     redirect("/login");
   }
+
+  const userData = await getUserObject();
+  const userMetadata: UserMetadata = {
+    AccountType: session.user.account_type,
+    Username: session.user.username
+  }
+
+  const currContext = {
+    userData: userData,
+    metadata: userMetadata
+  };
+
   return (
     <Flex direction="column" height="100vh" width="100vw">
       <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
@@ -44,7 +54,7 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
           <Sidebar/>
         </Flex>
         <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-          {children}
+          <UserContextProvider currContext={currContext}>{children}</UserContextProvider>
         </Flex>  
       </Flex>
     </Flex>

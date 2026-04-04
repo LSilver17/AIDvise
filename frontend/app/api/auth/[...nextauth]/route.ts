@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import type { User } from "next-auth";
 
-import { validate_credentials } from "@/app/lib/account_db_utils";
+import { validate_credentials } from "@/app/lib/account/account_db_utils";
 import { PassThrough } from "stream";
 
 export const authOptions: NextAuthOptions = {
@@ -33,7 +33,6 @@ export const authOptions: NextAuthOptions = {
                     }
                     return user;
                 } 
-                
                 
                 console.log(`Login error: ${loginResponse?.error}`);
                 return null;

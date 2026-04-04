@@ -1,4 +1,4 @@
-import type { AccountType } from '@/app/lib/account_type'
+import type { AccountType } from '@/app/lib/account/account_type'
 
 export type ErrorTypes = {
     username?: string,
@@ -116,4 +116,12 @@ export function loginValidationTests(username: string, password: string): FormEr
     }
 
     return null;
+}
+
+export function AccountDetailFormValidation(field : string) {
+    field = field.substring(0, 32);
+    if(field.replace(/\s/g, "") === "") {
+        return null;
+    } 
+    return field.trim();
 }
