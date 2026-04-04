@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-class AdvisorOutputSchema(BaseModel):
+class PlanSchema(BaseModel):
     """Schema for the output of the advisor node, which indicates whether a database query or web search is needed, and provides an answer if not."""
 
     requires_database: bool = Field(description="Indicates if a database query is required to answer the question. The database contains information about the courses offered at the student's college, including course requirements, sections, and meet times.")

@@ -1,5 +1,5 @@
+from utilities import schemas
 import sqlite3
-from lg_agent.utilities import schemas
 
 # Utility function to get course ID by course code
 def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:

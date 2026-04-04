@@ -1,12 +1,16 @@
 from langchain_core.tools import tool
-from lg_agent.utilities.state import AdvisorState
+import utilities.schemas as schemas
 import database_utils
-import schemas
 import sqlite3
+
+database = "Advisor.db"
+db_conn = sqlite3.connect(database)
+db_cursor = db_conn.cursor()
 
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
-def course_query_tool_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
+def course_query_tool_by_code(course_code: str) -> str:
+    cursor = db_cursor
     course_id = database_utils.get_courseID_by_code(cursor, course_code)
     if course_id:
         course_info = database_utils.get_course_info_by_id(cursor, course_id)
@@ -15,7 +19,8 @@ def course_query_tool_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
         return f"No course found with code {course_code}."
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
-def course_query_tool_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
+def course_query_tool_by_title(course_title: str) -> str:
+    cursor = db_cursor
     course_id = database_utils.get_courseID_by_title(cursor, course_title)
     if course_id:
         course_info = database_utils.get_course_info_by_id(cursor, course_id)
@@ -24,7 +29,8 @@ def course_query_tool_by_title(cursor: sqlite3.Cursor, course_title: str) -> str
         return f"No course found with title {course_title}."
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a all the courses that match the specified criteria and relivent information about them.", return_direct=True)
-def course_filter_tool(cursor: sqlite3.Cursor, filters: schemas.CourseFilters = None) -> str:
+def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
+    cursor = db_cursor
     course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
     if course_ids:
         courses_info = []
@@ -36,7 +42,8 @@ def course_filter_tool(cursor: sqlite3.Cursor, filters: schemas.CourseFilters = 
         return "No courses found matching the specified criteria."
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections.", return_direct=True)
-def section_filter_tool(cursor: sqlite3.Cursor, filters: schemas.SectionFilters = None) -> str:
+def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
+    cursor = db_cursor
     section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
     if section_ids:
         sections_info = []
