@@ -15,8 +15,11 @@ import type { AccountType } from "@/app/lib/account/account_type";
 export default function Chat() {
   const { userData, userMetadata } : {userData: UserData, userMetadata: UserMetadata} = useUserData();
   const accountType: AccountType = userMetadata?.AccountType;
-  console.log(accountType);
-  const name = userData?.Name ?? accountType ?? "User";
+
+  var name: string = "User";
+  if(accountType) name = accountType as string;
+  if(userData && userData.Name.data) name = userData.Name.data;
+
   return (
     <CopilotChat
       labels={{

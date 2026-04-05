@@ -159,6 +159,7 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
     var db;
     const session = await authSession();
     try {
+        // Ensure data exists
         if (!userData) {
             throw Error("User data not found");
         } else if(!userMetadata) {
@@ -166,15 +167,17 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
         } else if(!session) {
             throw Error("No active session");
         }
+
         db = await openDB(dbPath());
 
+        // setup constants for query
         const table = accountTypeToTable(userMetadata.AccountType);
-
         const checkFormat = ensureFieldFormat(updatedField, newVal);
         if(!checkFormat.success) {
             throw Error(`${checkFormat.error}`);
         }
-        
+
+        // run query
         const query = `UPDATE ${table} SET ${updatedField} = ? WHERE ParentID = ?`;
         await db.run(query, newVal, session.user.id);
     
