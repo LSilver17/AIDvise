@@ -1,4 +1,6 @@
 from langchain_core.tools import tool
+from langchain_community.tools import DuckDuckGoSearchResults
+from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 import utilities.schemas as schemas
 import database_utils
 import sqlite3
@@ -59,3 +61,11 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
 # TODO: add more database tools
 
 db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool]
+
+@tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
+def web_search_tool(query: str) -> str:
+    wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=3)
+    search = DuckDuckGoSearchResults(keys_to_include=["title", "snippet"], wrapper=wrapper, output_format="list")
+    return search.invoke(query)
+
+web_tools = [web_search_tool]

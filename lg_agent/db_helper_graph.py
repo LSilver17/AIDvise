@@ -6,7 +6,6 @@ from utilities.tools import db_tools
 
 tool_node = ToolNode(db_tools)
 
-
 def format_db_output(state: DatabaseHelperState) -> DatabaseHelperOutput:
     return {"info": {"query": state["info_needed"], "result": state["messages"][-1]}}
 

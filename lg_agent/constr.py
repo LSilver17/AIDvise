@@ -7,17 +7,23 @@ sys.path.append(script_dir)
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Send
-from utilities.state import AdvisorInput, AdvisorState
-from utilities.nodes import planning_node, answer_node
+from utilities.state import AdvisorState
+from langchain_core.messages import AIMessage
+from utilities.nodes import planning_node
 from db_helper_graph import db_graph
 from web_helper_graph import web_graph
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
 load_dotenv()
 
+def reset_loop_count(state: AdvisorState) -> AdvisorState:
+    """Function to reset the loop count in the main graph state before each new question is processed."""
+    state["loop_count"] = 0
+    return state
+
 def invoke_db_helper(state: AdvisorState):
     """Function to invoke the database helper graph and return the results to the main graph."""
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": []}
+    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0}
     result = db_graph.invoke(db_helper_state)
     db_info = state["db_info"]
     db_info.append(result["info"])
@@ -25,7 +31,7 @@ def invoke_db_helper(state: AdvisorState):
 
 def invoke_web_helper(state: AdvisorState):
     """Function to invoke the web helper graph and return the results to the main graph."""
-    web_helper_state = {"info_needed": state["plan"]["info_needed_web"]}
+    web_helper_state = {"info_needed": state["plan"]["info_needed_web"], "messages": [], "loop_count": 0}
     result = web_graph.invoke(web_helper_state)
     web_info = state["web_info"]
     web_info.append(result["info"])
@@ -47,17 +53,23 @@ def route_from_planning(state: AdvisorState):
         routes.append("answer_node")
     return [Send(route, state) for route in routes]
 
+def answer_node(state: AdvisorState) -> AdvisorState:
+    """Node that returns the final answer from the planning node."""
+    return {"messages": state["messages"] + [AIMessage(content=state["plan"]["answer"])]}
+
 graph_builder = StateGraph(AdvisorState)
 
+graph_builder.add_node("reset_loop_count", reset_loop_count)
 graph_builder.add_node("planning", planning_node)
 graph_builder.add_node("invoke_db_helper", invoke_db_helper)
 graph_builder.add_node("invoke_web_helper", invoke_web_helper)
 graph_builder.add_node("answer_node", answer_node)
 
-graph_builder.add_edge(START, "planning")
+graph_builder.add_edge(START, "reset_loop_count")
+graph_builder.add_edge("reset_loop_count", "planning")
 graph_builder.add_conditional_edges("planning", route_from_planning)
-graph_builder.add_edge("invoke_db_helper", "answer_node")
-graph_builder.add_edge("invoke_web_helper", "answer_node")
+graph_builder.add_edge("invoke_db_helper", "planning")
+graph_builder.add_edge("invoke_web_helper", "planning")
 graph_builder.add_edge("answer_node", END)
 
 graph = graph_builder.compile()
