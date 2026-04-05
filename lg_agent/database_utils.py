@@ -1,9 +1,24 @@
-from lg_agent.utilities import schemas
+import sys, os
+
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
+from utilities import schemas
 import sqlite3
 
 # Utility function to get course ID by course code
 def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
-    department, number = course_code.split()
+    # check if which format the course code is in (e.g. "CSC 101" vs "CSC101") and split accordingly
+    if " " in course_code:
+        # split by space
+        department, number = course_code.split()
+    else:
+        # split by the point where the digits start
+        for i, char in enumerate(course_code):
+            if char.isdigit():
+                department = course_code[:i]
+                number = course_code[i:]
+                break
 
     cursor.execute("SELECT ID FROM Courses WHERE Department = ? AND Code = ?", (department, number))
     result = cursor.fetchone()
@@ -11,7 +26,7 @@ def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
 
 # Utility function to get course ID by course title
 def get_courseID_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
-    cursor.execute("SELECT ID FROM Courses WHERE Title = ?", (course_title,))
+    cursor.execute("SELECT ID FROM Courses WHERE Name = ?", (course_title,))
     result = cursor.fetchone()
     return result[0] if result else None
 
@@ -98,7 +113,17 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     if filters.course_codes:
         course_code_conditions = []
         for course_code in filters.course_codes:
-            department, number = course_code.split()
+            # check if which format the course code is in (e.g. "CSC 101" vs "CSC101") and split accordingly
+            if " " in course_code:
+                # split by space
+                department, number = course_code.split()
+            else:                
+                # split by the point where the digits start
+                for i, char in enumerate(course_code):
+                    if char.isdigit():
+                        department = course_code[:i]
+                        number = course_code[i:]
+                        break
             course_code_conditions.append("(c.Department = ? AND c.Code = ?)")
             params.extend([department, number])
         query += " AND (" + " OR ".join(course_code_conditions) + ")"
@@ -159,12 +184,13 @@ def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: int) -
     results = {}
     entry = {}
 
-    results["entry"] = table + ": " + targetID
+    results["entry"] = table + ": " + str(targetID)
 
     # Get the entry from the target table that corresponds to the target and add its fields and values to the results
     for row in cursor.execute(f"SELECT * FROM {table} WHERE ID = ?", (targetID,)):
-        for idx, col in enumerate(cursor.description) if col[0] != "ID" and col[0] != "ParentID" and row[idx] is not None else []:
-            entry[col[0]] = row[idx]
+        for idx, col in enumerate(cursor.description):
+            if col[0] != "ID" and col[0] != "ParentID" and row[idx] is not None:
+                entry[col[0]] = row[idx]
 
     # Find all tables that reference target as a foreign key
     cursor.execute(
@@ -250,3 +276,35 @@ def get_students_by_advisor(cursor: sqlite3.Cursor, advisorID: str) -> list:
     cursor.execute("SELECT ID FROM Students WHERE AdvisorID = ?", (advisorID,))
     results = cursor.fetchall()
     return [row[0] for row in results]
+
+# test utility functions
+# TODO: make more extensive testing
+if __name__ == "__main__":
+    with sqlite3.connect("TestDB.db") as conn:
+        cursor = conn.cursor()
+
+        print("Beginning tests...")
+
+        print("\nTesting get_courseID_by_code and get_courseID_by_title...")
+        course_id_by_code = get_courseID_by_code(cursor, "CSC 101")
+        course_id_by_title = get_courseID_by_title(cursor, "Intro to Programming")
+        if course_id_by_code and course_id_by_title:
+            assert course_id_by_code == course_id_by_title, "Error: get_courseID_by_code and get_courseID_by_title returned different results"
+            print(f"Success: Course ID for CSC 101: {course_id_by_code}")
+        else:
+            print("Error: Course not found by code or title")
+
+        print("\nTesting get_course_info_by_id...")
+        if course_id_by_code:
+            course_info = get_course_info_by_id(cursor, course_id_by_code)
+            print(f"Success: Course info for course ID {course_id_by_code}: {course_info}")
+            print("Check that the course info includes all relevant fields and values, and that it is accurate based on the data in the database.")
+        else:
+            print("Error: Course ID not found, cannot test get_course_info_by_id")
+
+        print("\nTesting get_data_with_hierarchy_string...")
+        if course_id_by_code:
+            hierarchy_string = get_data_with_hierarchy_string(cursor, "Courses", course_id_by_code)
+            print(f"Success: Hierarchy string for course ID {course_id_by_code}: {hierarchy_string}")
+        else:
+            print("Error: Course ID not found, cannot test get_data_with_hierarchy_string")
