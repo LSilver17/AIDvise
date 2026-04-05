@@ -1,3 +1,4 @@
+from langchain_core.messages import AIMessage
 from typing_extensions import TypedDict
 from typing import Annotated
 from langchain_core.messages import AnyMessage
@@ -5,7 +6,7 @@ from langgraph.graph import add_messages
 
 class QueryResult(TypedDict):
     query: str
-    result: str
+    result: AIMessage
 
 class AdvisorInput(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
@@ -18,6 +19,7 @@ class AdvisorState(TypedDict):
 
 class DatabaseHelperState(TypedDict):
     info_needed: str
+    messages: Annotated[list[AnyMessage], add_messages]
 
 class DatabaseHelperOutput(TypedDict):
     info: QueryResult

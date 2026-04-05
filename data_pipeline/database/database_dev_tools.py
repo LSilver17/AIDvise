@@ -1,10 +1,13 @@
-import json
-import re
-import re
-import sqlite3
-import os
+import sys, os
 
-database = "AdvisorDB.db"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(script_dir))
+sys.path.append(project_root)
+
+import json, sqlite3
+from lg_agent.database_utils import get_data_with_hierarchy_string
+
+database = "TestDB.db"
 conn = None
 
 # Utility function to set up the database with the required tables and schema
@@ -968,3 +971,36 @@ def add_new_term(json_file: str):
         # Ensure the connection is closed
         if conn:
             conn.close()
+
+# Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
+def display_term_hierarchy():
+    try:
+        # Connect to sqlite database
+        conn = sqlite3.connect(database)
+        conn.execute('PRAGMA foreign_keys = ON')
+        conn.row_factory = sqlite3.Row
+
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Get id of all terms in the database
+        terms = cursor.execute('SELECT ID FROM Terms').fetchall()
+
+        # Display the hierarchy of each term and its courses/sections/meet times using the get_data_with_hierarchy_string utility function
+        for term in terms:
+            term_data = get_data_with_hierarchy_string(
+                cursor,
+                "Terms",
+                term['ID'],
+            )
+            print(term_data)
+        
+
+    finally:
+        # Ensure the connection is closed
+        if conn:
+            conn.close()
+
+
+if __name__ == '__main__':
+    display_term_hierarchy()

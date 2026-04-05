@@ -1,11 +1,11 @@
-from utilities import schemas
+from lg_agent.utilities import schemas
 import sqlite3
 
 # Utility function to get course ID by course code
 def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
     department, number = course_code.split()
 
-    cursor.execute("SELECT ID FROM Courses WHERE Department = ? AND Number = ?", (department, number))
+    cursor.execute("SELECT ID FROM Courses WHERE Department = ? AND Code = ?", (department, number))
     result = cursor.fetchone()
     return result[0] if result else None
 
@@ -17,7 +17,7 @@ def get_courseID_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
 
 # Utility function to filter courses based on certain criteria and return their IDs as a list
 def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilters) -> list:
-    query = "SELECT ID FROM CoursesOffered as co JOIN Courses as c ON co.CourseID = c.ID"
+    query = "SELECT co.ID FROM CoursesOffered as co JOIN Courses as c ON co.CourseID = c.ID"
     params = []
 
     # If a term filter is specified, add a JOIN to the Sections table and conditions to the query to filter by the specified terms
@@ -55,15 +55,19 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
 # Utility function to get course info by course ID, including all requirements and prerequisites, and return this information as a dictionary
 def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
     cursor.execute("SELECT * FROM Courses WHERE ID = ?", (course_id,))
+    row = cursor.fetchone()
+    if row is None:
+        return {}
+
     course_info = {}
     for idx, col in enumerate(cursor.description):
-        course_info[col[0]] = cursor.fetchone()[idx]
+        course_info[col[0]] = row[idx]
     
     return course_info
 
 # Utility function to filter sections based on certain criteria and return their IDs as a list
 def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFilters) -> list:
-    query = "SELECT ID FROM Sections as s"
+    query = "SELECT s.ID FROM Sections as s"
     params = []
 
     # If a course code and/or term filter is specified, add a JOIN to the Courses table
@@ -95,7 +99,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         course_code_conditions = []
         for course_code in filters.course_codes:
             department, number = course_code.split()
-            course_code_conditions.append("(c.Department = ? AND c.Number = ?)")
+            course_code_conditions.append("(c.Department = ? AND c.Code = ?)")
             params.extend([department, number])
         query += " AND (" + " OR ".join(course_code_conditions) + ")"
     
@@ -151,7 +155,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
 
 # Utility function to recursively get all data related to a target entry in a table based on the hierarchy of the database schema, starting from the target entry and including all entries that reference it as a foreign key, along with their relevant linked data based on the hierarchy, and returning this information in a structured format that indicates the relationships between the data
 # Note: Don't use this on course catalog or major/minor catalog entries, as the amount of related data can be very large and may cause performance issues. This is best used on more specific entries, such as a specific course offering or a specific student.
-def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: str) -> dict:
+def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: int) -> dict:
     results = {}
     entry = {}
 

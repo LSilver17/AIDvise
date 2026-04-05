@@ -17,15 +17,19 @@ load_dotenv()
 
 def invoke_db_helper(state: AdvisorState):
     """Function to invoke the database helper graph and return the results to the main graph."""
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"]}
+    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": []}
     result = db_graph.invoke(db_helper_state)
-    return {"db_info": [result["info"]]}
+    db_info = state["db_info"]
+    db_info.append(result["info"])
+    return {"db_info": db_info}
 
 def invoke_web_helper(state: AdvisorState):
     """Function to invoke the web helper graph and return the results to the main graph."""
     web_helper_state = {"info_needed": state["plan"]["info_needed_web"]}
     result = web_graph.invoke(web_helper_state)
-    return {"web_info": [result["info"]]}
+    web_info = state["web_info"]
+    web_info.append(result["info"])
+    return {"web_info": web_info}
 
 def route_from_planning(state: AdvisorState):
     """
