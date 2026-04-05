@@ -7,16 +7,17 @@ sys.path.append(project_root)
 import json, sqlite3
 from lg_agent.database_utils import get_data_with_hierarchy_string
 
-database = "TestDB.db"
-conn = None
+DATABASE = "AdvisorDB.db"
+
+def __connect(database: str = DATABASE):
+    conn = sqlite3.connect(database)
+    conn.execute('PRAGMA foreign_keys = ON')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 # Utility function to set up the database with the required tables and schema
-def setup_database():
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
-
+def setup_database(database: str = DATABASE):
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -178,7 +179,7 @@ def setup_database():
         )
         # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the MajorsAndMinors table via MajorMinorID foreign key
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS MajorsAndMinors(
+            '''CREATE TABLE IF NOT EXISTS StudentMajorsAndMinors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 MajorMinorID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
@@ -237,58 +238,11 @@ def setup_database():
 
         # Commit the changes to the database
         conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to set up database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
-# Utility function to populate the course catalog in the database from a JSON file containing course information
-def populate_course_catalog(json_file: str):
-    # TODO: implement this function once we have a JSON file with course info to work with
-    pass
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop course catalog tables
-        cursor.execute('DROP TABLE IF EXISTS Courses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
-        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
-
-        # Commit the changes to the database
-        conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset course catalog in database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
-# Utility function to populate the majors and minors catalog in the database from a JSON file containing major/minor information
-def populate_majors_and_minors_catalog(json_file: str):
-    # TODO: implement this function once we have a JSON file with major/minor info to work with
-    pass
+        print(f"Database '{database}' setup complete with required tables and schema.")
 
 # Utility function to reset the course catalog tables
-def reset_course_catalog():
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def reset_course_catalog(database: str = DATABASE):
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -300,23 +254,11 @@ def reset_course_catalog():
 
         # Commit the changes to the database
         conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset course catalog in database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
+        print("Course catalog tables reset.")
 
 # Utility function to reset the majors and minors catalog tables
-def reset_majors_and_minors_catalog():
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def reset_majors_and_minors_catalog(database: str = DATABASE):
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -327,246 +269,122 @@ def reset_majors_and_minors_catalog():
 
         # Commit the changes to the database
         conn.commit()
-    
-    except Exception as e:
-        raise RuntimeError(
-            f"Failed to reset majors and minors catalog in database: {e}"
-        ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
+        print("Majors and minors catalog tables reset.")
 
 # Utility function to reset the terms and courses offered tables
-def reset_terms_and_courses():
+def reset_terms_and_courses(database: str = DATABASE):
     try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
+        with __connect(database) as conn:
+            # Create a cursor object to execute SQL commands
+            cursor = conn.cursor()
 
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
+            # Drop terms and courses offered tables
+            cursor.execute('DROP TABLE IF EXISTS Terms')
+            cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+            cursor.execute('DROP TABLE IF EXISTS Sections')
+            cursor.execute('DROP TABLE IF EXISTS MeetTimes')
 
-        # Drop terms and courses offered tables
-        cursor.execute('DROP TABLE IF EXISTS Terms')
-        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
-        cursor.execute('DROP TABLE IF EXISTS Sections')
-        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
-
-        # Commit the changes to the database
-        conn.commit()
+            # Commit the changes to the database
+            conn.commit()
     
     except Exception as e:
         raise RuntimeError(
             f"Failed to reset terms and courses in database: {e}"
         ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
 
 # Utility function to reset the events tables
-def reset_events():
+def reset_events(database: str = DATABASE):
     try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
+        with __connect(database) as conn:
+            # Create a cursor object to execute SQL commands
+            cursor = conn.cursor()
 
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
+            # Drop events tables
+            cursor.execute('DROP TABLE IF EXISTS Events')
+            cursor.execute('DROP TABLE IF EXISTS EventDates')
 
-        # Drop events tables
-        cursor.execute('DROP TABLE IF EXISTS Events')
-        cursor.execute('DROP TABLE IF EXISTS EventDates')
-
-        # Commit the changes to the database
-        conn.commit()
+            # Commit the changes to the database
+            conn.commit()
     
     except Exception as e:
         raise RuntimeError(
             f"Failed to reset events in database: {e}"
         ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
 
 # Utility function to reset the users, advisors, and students tables
-def reset_users():
+def reset_users(database: str = DATABASE):
     try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
+        with __connect(database) as conn:
+            # Create a cursor object to execute SQL commands
+            cursor = conn.cursor()
 
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
+            # Drop users, advisors, and students tables
+            cursor.execute('DROP TABLE IF EXISTS Users')
+            cursor.execute('DROP TABLE IF EXISTS Advisors')
+            cursor.execute('DROP TABLE IF EXISTS Students')
+            cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+            cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
+            cursor.execute('DROP TABLE IF EXISTS Interests')
+            cursor.execute('DROP TABLE IF EXISTS ChatLogs')
+            cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
 
-        # Drop users, advisors, and students tables
-        cursor.execute('DROP TABLE IF EXISTS Users')
-        cursor.execute('DROP TABLE IF EXISTS Advisors')
-        cursor.execute('DROP TABLE IF EXISTS Students')
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
-        cursor.execute('DROP TABLE IF EXISTS Interests')
-        cursor.execute('DROP TABLE IF EXISTS ChatLogs')
-        cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
-
-        # Commit the changes to the database
-        conn.commit()
+            # Commit the changes to the database
+            conn.commit()
     
     except Exception as e:
         raise RuntimeError(
             f"Failed to reset users in database: {e}"
         ) from e
-    
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
 
 # Utility function to reset all tables in the database except for course catalog tables
-def reset_all():
-    reset_course_catalog()
-    reset_majors_and_minors_catalog()
-    reset_terms_and_courses()
-    reset_events()
-    reset_users()
+def reset_all(database: str = DATABASE):
+    reset_course_catalog(database)
+    reset_majors_and_minors_catalog(database)
+    reset_terms_and_courses(database)
+    reset_events(database)
+    reset_users(database)
 
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
-        conn.row_factory = sqlite3.Row
-
+# Utility function to populate the course catalog in the database from a JSON file containing course information
+def populate_course_catalog(database: str = DATABASE, json_file: str = "courses.json"):
+    # TODO: implement this function once we have a JSON file with course info to work with
+    pass
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
-        
-        # ── Advisors -> Students -> (MajorsAndMinors, Interests, ChatLogs, RelevantEvents -> Events) ──
-        print(f'Database: {database}')
-        print('\n══ ADVISORS ══')
-        print('Hierarchy: Users(Advisor) -> Advisors -> Students -> (MajorsAndMinors, Interests, ChatLogs, RelevantEvents -> Events)\n')
-        
-        advisors = cursor.execute(
-			'''
-			SELECT a.ID, a.Name, a.ParentID, u.Username
-			FROM Advisors a
-			JOIN Users u ON a.ParentID = u.ID
-			ORDER BY a.ID
-			''',
-		).fetchall()
-        
-        for advisor in advisors:
-            print(f'Advisor {advisor["ID"]}: {advisor["Name"]} (user: {advisor["Username"]})')
-            
-            students = cursor.execute(
-				'''
-				SELECT s.ID, s.Name, s.GPA, s.CreditsEarned, s.IntendedGraduationTerm, u.Username
-				FROM Students s
-				JOIN Users u ON s.ParentID = u.ID
-				WHERE s.AdvisorID = ?
-				ORDER BY s.ID
-				''',
-				(advisor['ID'],),
-			).fetchall()
-            
-            if not students:
-                print('  └─ (no students)')
-                continue
-            
-            for student in students:
-                gpa = student['GPA'] if student['GPA'] is not None else 'N/A'
-                credits_earned = student['CreditsEarned'] if student['CreditsEarned'] is not None else 'N/A'
-                grad_term = student['IntendedGraduationTerm'] if student['IntendedGraduationTerm'] else 'N/A'
-                print(
-					f'  ├─ Student {student["ID"]}: {student["Name"]} '
-					f'(user: {student["Username"]}, GPA: {gpa}, '
-					f'Credits: {credits_earned}, Grad: {grad_term})'
-				)
-                
-                majors_minors = cursor.execute(
-					'''
-					SELECT ID, Title, Type
-					FROM MajorsAndMinors
-					WHERE ParentID = ?
-					ORDER BY Type, Title
-					''',
-					(student['ID'],),
-				).fetchall()
 
-                if majors_minors:
-                    for mm in majors_minors:
-                        print(f'  │  ├─ {mm["Type"]}: {mm["Title"]}')
-                else:
-                    print('  │  ├─ (no majors/minors)')
-                    
-                interests = cursor.execute(
-					'''
-					SELECT ID, Interest
-					FROM Interests
-					WHERE ParentID = ?
-					ORDER BY ID
-					''',
-					(student['ID'],),
-				).fetchall()
-                
-                if interests:
-                    interest_list = ', '.join(i['Interest'] for i in interests)
-                    print(f'  │  ├─ Interests: {interest_list}')
-                else:
-                    print('  │  ├─ Interests: (none)')
-                
-                chat_logs = cursor.execute(
-					'''
-					SELECT ID, Log, Timestamp
-					FROM ChatLogs
-					WHERE ParentID = ?
-					ORDER BY Timestamp
-					''',
-					(student['ID'],),
-				).fetchall()
-                
-                if chat_logs:
-                    for log in chat_logs:
-                        print(f'  │  ├─ ChatLog {log["ID"]} [{log["Timestamp"]}]: {log["Log"]}')
-                else:
-                    print('  │  ├─ (no chat logs)')
-                    
-                relevant_events = cursor.execute(
-					'''
-					SELECT re.ID, re.Urgency, e.Name, e.StartDate, e.StartTime, e.Location
-					FROM RelevantEvents re
-					JOIN Events e ON re.EventID = e.ID
-					WHERE re.ParentID = ?
-					ORDER BY re.Urgency, e.StartDate
-					''',
-					(student['ID'],),
-				).fetchall()
-                
-                if relevant_events:
-                    for re_row in relevant_events:
-                        loc = re_row['Location'] if re_row['Location'] else 'TBD'
-                        print(
-							f'  │  └─ Event {re_row["ID"]} [{re_row["Urgency"]}]: '
-							f'{re_row["Name"]} on {re_row["StartDate"]} at {re_row["StartTime"]}, {loc}'
-						)
-                else:
-                    print('  │  └─ (no relevant events)')
-            
-            print()
+        # Reset course catalog tables
+        cursor.execute('DROP TABLE IF EXISTS Courses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
+        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
 
+        # Commit the changes to the database
+        conn.commit()
+        print("Course catalog tables reset.")
 
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
+# Utility function to populate the majors and minors catalog in the database from a JSON file containing major/minor information
+def populate_majors_and_minors_catalog(database: str = DATABASE, json_file: str = "majors_and_minors.json"):
+    # TODO: implement this function once we have a JSON file with major/minor info to work with
+    pass
+    with __connect(database) as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop majors and minors catalog tables
+        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Majors and minors catalog tables reset.")
 
 # Utility function to add a new term and its courses/sections from a JSON file
 # TODO: update this to follow new database structure
-def add_new_term(json_file: str):
+def add_new_term(database: str = DATABASE, json_file: str = "terms.json"):
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
+        conn = __connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -693,7 +511,7 @@ def add_new_term(json_file: str):
 
     try:
         # Connect to sqlite database
-        conn = sqlite3.connect(database)
+        conn = __connect(database)
 
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -973,13 +791,8 @@ def add_new_term(json_file: str):
             conn.close()
 
 # Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
-def display_term_hierarchy():
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-        conn.execute('PRAGMA foreign_keys = ON')
-        conn.row_factory = sqlite3.Row
-
+def display_term_hierarchy(database: str = DATABASE):
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -994,13 +807,7 @@ def display_term_hierarchy():
                 term['ID'],
             )
             print(term_data)
-        
 
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
-
+# if this script is run directly, set up the database and display the term hierarchy for debugging purposes
 if __name__ == '__main__':
-    display_term_hierarchy()
+    setup_database()

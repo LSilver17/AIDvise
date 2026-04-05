@@ -1,9 +1,8 @@
 import sqlite3
 from datetime import datetime, timedelta
+from database_dev_tools import setup_database, display_term_hierarchy
 
-from database_dev_tools import setup_database
-
-DATABASE = "AdvisorDB.db"
+DATABASE = "TestDB.db"
 
 def _connect() -> sqlite3.Connection:
 	conn = sqlite3.connect(DATABASE)
@@ -35,12 +34,14 @@ def _clear_existing_data(cursor: sqlite3.Cursor) -> None:
 		cursor.execute(f"DELETE FROM {table}")
 
 def seed_dummy_entries(reset_existing: bool = True) -> None:
-	setup_database()
-
-	conn = _connect()
-	cursor = conn.cursor()
-
-	try:
+	with _connect() as conn:
+		
+		cursor = conn.cursor()
+		
+		cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Courses'")
+		if not cursor.fetchone():
+			setup_database(database=DATABASE)
+		
 		if reset_existing:
 			_clear_existing_data(cursor)
 
@@ -306,12 +307,9 @@ def seed_dummy_entries(reset_existing: bool = True) -> None:
 
 		conn.commit()
 		print("Dummy entries inserted successfully.")
-
-	except Exception:
-		conn.rollback()
-		raise
-	finally:
 		conn.close()
 
+# For testing purposes, run this file to seed the database with dummy entries and display the term hierarchy to verify that the entries were added correctly.
 if __name__ == "__main__":
 	seed_dummy_entries(reset_existing=True)
+	display_term_hierarchy(database=DATABASE)
