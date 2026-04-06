@@ -8,12 +8,7 @@ import { Flex, Box, Button, Separator } from "@radix-ui/themes";
 // Library
 import Sidebar from "@/app/components/navigation/aside";
 import { UserContextProvider } from "@/app/lib/account/user_context";
-import { getUserObject } from "@/app/lib/account/account_db_utils";
-import type { UserMetadata } from "@/app/lib/account/account_db_utils";
-
-// Helpers
-import {authSession} from "@/app/lib/account/authSession";
-import { useUserData } from "@/app/lib/account/user_context";
+import { get_curr_context } from "@/app/lib/account/account_db_utils";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -31,21 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
-  const session = await authSession();
-  if(!session) {
-    redirect("/login");
-  }
-
-  const userData = await getUserObject();
-  const userMetadata: UserMetadata = {
-    AccountType: session.user.account_type,
-    Username: session.user.username
-  }
-
-  const currContext = {
-    userData: userData,
-    metadata: userMetadata
-  };
+  const currContext = await get_curr_context();
 
   return (
     <Flex direction="column" height="100vh" width="100vw">
