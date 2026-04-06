@@ -1,7 +1,18 @@
 import DefaultButton from "@/app/components/features/default_button"
 import { AlertDialog, Flex } from "@radix-ui/themes";
+import { delete_account } from "@/app/lib/account/account_db_utils"
+import { signOut } from "next-auth/react";
+import { alert_popup } from "@/app/lib/alerts/alert_popup";
 
 export default function DeleteAccount() {
+    const deleteAccount = async () => {
+        const result = await delete_account();
+        if(!result.success) {
+            alert_popup(`${result?.error}`);
+            return;
+        }
+        await signOut({callbackUrl:"/login"});
+    }
     return (
         <AlertDialog.Root>
             <AlertDialog.Trigger>
@@ -23,7 +34,7 @@ export default function DeleteAccount() {
                         </DefaultButton>
                     </AlertDialog.Cancel>
                     <AlertDialog.Action>
-                        <DefaultButton size="2">
+                        <DefaultButton size="2" onClick={deleteAccount}>
                             Delete account
                         </DefaultButton>
                     </AlertDialog.Action>

@@ -5,6 +5,7 @@ import { open } from 'sqlite';
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import path from "path";
+import { signOut } from "next-auth/react";
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
@@ -88,8 +89,12 @@ export async function validate_credentials(username: string, password: string): 
 
 export async function create_user(username: string, password: string, account_type: AccountType): Promise<CreationResult> {
     var db;
+    const validAccountTypes = ["Student", "Advisor"];
     try {
-        // TODO: add config instead of hardcoding database file
+        if (!account_type || !validAccountTypes.includes(account_type)) {
+            throw "Invalid account type";
+        }
+
         db = await openDB(dbPath());
 
         const existingUser = await db.get('SELECT Username FROM Users WHERE Username = ?', username);
@@ -105,6 +110,7 @@ export async function create_user(username: string, password: string, account_ty
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
+
         await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
         
         // Creates parallel entry into Students/Advisors table
@@ -143,13 +149,13 @@ export async function create_user(username: string, password: string, account_ty
     }
 }
 
-type Result = { success: true, query:string } | { success: false, error: string } | null;
+type Result = { success: true, query?:string } | { success: false, error: string } | null;
 
 function accountTypeToTable(type: string | undefined) {
     var tableName;
     switch(type) {
         case "Student": tableName = "Students"; break;
-        case "Advisor": tableName = "Students"; break;
+        case "Advisor": tableName = "Advisors"; break;
         default: tableName = null; break;
     }
     return tableName;
@@ -192,6 +198,39 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
             error: `${e.message}`,
         }
         return result;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+}
+
+export async function delete_account() {
+    let db;
+    const session = await authSession();
+    try {
+        if (!session?.user?.id) {
+            throw Error("Unauthorized session");
+        }
+        db = await openDB(dbPath());
+        const userID = session.user.id;
+
+        await db.run("DELETE FROM Users WHERE ID = ?", userID);
+        
+        const result: Result = {
+            success:true,
+        }
+        return result;
+    } catch(e: any) {
+        const result: Result = {
+            success: false,
+            error: `${e.message}`,
+        }
+        return result;
+    } finally {
+        if (db) {
+            await db.close();
+        }
     }
 }
 
