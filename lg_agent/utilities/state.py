@@ -1,16 +1,25 @@
-from typing_extensions import TypedDict, Literal
+from typing_extensions import TypedDict
 from typing import Annotated
-from operator import add
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, AnyMessage
+from langchain_core.messages import AnyMessage
 from langgraph.graph import add_messages
-from datetime import datetime
+from utilities.schemas import RelevantEventsSchema
+
+# States for the AdvisorAgent
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     num_messages: int = 0
-    
-class AlertsAgentState(AdvisorState):
+
+# States for the AlertsAgent
+
+class AlertsAgentInput(TypedDict):
     student_id: int
-    upcoming_events: list[dict] = []
-    student_interests: list[str] = []
-    relivent_events: list[dict] = []
+
+class AlertsAgentState(TypedDict):
+    student_id: int
+    upcoming_events: list[dict]
+    student_interests: list[str]
+    relevant_events: list[RelevantEventsSchema]
+
+class AlertsAgentOutput(TypedDict):
+    relevant_events: list[RelevantEventsSchema]

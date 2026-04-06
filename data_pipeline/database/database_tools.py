@@ -100,7 +100,7 @@ def setup_database():
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
                 Location TEXT,
-                AddedTimeStamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                TimeAdded DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
             )'''
         )
 
@@ -124,8 +124,8 @@ def setup_database():
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
-                LastEventCheck DATETIME,
-                LastSectionStatusCheck DATETIME,
+                LastEventCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
+                LastSectionStatusCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 ParentID INTEGER NOT NULL UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
@@ -156,7 +156,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Log TEXT NOT NULL,
-                Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -181,7 +181,7 @@ def setup_database():
                 SectionID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
-                    ON DELETE CASCADE,
+                    ON DELETE CASCADE
             )'''
         )
 
