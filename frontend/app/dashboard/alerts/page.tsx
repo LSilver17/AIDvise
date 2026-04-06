@@ -19,11 +19,24 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <Flex direction="column">
+                {/* <DashTitle size="5">
+                    Unseen
+                </DashTitle>
                 {
-                    userAlerts ? userAlerts.Alerts.map((x,i) => (
-                        <SingleAlert key={i} alert={x}/>
-                    )) : <>Loading...</>
+                    userAlerts ? userAlerts.Alerts.map((x,i) => {
+                        if (x.status == "Unseen") return <SingleAlert key={i} alert={x}/>
+                        return <></>;
+                    }) : <>Loading...</>
                 }
+                <DashTitle size="5">
+                    Seen
+                </DashTitle>
+                {
+                    userAlerts ? userAlerts.Alerts.map((x,i) => {
+                        if (x.status == "Seen") return <SingleAlert key={i} alert={x}/>
+                        return <></>;
+                    }) : <>Loading...</>
+                } */}
             </Flex>
         </DashboardLayout>
     );
