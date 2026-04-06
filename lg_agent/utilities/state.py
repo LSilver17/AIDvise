@@ -3,13 +3,9 @@ from typing import Annotated
 from langchain_core.messages import AnyMessage
 from langgraph.graph import add_messages
 from datetime import datetime
-from utilities.schemas import RelevantEventsSchema
-
-# States for the AdvisorAgent
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
-<<<<<<< HEAD
     db_info: list[QueryResult]
     web_info: list[QueryResult]
     plan: dict
@@ -30,8 +26,6 @@ class WebSearchHelperState(TypedDict):
 
 class WebSearchHelperOutput(TypedDict):
     info: QueryResult
-=======
-    num_messages: int = 0
 
 # States for the AlertsAgent
 
