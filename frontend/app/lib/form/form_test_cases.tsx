@@ -26,7 +26,7 @@ export function registrationValidationTests(username: string, password: string, 
     username.trim();
     password.trim();
 
-    const validAccountTypes = ["student", "advisor"];
+    const validAccountTypes = ["Student", "Advisor"];
 
     // Test cases
     

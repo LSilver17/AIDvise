@@ -108,10 +108,10 @@ export async function create_user(username: string, password: string, account_ty
         await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
         
         // Creates parallel entry into Students/Advisors table
-        if(account_type === "student") {
+        if(account_type === "Student") {
             const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
             await db.run('INSERT INTO Students (ParentID) VALUES (?)', credential.ID); 
-        } else if (account_type === "advisor") {
+        } else if (account_type === "Advisor") {
             const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
             await db.run('INSERT INTO Advisors (ParentID) VALUES (?)', credential.ID); 
         } else {
@@ -148,8 +148,8 @@ type Result = { success: true, query:string } | { success: false, error: string 
 function accountTypeToTable(type: string | undefined) {
     var tableName;
     switch(type) {
-        case "student": tableName = "Students"; break;
-        case "advisor": tableName = "Students"; break;
+        case "Student": tableName = "Students"; break;
+        case "Advisor": tableName = "Students"; break;
         default: tableName = null; break;
     }
     return tableName;
@@ -225,7 +225,7 @@ export async function grabUserData() {
 
         const accountType = await db.get('SELECT AccountType FROM Users WHERE ID = ?', id);
 
-        if (accountType.AccountType === "student") {
+        if (accountType.AccountType === "Student") {
             const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID FROM Students WHERE ParentID = ?', id);
             const fieldData = {
                 data:{
@@ -260,7 +260,7 @@ export async function grabUserData() {
             return fieldData;
         }
 
-        else if (accountType.AccountType === "advisor") {
+        else if (accountType.AccountType === "Advisor") {
             // TODO: Expand query when advisor accounts are more fleshed out
             const userInfo = await db.get('SELECT Name FROM Advisors WHERE ParentID = ?', id);
             const fieldData = {

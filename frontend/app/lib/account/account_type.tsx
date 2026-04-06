@@ -1,1 +1,1 @@
-export type AccountType = "student" | "advisor" | undefined;
+export type AccountType = "Student" | "Advisor" | undefined;
