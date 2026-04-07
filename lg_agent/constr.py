@@ -1,8 +1,8 @@
 import sys, os
-from typing import Literal
-
-script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(script_dir)
+    
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END

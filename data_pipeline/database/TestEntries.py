@@ -1,13 +1,14 @@
+import sys, os
+
+database_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database'))
+if database_dir not in sys.path:
+    sys.path.append(database_dir)
+
 import sqlite3
 from datetime import datetime, timedelta
-from database_dev_tools import setup_database, display_term_hierarchy
+from database.database_dev_tools import __connect, setup_database, display_term_hierarchy
 
 DATABASE = "TestDB.db"
-
-def _connect() -> sqlite3.Connection:
-	conn = sqlite3.connect(DATABASE)
-	conn.execute("PRAGMA foreign_keys = ON")
-	return conn
 
 def _clear_existing_data(cursor: sqlite3.Cursor) -> None:
 	# Child-to-parent delete order to satisfy foreign keys.
@@ -34,7 +35,7 @@ def _clear_existing_data(cursor: sqlite3.Cursor) -> None:
 		cursor.execute(f"DELETE FROM {table}")
 
 def seed_dummy_entries(reset_existing: bool = True) -> None:
-	with _connect() as conn:
+	with __connect(database=DATABASE) as conn:
 		
 		cursor = conn.cursor()
 		
