@@ -39,7 +39,7 @@ def clean_text(text):
     return " ".join(text.split()).strip()
 
 def parse_seats(s):
-    m = re.search("(\d+)\s*[/∕]\s*(\d+)", s)
+    m = re.search(r"(\d+)\s*[/∕]\s*(\d+)", s)
     return {"open": int(m.group(1)), "total": int(m.group(2))} if m else {"open": None, "total": None}
 
 def parse_details(s):
@@ -56,7 +56,7 @@ def parse_details(s):
     return result
 
 def parse_course_code(code):
-    m = re.match("([A-Z]+)\s+(\d+)-(\w+)", code)
+    m = re.match(r"([A-Z]+)\s+(\d+)-(\w+)", code)
     return {"department": m.group(1), "number": m.group(2), "section": m.group(3)} if m else {"department": None, "number": None, "section": None}
 
 def parse_html(html):
@@ -86,6 +86,7 @@ def parse_html(html):
                 "course_number": code_map["number"],
                 "section":       code_map["section"],
                 "name":          values[idx + 1],
+                "term":          TERM,
                 "status":        values[idx + 5],
                 "seats_open":    seats["open"],
                 "seats_total":   seats["total"],
@@ -177,6 +178,7 @@ def update_db(courses):
             course_number   TEXT,
             section         TEXT,
             name            TEXT,
+            term            TEXT,
             status          TEXT,
             seats_open      INTEGER,
             seats_total     INTEGER,
@@ -202,11 +204,12 @@ def update_db(courses):
             cursor.execute("""
                 INSERT INTO courses (
                     course_code, department, course_number, section,
-                    name, status, seats_open, seats_total, credits,
+                    name, term, status, seats_open, seats_total, credits,
                     instructor, days_time, location, method,
                     begin_date, end_date, scraped_at
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 ON CONFLICT(course_code) DO UPDATE SET
+                    term        = excluded.term,
                     status      = excluded.status,
                     seats_open  = excluded.seats_open,
                     seats_total = excluded.seats_total,
@@ -219,7 +222,7 @@ def update_db(courses):
                     scraped_at  = excluded.scraped_at
             """, (
                 c.get("course_code"), c.get("department"), c.get("course_number"),
-                c.get("section"), c.get("name"), c.get("status"),
+                c.get("section"), c.get("name"), c.get("term"), c.get("status"),
                 c.get("seats_open"), c.get("seats_total"), c.get("credits"),
                 c.get("instructor"), c.get("days_time"), c.get("location"),
                 c.get("method"), c.get("begin_date"), c.get("end_date"),

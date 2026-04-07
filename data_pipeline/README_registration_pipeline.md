@@ -11,10 +11,8 @@ data_pipeline/
 
 How It Works
 QCC Course Offerings Page (Jenzabar Portal)
-        ↓  scrape_registration_sections.py
-registration_page.html
         ↓  refresh_registration.py (automated via Playwright)
-registration_sections.json
+registration_sections.json       ← committed to repo
         ↓  create_registration_db.py (run once)
 registration.db
         ↓
