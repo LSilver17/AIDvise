@@ -1,10 +1,17 @@
+import sys, os
+
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+from database.database_dev_tools import __connect
 import sqlite3
 
 DATABASE = "AlertTestDB.db"
 
 # Utility function to insert dummy data for testing the event filtering graph
 def insert_interest_dummy_data() -> None:
-	with sqlite3.connect(DATABASE) as conn:
+	with __connect(database=DATABASE) as conn:
 		conn.execute("PRAGMA foreign_keys = ON")
 		cursor = conn.cursor()
             
@@ -129,7 +136,7 @@ def insert_interest_dummy_data() -> None:
 
 # Utility function to reset event check timestamps and relivent event table as well as move up event dates for testing purposes
 def reset():
-    with sqlite3.connect(DATABASE) as conn:
+    with __connect(database=DATABASE) as conn:
         conn.execute("PRAGMA foreign_keys = ON")
         cursor = conn.cursor()
 

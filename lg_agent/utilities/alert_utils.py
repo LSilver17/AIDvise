@@ -1,18 +1,20 @@
+import sys, os
+
+database_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database'))
+if database_dir not in sys.path:
+    sys.path.append(database_dir)
+
 import datetime
 import sqlite3
+from data_pipeline.database.InterestDummies import __connect
 
-database = "AdvisorDB.db"
+DATABASE = "AdvisorDB.db"
 
 # TODO: convert these to typescript and move to frontend
 
 # Get student ID from username
-def get_student_id(username: str) -> int:
-    conn = None
-
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def get_student_id(username: str, database: str = DATABASE) -> int:
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -40,21 +42,9 @@ def get_student_id(username: str) -> int:
 
         return student_id
 
-    except Exception as exc:
-        raise RuntimeError("Failed to fetch student ID.") from exc
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
 # Returns a list of relevant events for the student, sorted by urgency
-def get_relevant_events(student_id: int) -> list[dict]:
-    conn = None
-
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def get_relevant_events(student_id: int, database: str = DATABASE) -> list[dict]:
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -75,21 +65,9 @@ def get_relevant_events(student_id: int) -> list[dict]:
 
         return relevant_events
 
-    except Exception as exc:
-        raise RuntimeError("Failed to fetch relevant events.") from exc
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
 # Returns a list of the sections the student is tracking for status change alerts.
-def get_tracked_sections(student_id: int) -> list[str]:
-    conn = None
-
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def get_tracked_sections(student_id: int, database: str = DATABASE) -> list[str]:
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -108,21 +86,9 @@ def get_tracked_sections(student_id: int) -> list[str]:
 
         return tracked_sections
 
-    except Exception as exc:
-        raise RuntimeError("Failed to fetch tracked sections.") from exc
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
-
 # Returns a list of all new section status events for sections the student is tracking for course opening alerts since the last check.
-def get_relevant_section_status_events(student_id: int) -> list[dict]:
-    conn = None
-
-    try:
-        # Connect to sqlite database
-        conn = sqlite3.connect(database)
-
+def get_relevant_section_status_events(student_id: int, database: str = DATABASE) -> list[dict]:
+    with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -183,10 +149,3 @@ def get_relevant_section_status_events(student_id: int) -> list[dict]:
             section_status_events.append(event)
         
         return section_status_events
-
-    except Exception as exc:
-        raise RuntimeError("Failed to fetch upcoming course status events.") from exc
-    finally:
-        # Ensure the connection is closed
-        if conn:
-            conn.close()
