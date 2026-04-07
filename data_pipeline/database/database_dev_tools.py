@@ -1,8 +1,9 @@
 import sys, os
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(script_dir))
-sys.path.append(project_root)
+# Add the project root so `lg_agent` can be imported as a package.
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if project_root not in sys.path:
+    sys.path.append(project_root)
 
 import json, sqlite3
 from lg_agent.database_utils import get_data_with_hierarchy_string
@@ -144,7 +145,7 @@ def setup_database(database: str = DATABASE):
                 StartTime TIME NOT NULL,
                 EndTime TIME NOT NULL,
                 Location TEXT,
-                TimeAdded DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                TimeAdded DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Events(ID)
                     ON DELETE CASCADE
@@ -171,8 +172,6 @@ def setup_database(database: str = DATABASE):
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
                 AdvisorID INTEGER,
-                LastEventCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
-                LastSectionStatusCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 LastEventCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 LastSectionStatusCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 ParentID INTEGER NOT NULL UNIQUE,
@@ -221,7 +220,6 @@ def setup_database(database: str = DATABASE):
             '''CREATE TABLE IF NOT EXISTS ChatLogs(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Log TEXT NOT NULL,
-                Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)

@@ -4,7 +4,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from utilities import schemas
+from .utilities import schemas
 import sqlite3
 
 # Utility function to get course ID by course code
@@ -178,6 +178,35 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     cursor.execute(query, tuple(params))
     results = cursor.fetchall()
     return [row[0] for row in results]
+
+# 
+def get_event_info_by_id(cursor: sqlite3.Cursor, event_id: str) -> dict:
+    # get name and description of event from Events table
+    cursor.execute("SELECT * FROM Events WHERE ID = ?", (event_id,))
+    row = cursor.fetchone()
+
+    if row is None:
+        return {}
+
+    # get all event date entries linked to the event
+    cursor.execute("SELECT StartDate, EndDate, StartTime, EndTime, Location FROM EventDates WHERE ParentID = ?", (event_id,))
+    event_dates = []
+    for row in cursor.fetchall():
+        event_dates.append({
+            "StartDate": row[0],
+            "EndDate": row[1],
+            "StartTime": row[2],
+            "EndTime": row[3],
+            "Location": row[4]
+        })
+
+    event_info = {
+        "Name": row[1],
+        "Description": row[2],
+        "Dates": event_dates
+    }
+
+    return event_info
 
 # Utility function to recursively get all data related to a target entry in a table based on the hierarchy of the database schema, starting from the target entry and including all entries that reference it as a foreign key, along with their relevant linked data based on the hierarchy, and returning this information in a structured format that indicates the relationships between the data
 # Note: Don't use this on course catalog or major/minor catalog entries, as the amount of related data can be very large and may cause performance issues. This is best used on more specific entries, such as a specific course offering or a specific student.

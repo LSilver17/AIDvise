@@ -57,9 +57,9 @@ class SectionFilters(BaseModel):
 
 # Schemas for alerts graph
 
-class ReliventEventsObject(BaseModel):
-    ID: int = Field(description="The unique identifier for the event."),
-    UrgencyLevel: str = Field(description="The urgency level of the event, based on how much time/effort it may require and how much time is left before the event occurs.")
+class RelevantEventsObject(BaseModel):
+    ID: int = Field(description="The unique identifier for the event (not the event date).")
+    Urgency: int = Field(description="The urgency level of the event, based on how much time/effort it may require and how much time is left before the event occurs. Range should be from 1 to 5, with 5 being the most urgent.")
 
 class RelevantEventsSchema(BaseModel):
-    relivent_events: list[ReliventEventsObject] = Field(description="A list of relevant events, each with its ID and urgency level.")
+    relivent_events: list[RelevantEventsObject] = Field(description="A list of relevant events, each with its ID and urgency level.")

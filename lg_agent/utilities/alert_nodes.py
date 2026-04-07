@@ -51,20 +51,30 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
         )
         conn.commit()
 
-        # Query for new events since last check, sorted by start date
-        # if event date is null 
+        # Query for new event dates since last check
         cursor.execute(
             '''
-            SELECT ID, Name, Description, StartDate, EndDate, StartTime, EndTime, Location
-            FROM Events
-            WHERE StartDate >= DATE('now') AND TimeAdded > ?
-            ORDER BY StartDate ASC
+            SELECT e.ID, e.Name, e.Description, ed.Date, ed.StartTime, ed.EndTime, ed.Location, ed.TimeAdded
+            FROM Events e
+            JOIN EventDates ed ON e.ID = ed.ParentID
+            WHERE TimeAdded > ? AND (ed.Date > date('now') OR (ed.Date = date('now') AND ed.EndTime > time('now')))
             ''',
             (last_event_check,)
         )
+        event_dates = cursor.fetchall()
 
-        # Fetch all results
-        events = [dict(ID=row[0], Name=row[1], Description=row[2], StartDate=row[3], EndDate=row[4], StartTime=row[5], EndTime=row[6], Location=row[7]) for row in cursor.fetchall()]
+        if not event_dates:
+            print("No new events found in database since last check.")
+            return {"upcoming_events": []}
+
+        # Reorganize the results into a list where each event is a dictionary containing its name, description, and a list of its event dates where each date is a dictionary of its own info
+        events = []
+        for row in event_dates:
+            event = next((e for e in events if e["ID"] == row[0]), None)
+            if not event:
+                event = dict(ID=row[0], Name=row[1], Description=row[2], Dates=[])
+                events.append(event)
+            event["Dates"].append(dict(Date=row[3], StartTime=row[4], EndTime=row[5], Location=row[6], TimeAdded=row[7]))
 
     print("Fetched new events from database:", events)
     return {"upcoming_events": events}
@@ -101,10 +111,9 @@ def filter_relivent_events(state: AlertsAgentState) -> AlertsAgentState:
     interests_str = ""
     
     for event in state["upcoming_events"]:
-        events_str += f"- {event['Name']} (Description: {event['Description']}, "
-        events_str += f"Start: {event['StartDate']} {event['StartTime']}, "
-        events_str += f"End: {event['EndDate']} {event['EndTime']}, "
-        events_str += f"Location: {event['Location']})\n"
+        events_str += f"- ID: {event['ID']}, Name: {event['Name']}, Description: {event['Description']}\n"
+        for date in event["Dates"]:
+            events_str += f"  - Date: {date['Date']}, Start Time: {date['StartTime']}, End Time: {date['EndTime']}, Location: {date['Location']}\n"
 
     for interest in state["student_interests"]:
         interests_str += f"- {interest}\n"
@@ -128,7 +137,7 @@ def insert_relevant_events(state: AlertsAgentState) -> AlertsAgentOutput:
                 INSERT INTO RelevantEvents (ParentID, EventID, Urgency)
                 VALUES (?, ?, ?)
                 ''',
-                (state["student_id"], event["ID"], event["UrgencyLevel"])
+                (state["student_id"], event["ID"], event["Urgency"])
             )
         conn.commit()
 
