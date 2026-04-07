@@ -1,3 +1,4 @@
+from langchain.messages import AIMessage
 from typing_extensions import TypedDict
 from typing_extensions import TypedDict
 from typing import Annotated
@@ -7,6 +8,10 @@ from langgraph.graph import add_messages
 from utilities.schemas import RelevantEventsSchema
 
 # States for the AdvisorAgent
+
+class QueryResult(TypedDict):
+    query: str
+    result: AIMessage
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]

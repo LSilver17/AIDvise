@@ -378,8 +378,8 @@ def reset_all(database: str = DATABASE):
     reset_events(database)
     reset_users(database)
 
-def create_triggers():
-    with __connect(database) as conn:
+def create_triggers(database: str = DATABASE):
+    with __connect(database=database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
