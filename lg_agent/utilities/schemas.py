@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+# Schemas for advisor graph
 class PlanSchema(BaseModel):
     """Schema for the output of the advisor node, which indicates whether a database query or web search is needed, and provides an answer if not."""
 
@@ -53,3 +54,12 @@ class SectionFilters(BaseModel):
     enrollment: EnrollmentCondition | None = Field(description="Filter sections by current enrollment. If no enrollment filter is needed, leave this field blank.")
     locations: list[str] | None = Field(description="List of locations to filter sections by (e.g. ['Building A Room 101', 'Online']). If no location filter is needed, leave this field blank.")
     meet_times: list[DBMeetTime] | None = Field(description="List of meet times to filter sections by. If no meet time filter is needed, leave this field blank.")
+
+# Schemas for alerts graph
+
+class ReliventEventsObject(BaseModel):
+    ID: int = Field(description="The unique identifier for the event."),
+    UrgencyLevel: str = Field(description="The urgency level of the event, based on how much time/effort it may require and how much time is left before the event occurs.")
+
+class RelevantEventsSchema(BaseModel):
+    relivent_events: list[ReliventEventsObject] = Field(description="A list of relevant events, each with its ID and urgency level.")
