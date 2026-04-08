@@ -19,7 +19,7 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <Flex direction="column">
-                {/* <DashTitle size="5">
+                /* <DashTitle size="5">
                     Unseen
                 </DashTitle>
                 {
@@ -36,7 +36,7 @@ export default function Alerts () {
                         if (x.status == "Seen") return <SingleAlert key={i} alert={x}/>
                         return <></>;
                     }) : <>Loading...</>
-                } */}
+                } */
             </Flex>
         </DashboardLayout>
     );
