@@ -1,10 +1,11 @@
 import sys, os
 
+# adds lg_agent directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from .utilities import schemas
+from utilities import schemas
 import sqlite3
 
 # Utility function to get course ID by course code
