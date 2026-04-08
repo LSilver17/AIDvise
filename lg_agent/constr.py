@@ -8,9 +8,9 @@ if parent_dir not in sys.path:
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Send
-from utilities.state import AdvisorState
+from lg_agent.utilities.state import AdvisorState
 from langchain_core.messages import AIMessage
-from utilities.nodes import planning_node
+from lg_agent.utilities.nodes import planning_node
 from db_helper_graph import db_graph
 from web_helper_graph import web_graph
 
