@@ -7,9 +7,7 @@ import { Flex } from "@radix-ui/themes"
 import Title from "@/app/components/visual/title"
 import AccountField from "@/app/components/features/user_field";
 import DeleteAccount from "@/app/components/features/delete_account";
-import type { UserField } from "@/app/lib/account/user_fields";
 import { useUserData } from "@/app/lib/account/user_context";
-import { alert_popup } from "@/app/lib/alerts/alert_popup";
 import { UserData } from "@/app/lib/account/account_db_utils";
 
 export default function Account () {

@@ -1,22 +1,76 @@
-export enum AlertStatus {
-    Unseen,
-    Seen
+export type AlertStatus = "Seen" | "Unseen";
+
+export type AlertTypes = "Event" | "Class";
+
+export interface Alert {
+    readonly name: string,
+    readonly description: string,
+    readonly status: AlertStatus,
+    readonly type: AlertTypes,
 }
 
-export class UserAlert {
-    public constructor(message: string = "Empty", status: AlertStatus = AlertStatus.Unseen) {
-        this.message = message;
-        this.status = status;
-    }
+export interface EventAlert extends Alert {
+    readonly time: string,
+    readonly date: string,
+    readonly type: "Event",
+}
 
-    public getMessage() {
-        return this.message;
-    }
+export interface ClassAlert extends Alert {
+    readonly department: string,
+    readonly code: number,
+    readonly courseName: string,
+    readonly courseDescription: string,
+    readonly credits: number,
+    readonly requirements: string,
+    readonly meetTime: string,
+    readonly days: string,
+    readonly type: "Class",
+}
 
-    public getStatus() {
-        return this.status;
+export function createEventAlert(
+    name: string,
+    description: string,
+    status: AlertStatus,
+    time: string,
+    date: string,
+) {
+    const event: EventAlert = {
+        name: name,
+        description: description,
+        status: status,
+        time: time,
+        date: date,
+        type: "Event",
     }
+    return event;
+}
 
-    private message: string;
-    private status: AlertStatus;
+export function createClassAlert(
+    name: string,
+    description: string,
+    status: AlertStatus,
+    department: string,
+    code: number,
+    courseName: string,
+    courseDescription: string,
+    credits: number,
+    requirements: string,
+    meetTime: string,
+    days: string,
+) {
+    const event: ClassAlert = {
+        name: name,
+        description: description,
+        status: status,
+        department: department,
+        code: code,
+        courseName: courseName,
+        courseDescription: courseDescription,
+        credits: credits,
+        requirements: requirements,
+        meetTime: meetTime,
+        days: days,
+        type: "Class",
+    }
+    return event;
 }

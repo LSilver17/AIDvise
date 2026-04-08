@@ -9,6 +9,8 @@ import { signOut } from "next-auth/react";
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
+import type { Alert, EventAlert } from '@/app/lib/alerts/alert';
+import { createEventAlert, createClassAlert } from '@/app/lib/alerts/alert';
 import { authSession } from "@/app/lib/account/authSession";
 import { UserField } from '@/app/lib/account/user_fields';
 import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
@@ -254,6 +256,10 @@ export type UserMetadata = {
     Username: string,
 }
 
+export type UserAlerts = {
+    Alerts: Alert[]
+}
+
 export async function grabUserData() {
     // TODO: Return user info from table according to session ID
     const session = await authSession();
@@ -349,4 +355,98 @@ export async function getUserObject() {
         console.log(`ERROR: ${error}`);
         redirect("/login");
     }
+}
+
+export type Context = {
+    userData: UserData,
+    userMetadata: UserMetadata,
+    userAlerts: UserAlerts,
+}
+
+export async function get_curr_context() {
+    // session validation
+  const session = await authSession();
+  if(!session) {
+    redirect("/login");
+  }
+
+  const userData = await getUserObject();
+
+  const userMetadata: UserMetadata = {
+    AccountType: session.user.account_type,
+    Username: session.user.username
+  }
+
+  const userAlerts: UserAlerts = {
+    Alerts: temp_alert_fill(),
+  }
+
+  const currContext = {
+    userData: userData,
+    userMetadata: userMetadata,
+    userAlerts: userAlerts
+  };
+  
+  return currContext;
+}
+
+ // TODO: Delete
+function temp_alert_fill(): Alert[] {
+  const a1 = createEventAlert (
+    "an event",
+    "transfer fair",
+    "Unseen",
+    "12:30",
+    "Tomorrow",
+  );
+  const a2 = createClassAlert (
+    "NEW CLASS",
+    "CSC course opened",
+    "Unseen",
+    "CSC",
+    212,
+    "Software",
+    "Build software",
+    4,
+    "CSC Core",
+    "1230",
+    "MTW",
+  );
+  const a3 = createEventAlert (
+    "an event",
+    "transfer fair",
+    "Unseen",
+    "12:30",
+    "Tomorrow",
+  );
+  const a4 = createClassAlert (
+    "NEW CLASS",
+    "CSC course opened",
+    "Unseen",
+    "CSC",
+    212,
+    "Software",
+    "Build software",
+    4,
+    "CSC Core",
+    "1230",
+    "MTW",
+  )
+  const a5 = createClassAlert (
+    "NEW CLASS",
+    "CSC course opened",
+    "Unseen",
+    "CSC",
+    212,
+    "Software",
+    "Build software",
+    4,
+    "CSC Core",
+    "1230",
+    "MTW",
+  )
+  const alerts: Alert[] = [
+    a1, a2, a3, a4, a5
+  ]
+  return alerts;
 }
