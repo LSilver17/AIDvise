@@ -1,15 +1,23 @@
 import sys, os
 
-# Add the project root so `lg_agent` can be imported as a package.
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if project_root not in sys.path:
-    sys.path.append(project_root)
+# Add the project root to the path if not already there
+lg_agent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if lg_agent_path not in sys.path:
+    sys.path.append(lg_agent_path)
+
+# Add the jsons directory to the path if not already there, 
+jsons_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
+if jsons_dir not in sys.path:
+    sys.path.append(jsons_dir)
 
 import json, sqlite3
-from lg_agent.database_utils import get_data_with_hierarchy_string
+from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_title
 
 DATABASE = "AdvisorDB.db"
+COURSE_CATALOG = "qcc_classes.json"
+PROGRAMS_CATALOG = "qcc_programs.json"
 
+# Utility function for connecting to database and setting up required pragmas and row factory
 def __connect(database: str = DATABASE):
     conn = sqlite3.connect(database)
     conn.execute('PRAGMA foreign_keys = ON')
@@ -31,38 +39,39 @@ def setup_database(database: str = DATABASE):
                 Name TEXT NOT NULL UNIQUE,
                 Description TEXT NOT NULL,
                 Credits INTEGER NOT NULL,
-                Requirements TEXT
+                Requirements TEXT,
+                SemestersOffered TEXT
             )'''
         )
 
-        # Create tables for all majors/minors offered at the college
+        # Create tables for all programs of study offered at the college
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS MajorsAndMinors(
+            '''CREATE TABLE IF NOT EXISTS ProgramsOfStudy(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Title TEXT NOT NULL,
                 Description TEXT NOT NULL,
-                CreditsRequired INTEGER NOT NULL,
-                Type TEXT NOT NULL CHECK(Type IN ('Major', 'Minor'))
+                CreditsRequired TEXT NOT NULL,
+                Type TEXT NOT NULL CHECK(Type IN ('Certificate', 'Associate in Science', 'Associate in Applied Science', 'Associate in Arts'))
             )'''
         )
-        # Table for required courses for each major/minor, linked to the major/minor via ParentID foreign key
+        # Table for required courses for each program of study, linked to the program via ParentID foreign key
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS MajorMinorRequiredCourses(
+            '''CREATE TABLE IF NOT EXISTS ProgramRequiredCourses(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES MajorsAndMinors(ID)
+                FOREIGN KEY (ParentID) REFERENCES ProgramsOfStudy(ID)
                     ON DELETE CASCADE
             )'''
         )
-        # Table for options for required courses for each major/minor, linked to the requirement via ParentID foreign key and to the course via CourseID foreign key
+        # Table for options for required courses for each program of study, linked to the requirement via ParentID foreign key and to the course via CourseID foreign key
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS MajorMinorRequiredCourseOptions(
+            '''CREATE TABLE IF NOT EXISTS ProgramRequiredCourseOptions(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 CourseID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (CourseID) REFERENCES Courses(ID)
                     ON DELETE CASCADE,
-                FOREIGN KEY (ParentID) REFERENCES MajorMinorRequiredCourses(ID)
+                FOREIGN KEY (ParentID) REFERENCES ProgramRequiredCourses(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -181,13 +190,13 @@ def setup_database(database: str = DATABASE):
                     ON DELETE CASCADE
             )'''
         )
-        # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the MajorsAndMinors table via MajorMinorID foreign key
+        # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the ProgramsOfStudy table via ProgramID foreign key
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS StudentMajorsAndMinors(
+            '''CREATE TABLE IF NOT EXISTS StudentProgramsOfStudy(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                MajorMinorID INTEGER NOT NULL,
+                ProgramID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
-                FOREIGN KEY (MajorMinorID) REFERENCES MajorsAndMinors(ID)
+                FOREIGN KEY (ProgramID) REFERENCES ProgramsOfStudy(ID)
                     ON DELETE CASCADE,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -296,30 +305,27 @@ def reset_course_catalog(database: str = DATABASE):
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Drop course catalog tables
+        # Reset course catalog tables
         cursor.execute('DROP TABLE IF EXISTS Courses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
-        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
 
         # Commit the changes to the database
         conn.commit()
         print("Course catalog tables reset.")
 
-# Utility function to reset the majors and minors catalog tables
-def reset_majors_and_minors_catalog(database: str = DATABASE):
+# Utility function to reset the programs of study catalog tables
+def reset_programs_catalog(database: str = DATABASE):
     with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Drop majors and minors catalog tables
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
+        # Drop programs of study catalog tables
+        cursor.execute('DROP TABLE IF EXISTS ProgramsOfStudy')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourseOptions')
 
         # Commit the changes to the database
         conn.commit()
-        print("Majors and minors catalog tables reset.")
+        print("Programs of study catalog tables reset.")
 
 # Utility function to reset the terms and courses offered tables
 def reset_terms_and_courses(database: str = DATABASE):
@@ -371,11 +377,12 @@ def reset_users(database: str = DATABASE):
 # Utility function to reset all tables in the database except for course catalog tables
 def reset_all(database: str = DATABASE):
     reset_course_catalog(database)
-    reset_majors_and_minors_catalog(database)
+    reset_programs_catalog(database)
     reset_terms_and_courses(database)
     reset_events(database)
     reset_users(database)
 
+# Utility function to create database triggers
 def create_triggers(database: str = DATABASE):
     with __connect(database=database) as conn:
         # Create a cursor object to execute SQL commands
@@ -398,45 +405,121 @@ def create_triggers(database: str = DATABASE):
         # Commit the changes to the database
         conn.commit()
 
-# Utility function to fetch all results from a query
-def fetch_all(cursor: sqlite3.Cursor, query: str, params: tuple = ()):
-	cursor.execute(query, params)
-	return cursor.fetchall()
-
-# Utility function to populate the course catalog in the database from a JSON file containing course information
-def populate_course_catalog(database: str = DATABASE, json_file: str = "courses.json"):
-    # TODO: implement this function once we have a JSON file with course info to work with
-    pass
+# Utility function to populate the course catalog in the database from a JSON file containing course information (file must be located in the jsons directory)
+def populate_course_catalog(database: str = DATABASE, json_file: str = COURSE_CATALOG):
     with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Reset course catalog tables
-        cursor.execute('DROP TABLE IF EXISTS Courses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS CourseRequiredCourseOptions')
-        cursor.execute('DROP TABLE IF EXISTS MiscCourseRequirements')
+        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+            course_data = {"courses": {}}
+            course_data['courses'] = json.load(f)
+            for course in course_data['courses']:
+                # split course code into department and course number
+                department, code = course['course_code'].split()
+
+                # split up semesters (e.g. F/S/SU -> F, S, SU) then convert to proper name (e.g. F -> Fall) then combine back into string to store in database
+                semesters = course['semesters_offered'].split('/')
+                semester_mapping = {
+                    'F': 'Fall',
+                    'S': 'Spring',
+                    'SU': 'Summer',
+                    'IN': 'Winter'
+                }
+                for i, semester in enumerate(semesters):
+                    semesters[i] = semester_mapping[semester]
+                semesters_offered = '/'.join(semesters)
+
+                cursor.execute(
+                    '''
+                    INSERT INTO Courses (Department, Code, Name, Description, Credits, Requirements, SemestersOffered)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ''',
+                    (
+                        department,
+                        int(code),
+                        course['name'],
+                        course['description'],
+                        course['credits'],
+                        course['prerequisites'],
+                        semesters_offered
+                    )
+                )
 
         # Commit the changes to the database
         conn.commit()
-        print("Course catalog tables reset.")
+        print("Course catalog populated from JSON file.")
 
-# Utility function to populate the majors and minors catalog in the database from a JSON file containing major/minor information
-def populate_majors_and_minors_catalog(database: str = DATABASE, json_file: str = "majors_and_minors.json"):
-    # TODO: implement this function once we have a JSON file with major/minor info to work with
-    pass
+# Utility function to populate the programs of study catalog in the database from a JSON file containing program information
+def populate_programs_catalog(database: str = DATABASE, json_file: str = PROGRAMS_CATALOG):
     with __connect(database) as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Drop majors and minors catalog tables
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS MajorMinorRequiredCourseOptions')
+        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+            programs_data = {"programs": {}}
+            programs_data['programs'] = json.load(f)
+            for program in programs_data['programs']:
+                cursor.execute(
+                    '''
+                    INSERT INTO ProgramsOfStudy (Title, Description, CreditsRequired, Type)
+                    VALUES (?, ?, ?, ?)
+                    ''',
+                    (
+                        program['name'],
+                        program['description'], # TODO: ask noel about where he got those descriptions from
+                        program['total_credits'],
+                        program['area_of_study']
+                    )
+                )
+                program_id = cursor.lastrowid
+
+                # TODO: Ask Noel about adding the OR for course requirements with multiple options
+                previous_requirement_id = None
+                has_or = False
+                for required_course in program['required_courses']:
+                    last_has_or = has_or
+
+                    # check if current course has an OR at the end of its name
+                    if required_course['name'].endswith(' OR'):
+                        has_or = True
+                        required_course['name'] = required_course['name'].rstrip(' OR') # remove the 'OR' from the course name to match the course titles in the database
+
+                    # check if current course works as alternitive for previous one
+                    if last_has_or:
+                        # add current course as an option for the previous requirement
+                        cursor.execute(
+                            '''
+                            INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
+                            VALUES (?, ?)
+                            ''',
+                            (get_courseID_by_title(required_course['name']), previous_requirement_id,)
+                        )
+                    else:
+                        # add current course as a new requirement
+                        cursor.execute(
+                            '''
+                            INSERT INTO ProgramRequiredCourses (ParentID)
+                            VALUES (?)
+                            ''',
+                            (program_id,)
+                        )
+                        requirement_id = cursor.lastrowid
+
+                        # add current course as an option for the new requirement
+                        cursor.execute(
+                            '''
+                            INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
+                            VALUES (?, ?)
+                            ''',
+                            (get_courseID_by_title(required_course['name']), requirement_id)
+                        )
+
+                        previous_requirement_id = requirement_id
 
         # Commit the changes to the database
         conn.commit()
-        print("Majors and minors catalog tables reset.")
+        print("Programs of study catalog populated from JSON file.")
 
 # Utility function to add a new term and its courses/sections from a JSON file
 # TODO: update this to follow new database structure
@@ -576,3 +659,5 @@ def display_term_hierarchy(database: str = DATABASE):
 # if this script is run directly, set up the database and display the term hierarchy for debugging purposes
 if __name__ == '__main__':
     setup_database()
+    create_triggers()
+    populate_course_catalog()
