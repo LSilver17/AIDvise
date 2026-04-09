@@ -31,7 +31,7 @@ export default async function RootLayout({ children, }: Readonly<{children: Reac
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <CopilotKit runtimeUrl="/api/copilotkit" agent="sample_agent">
+          <CopilotKit runtimeUrl="/api/copilotkit">
             <ClientSession session={session}>
               {children}
             </ClientSession>  

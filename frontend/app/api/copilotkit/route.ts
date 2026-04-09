@@ -10,9 +10,14 @@ const serviceAdapter = new ExperimentalEmptyAdapter();
 
 const runtime = new CopilotRuntime({
   agents: {
-    sample_agent: new LangGraphAgent({
+    "default": new LangGraphAgent({
       deploymentUrl:  process.env.LANGGRAPH_DEPLOYMENT_URL || "http://localhost:8123",
-      graphId: "sample_agent",
+      graphId: "chat_agent",
+      langsmithApiKey: process.env.LANGSMITH_API_KEY || "",
+    }),
+    "alerts": new LangGraphAgent({
+      deploymentUrl:  process.env.LANGGRAPH_DEPLOYMENT_URL || "http://localhost:8123",
+      graphId: "alert_agent",
       langsmithApiKey: process.env.LANGSMITH_API_KEY || "",
     }),
   }

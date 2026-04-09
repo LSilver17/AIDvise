@@ -54,4 +54,4 @@ graph_builder.add_edge("filter_relivent_events", "insert_relevant_events")
 graph_builder.add_edge("insert_relevant_events", "format_response")
 graph_builder.add_edge("format_response", END)
 
-graph = graph_builder.compile()
+alert_graph = graph_builder.compile()
