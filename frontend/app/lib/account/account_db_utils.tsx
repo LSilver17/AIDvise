@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import path from "path";
 import { signOut } from "next-auth/react";
+import data from "../../../../database_config.json"
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
@@ -17,7 +18,7 @@ import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
 
 function dbPath () {
     // TODO: Use config to decide which database to use
-    const dbPath = path.join(process.cwd(), '..', 'AdvisorDB.db');
+    const dbPath = path.join(process.cwd(), '..', `${data.database}.db`);
     return dbPath;
 }
 
