@@ -73,4 +73,4 @@ graph_builder.add_edge("invoke_db_helper", "planning")
 graph_builder.add_edge("invoke_web_helper", "planning")
 graph_builder.add_edge("answer_node", END)
 
-graph = graph_builder.compile()
+chat_graph = graph_builder.compile()
