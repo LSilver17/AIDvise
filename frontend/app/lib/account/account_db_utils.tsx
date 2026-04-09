@@ -166,6 +166,9 @@ function accountTypeToTable(type: string | undefined) {
 export async function update_user_entry(userData: UserData, userMetadata: UserMetadata, newVal: string | null, updatedField: string): Promise<Result> {
     var db;
     const session = await authSession();
+    if(!session) {
+        redirect("/login");
+    }
     try {
         // Ensure data exists
         if (!userData) {
@@ -210,6 +213,9 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
 export async function delete_account() {
     let db;
     const session = await authSession();
+    if(!session) {
+        redirect("/login");
+    }
     try {
         if (!session?.user?.id) {
             throw Error("Unauthorized session");
@@ -263,6 +269,9 @@ export type UserAlerts = {
 export async function grabUserData() {
     // TODO: Return user info from table according to session ID
     const session = await authSession();
+    if(!session) {
+        redirect("/login");
+    }
     const id = session?.user?.id;
     var db;
     try {
@@ -366,8 +375,9 @@ export type Context = {
 export async function get_curr_context() {
     // session validation
   const session = await authSession();
+  
   if(!session) {
-    redirect("/login");
+      redirect("/login");
   }
 
   const userData = await getUserObject();

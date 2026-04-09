@@ -4,7 +4,8 @@
   "dependencies": ["."],
   "package_manager": "uv",
   "graphs": {
-    "sample_agent": "./lg_agent/constr.py:graph"
+    "chat_agent": "./lg_agent/constr.py:chat_graph",
+    "alert_agent": "./lg_agent/alert_constr.py:alert_graph"
   },
   "env": ".env"
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
+import { redirect } from "next/navigation"
 
 // Components
 import { Flex, Box, Button, Separator } from "@radix-ui/themes";
@@ -9,6 +9,7 @@ import { Flex, Box, Button, Separator } from "@radix-ui/themes";
 import Sidebar from "@/app/components/navigation/aside";
 import { UserContextProvider } from "@/app/lib/account/user_context";
 import { get_curr_context } from "@/app/lib/account/account_db_utils";
+import { authSession } from "@/app/lib/account/authSession";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -26,6 +27,12 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
+  // session validation
+  const session = await authSession();
+  if(!session) {
+      redirect("/login");
+  }
+  
   const currContext = await get_curr_context();
 
   return (
