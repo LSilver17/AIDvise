@@ -404,35 +404,57 @@ export async function get_curr_context() {
  // TODO: Delete
 function temp_alert_fill(): Alert[] {
   const a1 = createEventAlert (
-    "an event",
-    "transfer fair",
+    "Transfer Event",
+    "QCC Transfer Fair in the HLC",
     "Unseen",
-    "12:30",
-    "Tomorrow",
+    "11:00 AM",
+    "4/11/2026",
   );
   const a2 = createClassAlert (
+    "Course Opening",
+    "Unseen",
+    "CSC",
+    212,
+    "Intro to Software Engineering",
+    "CSC 212, the concluding course in the software engineering series, broadens the student's perspective to encompass the full software development lifecycle, from initial concept to ongoing maintenance. Emphasizing the analysis and design of medium-sized systems, the course includes a comprehensive team project covering analysis, design, implementation, and testing phases, along with detailed documentation and test plans. Students are introduced to design patterns and advanced programming techniques using data structures and templates. A significant aspect of the course is the integration of professional ethics, software, and information assurance, addressing security concerns and liabilities in computer-based systems. The course culminates in a collaborative research project, culminating in a presentation to a live audience. This comprehensive approach prepares students for professional software development, emphasizing ethical considerations and a thorough understanding of the software lifecycle.",
+    4,
+    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
+    "9:00 AM - 12:15 PM",
+    "MTW",
+  );
+  const a3 = createEventAlert (
+    "Music Performance",
+    "Music Ensemble will be playing in the HLC common.",
+    "Unseen",
+    "11:30 AM - 1:30 PM",
+    "4/23/2026",
+  );
+  const a4 = createClassAlert (
+    "Course Opening",
+    "Unseen",
+    "CSC",
+    208,
+    "Introduction to Architecture and Assembly Language",
+    "CSC 208 is the fourth installment of a comprehensive five-part computer science series. This course provides a comprehensive exploration of computer systems from a programmer's perspective, bridging the gap between hardware and software. Students will gain a deep understanding of how computer systems execute programs and handle data, delving into topics like data representation, machine-level code, processor architecture, memory hierarchy, system-level I/O, and network programming. Emphasizing the translation of high-level programming languages into machine code, the course enhances skills in software optimization for efficiency and performance. With interactive labs and assignments, it offers practical experience in system-level programming, exploring hardware and software design choices. This course is ideal for those aiming to deepen their knowledge in computer architecture and system software, laying a solid foundation for advanced computer science and engineering studies.",
+    4,
+    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
+    "1230",
+    "MTW",
+  )
+  const a5 = createClassAlert (
     "NEW CLASS",
-    "CSC course opened",
     "Unseen",
     "CSC",
     212,
     "Software",
-    "Build software",
+    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
     4,
     "CSC Core",
     "1230",
     "MTW",
-  );
-  const a3 = createEventAlert (
-    "an event",
-    "transfer fair",
-    "Unseen",
-    "12:30",
-    "Tomorrow",
-  );
-  const a4 = createClassAlert (
+  )
+  const a6 = createClassAlert (
     "NEW CLASS",
-    "CSC course opened",
     "Unseen",
     "CSC",
     212,
@@ -443,21 +465,20 @@ function temp_alert_fill(): Alert[] {
     "1230",
     "MTW",
   )
-  const a5 = createClassAlert (
+  const a7= createClassAlert (
     "NEW CLASS",
-    "CSC course opened",
     "Unseen",
     "CSC",
     212,
     "Software",
-    "Build software",
+    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
     4,
     "CSC Core",
     "1230",
     "MTW",
   )
   const alerts: Alert[] = [
-    a1, a2, a3, a4, a5
+    a1, a2, a3, a4, a5, a6
   ]
   return alerts;
 }
