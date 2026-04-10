@@ -660,4 +660,3 @@ def display_term_hierarchy(database: str = DATABASE):
 if __name__ == '__main__':
     setup_database()
     create_triggers()
-    populate_course_catalog()

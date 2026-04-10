@@ -1,5 +1,5 @@
 import sys, os
-    
+
 # adds lg_agent directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
@@ -13,9 +13,18 @@ from langchain_core.messages import AIMessage
 from lg_agent.utilities.nodes import planning_node
 from db_helper_graph import db_graph
 from web_helper_graph import web_graph
+import json
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
 load_dotenv()
+
+def fetch_info(state: AdvisorState):
+    """Function to fetch db and web info from past runs."""
+    with open(os.path.join(parent_dir, "lg_agent", "info_stash.json"), "r") as f:
+        info_stash = json.load(f)
+    state["db_info"] = info_stash["db_info"]
+    state["web_info"] = info_stash["web_info"]
+    return state
 
 def reset_loop_count(state: AdvisorState) -> AdvisorState:
     """Function to reset the loop count in the main graph state before each new question is processed."""
@@ -58,19 +67,30 @@ def answer_node(state: AdvisorState) -> AdvisorState:
     """Node that returns the final answer from the planning node."""
     return {"messages": state["messages"] + [AIMessage(content=state["plan"]["answer"])]}
 
+def update_info_stash(state: AdvisorState):
+    """Function to update the info stash with the latest db and web info after each loop."""
+    info_stash = {"db_info": state["db_info"], "web_info": state["web_info"]}
+    with open(os.path.join(parent_dir, "lg_agent", "info_stash.json"), "w") as f:
+        json.dump(info_stash, f)
+    return state
+
 graph_builder = StateGraph(AdvisorState)
 
+graph_builder.add_node("fetch_info", fetch_info)
 graph_builder.add_node("reset_loop_count", reset_loop_count)
 graph_builder.add_node("planning", planning_node)
 graph_builder.add_node("invoke_db_helper", invoke_db_helper)
 graph_builder.add_node("invoke_web_helper", invoke_web_helper)
 graph_builder.add_node("answer_node", answer_node)
+graph_builder.add_node("update_info_stash", update_info_stash)
 
-graph_builder.add_edge(START, "reset_loop_count")
+graph_builder.add_edge(START, "fetch_info")
+graph_builder.add_edge("fetch_info", "reset_loop_count")
 graph_builder.add_edge("reset_loop_count", "planning")
 graph_builder.add_conditional_edges("planning", route_from_planning)
 graph_builder.add_edge("invoke_db_helper", "planning")
 graph_builder.add_edge("invoke_web_helper", "planning")
-graph_builder.add_edge("answer_node", END)
+graph_builder.add_edge("answer_node", "update_info_stash")
+graph_builder.add_edge("update_info_stash", END)
 
 chat_graph = graph_builder.compile()
