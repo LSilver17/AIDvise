@@ -20,6 +20,7 @@ import { authSession } from "@/app/lib/account/authSession";
 
 export default function Alerts () {
     const { userAlerts } : { userAlerts: UserAlerts} = useUserData();
+
     const { agent } = useAgent({agentId:"alerts", updates:[]});
     const { copilotkit } = useCopilotKit();
 
@@ -44,11 +45,13 @@ export default function Alerts () {
                 <DashTitle size="5">
                     Unseen
                 </DashTitle>
-                {
-                    userAlerts ? userAlerts.Alerts.map((x,i) => (
-                        <SingleAlert key={i} alert={x}/>
-                    )) : <>Loading...</>
-                }
+                <Flex direction="column">
+                    {
+                        userAlerts ? userAlerts.Alerts.map((x,i) => (
+                            <SingleAlert key={i} alert={x}/>
+                        )) : <>Loading...</>
+                    }
+                </Flex>
                 <DashTitle size="5">
                     Seen
                 </DashTitle>
