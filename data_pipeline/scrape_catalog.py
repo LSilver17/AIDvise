@@ -5,6 +5,7 @@ Scrapes the QCC course catalog from The Q portal.
 For each unique course, clicks into the detail page to extract:
   - Course name
   - Course description
+  - Credits
   - Prerequisites
   - Semesters offered
 
@@ -40,6 +41,7 @@ def parse_detail_page(html):
     result = {
         "name":              None,
         "description":       None,
+        "credits":           None,
         "prerequisites":     None,
         "semesters_offered": None,
     }
@@ -48,7 +50,6 @@ def parse_detail_page(html):
     h5 = soup.find("h5")
     if h5:
         name_text = clean_text(h5.get_text())
-        # Strip the "(ACC 101-01)" part
         name_match = re.match(r"^(.+?)\s*\([A-Z]", name_text)
         if name_match:
             result["name"] = name_match.group(1).strip()
@@ -68,30 +69,40 @@ def parse_detail_page(html):
         if text:
             lines.append(text)
 
+    full = " ".join(lines)
+
     # Description = all lines before "Credits:"
     desc_lines = []
     for line in lines:
-        if line.lower().startswith("credits:"):
+        if re.match(r"credits:", line, re.IGNORECASE):
             break
         desc_lines.append(line)
     if desc_lines:
         result["description"] = " ".join(desc_lines)
 
-    full = " ".join(lines)
+    # Credits — match "Credits: 3" or "3 Credits" or "3 credit hours"
+    credit_match = re.search(
+        r"Credits?:\s*(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*[Cc]redit",
+        full
+    )
+    if credit_match:
+        result["credits"] = credit_match.group(1) or credit_match.group(2)
 
-    # Prerequisites — only if line starts with "Prerequisite"
+    # Prerequisites — stop at Semester Offered or Credits
     prereq_match = re.search(
-        r"Prerequisite[s]?:\s*(.+?)(?:\s*Semester Offered|$)",
+        r"Prerequisite[s]?:\s*(.+?)(?=\s*Semester Offered|\s*Credits?:|$)",
         full, re.IGNORECASE
     )
     if prereq_match:
         prereq = clean_text(prereq_match.group(1))
-        # Exclude if it accidentally captured "Semester Offered"
         if "semester offered" not in prereq.lower():
             result["prerequisites"] = prereq
 
-    # Semesters offered
-    sem_match = re.search(r"Semester Offered:\s*([A-Z/,\s]+)", full)
+    # Semesters offered — allow upper and lowercase, stop at Credits
+    sem_match = re.search(
+        r"Semester[s]? Offered:\s*([A-Za-z/,\s]+?)(?=\s*Credits?:|$)",
+        full, re.IGNORECASE
+    )
     if sem_match:
         result["semesters_offered"] = clean_text(sem_match.group(1))
 
@@ -211,6 +222,7 @@ async def scrape_catalog():
                         "course_number":     course_num,
                         "name":              detail["name"],
                         "description":       detail["description"],
+                        "credits":           detail["credits"],
                         "prerequisites":     detail["prerequisites"],
                         "semesters_offered": detail["semesters_offered"],
                         "scraped_at":        datetime.now().isoformat(),
