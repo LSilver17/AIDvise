@@ -18,7 +18,7 @@ from utilities.schemas import RelevantEventsSchema
 
 class QueryResult(TypedDict):
     query: str
-    result: AIMessage
+    result: str
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]

@@ -4,12 +4,12 @@ export type AlertTypes = "Event" | "Class";
 
 export interface Alert {
     readonly name: string,
-    readonly description: string,
     readonly status: AlertStatus,
     readonly type: AlertTypes,
 }
 
 export interface EventAlert extends Alert {
+    readonly description: string,
     readonly time: string,
     readonly date: string,
     readonly type: "Event",
@@ -47,7 +47,6 @@ export function createEventAlert(
 
 export function createClassAlert(
     name: string,
-    description: string,
     status: AlertStatus,
     department: string,
     code: number,
@@ -60,7 +59,6 @@ export function createClassAlert(
 ) {
     const event: ClassAlert = {
         name: name,
-        description: description,
         status: status,
         department: department,
         code: code,

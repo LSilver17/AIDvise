@@ -12,7 +12,7 @@ import utilities.schemas as schemas
 import database_utils
 import sqlite3
 
-database = "TestDB.db"
+database = "AdvisorDB.db"
 
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)

@@ -69,7 +69,7 @@ def db_node(state: DatabaseHelperState):
     messages = [SystemMessage(content=system_prompt)]
     messages.extend(state["messages"])
 
-    result = llm_with_db_tools.invoke(messages)
+    result = llm_with_db_tools.invoke(messages).content
 
     state["loop_count"] += 1
     return {"messages": [result]}
@@ -88,7 +88,7 @@ def web_node(state: WebSearchHelperState):
     messages = [SystemMessage(content=system_prompt)]
     messages.extend(state["messages"])
 
-    result = llm_with_web_tools.invoke(messages)
+    result = llm_with_web_tools.invoke(messages).content
 
     state["loop_count"] += 1
     return {"messages": [result]}
