@@ -36,7 +36,7 @@ type LoginResult =
     | {success: false, error:string}
 
 type CreationResult =
-    | {success:true, id:string, username: string, account_type: AccountType}
+    | {success:true, id:string, username: string, account_type: AccountType, academic_id: string}
     | {success:false, error:string};
 
 export async function validate_credentials(username: string, password: string): Promise<LoginResult> {
@@ -90,7 +90,16 @@ export async function validate_credentials(username: string, password: string): 
     }
 }
 
-export async function create_user(username: string, password: string, account_type: AccountType): Promise<CreationResult> {
+async function delete_invalid_entry(db: any, username: string) {
+    if (db) {
+        const user = await db.get('SELECT Username, AccountType, ID FROM Users WHERE Username = ?', username);
+        if(user) {
+            await db.run("DELETE FROM Users WHERE Username = ?", username);
+        }
+    }
+}
+
+export async function create_user(username: string, password: string, account_type: AccountType, person_id: string): Promise<CreationResult> {
     var db;
     const validAccountTypes = ["Student", "Advisor"];
     try {
@@ -114,27 +123,46 @@ export async function create_user(username: string, password: string, account_ty
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
 
-        await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
-        
-        // Creates parallel entry into Students/Advisors table
+        let tableName = null;
+        // Ensures ID matches existing student/advisor entry
         if(account_type === "Student") {
-            const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
-            await db.run('INSERT INTO Students (ParentID) VALUES (?)', credential.ID); 
+            const person = await db.get('SELECT ID FROM Students WHERE ID = ?', person_id);
+            if(!person) {
+                    const result: CreationResult = {
+                    success: false,
+                    error: "Student does not exist",
+                }
+                return result;
+            }
+            tableName= "Students";
         } else if (account_type === "Advisor") {
-            const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
-            await db.run('INSERT INTO Advisors (ParentID) VALUES (?)', credential.ID); 
+            const person = await db.get('SELECT ID FROM Advisors WHERE ID = ?', person_id);
+            if(!person) {
+                    const result: CreationResult = {
+                    success: false,
+                    error: "Advisor does not exist",
+                }
+                return result;
+            }
+            tableName="Advisors";
         } else {
             throw "Invalid account type";
         }
 
+        await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
+
         // Pull inserted credentials to return in the session
         const credential = await db.get('SELECT Username, AccountType, ID FROM Users WHERE Username = ?', username);
+
+        // Link existing Student/Advisor record to new User entry
+        await db.run(`UPDATE ${tableName} SET ParentID = ? WHERE ID = ?`, credential.ID, person_id);
 
         const result: CreationResult = {
             success: true,
             username: credential.Username,
             account_type: credential.AccountType,
             id: credential.ID,
+            academic_id: person_id,
         }
 
         return result;
@@ -144,6 +172,7 @@ export async function create_user(username: string, password: string, account_ty
             success: false,
             error: `Database error: ${e}`,
         }
+        await delete_invalid_entry(db, username);
         return result;
     } finally {
         if (db) {
@@ -221,9 +250,18 @@ export async function delete_account() {
         if (!session?.user?.id) {
             throw Error("Unauthorized session");
         }
+
         db = await openDB(dbPath());
         const userID = session.user.id;
+        const account_type = session.user.account_type;
+        const account_table = (account_type === "Student") ? "Students" : "Advisors";
 
+        if(!account_table) {
+            throw Error("No valid account type");
+        }
+
+        //TODO: Allow for null field
+        await db.run(`UPDATE ${account_table} SET ParentID = ? WHERE ParentID = ?`, null, userID);
         await db.run("DELETE FROM Users WHERE ID = ?", userID);
         
         const result: Result = {
@@ -287,22 +325,22 @@ export async function grabUserData() {
                     Name: {
                         title:"Name",
                         data:userInfo.Name,
-                        editable: true,
+                        editable: false,
                     },
                     GPA: {
                         title:"GPA",
                         data:userInfo.GPA,
-                        editable: true,
+                        editable: false,
                     },
                     CreditsEarned:  {
                         title:"Credits Earned",
                         data:userInfo.CreditsEarned,
-                        editable: true,
+                        editable: false,
                     },
                     IntendedGraduationTerm: {
                         title:"Expected Graduation",
                         data:userInfo.IntendedGraduationTerm,
-                        editable: true,
+                        editable: false,
                     },
                     AdvisorID: {
                         title:"Advisor",
