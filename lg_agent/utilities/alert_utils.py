@@ -1,21 +1,19 @@
 import sys, os
 
-# adds database directory to system path if not already there
-database_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database'))
-if database_dir not in sys.path:
-    sys.path.append(database_dir)
+# adds root directory to system path if not already there
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
 
 import datetime
 import sqlite3
-from data_pipeline.database.InterestDummies import __connect
-
-DATABASE = "AdvisorDB.db"
+from data_pipeline.database.database_dev_tools import __connect
 
 # TODO: convert these to typescript and move to frontend
 
 # Get student ID from username
-def get_student_id(username: str, database: str = DATABASE) -> int:
-    with __connect(database) as conn:
+def get_student_id(username: str) -> int:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -44,8 +42,8 @@ def get_student_id(username: str, database: str = DATABASE) -> int:
         return student_id
 
 # Returns a list of relevant events for the student, sorted by urgency
-def get_relevant_events(student_id: int, database: str = DATABASE) -> list[dict]:
-    with __connect(database) as conn:
+def get_relevant_events(student_id: int) -> list[dict]:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -67,8 +65,8 @@ def get_relevant_events(student_id: int, database: str = DATABASE) -> list[dict]
         return relevant_events
 
 # Returns a list of the sections the student is tracking for status change alerts.
-def get_tracked_sections(student_id: int, database: str = DATABASE) -> list[str]:
-    with __connect(database) as conn:
+def get_tracked_sections(student_id: int) -> list[str]:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -88,8 +86,8 @@ def get_tracked_sections(student_id: int, database: str = DATABASE) -> list[str]
         return tracked_sections
 
 # Returns a list of all new section status events for sections the student is tracking for course opening alerts since the last check.
-def get_relevant_section_status_events(student_id: int, database: str = DATABASE) -> list[dict]:
-    with __connect(database) as conn:
+def get_relevant_section_status_events(student_id: int) -> list[dict]:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 

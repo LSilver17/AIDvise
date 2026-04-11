@@ -1,20 +1,19 @@
 import sys, os
 
-database_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database'))
+# adds database directory to system path if not already there
+database_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if database_dir not in sys.path:
-    sys.path.append(database_dir)
+	sys.path.append(database_dir)
 
 import sqlite3
 from datetime import datetime, timedelta
 from database.database_dev_tools import __connect, setup_database, display_term_hierarchy
 
-DATABASE = "TestDB.db"
-
 def _clear_existing_data(cursor: sqlite3.Cursor) -> None:
 	# Child-to-parent delete order to satisfy foreign keys.
 	delete_order = [
-		"MajorMinorRequiredCourseOptions",
-		"MajorMinorRequiredCourses",
+		"ProgramRequiredCourseOptions",
+		"ProgramRequiredCourses",
 		"MeetTimes",
 		"Sections",
 		"CoursesOffered",
@@ -28,20 +27,20 @@ def _clear_existing_data(cursor: sqlite3.Cursor) -> None:
 		"Users",
 		"Events",
 		"Terms",
-		"MajorsAndMinors",
+		"ProgramsOfStudy",
 		"Courses",
 	]
 	for table in delete_order:
 		cursor.execute(f"DELETE FROM {table}")
 
 def seed_dummy_entries(reset_existing: bool = True) -> None:
-	with __connect(database=DATABASE) as conn:
+	with __connect() as conn:
 		
 		cursor = conn.cursor()
 		
 		cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Courses'")
 		if not cursor.fetchone():
-			setup_database(database=DATABASE)
+			setup_database()
 		
 		if reset_existing:
 			_clear_existing_data(cursor)
@@ -68,26 +67,26 @@ def seed_dummy_entries(reset_existing: bool = True) -> None:
 			for row in cursor.execute("SELECT Name, ID FROM Courses").fetchall()
 		}
 
-		# 2) Major/Minor catalog
-		major_minor_rows = [
-			("Computer Science", "Focused study in software, systems, and theory.", 54, "Major"),
-			("Mathematics", "Broad study in pure and applied mathematics.", 48, "Major"),
-			("Data Science", "Minor emphasizing data analytics and modeling.", 18, "Minor"),
+		# 2) Program catalog
+		program_rows = [
+			("Computer Science", "Focused study in software, systems, and theory.", 54, "Associate in Science"),
+			("Mathematics", "Broad study in pure and applied mathematics.", 48, "Associate in Science"),
+			("Data Science", "Minor emphasizing data analytics and modeling.", 18, "Associate in Science"),
 		]
 		cursor.executemany(
 			"""
-			INSERT INTO MajorsAndMinors (Title, Description, CreditsRequired, Type)
+			INSERT INTO ProgramsOfStudy (Title, Description, CreditsRequired, Type)
 			VALUES (?, ?, ?, ?)
 			""",
-			major_minor_rows,
+			program_rows,
 		)
 
-		major_minor_id_by_title = {
+		program_id_by_title = {
 			row[0]: row[1]
-			for row in cursor.execute("SELECT Title, ID FROM MajorsAndMinors").fetchall()
+			for row in cursor.execute("SELECT Title, ID FROM ProgramsOfStudy").fetchall()
 		}
 
-		# 3) Major/Minor required-course groups and options
+		# 3) Program required-course groups and options
 		requirement_groups = {
 			"Computer Science": [
 				["Intro to Programming"],
@@ -103,17 +102,17 @@ def seed_dummy_entries(reset_existing: bool = True) -> None:
 		}
 
 		for title, options_per_group in requirement_groups.items():
-			major_minor_id = major_minor_id_by_title[title]
+			program_id = program_id_by_title[title]
 			for option_group in options_per_group:
 				cursor.execute(
-					"INSERT INTO MajorMinorRequiredCourses (ParentID) VALUES (?)",
-					(major_minor_id,),
+					"INSERT INTO ProgramRequiredCourses (ParentID) VALUES (?)",
+					(program_id,),
 				)
 				required_group_id = cursor.lastrowid
 				for course_name in option_group:
 					cursor.execute(
 						"""
-						INSERT INTO MajorMinorRequiredCourseOptions (CourseID, ParentID)
+						INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
 						VALUES (?, ?)
 						""",
 						(course_id_by_name[course_name], required_group_id),
@@ -308,9 +307,8 @@ def seed_dummy_entries(reset_existing: bool = True) -> None:
 
 		conn.commit()
 		print("Dummy entries inserted successfully.")
-		conn.close()
 
 # For testing purposes, run this file to seed the database with dummy entries and display the term hierarchy to verify that the entries were added correctly.
 if __name__ == "__main__":
 	seed_dummy_entries(reset_existing=True)
-	display_term_hierarchy(database=DATABASE)
+	display_term_hierarchy()

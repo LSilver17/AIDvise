@@ -7,8 +7,6 @@ if parent_dir not in sys.path:
 from database.database_dev_tools import __connect
 import sqlite3
 
-DATABASE = "AlertTestDB.db"
-
 EVENTS = {
     "AI Career Panel": {
         "description": "Faculty and alumni discuss careers in AI and ML.",
@@ -122,7 +120,7 @@ INTERESTS = [
 
 # Utility function to insert dummy data for testing the event filtering graph
 def insert_interest_dummy_data() -> None:
-    with __connect(database=DATABASE) as conn:
+    with __connect() as conn:
         cursor = conn.cursor()
             
         cursor.execute(
@@ -195,7 +193,7 @@ def insert_interest_dummy_data() -> None:
 
 # Utility function to reset event check timestamps and relivent event table as well as move up event dates for testing purposes
 def reset():
-    with __connect(database=DATABASE) as conn:
+    with __connect() as conn:
         cursor = conn.cursor()
 
         cursor.execute(

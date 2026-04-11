@@ -1,5 +1,10 @@
 import sys, os
     
+# adds root directory to system path if not already there
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 # adds utilities directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
@@ -11,12 +16,11 @@ from langchain_anthropic import ChatAnthropic
 from langchain_community.agent_toolkits import create_sql_agent
 from utilities.schemas import RelevantEventsSchema
 from utilities.state import AlertsAgentInput, AlertsAgentState, AlertsAgentOutput
+from data_pipeline.database.database_dev_tools import __connect
 from datetime import datetime
 import sqlite3
 
 load_dotenv()
-
-DATABASE = "AdvisorDB.db"
 
 llm = ChatAnthropic(
     model="claude-sonnet-4-6",
@@ -25,7 +29,7 @@ llm = ChatAnthropic(
 
 # Updates the agent's state with new events from the database since the last check.
 def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
-    with sqlite3.connect(DATABASE) as conn:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -82,7 +86,7 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
 
 # Updates the agent's state with the student's interests
 def get_interests(state: AlertsAgentState) -> AlertsAgentState:
-    with sqlite3.connect(DATABASE) as conn:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -127,7 +131,7 @@ def filter_relivent_events(state: AlertsAgentState) -> AlertsAgentState:
 
 # Inserts relevant events for a student into the database
 def insert_relevant_events(state: AlertsAgentState) -> AlertsAgentOutput:
-    with sqlite3.connect(DATABASE) as conn:
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 

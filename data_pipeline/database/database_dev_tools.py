@@ -1,9 +1,9 @@
 import sys, os
 
-# Add the project root to the path if not already there
-lg_agent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if lg_agent_path not in sys.path:
-    sys.path.append(lg_agent_path)
+# Add the path to the root directory to the path if not already there
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
 
 # Add the jsons directory to the path if not already there, 
 jsons_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
@@ -13,20 +13,21 @@ if jsons_dir not in sys.path:
 import json, sqlite3
 from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_title
 
-DATABASE = "AdvisorDB.db"
 COURSE_CATALOG = "qcc_classes.json"
 PROGRAMS_CATALOG = "qcc_programs.json"
 
 # Utility function for connecting to database and setting up required pragmas and row factory
-def __connect(database: str = DATABASE):
-    conn = sqlite3.connect(database)
+def __connect():
+    with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+        db_config = json.load(f)
+    conn = sqlite3.connect(db_config["database"])
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
 
 # Utility function to set up the database with the required tables and schema
-def setup_database(database: str = DATABASE):
-    with __connect(database) as conn:
+def setup_database():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -297,11 +298,13 @@ def setup_database(database: str = DATABASE):
 
         # Commit the changes to the database
         conn.commit()
-        print(f"Database '{database}' setup complete with required tables and schema.")
+        with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+            db_config = json.load(f)
+        print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
 
 # Utility function to reset the course catalog tables
-def reset_course_catalog(database: str = DATABASE):
-    with __connect(database) as conn:
+def reset_course_catalog():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -313,8 +316,8 @@ def reset_course_catalog(database: str = DATABASE):
         print("Course catalog tables reset.")
 
 # Utility function to reset the programs of study catalog tables
-def reset_programs_catalog(database: str = DATABASE):
-    with __connect(database) as conn:
+def reset_programs_catalog():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -328,8 +331,8 @@ def reset_programs_catalog(database: str = DATABASE):
         print("Programs of study catalog tables reset.")
 
 # Utility function to reset the terms and courses offered tables
-def reset_terms_and_courses(database: str = DATABASE):
-    with __connect(database) as conn:
+def reset_terms_and_courses():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -343,8 +346,8 @@ def reset_terms_and_courses(database: str = DATABASE):
         conn.commit()
 
 # Utility function to view the course hierarchy and contents in a readable format
-def reset_events(database: str = DATABASE):
-    with __connect(database) as conn:
+def reset_events():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -356,8 +359,8 @@ def reset_events(database: str = DATABASE):
         conn.commit()
 
 # Utility function to reset the users, advisors, and students tables
-def reset_users(database: str = DATABASE):
-    with __connect(database) as conn:
+def reset_users():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
         
@@ -375,16 +378,16 @@ def reset_users(database: str = DATABASE):
         conn.commit()
 
 # Utility function to reset all tables in the database except for course catalog tables
-def reset_all(database: str = DATABASE):
-    reset_course_catalog(database)
-    reset_programs_catalog(database)
-    reset_terms_and_courses(database)
-    reset_events(database)
-    reset_users(database)
+def reset_all():
+    reset_course_catalog()
+    reset_programs_catalog()
+    reset_terms_and_courses()
+    reset_events()
+    reset_users()
 
 # Utility function to create database triggers
-def create_triggers(database: str = DATABASE):
-    with __connect(database=database) as conn:
+def create_triggers():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -406,8 +409,8 @@ def create_triggers(database: str = DATABASE):
         conn.commit()
 
 # Utility function to populate the course catalog in the database from a JSON file containing course information (file must be located in the jsons directory)
-def populate_course_catalog(database: str = DATABASE, json_file: str = COURSE_CATALOG):
-    with __connect(database) as conn:
+def populate_course_catalog(json_file: str = COURSE_CATALOG):
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -451,8 +454,8 @@ def populate_course_catalog(database: str = DATABASE, json_file: str = COURSE_CA
         print("Course catalog populated from JSON file.")
 
 # Utility function to populate the programs of study catalog in the database from a JSON file containing program information
-def populate_programs_catalog(database: str = DATABASE, json_file: str = PROGRAMS_CATALOG):
-    with __connect(database) as conn:
+def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -523,8 +526,8 @@ def populate_programs_catalog(database: str = DATABASE, json_file: str = PROGRAM
 
 # Utility function to add a new term and its courses/sections from a JSON file
 # TODO: update this to follow new database structure
-def add_new_term(database: str = DATABASE, json_file: str = "terms.json"):
-    with __connect(database) as conn:
+def add_new_term(json_file: str = "terms.json"):
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
@@ -639,8 +642,8 @@ def add_new_term(database: str = DATABASE, json_file: str = "terms.json"):
         conn.commit()
 
 # Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
-def display_term_hierarchy(database: str = DATABASE):
-    with __connect(database) as conn:
+def display_term_hierarchy():
+    with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
