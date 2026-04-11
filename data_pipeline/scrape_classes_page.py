@@ -2,7 +2,8 @@
 scrape_classes_page.py
 -----------------------
 Scrapes https://www.qcc.edu/classes for the full list of QCC credit courses.
-For each course, also fetches the detail page to get the description.
+For each course, also fetches the detail page to get description, credits,
+and prerequisites.
 
 Outputs: qcc_classes.json
 
@@ -34,45 +35,84 @@ def clean_text(text):
 
 
 def fetch_course_detail(url):
-    """Fetch description and prerequisites from a course detail page."""
+    """
+    Fetch credits, description, and prerequisites from a QCC course detail page.
+
+    The page renders labeled fields as plain text in the <main> area, e.g.:
+        Credits         3
+        [description paragraph]
+        Prerequisites   Placement into college level English
+
+    Strategy:
+      1. Split main content into lines
+      2. Walk through looking for label/value pairs (Credits, Prerequisites)
+      3. Description = longest paragraph that isn't a label or nav item
+    """
     result = {"description": None, "prerequisites": None, "credits": None}
     try:
         resp = requests.get(url, headers=HEADERS, timeout=15)
         if resp.status_code != 200:
             return result
-        soup = BeautifulSoup(resp.text, "html.parser")
 
-        # Description is usually in the main content area
-        # Try common selectors
-        desc = None
-        for selector in [
-            ".field--name-body",
-            ".field--type-text-with-summary",
-            "article .field",
-            "main p"
-        ]:
-            el = soup.select_one(selector)
-            if el:
-                text = clean_text(el.get_text())
-                if len(text) > 50:
-                    desc = text
+        soup = BeautifulSoup(resp.text, "html.parser")
+        main = soup.find("main") or soup.find("body")
+        if not main:
+            return result
+
+        # Split into clean lines
+        raw_lines = [clean_text(line) for line in main.get_text("\n").splitlines() if clean_text(line)]
+
+        # --- Extract Credits ---
+        for i, line in enumerate(raw_lines):
+            if re.match(r"^Credits$", line, re.IGNORECASE):
+                if i + 1 < len(raw_lines):
+                    val = raw_lines[i + 1]
+                    if re.match(r"^\d+(\.\d+)?$", val):
+                        result["credits"] = val
+                        break
+            m = re.match(r"^Credits\s+(\d+(?:\.\d+)?)$", line, re.IGNORECASE)
+            if m:
+                result["credits"] = m.group(1)
+                break
+
+        # --- Extract Prerequisites ---
+        for i, line in enumerate(raw_lines):
+            if re.match(r"^Prerequisites?$", line, re.IGNORECASE):
+                if i + 1 < len(raw_lines):
+                    result["prerequisites"] = raw_lines[i + 1]
+                    break
+            m = re.match(r"^Prerequisites?\s{2,}(.+)$", line, re.IGNORECASE)
+            if m:
+                result["prerequisites"] = clean_text(m.group(1))
+                break
+            m2 = re.match(r"^Prerequisites?[:\s]+(.+)$", line, re.IGNORECASE)
+            if m2:
+                val = clean_text(m2.group(1))
+                if len(val) > 2:
+                    result["prerequisites"] = val
                     break
 
-        if desc:
-            # Extract prerequisites
-            prereq_match = re.search(r"Prerequisite[s]?:\s*(.+?)(?:\.|$)", desc, re.IGNORECASE)
-            if prereq_match:
-                result["prerequisites"] = clean_text(prereq_match.group(1))
+        # --- Extract Description ---
+        label_pattern = re.compile(
+            r"^(Area|Course Number|Semester Offered|Credits|Prerequisites?|"
+            r"Skip to|Primary|Secondary|Contact|Visit|Apply|Copyright|"
+            r"Local|Life-changing|Fulltext|Open Menu|Open Search)",
+            re.IGNORECASE
+        )
+        content = main.find("article") or main
+        text_blocks = []
+        for el in content.find_all(["p", "div", "span"]):
+            t = clean_text(el.get_text())
+            if t:
+                text_blocks.append(t)
 
-            # Extract credits
-            credit_match = re.search(r"(\d+(?:\.\d+)?)\s+credit", desc, re.IGNORECASE)
-            if credit_match:
-                result["credits"] = credit_match.group(1)
+        candidates = [t for t in text_blocks if len(t) > 80 and not label_pattern.match(t)]
+        if candidates:
+            result["description"] = max(candidates, key=len)
 
-            result["description"] = desc
-
-    except Exception as e:
+    except Exception:
         pass
+
     return result
 
 
@@ -84,7 +124,6 @@ def scrape_classes():
     courses = []
     current_dept = None
 
-    # Find all department headings and course table rows
     main = soup.find("main") or soup.find("body")
 
     for el in main.find_all(["h2", "tr"]):
@@ -109,14 +148,14 @@ def scrape_classes():
             full_url = BASE_URL + href if href.startswith("/") else href
 
             courses.append({
-                "course_code":  code,
-                "department":   current_dept,
-                "name":         name,
-                "url":          full_url,
-                "description":  None,
+                "course_code":   code,
+                "department":    current_dept,
+                "name":          name,
+                "url":           full_url,
+                "description":   None,
                 "prerequisites": None,
-                "credits":      None,
-                "scraped_at":   datetime.now().isoformat(),
+                "credits":       None,
+                "scraped_at":    datetime.now().isoformat(),
             })
 
     print(f"Found {len(courses)} courses. Now fetching detail pages...\n")
@@ -124,10 +163,10 @@ def scrape_classes():
     for i, course in enumerate(courses):
         print(f"[{i+1}/{len(courses)}] {course['course_code']} — {course['name']}")
         detail = fetch_course_detail(course["url"])
-        course["description"]  = detail["description"]
+        course["description"]   = detail["description"]
         course["prerequisites"] = detail["prerequisites"]
         course["credits"]       = detail["credits"]
-        time.sleep(0.3)  # be polite to the server
+        time.sleep(0.3)
 
     return courses
 
@@ -145,8 +184,10 @@ def main():
         json.dump(courses, f, indent=2)
 
     elapsed = (datetime.now() - start).seconds
+    filled = sum(1 for c in courses if c["credits"] is not None)
     print(f"\n✅ Done in {elapsed}s")
     print(f"   Scraped {len(courses)} courses")
+    print(f"   Credits populated: {filled}/{len(courses)}")
     print(f"   Saved to {OUTPUT}")
     print("=" * 50)
 
