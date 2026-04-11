@@ -20,7 +20,7 @@ PROGRAMS_CATALOG = "qcc_programs.json"
 def __connect():
     with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
         db_config = json.load(f)
-    conn = sqlite3.connect(db_config["database"])
+    conn = sqlite3.connect(db_config["database"] + ".db")
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
