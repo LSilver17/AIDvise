@@ -14,7 +14,7 @@ from utilities.tools import web_tools
 tool_node = ToolNode(web_tools)
 
 def format_web_output(state: WebSearchHelperState) -> WebSearchHelperOutput:
-    return {"info": {"query": state["info_needed"], "result": state["messages"][-1]}}
+    return {"info": {"query": state["info_needed"], "result": state["messages"][-1].content}}
 
 def should_continue(state: WebSearchHelperState):
     messages = state["messages"]

@@ -44,9 +44,9 @@ def planning_node(state: AdvisorState) -> AdvisorState:
     messages.append(SystemMessage(content=system_prompt))
 
     for QueryResult in state["db_info"]:
-        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result'].content}"))
+        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     for QueryResult in state["web_info"]:
-        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result'].content}"))
+        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
     messages.extend(state["messages"])
 
@@ -64,12 +64,13 @@ def db_node(state: DatabaseHelperState):
     
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the database to answer the user's question: {state['info_needed']}"))
 
-    messages = [SystemMessage(content=system_prompt)]
+    messages = []
     messages.extend(state["messages"])
 
-    result = llm_with_db_tools.invoke(messages).content
+    result = llm_with_db_tools.invoke(messages)
 
     state["loop_count"] += 1
     return {"messages": [result]}
@@ -83,12 +84,13 @@ def web_node(state: WebSearchHelperState):
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the web to answer the user's question: {state['info_needed']}"))
 
-    messages = [SystemMessage(content=system_prompt)]
+    messages = []
     messages.extend(state["messages"])
 
-    result = llm_with_web_tools.invoke(messages).content
+    result = llm_with_web_tools.invoke(messages)
 
     state["loop_count"] += 1
     return {"messages": [result]}
