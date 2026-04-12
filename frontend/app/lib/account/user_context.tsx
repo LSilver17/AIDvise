@@ -1,11 +1,11 @@
 "use client"
 
 import { createContext, useContext, useState } from "react";
-import type { UserData, UserMetadata, UserAlerts, Context } from "@/app/lib/account/account_db_utils";
+import type { UserData, UserMetadata, UserAlerts, UserStudents, StudentContext, AdvisorContext } from "@/app/lib/account/account_db_utils";
 
 type Props = {
     children: React.ReactNode,
-    currContext: Context,
+    currContext: StudentContext | AdvisorContext,
 }
 
 const UserContext = createContext(null as any);
@@ -15,13 +15,27 @@ const UserContext = createContext(null as any);
 export function UserContextProvider({children, currContext}: Props) {
     const [userData, setUserData] = useState<UserData | null>(currContext.userData);
     const [userMetadata, setUserMetadata] = useState<UserMetadata | null>(currContext.userMetadata);
-    const [userAlerts, setUserAlerts] = useState<UserAlerts | null>(currContext.userAlerts);
+
+    if(currContext.userMetadata.AccountType === "Student") {
+        const studentContext = currContext as StudentContext;
+        const [userAlerts, setUserAlerts] = useState<UserAlerts | null>(studentContext.userAlerts);
+        return (
+            <UserContext.Provider value={{userData, userMetadata, userAlerts}}>
+                {children}
+            </UserContext.Provider>
+        )
+    } else if(currContext.userMetadata.AccountType === "Advisor") {
+        const advisorContext = currContext as AdvisorContext;
+        const [userStudents, setUserStudents] = useState<UserStudents | null>(advisorContext.userStudents);
+        return (
+            <UserContext.Provider value={{userData, userMetadata, userStudents}}>
+                {children}
+            </UserContext.Provider>
+        )
+    }
     
-    return (
-        <UserContext.Provider value={{userData, userMetadata, userAlerts}}>
-            {children}
-        </UserContext.Provider>
-    )
+    
+    
 }
 
 export const useUserData = () => useContext(UserContext);

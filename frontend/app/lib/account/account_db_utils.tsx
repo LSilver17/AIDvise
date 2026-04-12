@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import path from "path";
 import { signOut } from "next-auth/react";
 import data from "../../../../database_config.json"
+import type { Database } from 'sqlite3';
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
@@ -99,9 +100,41 @@ async function delete_invalid_entry(db: any, username: string) {
     }
 }
 
+type ValidationResult = {valid: true, table: string} | {valid: false, err: string}
+
+async function id_validation(db: any, account_type: AccountType, person_id: string) {
+    if(account_type) {
+        const table = (account_type === "Student") ? "Students" : "Advisors";
+        const personID = await db.get(`SELECT ID FROM ${table} WHERE ID = ?`, person_id);
+        if(!personID) {
+            const result: ValidationResult = {
+                valid: false,
+                err: `${account_type} does not exist`,
+            }
+            return result;
+        }
+        const associatedAcc = await db.get(`SELECT ParentID FROM ${table} WHERE ID = ?`, person_id);
+        if(associatedAcc) {
+            const result: ValidationResult = {
+                valid: false,
+                err: "There is already an account associated with this ID",
+            }
+            return result;
+        }
+        const result: ValidationResult = {
+            valid: true,
+            table: account_type,
+        }
+        return result;
+    } else {
+        throw "Invalid account type";
+    }
+}
+
 export async function create_user(username: string, password: string, account_type: AccountType, person_id: string): Promise<CreationResult> {
     var db;
     const validAccountTypes = ["Student", "Advisor"];
+    
     try {
         if (!account_type || !validAccountTypes.includes(account_type)) {
             throw "Invalid account type";
@@ -118,36 +151,16 @@ export async function create_user(username: string, password: string, account_ty
             return result;
         }
 
+        // Ensures ID matches existing student/advisor entry and there is no account already associated
+        const valid = await id_validation(db, account_type, person_id);
+        let tableName = null;
+        if (valid.valid) {tableName = valid.table}
+        else {throw valid.err};
+
         // Hash the password before storing it in the database
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
-
-        let tableName = null;
-        // Ensures ID matches existing student/advisor entry
-        if(account_type === "Student") {
-            const person = await db.get('SELECT ID FROM Students WHERE ID = ?', person_id);
-            if(!person) {
-                    const result: CreationResult = {
-                    success: false,
-                    error: "Student does not exist",
-                }
-                return result;
-            }
-            tableName= "Students";
-        } else if (account_type === "Advisor") {
-            const person = await db.get('SELECT ID FROM Advisors WHERE ID = ?', person_id);
-            if(!person) {
-                    const result: CreationResult = {
-                    success: false,
-                    error: "Advisor does not exist",
-                }
-                return result;
-            }
-            tableName="Advisors";
-        } else {
-            throw "Invalid account type";
-        }
 
         await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
 
@@ -260,7 +273,7 @@ export async function delete_account() {
             throw Error("No valid account type");
         }
 
-        //TODO: Allow for null field
+        // TODO: Allow for null field
         await db.run(`UPDATE ${account_table} SET ParentID = ? WHERE ParentID = ?`, null, userID);
         await db.run("DELETE FROM Users WHERE ID = ?", userID);
         
@@ -303,6 +316,18 @@ export type UserMetadata = {
 
 export type UserAlerts = {
     Alerts: Alert[]
+}
+
+export type Student = {
+    ID: string,
+    Name: string | null,
+    GPA: number | null,
+    CreditsEarned: number | null,
+    IntendedGraduationTerm?: string | null,
+}
+
+export type UserStudents = {
+    Students: Student[],
 }
 
 export async function grabUserData() {
@@ -405,13 +430,18 @@ export async function getUserObject() {
     }
 }
 
-export type Context = {
+interface Context {
     userData: UserData,
     userMetadata: UserMetadata,
+}
+export interface StudentContext extends Context{
     userAlerts: UserAlerts,
 }
+export interface AdvisorContext extends Context{
+    userStudents: UserStudents,
+}
 
-export async function get_curr_context() {
+export async function get_curr_context(account_type: AccountType) {
     // session validation
   const session = await authSession();
   
@@ -426,17 +456,29 @@ export async function get_curr_context() {
     Username: session.user.username
   }
 
-  const userAlerts: UserAlerts = {
-    Alerts: temp_alert_fill(),
-  }
 
-  const currContext = {
-    userData: userData,
-    userMetadata: userMetadata,
-    userAlerts: userAlerts
-  };
+  if(account_type === "Student") {
+        const userAlerts: UserAlerts = {
+            Alerts: temp_alert_fill(),
+        }
+        const currContext = {
+            userData: userData,
+            userMetadata: userMetadata,
+            userAlerts: userAlerts
+        };
+        return currContext;
+    } else if(account_type==="Advisor") {
+        const userStudents: UserStudents = {
+            Students: temp_student_fill(),
+        }
+        const currContext = {
+            userData: userData,
+            userMetadata: userMetadata,
+            userStudents: userStudents,
+        };
+        return currContext;
+    }
   
-  return currContext;
 }
 
  // TODO: Delete
@@ -519,4 +561,40 @@ function temp_alert_fill(): Alert[] {
     a1, a2, a3, a4, a5, a6
   ]
   return alerts;
+}
+
+//TODO: Delete
+function temp_student_fill() : Student[] {
+    const s1: Student = {
+        ID: "3",
+        Name: "Sean",
+        GPA: 3.7,
+        CreditsEarned: 60,
+        IntendedGraduationTerm: "S1 2026"
+    }
+    const s2: Student = {
+        ID: "4",
+        Name: "Joe",
+        GPA: 3.3,
+        CreditsEarned: 30,
+        IntendedGraduationTerm: "S 2027"
+    }
+    const s3: Student = {
+        ID: "6",
+        Name: "Bobby",
+        GPA: 3.3,
+        CreditsEarned: 30,
+        IntendedGraduationTerm: "S 2027"
+    }
+    const s4: Student = {
+        ID: "8",
+        Name: "John",
+        GPA: 3.3,
+        CreditsEarned: 30,
+        IntendedGraduationTerm: "S 2027"
+    }
+    const students: Student[] = [
+        s1, s2, s3, s4
+    ]
+    return students
 }
