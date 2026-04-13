@@ -1,0 +1,16 @@
+{
+    "mode": "testing",
+    "all-claude": {
+        "planning": "sonnet-4-6",
+        "db": "sonnet-4-6",
+        "web": "sonnet-4-6",
+        "alerts": "sonnet-4-6"
+    },
+    "testing": {
+        "planning": "testing",
+        "db": "testing",
+        "web": "testing",
+        "alerts": "testing"
+    }
+
+}

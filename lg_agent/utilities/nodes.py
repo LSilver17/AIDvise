@@ -3,39 +3,98 @@ import sys, os
 # adds utilities directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir)# adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
+# adds root directory to system path if not already there
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 from dotenv import load_dotenv
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolCall
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from utilities.state import AdvisorState, DatabaseHelperState, WebSearchHelperState
 from utilities.schemas import PlanSchema
 from utilities.tools import db_tools, web_tools
+from utilities.TestModel import GenericFakeChatModel
+import json
 
 load_dotenv()
 
-llm = ChatAnthropic(
-    model="claude-sonnet-4-6",
-    temperature=.2,
-)
-
-db_llm = ChatAnthropic(
-    model="claude-sonnet-4-6",
-    temperature=.2,
-)
-
-web_llm = ChatAnthropic(
-    model="claude-sonnet-4-6",
-    temperature=.2,
-)
+# TODO: add more models and add the respective api keys to .env
+with open(os.path.join(root_dir, "model_select.json"), 'r') as f:
+    model_select = json.load(f)
+    mode = model_select["mode"]
+    match model_select[mode]["planning"]:
+        case "sonnet-4-6":
+            planning_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
+        case "gpt-4o":
+            planning_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
+        case "testing":
+            planning_llm = GenericFakeChatModel(messages=iter([
+                AIMessage(content=json.dumps({
+                    "requires_database": True,
+                    "requires_web_search": True,
+                    "answer": "",
+                    "info_needed_db": "Look up the seeded CSC 212 course record, the Artificial Intelligence course record, Spring 2026 course offerings, and the CSC 212 Spring 2026 section taught by Prof. Nguyen.",
+                    "info_needed_web": "Check current web results for CSC 212 course requirements and academic planning guidance."
+                })),
+                AIMessage(content=json.dumps({
+                    "requires_database": False,
+                    "requires_web_search": False,
+                    "answer": "Using the gathered database and web information, the advisor can explain the CSC 212 course details, confirm which Spring 2026 courses are offered, identify the CSC 212 section with Prof. Nguyen, and summarize current web guidance.",
+                    "info_needed_db": "",
+                    "info_needed_web": ""
+                })),
+                AIMessage(content=json.dumps({
+                    "requires_database": False,
+                    "requires_web_search": False,
+                    "answer": "Testing fallback: the advisor has enough information to answer without more database or web lookups.",
+                    "info_needed_db": "",
+                    "info_needed_web": ""
+                }))
+            ]))
+        case default:
+            raise ValueError(f"Model {model_select[mode]["planning"]} not supported for planning node.")
+    match model_select[mode]["db"]:
+        case "sonnet-4-6":
+            db_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
+        case "gpt-4o":
+            db_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
+        case "testing":
+            db_llm = GenericFakeChatModel(messages=iter([
+                AIMessage(content="testing all db tools", tool_calls=[
+                    ToolCall(name="course_query_by_code", args={"course_code": "CSC 212"}, id="1"),
+                    ToolCall(name="course_query_by_title", args={"course_title": "Artificial Intelligence"}, id="2"),
+                    ToolCall(name="course_filter", args={"filters": {"terms": [{"year": 2026, "season": "Spring", "number": None}, {"year": 2026, "season": "Fall", "number": None}], "departments": ["CSC", "MTH"], "credits": {"condition": ">=", "credits": 3}}}, id="3"),
+                    ToolCall(name="section_filter", args={"filters": {"terms": [{"year": 2026, "season": "Spring", "number": None}], "course_codes": ["CSC 212"], "instructors": ["Prof. Nguyen"], "locations": ["Tech Building 115"]}}, id="4")
+                ]),
+                AIMessage(content="Database tools completed. CSC 212, Artificial Intelligence, Spring 2026 offerings, and the CSC 212 section information have all been retrieved successfully."),
+                AIMessage(content="Database tools fallback. No additional database work is needed for this test run.")
+            ]))
+        case default:
+            raise ValueError(f"Model {model_select[mode]["db"]} not supported for db node.")
+    match model_select[mode]["web"]:
+        case "sonnet-4-6":
+            web_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
+        case "gpt-4o":
+            web_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
+        case "testing":
+            web_llm = GenericFakeChatModel(messages=iter([
+                AIMessage(content="testing web search", tool_calls=[
+                    ToolCall(name="web_search", args={"query": "CSC 212 course requirements and academic planning guidance"}, id="1")
+                ]),
+                AIMessage(content="Web search completed. The returned results can be used to confirm current guidance for CSC 212 and related academic planning questions."),
+                AIMessage(content="Web search fallback. No additional web search is needed for this test run.")
+            ]))
+        case default:
+            raise ValueError(f"Model {model_select[mode]["web"]} not supported for web node.")
 
 def planning_node(state: AdvisorState) -> AdvisorState:
     """Base node for the academic advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
-    structured_llm = llm.with_structured_output(PlanSchema)
+    structured_llm = planning_llm.with_structured_output(PlanSchema)
 
     system_prompt = f"You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is 3 or higher and you still don't have the information needed, provide the best answer you can with the information you have and stop. loop count = {state['loop_count']}"
 
@@ -44,9 +103,9 @@ def planning_node(state: AdvisorState) -> AdvisorState:
     messages.append(SystemMessage(content=system_prompt))
 
     for QueryResult in state["db_info"]:
-        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result'].content}"))
+        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     for QueryResult in state["web_info"]:
-        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result'].content}"))
+        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
     messages.extend(state["messages"])
 
@@ -69,7 +128,7 @@ def db_node(state: DatabaseHelperState):
     messages = [SystemMessage(content=system_prompt)]
     messages.extend(state["messages"])
 
-    result = llm_with_db_tools.invoke(messages).content
+    result = llm_with_db_tools.invoke(messages)
 
     state["loop_count"] += 1
     return {"messages": [result]}
@@ -88,7 +147,7 @@ def web_node(state: WebSearchHelperState):
     messages = [SystemMessage(content=system_prompt)]
     messages.extend(state["messages"])
 
-    result = llm_with_web_tools.invoke(messages).content
+    result = llm_with_web_tools.invoke(messages)
 
     state["loop_count"] += 1
     return {"messages": [result]}
