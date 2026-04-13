@@ -21,7 +21,7 @@ import { useState } from "react";
 
 function AlertContainer({children} : {children: React.ReactNode}) {
     return ( 
-        <Flex direction="column" gap="5">
+        <Flex direction="column" gap="5" width="100%">
             {children}
         </Flex>
     )

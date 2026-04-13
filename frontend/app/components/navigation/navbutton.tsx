@@ -27,7 +27,7 @@ export default function NavButton({href, children, size, onClick,}: ButtonProps)
             onClick={onClick}
             variant={activePath ? "surface": "solid"}
         >
-            <Flex direction="row" justify="start" align="center" gap="3" width="100%">
+            <Flex direction="row" justify="start" align="center" width="100%" gap="3">
                 {children}
             </Flex>
         </DefaultButton>

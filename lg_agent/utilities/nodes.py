@@ -123,9 +123,10 @@ def db_node(state: DatabaseHelperState):
     
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the database to answer the user's question: {state['info_needed']}"))
 
-    messages = [SystemMessage(content=system_prompt)]
+    messages = []
     messages.extend(state["messages"])
 
     result = llm_with_db_tools.invoke(messages)
@@ -142,9 +143,10 @@ def web_node(state: WebSearchHelperState):
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the web to answer the user's question: {state['info_needed']}"))
 
-    messages = [SystemMessage(content=system_prompt)]
+    messages = []
     messages.extend(state["messages"])
 
     result = llm_with_web_tools.invoke(messages)

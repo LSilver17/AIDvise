@@ -18,11 +18,12 @@ export default function FormRootLayout({onSubmit, children} : Props) {
             <Flex 
                 justify="between" 
                 direction="column" 
-                gap="6"  
+                gap="4"  
                 overflow="hidden" 
                 flexGrow="0" 
                 flexShrink="0"
                 align="center"
+                wrap="wrap"
             >
                 {children}
             </Flex>

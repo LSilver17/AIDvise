@@ -16,7 +16,7 @@ from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from data_pipeline.database.database_dev_tools import __connect
 import utilities.schemas as schemas
 import database_utils
-import sqlite3
+import sqlite3, json
 
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
@@ -51,7 +51,8 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             for course_id in course_ids:
                 course_info = database_utils.get_course_info_by_id(cursor, course_id)
                 courses_info.append(course_info)
-            return "\n\n".join(courses_info)
+            info_str = json.dumps(courses_info)
+            return "\n\n"+info_str
         else:
             return "No courses found matching the specified criteria."
 
@@ -65,7 +66,8 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             for section_id in section_ids:
                 section_info = database_utils.get_data_with_hierarchy_string(cursor, "Sections", section_id)
                 sections_info.append(section_info)
-            return "\n\n".join(sections_info)
+            info_str = json.dumps(sections_info)
+            return "\n\n"+info_str
         else:
             return "No sections found matching the specified criteria."
     
