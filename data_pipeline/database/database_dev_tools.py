@@ -404,6 +404,21 @@ def create_triggers():
             '''
         )
 
+        # create trigger to reset last event check and last section status check field of a student entry when its parent id field is changed to null
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS ResetCheckFields
+            AFTER UPDATE OF ParentID ON Students
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NULL
+            BEGIN
+                UPDATE Students
+                SET LastEventCheck = NULL, LastSectionStatusCheck = NULL
+                WHERE ID = NEW.ID;
+            END;
+            '''
+        )
+
         # Commit the changes to the database
         conn.commit()
 
