@@ -416,7 +416,7 @@ def create_triggers():
             WHEN NEW.ParentID IS NULL
             BEGIN
                 UPDATE Students
-                SET LastEventCheck = NULL, LastSectionStatusCheck = NULL
+                SET LastEventCheck = '1970-01-01T00:00:00', LastSectionStatusCheck = '1970-01-01T00:00:00'
                 WHERE ID = NEW.ID;
             END;
             '''

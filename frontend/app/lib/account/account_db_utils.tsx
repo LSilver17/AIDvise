@@ -534,7 +534,7 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
     let seenAlerts: Alert[] = [];
     try {
         db = await openDB(dbPath());
-        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus, FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus FROM RelevantEvents WHERE ParentID = ?`, student_id);
         for (let alert of db_event_alerts) {
             const eventID = alert.EventID;
             const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
@@ -546,12 +546,12 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
             else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
         }
         // TODO: Implement class alerts
-        const db_class_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id);
-        const last_check = await db.get(`SELECT LastSectionStatusCheck FROM Students WHERE ID = ?`, student_id)
-        for (let course of db_class_alerts) {
-            console.log(last_check.LastSectionStatusCheck);
-            //createClassAlert()
-        }
+        // const db_class_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        // const last_check = await db.get(`SELECT LastSectionStatusCheck FROM Students WHERE ID = ?`, student_id)
+        // for (let course of db_class_alerts) {
+        //     console.log(last_check.LastSectionStatusCheck);
+        //     //createClassAlert()
+        // }
     } catch(e) {
         console.log(`ERROR: ${e}`)
         const alerts: AlertReturn = {
