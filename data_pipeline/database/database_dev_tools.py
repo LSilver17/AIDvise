@@ -422,6 +422,22 @@ def create_triggers():
             '''
         )
 
+        # Create trigger to delete relevant events, intresets, tracked sections, and section status changes for a student when the student's ParentID field is updated to null
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS DeleteStudentData
+            AFTER UPDATE OF ParentID ON Students
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NULL
+            BEGIN
+                DELETE FROM RelevantEvents WHERE ParentID = NEW.ID;
+                DELETE FROM Interests WHERE ParentID = NEW.ID;
+                DELETE FROM TrackedSections WHERE ParentID = NEW.ID;
+                DELETE FROM StudentSectionStatusChanges WHERE ParentID = NEW.ID;
+            END;
+            '''
+        )
+
         # Commit the changes to the database
         conn.commit()
 
