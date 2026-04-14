@@ -167,7 +167,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
-                ParentID INTEGER NOT NULL UNIQUE,
+                ParentID INTEGER UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
             )'''

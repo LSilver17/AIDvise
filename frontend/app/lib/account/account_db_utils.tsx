@@ -319,6 +319,10 @@ export type UserAlerts = {
     SeenAlerts: Alert[],
 }
 
+export type UserInterests = {
+    Interests: string[],
+}
+
 export type Student = {
     ID?: string,
     Name: string | null,
@@ -448,6 +452,7 @@ interface Context {
 }
 export interface StudentContext extends Context{
     userAlerts: UserAlerts,
+    userInterests: UserInterests,
 }
 export interface AdvisorContext extends Context{
     userStudents: UserStudents,
@@ -473,15 +478,20 @@ export async function get_curr_context(account_type: AccountType) {
 
     if(account_type === "Student") {
         const userData = await getUserObject() as StudentData;
-        const alerts = await alert_fill(userData.StudentID.data)
+        const alerts = await alert_fill(userData.StudentID.data);
+        const interests = await get_interests(userData.StudentID.data);
         const userAlerts: UserAlerts = {
             UnseenAlerts: alerts.unseen,
             SeenAlerts: [],
         }
+        const userInterests: UserInterests = {
+            Interests: interests,
+        }
         const currContext = {
             userData: userData,
             userMetadata: userMetadata,
-            userAlerts: userAlerts
+            userAlerts: userAlerts,
+            userInterests: userInterests,
         };
         return currContext;
     } else if(account_type==="Advisor") {
@@ -497,24 +507,50 @@ export async function get_curr_context(account_type: AccountType) {
         return currContext;
     }
 }
- 
+
+async function get_interests(student_id: string) {
+    var db;
+    var interests: string[] = [];
+    try {
+        db = await openDB(dbPath());
+        const db_interests = await db.all(`SELECT Interest FROM Interests WHERE ParentID = ?`, student_id);
+        for (let interest of db_interests) {
+            interests.push(interest.Interest);
+        }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        return interests;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+    return interests;
+}
+
 async function alert_fill(student_id: string): Promise<AlertReturn> {
     var db;
     let unseenAlerts: Alert[] = [];
     let seenAlerts: Alert[] = [];
     try {
         db = await openDB(dbPath());
-
-        const db_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id)
-        for (let alert of db_alerts) {
+        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus, FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        for (let alert of db_event_alerts) {
             const eventID = alert.EventID;
             const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
             const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
             const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
             // TODO: check for seen status
-            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, "Unseen", time, dbEventTimes.Date);
+            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date);
             if (newAlert.status === "Unseen") { unseenAlerts.push(newAlert); }
             else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
+        }
+        // TODO: Implement class alerts
+        const db_class_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        const last_check = await db.get(`SELECT LastSectionStatusCheck FROM Students WHERE ID = ?`, student_id)
+        for (let course of db_class_alerts) {
+            console.log(last_check.LastSectionStatusCheck);
+            //createClassAlert()
         }
     } catch(e) {
         console.log(`ERROR: ${e}`)
@@ -562,35 +598,4 @@ async function student_fill(advisor_id: string) : Promise<Student[]> {
         }
     }
     return students;
-    // const s1: Student = {
-    //     ID: "3",
-    //     Name: "Sean",
-    //     GPA: 3.7,
-    //     CreditsEarned: 60,
-    //     IntendedGraduationTerm: "S1 2026"
-    // }
-    // const s2: Student = {
-    //     ID: "4",
-    //     Name: "Joe",
-    //     GPA: 3.3,
-    //     CreditsEarned: 30,
-    //     IntendedGraduationTerm: "S 2027"
-    // }
-    // const s3: Student = {
-    //     ID: "6",
-    //     Name: "Bobby",
-    //     GPA: 3.3,
-    //     CreditsEarned: 30,
-    //     IntendedGraduationTerm: "S 2027"
-    // }
-    // const s4: Student = {
-    //     ID: "8",
-    //     Name: "John",
-    //     GPA: 3.3,
-    //     CreditsEarned: 30,
-    //     IntendedGraduationTerm: "S 2027"
-    // }
-    // const students: Student[] = [
-    //     s1, s2, s3, s4
-    // ]
 }
