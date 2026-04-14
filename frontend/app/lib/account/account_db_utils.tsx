@@ -11,7 +11,7 @@ import type { Database } from 'sqlite3';
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
-import type { Alert, EventAlert } from '@/app/lib/alerts/alert';
+import type { Alert, EventAlert, ClassAlert } from '@/app/lib/alerts/alert';
 import { createEventAlert, createClassAlert } from '@/app/lib/alerts/alert';
 import { authSession } from "@/app/lib/account/authSession";
 import { UserField } from '@/app/lib/account/user_fields';
@@ -114,7 +114,7 @@ async function id_validation(db: any, account_type: AccountType, person_id: stri
             return result;
         }
         const associatedAcc = await db.get(`SELECT ParentID FROM ${table} WHERE ID = ?`, person_id);
-        if(associatedAcc) {
+        if(associatedAcc.ParentID != null) {
             const result: ValidationResult = {
                 valid: false,
                 err: "There is already an account associated with this ID",
@@ -123,7 +123,7 @@ async function id_validation(db: any, account_type: AccountType, person_id: stri
         }
         const result: ValidationResult = {
             valid: true,
-            table: account_type,
+            table: table,
         }
         return result;
     } else {
@@ -273,7 +273,6 @@ export async function delete_account() {
             throw Error("No valid account type");
         }
 
-        // TODO: Allow for null field
         await db.run(`UPDATE ${account_table} SET ParentID = ? WHERE ParentID = ?`, null, userID);
         await db.run("DELETE FROM Users WHERE ID = ?", userID);
         
@@ -294,20 +293,21 @@ export async function delete_account() {
     }
 }
 
-export type UserData = 
-// student
-{
+
+export type StudentData = {
     Name: UserField,
     GPA: UserField,
     CreditsEarned: UserField
     IntendedGraduationTerm: UserField,
     AdvisorID: UserField,
-} |
-// advisor
-{
+    StudentID: UserField,
+}
+export type AdvisorData = {
     Name: UserField,
-} |
-null
+    AdvisorID: UserField,
+}
+
+export type UserData = StudentData | AdvisorData;
 
 export type UserMetadata = {
     AccountType: AccountType,
@@ -315,15 +315,16 @@ export type UserMetadata = {
 }
 
 export type UserAlerts = {
-    Alerts: Alert[]
+    UnseenAlerts: Alert[],
+    SeenAlerts: Alert[],
 }
 
 export type Student = {
-    ID: string,
+    ID?: string,
     Name: string | null,
     GPA: number | null,
     CreditsEarned: number | null,
-    IntendedGraduationTerm?: string | null,
+    IntendedGraduationTerm: string | null,
 }
 
 export type UserStudents = {
@@ -331,7 +332,6 @@ export type UserStudents = {
 }
 
 export async function grabUserData() {
-    // TODO: Return user info from table according to session ID
     const session = await authSession();
     if(!session) {
         redirect("/login");
@@ -344,35 +344,41 @@ export async function grabUserData() {
         const accountType = await db.get('SELECT AccountType FROM Users WHERE ID = ?', id);
 
         if (accountType.AccountType === "Student") {
-            const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID FROM Students WHERE ParentID = ?', id);
-            const fieldData = {
-                data:{
-                    Name: {
-                        title:"Name",
-                        data:userInfo.Name,
-                        editable: false,
-                    },
-                    GPA: {
-                        title:"GPA",
-                        data:userInfo.GPA,
-                        editable: false,
-                    },
-                    CreditsEarned:  {
-                        title:"Credits Earned",
-                        data:userInfo.CreditsEarned,
-                        editable: false,
-                    },
-                    IntendedGraduationTerm: {
-                        title:"Expected Graduation",
-                        data:userInfo.IntendedGraduationTerm,
-                        editable: false,
-                    },
-                    AdvisorID: {
-                        title:"Advisor",
-                        data: userInfo.AdvisorID,
-                        editable: false,
-                    },
+            const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID, ID FROM Students WHERE ParentID = ?', id);
+            const data: UserData = {
+                Name: {
+                    title:"Name",
+                    data:userInfo.Name,
+                    editable: false,
                 },
+                GPA: {
+                    title:"GPA",
+                    data:userInfo.GPA,
+                    editable: false,
+                },
+                CreditsEarned:  {
+                    title:"Credits Earned",
+                    data:userInfo.CreditsEarned,
+                    editable: false,
+                },
+                IntendedGraduationTerm: {
+                    title:"Expected Graduation",
+                    data:userInfo.IntendedGraduationTerm,
+                    editable: false,
+                },
+                AdvisorID: {
+                    title:"Advisor",
+                    data: userInfo.AdvisorID,
+                    editable: false,
+                },
+                StudentID: {
+                    title: "Student ID",
+                    data: userInfo.ID,
+                    editable: false,
+                }
+            }
+            const fieldData = {
+                data: data,
                 success:true,
             };
             return fieldData;
@@ -380,15 +386,21 @@ export async function grabUserData() {
 
         else if (accountType.AccountType === "Advisor") {
             // TODO: Expand query when advisor accounts are more fleshed out
-            const userInfo = await db.get('SELECT Name FROM Advisors WHERE ParentID = ?', id);
-            const fieldData = {
-                data: {
-                    Name: {
-                        title:"Name",
-                        data:userInfo.Name,
-                        editable: true,
-                    },
+            const userInfo = await db.get('SELECT Name, ID FROM Advisors WHERE ParentID = ?', id);
+            const data: UserData = {
+                Name: {
+                    title:"Name",
+                    data:userInfo.Name,
+                    editable: true,
                 },
+                AdvisorID: {
+                    title:"Advisor ID",
+                    data: userInfo.ID,
+                    editable: false,
+                },
+            }
+            const fieldData = {
+                data: data,
                 success: true,
             };
             return fieldData;
@@ -441,25 +453,30 @@ export interface AdvisorContext extends Context{
     userStudents: UserStudents,
 }
 
+type AlertReturn = {
+    unseen: Alert[],
+    seen: Alert[],
+}
+
 export async function get_curr_context(account_type: AccountType) {
-    // session validation
-  const session = await authSession();
-  
-  if(!session) {
-      redirect("/login");
-  }
+        // session validation
+    const session = await authSession();
+    
+    if(!session) {
+        redirect("/login");
+    }
 
-  const userData = await getUserObject();
+    const userMetadata: UserMetadata = {
+        AccountType: session.user.account_type,
+        Username: session.user.username
+    }
 
-  const userMetadata: UserMetadata = {
-    AccountType: session.user.account_type,
-    Username: session.user.username
-  }
-
-
-  if(account_type === "Student") {
+    if(account_type === "Student") {
+        const userData = await getUserObject() as StudentData;
+        const alerts = await alert_fill(userData.StudentID.data)
         const userAlerts: UserAlerts = {
-            Alerts: temp_alert_fill(),
+            UnseenAlerts: alerts.unseen,
+            SeenAlerts: [],
         }
         const currContext = {
             userData: userData,
@@ -468,8 +485,9 @@ export async function get_curr_context(account_type: AccountType) {
         };
         return currContext;
     } else if(account_type==="Advisor") {
+        const userData = await getUserObject() as AdvisorData;
         const userStudents: UserStudents = {
-            Students: temp_student_fill(),
+            Students: await student_fill(userData.AdvisorID.data),
         }
         const currContext = {
             userData: userData,
@@ -478,123 +496,101 @@ export async function get_curr_context(account_type: AccountType) {
         };
         return currContext;
     }
-  
+}
+ 
+async function alert_fill(student_id: string): Promise<AlertReturn> {
+    var db;
+    let unseenAlerts: Alert[] = [];
+    let seenAlerts: Alert[] = [];
+    try {
+        db = await openDB(dbPath());
+
+        const db_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id)
+        for (let alert of db_alerts) {
+            const eventID = alert.EventID;
+            const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
+            const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
+            const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
+            // TODO: check for seen status
+            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, "Unseen", time, dbEventTimes.Date);
+            if (newAlert.status === "Unseen") { unseenAlerts.push(newAlert); }
+            else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
+        }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        const alerts: AlertReturn = {
+            unseen: unseenAlerts,
+            seen: seenAlerts,
+        }
+        return alerts;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+    const alerts: AlertReturn = {
+        unseen: unseenAlerts,
+        seen: seenAlerts,
+    }
+    return alerts;
 }
 
- // TODO: Delete
-function temp_alert_fill(): Alert[] {
-  const a1 = createEventAlert (
-    "Transfer Event",
-    "QCC Transfer Fair in the HLC",
-    "Unseen",
-    "11:00 AM",
-    "4/11/2026",
-  );
-  const a2 = createClassAlert (
-    "Course Opening",
-    "Unseen",
-    "CSC",
-    212,
-    "Intro to Software Engineering",
-    "CSC 212, the concluding course in the software engineering series, broadens the student's perspective to encompass the full software development lifecycle, from initial concept to ongoing maintenance. Emphasizing the analysis and design of medium-sized systems, the course includes a comprehensive team project covering analysis, design, implementation, and testing phases, along with detailed documentation and test plans. Students are introduced to design patterns and advanced programming techniques using data structures and templates. A significant aspect of the course is the integration of professional ethics, software, and information assurance, addressing security concerns and liabilities in computer-based systems. The course culminates in a collaborative research project, culminating in a presentation to a live audience. This comprehensive approach prepares students for professional software development, emphasizing ethical considerations and a thorough understanding of the software lifecycle.",
-    4,
-    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
-    "9:00 AM - 12:15 PM",
-    "MTW",
-  );
-  const a3 = createEventAlert (
-    "Music Performance",
-    "Music Ensemble will be playing in the HLC common.",
-    "Unseen",
-    "11:30 AM - 1:30 PM",
-    "4/23/2026",
-  );
-  const a4 = createClassAlert (
-    "Course Opening",
-    "Unseen",
-    "CSC",
-    208,
-    "Introduction to Architecture and Assembly Language",
-    "CSC 208 is the fourth installment of a comprehensive five-part computer science series. This course provides a comprehensive exploration of computer systems from a programmer's perspective, bridging the gap between hardware and software. Students will gain a deep understanding of how computer systems execute programs and handle data, delving into topics like data representation, machine-level code, processor architecture, memory hierarchy, system-level I/O, and network programming. Emphasizing the translation of high-level programming languages into machine code, the course enhances skills in software optimization for efficiency and performance. With interactive labs and assignments, it offers practical experience in system-level programming, exploring hardware and software design choices. This course is ideal for those aiming to deepen their knowledge in computer architecture and system software, laying a solid foundation for advanced computer science and engineering studies.",
-    4,
-    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
-    "1230",
-    "MTW",
-  )
-  const a5 = createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const a6 = createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "Build software",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const a7= createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const alerts: Alert[] = [
-    a1, a2, a3, a4, a5, a6
-  ]
-  return alerts;
-}
+async function student_fill(advisor_id: string) : Promise<Student[]> {
+    var db;
+    let students: Student[] = [];
+    try {
+        db = await openDB(dbPath());
 
-//TODO: Delete
-function temp_student_fill() : Student[] {
-    const s1: Student = {
-        ID: "3",
-        Name: "Sean",
-        GPA: 3.7,
-        CreditsEarned: 60,
-        IntendedGraduationTerm: "S1 2026"
+        const db_students = await db.all(`SELECT ID, Name, GPA, CreditsEarned, IntendedGraduationTerm FROM Students WHERE AdvisorID = ?`, advisor_id)
+        for (let student of db_students) {
+            // TODO: check for seen status
+            const newStudent: Student = {
+                Name: student.Name,
+                ID: student.ID,
+                GPA: student.GPA,
+                CreditsEarned: student.CreditsEarned,
+                IntendedGraduationTerm: student.IntendedGraduationTerm,
+            }
+            students.push(newStudent);
+        }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        return students;
+    } finally {
+        if (db) {
+            await db.close();
+        }
     }
-    const s2: Student = {
-        ID: "4",
-        Name: "Joe",
-        GPA: 3.3,
-        CreditsEarned: 30,
-        IntendedGraduationTerm: "S 2027"
-    }
-    const s3: Student = {
-        ID: "6",
-        Name: "Bobby",
-        GPA: 3.3,
-        CreditsEarned: 30,
-        IntendedGraduationTerm: "S 2027"
-    }
-    const s4: Student = {
-        ID: "8",
-        Name: "John",
-        GPA: 3.3,
-        CreditsEarned: 30,
-        IntendedGraduationTerm: "S 2027"
-    }
-    const students: Student[] = [
-        s1, s2, s3, s4
-    ]
-    return students
+    return students;
+    // const s1: Student = {
+    //     ID: "3",
+    //     Name: "Sean",
+    //     GPA: 3.7,
+    //     CreditsEarned: 60,
+    //     IntendedGraduationTerm: "S1 2026"
+    // }
+    // const s2: Student = {
+    //     ID: "4",
+    //     Name: "Joe",
+    //     GPA: 3.3,
+    //     CreditsEarned: 30,
+    //     IntendedGraduationTerm: "S 2027"
+    // }
+    // const s3: Student = {
+    //     ID: "6",
+    //     Name: "Bobby",
+    //     GPA: 3.3,
+    //     CreditsEarned: 30,
+    //     IntendedGraduationTerm: "S 2027"
+    // }
+    // const s4: Student = {
+    //     ID: "8",
+    //     Name: "John",
+    //     GPA: 3.3,
+    //     CreditsEarned: 30,
+    //     IntendedGraduationTerm: "S 2027"
+    // }
+    // const students: Student[] = [
+    //     s1, s2, s3, s4
+    // ]
 }

@@ -6,14 +6,15 @@ import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
 import SingleAlert from "@/app/components/visual/alert"
 import DashTitle from "@/app/components/visual/title"
 import DefaultButton from "@/app/components/features/default_button"
+import type { SetStateAction, Dispatch } from "react";
 
 // Lib
 import type { Alert, EventAlert, ClassAlert } from "@/app/lib/alerts/alert"
 import { useUserData } from "@/app/lib/account/user_context";
-import { UserAlerts } from "@/app/lib/account/account_db_utils";
+import { get_curr_context, UserAlerts } from "@/app/lib/account/account_db_utils";
 import { redirect } from "next/navigation";
 import { useCopilotKit } from "@copilotkit/react-core/v2";
-import type { UserMetadata } from "@/app/lib/account/account_db_utils";
+import type { UserData, StudentData, UserMetadata } from "@/app/lib/account/account_db_utils";
 import { ExpandableList } from "@/app/components/features/expandable_list";
 
 // Hooks
@@ -41,6 +42,8 @@ export default function Alerts () {
     const router = useRouter();
     
     const { userAlerts } : { userAlerts: UserAlerts} = useUserData();
+    const { userData } : {userData: StudentData} = useUserData();
+    const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
 
     // setup agent
     const { agent } = useAgent({agentId:"alerts", updates:[]});
@@ -51,8 +54,10 @@ export default function Alerts () {
         if(!session) {
             redirect("/login");
         }
-        agent.setState({...agent.state, "student_id": session.user.id});
-        await copilotkit.runAgent({agent});
+        if(userData) {
+            agent.setState({...agent.state, "student_id": userData.StudentID.data});
+            await copilotkit.runAgent({agent});
+        }
     };
 
     // alert view state
@@ -78,7 +83,7 @@ export default function Alerts () {
                 </DashTitle>
                 <AlertContainer>
                     <ExpandableList 
-                        list={userAlerts?.Alerts} 
+                        list={userAlerts.UnseenAlerts} 
                         vis={isUExpanded} 
                         setVis={setUExpanded} 
                         min={shownAlerts} 
@@ -92,7 +97,7 @@ export default function Alerts () {
                 </DashTitle>
                 <AlertContainer>
                     <ExpandableList 
-                        list={userAlerts?.Alerts} 
+                        list={userAlerts.SeenAlerts} 
                         vis={isSExpanded} 
                         setVis={setSExpanded} 
                         min={shownAlerts} 

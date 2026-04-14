@@ -30,18 +30,22 @@ export function ExpandableList({list, vis, setVis, min, Component, componentType
     return (
         <>
             {
-                list ? list.map((x,i) => {
-                    if(!vis && i >= min) {
-                        return;
-                    } else {
-                        return renderComponent(Component, x, i, componentType);
+                (list.length != 0) ? <>
+                    {
+                        list ? list.map((x,i) => {
+                            if(!vis && i >= min) {
+                                return;
+                            } else {
+                                return renderComponent(Component, x, i, componentType);
+                            }
+                        }) : <>Loading...</>
                     }
-                }) : <>Loading...</>
-            }
-            {
-                <DefaultButton onClick={() => toggleExpansion(vis, setVis)}>
-                    {vis ? "Show Less" : "Show More"}
-                </DefaultButton>
+                    {
+                        <DefaultButton onClick={() => toggleExpansion(vis, setVis)}>
+                            {vis ? "Show Less" : "Show More"}
+                        </DefaultButton>
+                    }
+                </> : <>Empty</>
             }
         </>
     );

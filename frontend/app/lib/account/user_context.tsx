@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState } from "react";
-import type { UserData, UserMetadata, UserAlerts, UserStudents, StudentContext, AdvisorContext } from "@/app/lib/account/account_db_utils";
+import { type UserData, type UserMetadata, type UserAlerts, type UserStudents, type StudentContext, type AdvisorContext, get_curr_context } from "@/app/lib/account/account_db_utils";
 
 type Props = {
     children: React.ReactNode,
@@ -15,10 +15,12 @@ const UserContext = createContext(null as any);
 export function UserContextProvider({children, currContext}: Props) {
     const [userData, setUserData] = useState<UserData | null>(currContext.userData);
     const [userMetadata, setUserMetadata] = useState<UserMetadata | null>(currContext.userMetadata);
+    const [refresh, tRefresh] = useState(false);
 
     if(currContext.userMetadata.AccountType === "Student") {
         const studentContext = currContext as StudentContext;
         const [userAlerts, setUserAlerts] = useState<UserAlerts | null>(studentContext.userAlerts);
+
         return (
             <UserContext.Provider value={{userData, userMetadata, userAlerts}}>
                 {children}
@@ -33,9 +35,6 @@ export function UserContextProvider({children, currContext}: Props) {
             </UserContext.Provider>
         )
     }
-    
-    
-    
 }
 
 export const useUserData = () => useContext(UserContext);

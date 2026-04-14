@@ -1,13 +1,11 @@
 // Components
-import { Flex, Text } from "@radix-ui/themes";
-import { AlertStatus } from "@/app/lib/alerts/alert"
-import AlertTitle from "@/app/components/visual/title"
+import { Flex } from "@radix-ui/themes";
 import Card from "@/app/components/visual/card"
 
 // Lib
 import type { Alert, EventAlert, ClassAlert, AlertTypes } from "@/app/lib/alerts/alert"
 
-type AlertProps = {
+export type AlertProps = {
     alert: Alert,
 }
 
