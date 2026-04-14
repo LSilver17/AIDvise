@@ -176,7 +176,7 @@ def setup_database():
         # Table for students, linked to the Users table via ParentID foreign key with a unique constraint to ensure a 1-1 relationship between users and students, and linked to advisors via AdvisorID foreign key with a SET NULL on delete to allow students to remain in the system without an advisor if their advisor is deleted
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Students(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                ID INTEGER PRIMARY KEY UNIQUE,
                 Name TEXT,
                 GPA REAL,
                 CreditsEarned INTEGER,
@@ -184,11 +184,10 @@ def setup_database():
                 AdvisorID INTEGER,
                 LastEventCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 LastSectionStatusCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
-                ParentID INTEGER NOT NULL UNIQUE,
+                ParentID INTEGER UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
-                    ON DELETE CASCADE
             )'''
         )
         # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the ProgramsOfStudy table via ProgramID foreign key
