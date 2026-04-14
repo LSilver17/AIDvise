@@ -64,7 +64,7 @@ def get_relevant_events(student_id: int) -> list[dict]:
 
         return relevant_events
 
-# Returns a list of the sections the student is tracking for status change alerts.
+# Returns a list of the sections the student is tracking for status change alerts
 def get_tracked_sections(student_id: int) -> list[str]:
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -85,7 +85,7 @@ def get_tracked_sections(student_id: int) -> list[str]:
 
         return tracked_sections
 
-# Returns a list of all new section status events for sections the student is tracking for course opening alerts since the last check.
+# Returns a list of all new section status events for sections the student is tracking for course opening alerts since the last check
 def get_relevant_section_status_events(student_id: int) -> list[dict]:
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -148,3 +148,20 @@ def get_relevant_section_status_events(student_id: int) -> list[dict]:
             section_status_events.append(event)
         
         return section_status_events
+
+# Inserts new section status events into the StudentSectionStatusChanges table for a given student
+def insert_student_section_status_changes(student_id: int, section_status_events: list[dict]):
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        for event in section_status_events:
+            change_id = cursor.execute(
+                '''
+                INSERT INTO StudentSectionStatusChanges (ChangeID, ParentID)
+                VALUES (?, ?)
+                ''',
+                (event["ID"], student_id)
+            ).lastrowid
+        
+        conn.commit()

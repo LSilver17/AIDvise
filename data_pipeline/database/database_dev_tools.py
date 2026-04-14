@@ -188,6 +188,7 @@ def setup_database():
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
+                    ON DELETE SET NULL
             )'''
         )
         # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the ProgramsOfStudy table via ProgramID foreign key
@@ -240,6 +241,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS RelevantEvents(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Urgency INTEGER NOT NULL,
+                AlertStatus TEXT NOT NULL DEFAULT 'Unseen' CHECK(AlertStatus IN ('Unseen', 'Seen')),
                 EventID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
@@ -261,13 +263,14 @@ def setup_database():
 
         # Table for course opening alerts
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS SectionStatusChanges(
+            '''CREATE TABLE IF NOT EXISTS StudentSectionStatusChanges(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                SectionID INTEGER NOT NULL,
-                OldStatus TEXT NOT NULL,
-                NewStatus TEXT NOT NULL,
-                ChangeTime DATETIME NOT NULL,
-                FOREIGN KEY (SectionID) REFERENCES Sections(ID)
+                ChangeID INTEGER NOT NULL,
+                AlertStatus TEXT NOT NULL DEFAULT 'Unseen' CHECK(AlertStatus IN ('Unseen', 'Seen')),
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (ChangeID) REFERENCES SectionStatusChanges(ID)
                     ON DELETE CASCADE
             )'''
         )
