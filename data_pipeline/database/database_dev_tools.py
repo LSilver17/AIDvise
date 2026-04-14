@@ -438,6 +438,20 @@ def create_triggers():
             '''
         )
 
+        # Create trigger to reset last event check field for a student when an interest is added or changed for them
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChange
+            AFTER INSERT OR UPDATE ON Interests
+            FOR EACH ROW
+            BEGIN
+                UPDATE Students
+                SET LastEventCheck = '1970-01-01T00:00:00'
+                WHERE ID = NEW.ParentID;
+            END;
+            '''
+        )
+
         # Commit the changes to the database
         conn.commit()
 
