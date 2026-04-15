@@ -20,7 +20,7 @@ export default function FormField({label, inputName, message, isPassword, hasMis
     hasMissingMessage = hasMissingMessage ?? true;
     return (
         <Form.Field name={inputName}>
-            <Flex justify="start" width="100%" direction="column" align="center" flexGrow="0" flexShrink="0" minHeight="50px">
+            <Flex justify="start" width="100%" direction="column" align="center" flexGrow="0" flexShrink="0" height="5rem">
                 <Form.Control asChild name={inputName} type={inputType}>
                     <TextField.Root required placeholder={label} size="3" style={{backgroundColor:"white"}}/>
                 </Form.Control>

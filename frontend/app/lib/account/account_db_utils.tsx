@@ -7,10 +7,11 @@ import { redirect } from "next/navigation";
 import path from "path";
 import { signOut } from "next-auth/react";
 import data from "../../../../database_config.json"
+import type { Database } from 'sqlite3';
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
-import type { Alert, EventAlert } from '@/app/lib/alerts/alert';
+import type { Alert, EventAlert, ClassAlert } from '@/app/lib/alerts/alert';
 import { createEventAlert, createClassAlert } from '@/app/lib/alerts/alert';
 import { authSession } from "@/app/lib/account/authSession";
 import { UserField } from '@/app/lib/account/user_fields';
@@ -36,7 +37,7 @@ type LoginResult =
     | {success: false, error:string}
 
 type CreationResult =
-    | {success:true, id:string, username: string, account_type: AccountType}
+    | {success:true, id:string, username: string, account_type: AccountType, academic_id: string}
     | {success:false, error:string};
 
 export async function validate_credentials(username: string, password: string): Promise<LoginResult> {
@@ -90,9 +91,50 @@ export async function validate_credentials(username: string, password: string): 
     }
 }
 
-export async function create_user(username: string, password: string, account_type: AccountType): Promise<CreationResult> {
+async function delete_invalid_entry(db: any, username: string) {
+    if (db) {
+        const user = await db.get('SELECT Username, AccountType, ID FROM Users WHERE Username = ?', username);
+        if(user) {
+            await db.run("DELETE FROM Users WHERE Username = ?", username);
+        }
+    }
+}
+
+type ValidationResult = {valid: true, table: string} | {valid: false, err: string}
+
+async function id_validation(db: any, account_type: AccountType, person_id: string) {
+    if(account_type) {
+        const table = (account_type === "Student") ? "Students" : "Advisors";
+        const personID = await db.get(`SELECT ID FROM ${table} WHERE ID = ?`, person_id);
+        if(!personID) {
+            const result: ValidationResult = {
+                valid: false,
+                err: `${account_type} does not exist`,
+            }
+            return result;
+        }
+        const associatedAcc = await db.get(`SELECT ParentID FROM ${table} WHERE ID = ?`, person_id);
+        if(associatedAcc.ParentID != null) {
+            const result: ValidationResult = {
+                valid: false,
+                err: "There is already an account associated with this ID",
+            }
+            return result;
+        }
+        const result: ValidationResult = {
+            valid: true,
+            table: table,
+        }
+        return result;
+    } else {
+        throw "Invalid account type";
+    }
+}
+
+export async function create_user(username: string, password: string, account_type: AccountType, person_id: string): Promise<CreationResult> {
     var db;
     const validAccountTypes = ["Student", "Advisor"];
+    
     try {
         if (!account_type || !validAccountTypes.includes(account_type)) {
             throw "Invalid account type";
@@ -109,32 +151,31 @@ export async function create_user(username: string, password: string, account_ty
             return result;
         }
 
+        // Ensures ID matches existing student/advisor entry and there is no account already associated
+        const valid = await id_validation(db, account_type, person_id);
+        let tableName = null;
+        if (valid.valid) {tableName = valid.table}
+        else {throw valid.err};
+
         // Hash the password before storing it in the database
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
 
         await db.run('INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)', username, hash, account_type);
-        
-        // Creates parallel entry into Students/Advisors table
-        if(account_type === "Student") {
-            const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
-            await db.run('INSERT INTO Students (ParentID) VALUES (?)', credential.ID); 
-        } else if (account_type === "Advisor") {
-            const credential = await db.get('SELECT ID FROM Users WHERE Username = ?', username);
-            await db.run('INSERT INTO Advisors (ParentID) VALUES (?)', credential.ID); 
-        } else {
-            throw "Invalid account type";
-        }
 
         // Pull inserted credentials to return in the session
         const credential = await db.get('SELECT Username, AccountType, ID FROM Users WHERE Username = ?', username);
+
+        // Link existing Student/Advisor record to new User entry
+        await db.run(`UPDATE ${tableName} SET ParentID = ? WHERE ID = ?`, credential.ID, person_id);
 
         const result: CreationResult = {
             success: true,
             username: credential.Username,
             account_type: credential.AccountType,
             id: credential.ID,
+            academic_id: person_id,
         }
 
         return result;
@@ -144,6 +185,7 @@ export async function create_user(username: string, password: string, account_ty
             success: false,
             error: `Database error: ${e}`,
         }
+        await delete_invalid_entry(db, username);
         return result;
     } finally {
         if (db) {
@@ -221,9 +263,17 @@ export async function delete_account() {
         if (!session?.user?.id) {
             throw Error("Unauthorized session");
         }
+
         db = await openDB(dbPath());
         const userID = session.user.id;
+        const account_type = session.user.account_type;
+        const account_table = (account_type === "Student") ? "Students" : "Advisors";
 
+        if(!account_table) {
+            throw Error("No valid account type");
+        }
+
+        await db.run(`UPDATE ${account_table} SET ParentID = ? WHERE ParentID = ?`, null, userID);
         await db.run("DELETE FROM Users WHERE ID = ?", userID);
         
         const result: Result = {
@@ -243,20 +293,21 @@ export async function delete_account() {
     }
 }
 
-export type UserData = 
-// student
-{
+
+export type StudentData = {
     Name: UserField,
     GPA: UserField,
     CreditsEarned: UserField
     IntendedGraduationTerm: UserField,
     AdvisorID: UserField,
-} |
-// advisor
-{
+    StudentID: UserField,
+}
+export type AdvisorData = {
     Name: UserField,
-} |
-null
+    AdvisorID: UserField,
+}
+
+export type UserData = StudentData | AdvisorData;
 
 export type UserMetadata = {
     AccountType: AccountType,
@@ -264,11 +315,27 @@ export type UserMetadata = {
 }
 
 export type UserAlerts = {
-    Alerts: Alert[]
+    UnseenAlerts: Alert[],
+    SeenAlerts: Alert[],
+}
+
+export type UserInterests = {
+    Interests: string[],
+}
+
+export type Student = {
+    ID?: string,
+    Name: string | null,
+    GPA: number | null,
+    CreditsEarned: number | null,
+    IntendedGraduationTerm: string | null,
+}
+
+export type UserStudents = {
+    Students: Student[],
 }
 
 export async function grabUserData() {
-    // TODO: Return user info from table according to session ID
     const session = await authSession();
     if(!session) {
         redirect("/login");
@@ -281,35 +348,41 @@ export async function grabUserData() {
         const accountType = await db.get('SELECT AccountType FROM Users WHERE ID = ?', id);
 
         if (accountType.AccountType === "Student") {
-            const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID FROM Students WHERE ParentID = ?', id);
-            const fieldData = {
-                data:{
-                    Name: {
-                        title:"Name",
-                        data:userInfo.Name,
-                        editable: true,
-                    },
-                    GPA: {
-                        title:"GPA",
-                        data:userInfo.GPA,
-                        editable: true,
-                    },
-                    CreditsEarned:  {
-                        title:"Credits Earned",
-                        data:userInfo.CreditsEarned,
-                        editable: true,
-                    },
-                    IntendedGraduationTerm: {
-                        title:"Expected Graduation",
-                        data:userInfo.IntendedGraduationTerm,
-                        editable: true,
-                    },
-                    AdvisorID: {
-                        title:"Advisor",
-                        data: userInfo.AdvisorID,
-                        editable: false,
-                    },
+            const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID, ID FROM Students WHERE ParentID = ?', id);
+            const data: UserData = {
+                Name: {
+                    title:"Name",
+                    data:userInfo.Name,
+                    editable: false,
                 },
+                GPA: {
+                    title:"GPA",
+                    data:userInfo.GPA,
+                    editable: false,
+                },
+                CreditsEarned:  {
+                    title:"Credits Earned",
+                    data:userInfo.CreditsEarned,
+                    editable: false,
+                },
+                IntendedGraduationTerm: {
+                    title:"Expected Graduation",
+                    data:userInfo.IntendedGraduationTerm,
+                    editable: false,
+                },
+                AdvisorID: {
+                    title:"Advisor",
+                    data: userInfo.AdvisorID,
+                    editable: false,
+                },
+                StudentID: {
+                    title: "Student ID",
+                    data: userInfo.ID,
+                    editable: false,
+                }
+            }
+            const fieldData = {
+                data: data,
                 success:true,
             };
             return fieldData;
@@ -317,15 +390,21 @@ export async function grabUserData() {
 
         else if (accountType.AccountType === "Advisor") {
             // TODO: Expand query when advisor accounts are more fleshed out
-            const userInfo = await db.get('SELECT Name FROM Advisors WHERE ParentID = ?', id);
-            const fieldData = {
-                data: {
-                    Name: {
-                        title:"Name",
-                        data:userInfo.Name,
-                        editable: true,
-                    },
+            const userInfo = await db.get('SELECT Name, ID FROM Advisors WHERE ParentID = ?', id);
+            const data: UserData = {
+                Name: {
+                    title:"Name",
+                    data:userInfo.Name,
+                    editable: true,
                 },
+                AdvisorID: {
+                    title:"Advisor ID",
+                    data: userInfo.ID,
+                    editable: false,
+                },
+            }
+            const fieldData = {
+                data: data,
                 success: true,
             };
             return fieldData;
@@ -367,118 +446,156 @@ export async function getUserObject() {
     }
 }
 
-export type Context = {
+interface Context {
     userData: UserData,
     userMetadata: UserMetadata,
+}
+export interface StudentContext extends Context{
     userAlerts: UserAlerts,
+    userInterests: UserInterests,
+}
+export interface AdvisorContext extends Context{
+    userStudents: UserStudents,
 }
 
-export async function get_curr_context() {
-    // session validation
-  const session = await authSession();
-  
-  if(!session) {
-      redirect("/login");
-  }
-
-  const userData = await getUserObject();
-
-  const userMetadata: UserMetadata = {
-    AccountType: session.user.account_type,
-    Username: session.user.username
-  }
-
-  const userAlerts: UserAlerts = {
-    Alerts: temp_alert_fill(),
-  }
-
-  const currContext = {
-    userData: userData,
-    userMetadata: userMetadata,
-    userAlerts: userAlerts
-  };
-  
-  return currContext;
+type AlertReturn = {
+    unseen: Alert[],
+    seen: Alert[],
 }
 
- // TODO: Delete
-function temp_alert_fill(): Alert[] {
-  const a1 = createEventAlert (
-    "Transfer Event",
-    "QCC Transfer Fair in the HLC",
-    "Unseen",
-    "11:00 AM",
-    "4/11/2026",
-  );
-  const a2 = createClassAlert (
-    "Course Opening",
-    "Unseen",
-    "CSC",
-    212,
-    "Intro to Software Engineering",
-    "CSC 212, the concluding course in the software engineering series, broadens the student's perspective to encompass the full software development lifecycle, from initial concept to ongoing maintenance. Emphasizing the analysis and design of medium-sized systems, the course includes a comprehensive team project covering analysis, design, implementation, and testing phases, along with detailed documentation and test plans. Students are introduced to design patterns and advanced programming techniques using data structures and templates. A significant aspect of the course is the integration of professional ethics, software, and information assurance, addressing security concerns and liabilities in computer-based systems. The course culminates in a collaborative research project, culminating in a presentation to a live audience. This comprehensive approach prepares students for professional software development, emphasizing ethical considerations and a thorough understanding of the software lifecycle.",
-    4,
-    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
-    "9:00 AM - 12:15 PM",
-    "MTW",
-  );
-  const a3 = createEventAlert (
-    "Music Performance",
-    "Music Ensemble will be playing in the HLC common.",
-    "Unseen",
-    "11:30 AM - 1:30 PM",
-    "4/23/2026",
-  );
-  const a4 = createClassAlert (
-    "Course Opening",
-    "Unseen",
-    "CSC",
-    208,
-    "Introduction to Architecture and Assembly Language",
-    "CSC 208 is the fourth installment of a comprehensive five-part computer science series. This course provides a comprehensive exploration of computer systems from a programmer's perspective, bridging the gap between hardware and software. Students will gain a deep understanding of how computer systems execute programs and handle data, delving into topics like data representation, machine-level code, processor architecture, memory hierarchy, system-level I/O, and network programming. Emphasizing the translation of high-level programming languages into machine code, the course enhances skills in software optimization for efficiency and performance. With interactive labs and assignments, it offers practical experience in system-level programming, exploring hardware and software design choices. This course is ideal for those aiming to deepen their knowledge in computer architecture and system software, laying a solid foundation for advanced computer science and engineering studies.",
-    4,
-    "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
-    "1230",
-    "MTW",
-  )
-  const a5 = createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const a6 = createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "Build software",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const a7= createClassAlert (
-    "NEW CLASS",
-    "Unseen",
-    "CSC",
-    212,
-    "Software",
-    "This course builds on the material learned in ACC 101. Students use their knowledge of preparing financial statements to analyze and communicate a variety of financial information including accounting for plant assets, stockholders equity, current and long-term liabilities and the statement of cash flows. Students demonstrate the knowledge they gain by working with Web resources to present a financial analysis of a public corporation.",
-    4,
-    "CSC Core",
-    "1230",
-    "MTW",
-  )
-  const alerts: Alert[] = [
-    a1, a2, a3, a4, a5, a6
-  ]
-  return alerts;
+export async function get_curr_context(account_type: AccountType) {
+        // session validation
+    const session = await authSession();
+    
+    if(!session) {
+        redirect("/login");
+    }
+
+    const userMetadata: UserMetadata = {
+        AccountType: session.user.account_type,
+        Username: session.user.username
+    }
+
+    if(account_type === "Student") {
+        const userData = await getUserObject() as StudentData;
+        const alerts = await alert_fill(userData.StudentID.data);
+        const interests = await get_interests(userData.StudentID.data);
+        const userAlerts: UserAlerts = {
+            UnseenAlerts: alerts.unseen,
+            SeenAlerts: [],
+        }
+        const userInterests: UserInterests = {
+            Interests: interests,
+        }
+        const currContext = {
+            userData: userData,
+            userMetadata: userMetadata,
+            userAlerts: userAlerts,
+            userInterests: userInterests,
+        };
+        return currContext;
+    } else if(account_type==="Advisor") {
+        const userData = await getUserObject() as AdvisorData;
+        const userStudents: UserStudents = {
+            Students: await student_fill(userData.AdvisorID.data),
+        }
+        const currContext = {
+            userData: userData,
+            userMetadata: userMetadata,
+            userStudents: userStudents,
+        };
+        return currContext;
+    }
+}
+
+async function get_interests(student_id: string) {
+    var db;
+    var interests: string[] = [];
+    try {
+        db = await openDB(dbPath());
+        const db_interests = await db.all(`SELECT Interest FROM Interests WHERE ParentID = ?`, student_id);
+        for (let interest of db_interests) {
+            interests.push(interest.Interest);
+        }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        return interests;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+    return interests;
+}
+
+async function alert_fill(student_id: string): Promise<AlertReturn> {
+    var db;
+    let unseenAlerts: Alert[] = [];
+    let seenAlerts: Alert[] = [];
+    try {
+        db = await openDB(dbPath());
+        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        for (let alert of db_event_alerts) {
+            const eventID = alert.EventID;
+            const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
+            const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
+            const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
+            // TODO: check for seen status
+            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date);
+            if (newAlert.status === "Unseen") { unseenAlerts.push(newAlert); }
+            else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
+        }
+        // TODO: Implement class alerts
+        // const db_class_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        // const last_check = await db.get(`SELECT LastSectionStatusCheck FROM Students WHERE ID = ?`, student_id)
+        // for (let course of db_class_alerts) {
+        //     console.log(last_check.LastSectionStatusCheck);
+        //     //createClassAlert()
+        // }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        const alerts: AlertReturn = {
+            unseen: unseenAlerts,
+            seen: seenAlerts,
+        }
+        return alerts;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+    const alerts: AlertReturn = {
+        unseen: unseenAlerts,
+        seen: seenAlerts,
+    }
+    return alerts;
+}
+
+async function student_fill(advisor_id: string) : Promise<Student[]> {
+    var db;
+    let students: Student[] = [];
+    try {
+        db = await openDB(dbPath());
+
+        const db_students = await db.all(`SELECT ID, Name, GPA, CreditsEarned, IntendedGraduationTerm FROM Students WHERE AdvisorID = ?`, advisor_id)
+        for (let student of db_students) {
+            // TODO: check for seen status
+            const newStudent: Student = {
+                Name: student.Name,
+                ID: student.ID,
+                GPA: student.GPA,
+                CreditsEarned: student.CreditsEarned,
+                IntendedGraduationTerm: student.IntendedGraduationTerm,
+            }
+            students.push(newStudent);
+        }
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        return students;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+    return students;
 }

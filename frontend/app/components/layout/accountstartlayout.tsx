@@ -12,7 +12,7 @@ export default function AccountLayout({ children, href, buttText}: PropTypes) {
     buttText = buttText ?? "Placeholder";
     href = href ?? "/"
     return (
-        <Flex height="100%" width="100%" direction="column" justify="center" align="center" gap="5" className="bg-white" minHeight="800px" p="1">
+        <Flex height="100vh" width="100vw" direction="column" justify="center" align="center" gap="9" className="bg-white" minHeight="800px" p="1">
             <Flex width="20rem" height="5rem" justify="center" align="center" className="bg-orange-500" style={{borderRadius:"40px"}} minWidth="250px" minHeight="100px">
                 <Logo size="9"/>
             </Flex>
@@ -27,7 +27,7 @@ export default function AccountLayout({ children, href, buttText}: PropTypes) {
                 gap="0"
                 minWidth="15rem"
                 minHeight="20rem"
-                width="20rem"
+                width="30rem"
                 height="20rem" 
             > 
                 {children}

@@ -24,7 +24,7 @@ export default function DeleteAccount() {
                 <AlertDialog.Title>Delete account</AlertDialog.Title>
                 <AlertDialog.Description>
                     Are you sure you want to delete your account? 
-                    All data associated with this account will be deleted permanently.
+                    Some data associated with your account will not be recoverable.
                 </AlertDialog.Description>
 
                 <Flex direction="row" justify="end" pt="10px" gap = "8px">

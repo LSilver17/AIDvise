@@ -3,21 +3,30 @@
 import { Flex } from "@radix-ui/themes";
 import { AlertStatus } from "@/app/lib/alerts/alert"
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
-import SingleAlert from "@/app/components/features/alert"
+import SingleAlert from "@/app/components/visual/alert"
 import DashTitle from "@/app/components/visual/title"
 import DefaultButton from "@/app/components/features/default_button"
+import type { SetStateAction, Dispatch } from "react";
 
 // Lib
 import type { Alert, EventAlert, ClassAlert } from "@/app/lib/alerts/alert"
 import { useUserData } from "@/app/lib/account/user_context";
-import { UserAlerts } from "@/app/lib/account/account_db_utils";
+import { get_curr_context, UserAlerts } from "@/app/lib/account/account_db_utils";
 import { redirect } from "next/navigation";
 import { useCopilotKit } from "@copilotkit/react-core/v2";
+import type { UserData, StudentData, UserMetadata } from "@/app/lib/account/account_db_utils";
+import { ExpandableList } from "@/app/components/features/expandable_list";
 
 // Hooks
 import { useAgent } from "@copilotkit/react-core/v2";
 import { authSession } from "@/app/lib/account/authSession";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { getSession, useSession } from "next-auth/react";
+
+// Next
+import { NextResponse } from "next/server";
 
 function AlertContainer({children} : {children: React.ReactNode}) {
     return ( 
@@ -28,8 +37,13 @@ function AlertContainer({children} : {children: React.ReactNode}) {
 }
 
 export default function Alerts () {
-    // grab user alerts
+    // TODO: Actually redirect
+    const session = useSession();
+    const router = useRouter();
+    
     const { userAlerts } : { userAlerts: UserAlerts} = useUserData();
+    const { userData } : {userData: StudentData} = useUserData();
+    const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
 
     // setup agent
     const { agent } = useAgent({agentId:"alerts", updates:[]});
@@ -40,18 +54,16 @@ export default function Alerts () {
         if(!session) {
             redirect("/login");
         }
-        agent.setState({...agent.state, "student_id": session.user.id});
-        await copilotkit.runAgent({agent});
+        if(userData) {
+            agent.setState({...agent.state, "student_id": userData.StudentID.data});
+            await copilotkit.runAgent({agent});
+        }
     };
 
     // alert view state
     const[isUExpanded, setUExpanded] = useState(false);
     const[isSExpanded, setSExpanded] = useState(false);
     const shownAlerts = 3;
-
-    const toggleExpansion = (stateVar: any, stateSetter: any) => {
-        stateVar ? stateSetter(false) : stateSetter(true);
-    }
 
     return (
         <DashboardLayout>
@@ -70,40 +82,28 @@ export default function Alerts () {
                     Unseen
                 </DashTitle>
                 <AlertContainer>
-                    {
-                        userAlerts ? userAlerts.Alerts.map((x,i) => {
-                            if(!isUExpanded && i >= shownAlerts) {
-                                return;
-                            } else {
-                                return <SingleAlert key={i} alert={x}/>
-                            }
-                        }) : <>Loading...</>
-                    }
-                    {
-                        <DefaultButton onClick={() => toggleExpansion(isUExpanded, setUExpanded)}>
-                            {isUExpanded ? "Show Less" : "Show More"}
-                        </DefaultButton>
-                    }
+                    <ExpandableList 
+                        list={userAlerts.UnseenAlerts} 
+                        vis={isUExpanded} 
+                        setVis={setUExpanded} 
+                        min={shownAlerts} 
+                        Component={SingleAlert} 
+                        componentType="Alert"
+                    />
                 </AlertContainer>
                 <Flex height="30px"/>
                 <DashTitle size="7" gap="1">
                     Seen
                 </DashTitle>
                 <AlertContainer>
-                    {
-                        userAlerts ? userAlerts.Alerts.map((x,i) => {
-                            if(!isSExpanded && i >= shownAlerts) {
-                                return;
-                            } else {
-                                return <SingleAlert key={i} alert={x}/>
-                            }
-                        }) : <>Loading...</>
-                    }
-                    {
-                        <DefaultButton onClick={() => toggleExpansion(isSExpanded, setSExpanded)}>
-                            {isSExpanded ? "Show Less" : "Show More"}
-                        </DefaultButton>
-                    }
+                    <ExpandableList 
+                        list={userAlerts.SeenAlerts} 
+                        vis={isSExpanded} 
+                        setVis={setSExpanded} 
+                        min={shownAlerts} 
+                        Component={SingleAlert} 
+                        componentType="Alert"
+                    />
                 </AlertContainer>
             </Flex>
         </DashboardLayout>

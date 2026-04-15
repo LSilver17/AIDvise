@@ -167,7 +167,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
-                ParentID INTEGER NOT NULL UNIQUE,
+                ParentID INTEGER UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
             )'''
@@ -176,7 +176,7 @@ def setup_database():
         # Table for students, linked to the Users table via ParentID foreign key with a unique constraint to ensure a 1-1 relationship between users and students, and linked to advisors via AdvisorID foreign key with a SET NULL on delete to allow students to remain in the system without an advisor if their advisor is deleted
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS Students(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                ID INTEGER PRIMARY KEY UNIQUE,
                 Name TEXT,
                 GPA REAL,
                 CreditsEarned INTEGER,
@@ -184,11 +184,11 @@ def setup_database():
                 AdvisorID INTEGER,
                 LastEventCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
                 LastSectionStatusCheck DATETIME NOT NULL DEFAULT '1970-01-01T00:00:00',
-                ParentID INTEGER NOT NULL UNIQUE,
+                ParentID INTEGER UNIQUE,
                 FOREIGN KEY (AdvisorID) REFERENCES Advisors(ID)
                     ON DELETE SET NULL,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
-                    ON DELETE CASCADE
+                    ON DELETE SET NULL
             )'''
         )
         # Table for majors and minors for each student, linked to the student via ParentID foreign key and to the ProgramsOfStudy table via ProgramID foreign key
@@ -241,6 +241,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS RelevantEvents(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Urgency INTEGER NOT NULL,
+                AlertStatus TEXT NOT NULL DEFAULT 'Unseen' CHECK(AlertStatus IN ('Unseen', 'Seen')),
                 EventID INTEGER NOT NULL,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
@@ -262,13 +263,14 @@ def setup_database():
 
         # Table for course opening alerts
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS SectionStatusChanges(
+            '''CREATE TABLE IF NOT EXISTS StudentSectionStatusChanges(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                SectionID INTEGER NOT NULL,
-                OldStatus TEXT NOT NULL,
-                NewStatus TEXT NOT NULL,
-                ChangeTime DATETIME NOT NULL,
-                FOREIGN KEY (SectionID) REFERENCES Sections(ID)
+                ChangeID INTEGER NOT NULL,
+                AlertStatus TEXT NOT NULL DEFAULT 'Unseen' CHECK(AlertStatus IN ('Unseen', 'Seen')),
+                ParentID INTEGER NOT NULL,
+                FOREIGN KEY (ParentID) REFERENCES Students(ID)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (ChangeID) REFERENCES SectionStatusChanges(ID)
                     ON DELETE CASCADE
             )'''
         )
@@ -401,6 +403,65 @@ def create_triggers():
             BEGIN
                 INSERT INTO SectionStatusChanges (SectionID, OldStatus, NewStatus, ChangeTime)
                 VALUES (OLD.ID, OLD.Status, NEW.Status, CURRENT_TIMESTAMP);
+            END;
+            '''
+        )
+
+        # create trigger to reset last event check and last section status check field of a student entry when its parent id field is changed to null
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS ResetCheckFields
+            AFTER UPDATE OF ParentID ON Students
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NULL
+            BEGIN
+                UPDATE Students
+                SET LastEventCheck = '1970-01-01T00:00:00', LastSectionStatusCheck = '1970-01-01T00:00:00'
+                WHERE ID = NEW.ID;
+            END;
+            '''
+        )
+
+        # Create trigger to delete relevant events, intresets, tracked sections, and section status changes for a student when the student's ParentID field is updated to null
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS DeleteStudentData
+            AFTER UPDATE OF ParentID ON Students
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NULL
+            BEGIN
+                DELETE FROM RelevantEvents WHERE ParentID = NEW.ID;
+                DELETE FROM Interests WHERE ParentID = NEW.ID;
+                DELETE FROM TrackedSections WHERE ParentID = NEW.ID;
+                DELETE FROM StudentSectionStatusChanges WHERE ParentID = NEW.ID;
+            END;
+            '''
+        )
+
+        # Create trigger to reset last event check field for a student when an interest is added for them
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChange
+            AFTER INSERT ON Interests
+            FOR EACH ROW
+            BEGIN
+                UPDATE Students
+                SET LastEventCheck = '1970-01-01T00:00:00'
+                WHERE ID = NEW.ParentID;
+            END;
+            '''
+        )
+
+        # Create trigger to reset last event check field for a student when an interest is changed for them
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChange
+            AFTER UPDATE ON Interests
+            FOR EACH ROW
+            BEGIN
+                UPDATE Students
+                SET LastEventCheck = '1970-01-01T00:00:00'
+                WHERE ID = NEW.ParentID;
             END;
             '''
         )

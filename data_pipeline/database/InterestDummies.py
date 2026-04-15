@@ -122,15 +122,6 @@ INTERESTS = [
 def insert_interest_dummy_data() -> None:
     with __connect() as conn:
         cursor = conn.cursor()
-            
-        cursor.execute(
-            """
-            INSERT OR IGNORE INTO Users (Username, Password, AccountType)
-            VALUES (?, ?, ?)
-            """,
-            ("dummy_student_01", "demo_password_hash", "Student"),
-        )
-        user_id = cursor.lastrowid
 
         cursor.execute(
             """
@@ -139,18 +130,16 @@ def insert_interest_dummy_data() -> None:
                 GPA,
                 CreditsEarned,
                 IntendedGraduationTerm,
-                AdvisorID,
-                ParentID
+                AdvisorID
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
             """,
             (
                 "Jordan Reeves",
                 3.42,
                 57,
                 "Spring 2027",
-                None,
-                user_id,
+                None
             ),
         )
         student_id = cursor.lastrowid

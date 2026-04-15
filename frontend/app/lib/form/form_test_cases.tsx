@@ -5,6 +5,7 @@ export type ErrorTypes = {
     password?: string,
     check_password?: string,
     account_type?: string,
+    id?: string,
     api_error?: string,
 }
 
@@ -18,10 +19,14 @@ export class FormError extends Error {
     }
 }
 
-export function registrationValidationTests(username: string, password: string, conf_password: string, account_type: AccountType): FormError | null {
+function isNumber(value: string): boolean {
+  return !isNaN(Number(value));
+}
+
+export function registrationValidationTests(username: string, password: string, conf_password: string, account_type: AccountType, id: string): FormError | null {
     let errorFlag: boolean = false;
 
-    let ePass, eCheckPass, eUsername, eAccount : string = "";
+    let ePass, eCheckPass, eUsername, eAccount, eID : string = "";
 
     username.trim();
     password.trim();
@@ -69,12 +74,19 @@ export function registrationValidationTests(username: string, password: string, 
         eAccount = "Invalid account type"
     }
 
+    // Validate ID
+    if(!isNumber(id)) {
+        errorFlag = true;
+        eID = "ID must be a number"
+    }
+
     if(errorFlag) {
         const thrownErrors: ErrorTypes = {
             username: eUsername,
             password: ePass,
             check_password: eCheckPass,
             account_type: eAccount,
+            id: eID,
         };
         return new FormError(thrownErrors);
     }
@@ -111,6 +123,7 @@ export function loginValidationTests(username: string, password: string): FormEr
         const thrownErrors: ErrorTypes = {
             username: eUsername,
             password: ePass,
+            api_error:`${eUsername} ${ePass}`
         };
         return new FormError(thrownErrors);
     }

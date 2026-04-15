@@ -5,14 +5,18 @@ import { Flex, Button, Separator, Em, ScrollArea } from "@radix-ui/themes";
 import { HomeIcon, BellIcon, ChatBubbleIcon, PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-// User Imports
+// Lib
 import SidebarButton from "@/app/components/navigation/navbutton";
 import Logo from "@/app/components/visual/logo"
 import SignOut from "@/app/components/features/signout"
 import DashTitle from "@/app/components/visual/title"
+import { useUserData } from "@/app/lib/account/user_context";
+import type { UserMetadata } from "@/app/lib/account/account_db_utils";
+import type { AccountType } from "@/app/lib/account/account_type";
 
 export default function Sidebar () {
-    const router = useRouter();
+    const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
+    const account_type: AccountType = userMetadata.AccountType;
     return (
         <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="bg-orange-500">
             {/*Logo Section*/}
@@ -24,12 +28,21 @@ export default function Sidebar () {
                 <SidebarButton href="/dashboard/home">
                     <HomeIcon/>Home
                 </SidebarButton>
-                <SidebarButton href="/dashboard/alerts">
-                    <BellIcon/>Alerts
-                </SidebarButton>
-                <SidebarButton href="/dashboard/chat">
-                    <ChatBubbleIcon/>Chat
-                </SidebarButton>
+                {
+                    (account_type === "Student") ? 
+                    <SidebarButton href="/dashboard/alerts">
+                        <BellIcon/>Alerts
+                    </SidebarButton> :
+                    <SidebarButton href="/dashboard/students">
+                        <PersonIcon/>Students
+                    </SidebarButton>
+                }
+                {    
+                    (account_type === "Student") ?
+                    <SidebarButton href="/dashboard/chat">
+                        <ChatBubbleIcon/>Chat
+                    </SidebarButton> : <></>
+                }
                 <SidebarButton href="/dashboard/account">
                     <PersonIcon/>Account
                 </SidebarButton>
