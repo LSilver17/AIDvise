@@ -21,7 +21,6 @@ export default function Students() {
     // Context and state
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const { userStudents } : { userStudents: UserStudents} = useUserData();
-    const[isExpanded, setExpanded] = useState(false);
     const minStudents = 3;
     
     //TODO: redirect
@@ -35,16 +34,18 @@ export default function Students() {
             <DashTitle size="8">
                 Students
             </DashTitle>
-            <Flex wrap="wrap">
-                <ExpandableList
-                    list={userStudents?.Students}
-                    vis={isExpanded}
-                    setVis={setExpanded}
-                    min={minStudents}
-                    Component={Student}
-                    componentType="Student"
-                />
-            </Flex>
+            
+            <ExpandableList
+                list={userStudents?.Students}
+                min={minStudents}
+                Component={Student}
+                componentType="Student"
+                wrap="wrap"
+                gap="6"
+            >
+                <ExpandableList.List/>
+                <ExpandableList.Button/>
+            </ExpandableList>
         </DashboardLayout>
     );
 }

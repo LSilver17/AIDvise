@@ -97,7 +97,7 @@ export default function SignUp () {
                 </Flex>
             </Flex>
 
-            <Flex direction="row" justify="center">
+            <Flex direction="row" justify="center" width="100%">
                 <SelectField inputName="account_type" message={errors?.account_type}/>
             </Flex>
             

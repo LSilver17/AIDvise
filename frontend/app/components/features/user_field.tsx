@@ -29,9 +29,14 @@ export default function AccountField({field, children, fieldName}: AccountFieldP
     const [isEditing, setIsEditing] = useState(false);
     const {userData, userMetadata} = useUserData();
 
-    if (field.data == undefined) {
-        field.data = "Empty";
+    if (field.title == undefined) {
+        return null;
     }
+
+    const title = field.title;
+    const data = field.data ?? "Empty";
+    const editable = field.editable ?? false;
+
     const width = "400px"
     const submitHandler : SubmitEventHandler<HTMLFormElement> = async (event) => {
         const formData = new FormData(event.currentTarget);
@@ -64,15 +69,15 @@ export default function AccountField({field, children, fieldName}: AccountFieldP
                             (
                                 <>
                                     <Flex justify="start">
-                                        {field?.title}:
+                                        {title}
                                     </Flex>
                                     <Flex justify="end" flexGrow="1">
-                                        {field?.data}
+                                        {data}
                                     </Flex>
                                 </>
                             ) :
                             (
-                                <FormField label={field.title} inputName={field.title} hasMissingMessage={false}/>
+                                <FormField label={title} inputName={title} hasMissingMessage={false}/>
                             )
                         }
                     </Flex>

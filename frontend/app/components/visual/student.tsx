@@ -1,18 +1,40 @@
 // Lib
 import Card from "@/app/components/visual/card"
 import type { Student } from "@/app/lib/account/account_db_utils";
+import { Flex, Text } from "@radix-ui/themes";
 
 export type StudentProps = {
     student: Student,
 }
 
 export function Student({student}: StudentProps) {
-    const minHeight="15rem";
-    const maxHeight="15rem";
+    const height="15rem";
+    const width="15rem";
     const name = student.Name ?? "Unnamed";
     return (
-        <Card minHeight={minHeight} maxHeight={maxHeight} title={name}>
-            Student
+        <Card height={height} width={width} title={name}>
+            <Flex direction="column">
+                {student.ID ? 
+                    <Flex direction="row">
+                        <Text weight="bold">Student ID</Text>: {student.ID}
+                    </Flex> : <></>
+                }
+                {student.GPA ? 
+                    <Flex direction="row">
+                        <Text weight="bold">GPA</Text>: {student.GPA}
+                    </Flex> : <></>
+                }
+                {student.CreditsEarned ? 
+                    <Flex direction="row">
+                        <Text weight="bold">Credits</Text>: {student.CreditsEarned}
+                    </Flex> : <></>
+                }
+                {student.IntendedGraduationTerm ?
+                    <Flex direction="row" wrap="wrap">
+                        <Text weight="bold">Intended Graduation<Text weight="regular">:</Text></Text> {student.IntendedGraduationTerm}
+                    </Flex> : <></>
+                }
+            </Flex>
         </Card>
     );
 }

@@ -37,8 +37,8 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
   
   const currContext = await get_curr_context(session.user.account_type);
   if(!currContext) {
-      await signOut({callbackUrl:"/login"});
-      redirect("/login");
+    await signOut({callbackUrl:"/login"});
+    redirect("/login");
   }
 
   return (

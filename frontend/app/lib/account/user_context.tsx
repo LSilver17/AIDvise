@@ -13,25 +13,33 @@ const UserContext = createContext(null as any);
 // Stores personal user info and account metadata
 
 export function UserContextProvider({children, currContext}: Props) {
-    const [userData, setUserData] = useState<UserData | null>(currContext.userData);
-    const [userMetadata, setUserMetadata] = useState<UserMetadata | null>(currContext.userMetadata);
-    const [refresh, tRefresh] = useState(false);
+    const [userData, setUserData] = useState<UserData>(currContext.userData);
+    const [userMetadata, setUserMetadata] = useState<UserMetadata>(currContext.userMetadata);
 
     if(currContext.userMetadata.AccountType === "Student") {
         const studentContext = currContext as StudentContext;
-        const [userAlerts, setUserAlerts] = useState<UserAlerts | null>(studentContext.userAlerts);
-        const [userInterests, setUserInterests] = useState<UserInterests | null>(studentContext.userInterests);
+        const [userAlerts, setUserAlerts] = useState<UserAlerts>(studentContext.userAlerts);
+        const [userInterests, setUserInterests] = useState<UserInterests>(studentContext.userInterests);
 
         return (
-            <UserContext.Provider value={{userData, userMetadata, userAlerts, userInterests}}>
+            <UserContext.Provider value={{
+                userData, userMetadata, 
+                userAlerts, userInterests,
+                setUserData, setUserMetadata,
+                setUserAlerts, setUserInterests
+            }}>
                 {children}
             </UserContext.Provider>
         )
     } else if(currContext.userMetadata.AccountType === "Advisor") {
         const advisorContext = currContext as AdvisorContext;
-        const [userStudents, setUserStudents] = useState<UserStudents | null>(advisorContext.userStudents);
+        const [userStudents, setUserStudents] = useState<UserStudents>(advisorContext.userStudents);
         return (
-            <UserContext.Provider value={{userData, userMetadata, userStudents}}>
+            <UserContext.Provider value={{
+                userData, userMetadata, 
+                userStudents, setUserData, 
+                setUserMetadata, setUserStudents
+            }}>
                 {children}
             </UserContext.Provider>
         )

@@ -349,6 +349,8 @@ export async function grabUserData() {
 
         if (accountType.AccountType === "Student") {
             const userInfo = await db.get('SELECT Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID, ID FROM Students WHERE ParentID = ?', id);
+            const advisor_name = await db.get('SELECT Name FROM Advisors WHERE ID = ?', userInfo.AdvisorID);
+            const advisor_string = advisor_name?.Name ?? "Advising Center";
             const data: UserData = {
                 Name: {
                     title:"Name",
@@ -372,7 +374,7 @@ export async function grabUserData() {
                 },
                 AdvisorID: {
                     title:"Advisor",
-                    data: userInfo.AdvisorID,
+                    data: advisor_string,
                     editable: false,
                 },
                 StudentID: {
@@ -478,12 +480,9 @@ export async function get_curr_context(account_type: AccountType) {
 
     if(account_type === "Student") {
         const userData = await getUserObject() as StudentData;
-        const alerts = await alert_fill(userData.StudentID.data);
+        const userAlerts = await get_alerts(userData.StudentID.data);
         const interests = await get_interests(userData.StudentID.data);
-        const userAlerts: UserAlerts = {
-            UnseenAlerts: alerts.unseen,
-            SeenAlerts: [],
-        }
+        
         const userInterests: UserInterests = {
             Interests: interests,
         }
@@ -494,7 +493,7 @@ export async function get_curr_context(account_type: AccountType) {
             userInterests: userInterests,
         };
         return currContext;
-    } else if(account_type==="Advisor") {
+    } else if(account_type === "Advisor") {
         const userData = await getUserObject() as AdvisorData;
         const userStudents: UserStudents = {
             Students: await student_fill(userData.AdvisorID.data),
@@ -528,20 +527,29 @@ async function get_interests(student_id: string) {
     return interests;
 }
 
+export async function get_alerts(student_id: string): Promise<UserAlerts> {
+    const alerts = await alert_fill(student_id);
+    const userAlerts: UserAlerts = {
+        UnseenAlerts: alerts.unseen,
+        SeenAlerts: alerts.seen,
+    }
+    return userAlerts;
+}
+
 async function alert_fill(student_id: string): Promise<AlertReturn> {
     var db;
     let unseenAlerts: Alert[] = [];
     let seenAlerts: Alert[] = [];
     try {
         db = await openDB(dbPath());
-        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        const db_event_alerts = await db.all(`SELECT EventID, AlertStatus, ID FROM RelevantEvents WHERE ParentID = ?`, student_id);
         for (let alert of db_event_alerts) {
             const eventID = alert.EventID;
             const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
             const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
             const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
             // TODO: check for seen status
-            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date);
+            const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date, alert.ID);
             if (newAlert.status === "Unseen") { unseenAlerts.push(newAlert); }
             else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
         }
@@ -569,6 +577,32 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
         seen: seenAlerts,
     }
     return alerts;
+}
+
+export async function mark_alerts_as_seen(alerts: UserAlerts): Promise<UserAlerts> {
+    var db;
+    const unseen_alerts = alerts.UnseenAlerts;
+    try {
+        db = await openDB(dbPath());
+        for (const alert of unseen_alerts) {
+            await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
+        }
+        const userAlerts: UserAlerts = {
+            UnseenAlerts: [],
+            SeenAlerts: [
+                ...alerts.SeenAlerts,
+                ...alerts.UnseenAlerts
+            ]
+        }
+        return userAlerts;
+    } catch(e) {
+        console.log(`ERROR: ${e}`)
+        return alerts;
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
 }
 
 async function student_fill(advisor_id: string) : Promise<Student[]> {
