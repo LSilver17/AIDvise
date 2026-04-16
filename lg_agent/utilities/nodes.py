@@ -16,7 +16,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 from utilities.state import AdvisorState, DatabaseHelperState, WebSearchHelperState
 from utilities.schemas import PlanSchema
-from utilities.tools import db_tools, web_tools
+from utilities.tools import db_tools, web_tools, insertion_tools
 from utilities.TestModel import GenericFakeChatModel
 import json
 
@@ -90,24 +90,42 @@ with open(os.path.join(root_dir, "model_select.json"), 'r') as f:
             ]))
         case default:
             raise ValueError(f"Model {model_select[mode]["web"]} not supported for web node.")
+    match model_select[mode]["insertion"]:
+        case "sonnet-4-6":
+            insertion_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
+        case "gpt-4o":
+            insertion_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
+        case "testing":
+            insertion_llm = GenericFakeChatModel(messages=iter([
+                AIMessage(content="testing insertion tools", tool_calls=[
+                    ToolCall(name="insert_student_interest", args={"interest": "Machine Learning"}, id="1"),
+                    ToolCall(name="insert_student_tracked_section", args={"course_code": "CSC 212", "section_id": "1"}, id="2")
+                ]),
+                AIMessage(content="Insertion tools completed. The student's interest in Machine Learning has been added to the database."),
+                AIMessage(content="Insertion tools fallback. No additional insertion is needed for this test run.")
+            ])),
+        case default:
+            raise ValueError(f"Model {model_select[mode]["insertion"]} not supported for insertion node.")
 
 def planning_node(state: AdvisorState) -> AdvisorState:
     """Base node for the academic advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
     structured_llm = planning_llm.with_structured_output(PlanSchema)
 
-    system_prompt = f"You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is 3 or higher and you still don't have the information needed, provide the best answer you can with the information you have and stop. loop count = {state['loop_count']}"
+    system_prompt = f"You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is 3 or higher and you still don't have the information needed, provide the best answer you can with the information you have and stop. In addition to answering questions, you should also listen to anything the user says about their interests and goals and use that information to update the database."
 
     messages = []
-     
-    messages.append(SystemMessage(content=system_prompt))
+    messages.extend(state["messages"])
+
+    if len(messages) == 0:
+        messages.append(SystemMessage(content=system_prompt))
 
     for QueryResult in state["db_info"]:
         messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     for QueryResult in state["web_info"]:
         messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
-    messages.extend(state["messages"])
+    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
@@ -119,7 +137,7 @@ def db_node(state: DatabaseHelperState):
 
     llm_with_db_tools = db_llm.bind_tools(db_tools)
 
-    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use the tools at your disposal to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop. loop count = {state['loop_count']}"
+    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use the tools at your disposal to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop."
     
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
@@ -128,6 +146,8 @@ def db_node(state: DatabaseHelperState):
 
     messages = []
     messages.extend(state["messages"])
+
+    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
 
@@ -139,7 +159,7 @@ def web_node(state: WebSearchHelperState):
     
     llm_with_web_tools = web_llm.bind_tools(web_tools)
 
-    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use web searches to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop. loop count = {state['loop_count']}"
+    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use web searches to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop."
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
@@ -149,7 +169,31 @@ def web_node(state: WebSearchHelperState):
     messages = []
     messages.extend(state["messages"])
 
+    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+
     result = llm_with_web_tools.invoke(messages)
+
+    state["loop_count"] += 1
+    return {"messages": [result]}
+
+def insertion_node(state: AdvisorState) -> AdvisorState:
+    """Node that takes any new information the advisor has learned about the student and inserts it into the database."""
+
+    llm_with_insertion_tools = db_llm.bind_tools(insertion_tools)
+
+    system_prompt = f"You are the assistant for an academic advising agent. Your task is to determine how you can use the following tools to update the database with any new information the advisor has learned about the student from their conversations and questions. If the information is already in the database, do not insert it again. Only output the tool calls and nothing else. If loop count is 3 or higher and you still have information that hasn't been inserted, leave it as is and stop. loop count = {state['loop_count']}"
+
+    # if state messages is empty add a message with the info to be inserted, otherwise pass the messages through
+    if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt))
+        state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information about the student should be added into the database if it is not already present: {state['info_to_insert']}"))
+    
+    messages = []
+    messages.extend(state["messages"])
+
+    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+
+    result = llm_with_insertion_tools.invoke(messages)
 
     state["loop_count"] += 1
     return {"messages": [result]}

@@ -180,7 +180,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# 
+# Utility function to get information about a specific event from the database based on its ID.
 def get_event_info_by_id(cursor: sqlite3.Cursor, event_id: str) -> dict:
     # get name and description of event from Events table
     cursor.execute("SELECT * FROM Events WHERE ID = ?", (event_id,))
@@ -208,6 +208,128 @@ def get_event_info_by_id(cursor: sqlite3.Cursor, event_id: str) -> dict:
     }
 
     return event_info
+
+# Utility function to that returns the name, advisor, gpa, credits earned, and programs of study for a student based on their ID.
+def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
+    cursor.execute("SELECT Name, Advisor, GPA, CreditsEarned FROM Students WHERE ID = ?", (student_id,))
+    row = cursor.fetchone()
+
+    if row is None:
+        return {}
+
+    name = row[0]
+    advisor = row[1]
+    gpa = row[2]
+    credits_earned = row[3]
+
+    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM Programs as p JOIN StudentPrograms as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
+    programs_of_study = []
+    for row in cursor.fetchall():
+        programs_of_study.append({
+            "Title": row[0],
+            "Description": row[1],
+            "CreditsRequired": row[2]
+        })
+
+    if not advisor:
+        advisor = "No advisor assigned"
+
+    if not programs_of_study:
+        programs_of_study = ["No program of study"]
+    
+    student_info = {
+        "Name": name,
+        "Advisor": advisor,
+        "GPA": gpa,
+        "CreditsEarned": credits_earned,
+        "ProgramsOfStudy": programs_of_study
+    }
+
+    return student_info
+
+# Utility function that returns the course code and course title for all courses a student has taken based on their ID
+def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
+    cursor.execute("SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN StudentCourses as sc ON c.ID = sc.CourseID WHERE sc.ParentID = ?", (student_id,))
+    course_history = []
+    for row in cursor.fetchall():
+        course_history.append({
+            "CourseCode": row[0] + " " + row[1],
+            "Name": row[2]
+        })
+    if not course_history:
+        course_history = ["No courses taken"]
+    return course_history
+
+# Utility function to get all interests for a student based on their ID
+def get_student_interests(cursor: sqlite3.Cursor, student_id: int) -> list:
+    cursor.execute("SELECT Interest FROM Interests WHERE ParentID = ?", (student_id,))
+    interests = [row[0] for row in cursor.fetchall()]
+    if not interests:
+        interests = ["No interests specified"]
+    return interests
+
+# Utility function to get all tracked sections for a student based on their ID
+def get_student_tracked_sections(cursor: sqlite3.Cursor, student_id: int) -> list:
+    cursor.execute("SELECT c.Department, c.Code, c.Name, s.SectionNumber FROM Courses as c JOIN Sections as s JOIN CoursesOffered as co JOIN TrackedSections as ts ON c.ID = co.CourseID AND s.ParentID = co.ID AND s.ID = ts.SectionID WHERE ts.ParentID = ?", (student_id,))
+    tracked_sections = []
+    for row in cursor.fetchall():
+        tracked_sections.append({
+            "CourseCode": row[0] + " " + row[1],
+            "SectionNumber": row[3],
+            "Name": row[2]
+        })
+    if not tracked_sections:
+        tracked_sections = ["No sections currently being tracked"]
+    return tracked_sections
+
+# Utility function to get the courses required for a specific program of study based on its Title
+def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str) -> list:
+    cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN Programs as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
+    program_requirements = []
+    for row in cursor.fetchall():
+        cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco JOIN ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prco.ParentID = prc.ID WHERE prc.ID = ?""", (row[0],))
+        options = cursor.fetchall()
+        requirement = ""
+        for option in options:
+            requirement += option[0] + " " + option[1] + " " + option[2] + " OR "
+        program_requirements.append(requirement)
+    
+    return program_requirements
+
+# Utility function to insert new interests for a student based on their ID
+def insert_student_interests(cursor: sqlite3.Cursor, student_id: int, interest: list[str]) -> str:
+    counter = 0
+    for item in interest:
+        cursor.execute("INSERT INTO Interests (ParentID, Interest) VALUES (?, ?)", (student_id, item))
+        counter += 1
+    return f"{counter} new interest(s) added"
+
+# Utility function to insert a new tracked section for a student based on their ID and the section code
+def insert_student_tracked_section(cursor: sqlite3.Cursor, student_id: int, course_code: str, section_number: str) -> str:
+    # get section ID based on course code and section number
+    if " " in course_code:
+        # split by space
+        department, number = course_code.split()
+    else:
+        # split by the point where the digits start
+        for i, char in enumerate(course_code):
+            if char.isdigit():
+                department = course_code[:i]
+                number = course_code[i:]
+                break
+    cursor.execute("SELECT s.ID FROM Sections as s JOIN CoursesOffered as co JOIN Courses as c ON s.ParentID = co.ID AND co.CourseID = c.ID WHERE c.Department = ? AND c.Code = ? AND s.SectionNumber = ?", (department, number, section_number))
+    result = cursor.fetchone()
+
+    if result is None:
+        return "Section not found"
+    
+    section_id = result[0]
+    # check if the section is already being tracked by the student to avoid duplicates
+    cursor.execute("SELECT ID FROM TrackedSections WHERE ParentID = ? AND SectionID = ?", (student_id, section_id))
+    if cursor.fetchone() is not None:
+        return "Section already being tracked"
+    cursor.execute("INSERT INTO TrackedSections (ParentID, SectionID) VALUES (?, ?)", (student_id, section_id))
+    return "Section added to tracked sections"
 
 # Utility function to recursively get all data related to a target entry in a table based on the hierarchy of the database schema, starting from the target entry and including all entries that reference it as a foreign key, along with their relevant linked data based on the hierarchy, and returning this information in a structured format that indicates the relationships between the data
 # Note: Don't use this on course catalog or major/minor catalog entries, as the amount of related data can be very large and may cause performance issues. This is best used on more specific entries, such as a specific course offering or a specific student.

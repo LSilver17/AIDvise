@@ -13,6 +13,7 @@ from langchain_core.messages import AIMessage
 from lg_agent.utilities.nodes import planning_node
 from db_helper_graph import db_graph
 from web_helper_graph import web_graph
+from insertion_helper_graph import insertion_graph
 import json
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
@@ -33,7 +34,7 @@ def reset_loop_count(state: AdvisorState) -> AdvisorState:
 
 def invoke_db_helper(state: AdvisorState):
     """Function to invoke the database helper graph and return the results to the main graph."""
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0}
+    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
     result = db_graph.invoke(db_helper_state)
     db_info = state["db_info"]
     db_info.append(result["info"])
@@ -47,6 +48,12 @@ def invoke_web_helper(state: AdvisorState):
     web_info.append(result["info"])
     return {"web_info": web_info}
 
+def invoke_insertion_helper(state: AdvisorState):
+    """Function to invoke the insertion helper graph to insert any new information the advisor has learned about the student into the database."""
+    insertion_helper_state = {"info_to_insert": state["plan"]["info_to_insert"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
+    insertion_graph.invoke(insertion_helper_state)
+    return {}
+
 def route_from_planning(state: AdvisorState):
     """
     Routing function to determine which helper graph(s) to invoke based on the output of the planning node. If the planning 
@@ -58,7 +65,9 @@ def route_from_planning(state: AdvisorState):
     if state["plan"]["requires_database"]:
         routes.append("invoke_db_helper")
     if state["plan"]["requires_web_search"]:
-        routes.append("invoke_web_helper") 
+        routes.append("invoke_web_helper")
+    if state["plan"]["requires_insertion"]:
+        routes.append("invoke_insertion_helper")
     if not routes:
         routes.append("answer_node")
     return [Send(route, state) for route in routes]
@@ -78,18 +87,20 @@ graph_builder = StateGraph(AdvisorState)
 
 graph_builder.add_node("fetch_info", fetch_info)
 graph_builder.add_node("reset_loop_count", reset_loop_count)
-graph_builder.add_node("planning", planning_node)
+graph_builder.add_node("planning", planning_node, defer=True)
 graph_builder.add_node("invoke_db_helper", invoke_db_helper)
 graph_builder.add_node("invoke_web_helper", invoke_web_helper)
+graph_builder.add_node("invoke_insertion_helper", invoke_insertion_helper)
 graph_builder.add_node("answer_node", answer_node)
 graph_builder.add_node("update_info_stash", update_info_stash)
 
 graph_builder.add_edge(START, "fetch_info")
 graph_builder.add_edge("fetch_info", "reset_loop_count")
 graph_builder.add_edge("reset_loop_count", "planning")
-graph_builder.add_conditional_edges("planning", route_from_planning)
+graph_builder.add_conditional_edges("planning", route_from_planning, ["invoke_db_helper", "invoke_web_helper", "invoke_insertion_helper", "answer_node"])
 graph_builder.add_edge("invoke_db_helper", "planning")
 graph_builder.add_edge("invoke_web_helper", "planning")
+graph_builder.add_edge("invoke_insertion_helper", "planning")
 graph_builder.add_edge("answer_node", "update_info_stash")
 graph_builder.add_edge("update_info_stash", END)
 
