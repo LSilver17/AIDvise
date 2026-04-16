@@ -36,6 +36,13 @@ def clean_text(text):
     return " ".join(text.split()).strip()
 
 
+def fix_apostrophes(text):
+    """Fix SQL-escaped double apostrophes from The Q portal."""
+    if text:
+        return text.replace("''", "'")
+    return text
+
+
 def parse_detail_page(html):
     soup = BeautifulSoup(html, "html.parser")
     result = {
@@ -78,7 +85,7 @@ def parse_detail_page(html):
             break
         desc_lines.append(line)
     if desc_lines:
-        result["description"] = " ".join(desc_lines)
+        result["description"] = fix_apostrophes(" ".join(desc_lines))
 
     # Credits — match "Credits: 3" or "3 Credits" or "3 credit hours"
     credit_match = re.search(
@@ -96,7 +103,7 @@ def parse_detail_page(html):
     if prereq_match:
         prereq = clean_text(prereq_match.group(1))
         if "semester offered" not in prereq.lower():
-            result["prerequisites"] = prereq
+            result["prerequisites"] = fix_apostrophes(prereq)
 
     # Semesters offered — allow upper and lowercase, stop at Credits
     sem_match = re.search(
