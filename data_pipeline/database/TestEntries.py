@@ -190,45 +190,46 @@ def seed_dummy_entries(reset_existing: bool = True) -> None:
 		)
 
 		# 6) Users, advisors, students
-		users = [
-			("advisor_jkim", "pass123", "Advisor"),
-			("advisor_mdiaz", "pass123", "Advisor"),
-			("student_alice", "pass123", "Student"),
-			("student_bob", "pass123", "Student"),
-			("student_carla", "pass123", "Student"),
-		]
-		cursor.executemany(
-			"INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)",
-			users,
+		# users = [
+		# 	("advisor_jkim", "pass123", "Advisor"),
+		# 	("advisor_mdiaz", "pass123", "Advisor"),
+		# 	("student_alice", "pass123", "Student"),
+		# 	("student_bob", "pass123", "Student"),
+		# 	("student_carla", "pass123", "Student"),
+		# ]
+		# cursor.executemany(
+		# 	"INSERT INTO Users (Username, Password, AccountType) VALUES (?, ?, ?)",
+		# 	users,
+		# )
+
+		# user_id_by_username = {
+		# 	row[0]: row[1]
+		# 	for row in cursor.execute("SELECT Username, ID FROM Users").fetchall()
+		# }
+
+		cursor.execute(
+			"INSERT INTO Advisors (Name) VALUES (?)",
+			("Dr. Jordan Kim",),
 		)
-
-		user_id_by_username = {
-			row[0]: row[1]
-			for row in cursor.execute("SELECT Username, ID FROM Users").fetchall()
-		}
-
-		advisors = [
-			("Dr. Jordan Kim", user_id_by_username["advisor_jkim"]),
-			("Dr. Maria Diaz", user_id_by_username["advisor_mdiaz"]),
-		]
-		cursor.executemany(
-			"INSERT INTO Advisors (Name, ParentID) VALUES (?, ?)",
-			advisors,
+		
+		cursor.execute(
+			"INSERT INTO Advisors (Name) VALUES (?)",
+			("Dr. Maria Diaz",),
 		)
 
 		advisor_ids = [row[0] for row in cursor.execute("SELECT ID FROM Advisors ORDER BY ID").fetchall()]
 
 		students = [
-			("Alice Johnson", 3.78, 46, "Fall 2027", advisor_ids[0], user_id_by_username["student_alice"]),
-			("Bob Smith", 3.21, 61, "Spring 2027", advisor_ids[0], user_id_by_username["student_bob"]),
-			("Carla Reyes", 3.92, 28, "Spring 2028", advisor_ids[1], user_id_by_username["student_carla"]),
+			("Alice Johnson", 3.78, 46, "Fall 2027", advisor_ids[0]),
+			("Bob Smith", 3.21, 61, "Spring 2027", advisor_ids[0]),
+			("Carla Reyes", 3.92, 28, "Spring 2028", advisor_ids[1]),
 		]
 		cursor.executemany(
 			"""
 			INSERT INTO Students (
-				Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID, ParentID
+				Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID
 			)
-			VALUES (?, ?, ?, ?, ?, ?)
+			VALUES (?, ?, ?, ?, ?)
 			""",
 			students,
 		)

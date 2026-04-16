@@ -1,12 +1,11 @@
 // Components
-import { Flex, Text } from "@radix-ui/themes";
-import { AlertStatus } from "@/app/lib/alerts/alert"
-import AlertTitle from "@/app/components/visual/title"
+import { Flex } from "@radix-ui/themes";
+import Card from "@/app/components/visual/card"
 
 // Lib
 import type { Alert, EventAlert, ClassAlert, AlertTypes } from "@/app/lib/alerts/alert"
 
-type Props = {
+export type AlertProps = {
     alert: Alert,
 }
 
@@ -46,23 +45,17 @@ function ClassAlert({alert}: ClassProps) {
     )
 }
 
-export default function SingleAlert({alert}: Props) {
+export default function SingleAlert({alert}: AlertProps) {
     const minHeight="100px";
     const maxHeight="250px"
     return (
-        <Flex direction="row" minHeight={minHeight} maxHeight={maxHeight} overflow="hidden">
-            <Flex minHeight={minHeight} maxHeight={maxHeight} width="10px" style={{background:"orange"}}/>
-            <Flex direction="column" width="100%" style={{background:"gainsboro"}} p="2">
-                <AlertTitle size="6" gap="2" justify="start" align="start" pl="2">{alert.name}</AlertTitle>
-                <Flex direction="column" align="center" ml="3">
-                    {
-                        (alert.type === "Event") ? <EventAlert alert={alert as EventAlert}/> : <></>
-                    }
-                    {
-                        (alert.type === "Class") ? <ClassAlert alert={alert as ClassAlert}/> : <></>
-                    }
-                </Flex>
-            </Flex>
-        </Flex>
+        <Card minHeight={minHeight} maxHeight={maxHeight} title={alert.name}>
+            {
+                (alert.type === "Event") ? <EventAlert alert={alert as EventAlert}/> : <></>
+            }
+            {
+                (alert.type === "Class") ? <ClassAlert alert={alert as ClassAlert}/> : <></>
+            }
+        </Card>
     );
 }

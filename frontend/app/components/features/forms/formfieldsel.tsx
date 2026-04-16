@@ -21,9 +21,9 @@ type SelectProps = {
 
 function FieldSelect({required, name}: SelectProps) {
     return (
-        <select required={required} name={name} title={name}>
-            <option value="Student">Student</option>
-            <option value="Advisor">Advisor</option>
+        <select required={required} name={name} title={name} style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}}>
+            <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Student">Student</option>
+            <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Advisor">Advisor</option>
         </select>
         // currently not compatible with radix elements
         // <Select.Root size={size} required={required}>

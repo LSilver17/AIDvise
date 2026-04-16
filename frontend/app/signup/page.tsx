@@ -18,6 +18,7 @@ import type { ErrorTypes } from "@/app/lib/form/form_test_cases";
 import { FormError, registrationValidationTests } from "@/app/lib/form/form_test_cases";
 import { alert_popup } from "@/app/lib/alerts/alert_popup";
 import type { AccountType } from '@/app/lib/account/account_type'
+import { Flex } from "@radix-ui/themes";
 
 export default function SignUp () {
     const router = useRouter();
@@ -37,9 +38,10 @@ export default function SignUp () {
         const password = formData.get("password") as string;
         const conf_password = formData.get("conf_password") as string;
         const account_type = formData.get("account_type") as AccountType;
+        const id = formData.get("id") as string;
 
         try {
-            const errorCheck = registrationValidationTests(username, password, conf_password, account_type);
+            const errorCheck = registrationValidationTests(username, password, conf_password, account_type, id);
 
             if(errorCheck) {
                 throw errorCheck;
@@ -52,6 +54,7 @@ export default function SignUp () {
                     username: username,
                     password: password,
                     account_type: account_type,
+                    id: id,
                 }),
             });
 
@@ -81,11 +84,23 @@ export default function SignUp () {
     }
     
     return (
-        <RegistrationForm onSubmit={handler}>
-            <FormField label="Username" inputName="username" message={errors?.username}/>
-            <FormField label="Password" inputName="password" message={errors?.password} isPassword/>
-            <FormField label="Confirm password" inputName="conf_password" message={errors?.check_password} isPassword/>
-            <SelectField inputName="account_type" message={errors?.account_type}/>
+        <RegistrationForm justify="start" onSubmit={handler}>
+            <Flex direction="row" gap="2" height="8rem">
+                <Flex direction="column" justify="start">
+                    <FormField label="Username" inputName="username" message={errors?.username}/>
+                    <FormField label="Password" inputName="password" message={errors?.password} isPassword/>
+                </Flex>
+
+                <Flex direction="column" justify="between">
+                    <FormField label="Student/Advisor ID" inputName="id" message={errors?.id}/>
+                    <FormField label="Confirm password" inputName="conf_password" message={errors?.check_password} isPassword/>
+                </Flex>
+            </Flex>
+
+            <Flex direction="row" justify="center" width="100%">
+                <SelectField inputName="account_type" message={errors?.account_type}/>
+            </Flex>
+            
             <FormSubmit>
                 Create Account
             </FormSubmit>

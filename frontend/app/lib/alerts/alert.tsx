@@ -6,6 +6,7 @@ export interface Alert {
     readonly name: string,
     readonly status: AlertStatus,
     readonly type: AlertTypes,
+    readonly id: number,
 }
 
 export interface EventAlert extends Alert {
@@ -33,6 +34,7 @@ export function createEventAlert(
     status: AlertStatus,
     time: string,
     date: string,
+    id: number,
 ) {
     const event: EventAlert = {
         name: name,
@@ -41,6 +43,7 @@ export function createEventAlert(
         time: time,
         date: date,
         type: "Event",
+        id: id,
     }
     return event;
 }
@@ -56,6 +59,7 @@ export function createClassAlert(
     requirements: string,
     meetTime: string,
     days: string,
+    id: number,
 ) {
     const event: ClassAlert = {
         name: name,
@@ -69,6 +73,7 @@ export function createClassAlert(
         meetTime: meetTime,
         days: days,
         type: "Class",
+        id: id,
     }
     return event;
 }

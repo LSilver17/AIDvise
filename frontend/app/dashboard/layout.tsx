@@ -11,6 +11,8 @@ import { UserContextProvider } from "@/app/lib/account/user_context";
 import { get_curr_context } from "@/app/lib/account/account_db_utils";
 import { authSession } from "@/app/lib/account/authSession";
 
+import { signOut } from "next-auth/react";
+
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -33,17 +35,23 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
       redirect("/login");
   }
   
-  const currContext = await get_curr_context();
+  const currContext = await get_curr_context(session.user.account_type);
+  if(!currContext) {
+    await signOut({callbackUrl:"/login"});
+    redirect("/login");
+  }
 
   return (
     <Flex direction="column" height="100vh" width="100vw">
       <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-        <Flex flexShrink="1" minHeight="0" minWidth="300px" maxWidth="300px" overflow="hidden">
-          <Sidebar/>
-        </Flex>
-        <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-          <UserContextProvider currContext={currContext}>{children}</UserContextProvider>
-        </Flex>  
+        <UserContextProvider currContext={currContext}>
+          <Flex flexShrink="1" minHeight="0" minWidth="300px" maxWidth="300px" overflow="hidden">
+            <Sidebar/>
+          </Flex>
+          <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
+            {children}
+          </Flex>
+        </UserContextProvider>
       </Flex>
     </Flex>
   );
