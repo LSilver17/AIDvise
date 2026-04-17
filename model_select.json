@@ -1,5 +1,5 @@
 {
-    "mode": "testing",
+    "mode": "all-claude",
     "all-claude": {
         "planning": "sonnet-4-6",
         "db": "sonnet-4-6",
