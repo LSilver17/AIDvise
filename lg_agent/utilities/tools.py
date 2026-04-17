@@ -129,4 +129,4 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
         cursor = conn.cursor()
         return database_utils.insert_student_tracked_section(cursor, runtime.state["student_id"], course_code, section_id)
         
-insert_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]
+insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]
