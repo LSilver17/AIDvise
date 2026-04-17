@@ -27,6 +27,7 @@ graph_builder = StateGraph(InsertionHelperState, output_schema=InsertionHelperOu
 
 graph_builder.add_node("insertion", insertion_node)
 graph_builder.add_node("tool_node", tool_node)
+graph_builder.add_node("format_insertion_output", format_insertion_output)
 
 graph_builder.add_edge(START, "insertion")
 graph_builder.add_conditional_edges("insertion", should_continue, ["tool_node", "format_insertion_output"])
