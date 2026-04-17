@@ -25,12 +25,14 @@ def fetch_info(state: AdvisorState):
         info_stash = json.load(f)
     state["db_info"] = info_stash["db_info"]
     state["web_info"] = info_stash["web_info"]
+    with open(os.path.join(parent_dir, "student_id.json"), "r") as f:
+        state["student_id"] = json.load(f)
+    state["insertion_result"] = ""
     return state
 
 def reset_loop_count(state: AdvisorState) -> AdvisorState:
     """Function to reset the loop count in the main graph state before each new question is processed."""
     state["loop_count"] = 0
-    state["insertion_result"] = ""
     return state
 
 def invoke_db_helper(state: AdvisorState):
