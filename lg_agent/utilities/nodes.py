@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolCall
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
-from utilities.state import AdvisorState, DatabaseHelperState, WebSearchHelperState
+from utilities.state import AdvisorState, DatabaseHelperState, WebSearchHelperState, InsertionHelperState
 from utilities.schemas import PlanSchema
 from utilities.tools import db_tools, web_tools, insertion_tools
 from utilities.TestModel import GenericFakeChatModel
@@ -176,12 +176,12 @@ def web_node(state: WebSearchHelperState):
     state["loop_count"] += 1
     return {"messages": [result]}
 
-def insertion_node(state: AdvisorState) -> AdvisorState:
+def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
     """Node that takes any new information the advisor has learned about the student and inserts it into the database."""
 
     llm_with_insertion_tools = db_llm.bind_tools(insertion_tools)
 
-    system_prompt = f"You are the assistant for an academic advising agent. Your task is to determine how you can use the following tools to update the database with any new information the advisor has learned about the student from their conversations and questions. If the information is already in the database, do not insert it again. Only output the tool calls and nothing else. If loop count is 3 or higher and you still have information that hasn't been inserted, leave it as is and stop. loop count = {state['loop_count']}"
+    system_prompt = f"You are the assistant for an academic advising agent. Your task is to determine how you can use the following tools to update the database with any new information the advisor has learned about the student from their conversations and questions. If the information is already in the database, do not insert it again. Only output the tool calls and nothing else. If loop count is 3 or higher and you still have information that hasn't been inserted, leave it as is and stop."
 
     # if state messages is empty add a message with the info to be inserted, otherwise pass the messages through
     if len(state["messages"]) == 0:

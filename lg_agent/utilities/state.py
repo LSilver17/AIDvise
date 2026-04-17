@@ -33,6 +33,7 @@ class DatabaseHelperState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     loop_count: int
     student_id: int
+    
 class DatabaseHelperOutput(TypedDict):
     info: QueryResult
 
