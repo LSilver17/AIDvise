@@ -24,6 +24,7 @@ class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     db_info: list[QueryResult]
     web_info: list[QueryResult]
+    insertion_result: str
     plan: dict
     loop_count: int
     student_id: int
@@ -50,6 +51,9 @@ class InsertionHelperState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     loop_count: int
     student_id: int
+
+class InsertionHelperOutput(TypedDict):
+    result: str
 
 # States for the AlertsAgent
 

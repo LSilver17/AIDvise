@@ -51,8 +51,8 @@ def invoke_web_helper(state: AdvisorState):
 def invoke_insertion_helper(state: AdvisorState):
     """Function to invoke the insertion helper graph to insert any new information the advisor has learned about the student into the database."""
     insertion_helper_state = {"info_to_insert": state["plan"]["info_to_insert"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
-    insertion_graph.invoke(insertion_helper_state)
-    return {}
+    result = insertion_graph.invoke(insertion_helper_state)
+    return {"insertion_result": result["result"]}
 
 def route_from_planning(state: AdvisorState):
     """

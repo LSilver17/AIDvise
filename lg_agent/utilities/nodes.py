@@ -125,6 +125,9 @@ def planning_node(state: AdvisorState) -> AdvisorState:
     for QueryResult in state["web_info"]:
         messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
+    if state["insertion_result"] != "":
+        messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
+
     messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
