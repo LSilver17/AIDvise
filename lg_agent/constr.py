@@ -30,6 +30,7 @@ def fetch_info(state: AdvisorState):
 def reset_loop_count(state: AdvisorState) -> AdvisorState:
     """Function to reset the loop count in the main graph state before each new question is processed."""
     state["loop_count"] = 0
+    state["insertion_result"] = ""
     return state
 
 def invoke_db_helper(state: AdvisorState):
