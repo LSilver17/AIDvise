@@ -180,34 +180,37 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# Utility function to get information about a specific event from the database based on its ID.
-def get_event_info_by_id(cursor: sqlite3.Cursor, event_id: str) -> dict:
-    # get name and description of event from Events table
-    cursor.execute("SELECT * FROM Events WHERE ID = ?", (event_id,))
-    row = cursor.fetchone()
+# Utility function to get a list of events that have event dates that are in the future
+def get_upcoming_events(cursor: sqlite3.Cursor):
+    cursor.execute("SELECT e.ID, e.Name, e.Description FROM Events as e JOIN EventDates as ed ON e.ID = ed.ParentID WHERE ed.Date >= date('now') GROUP BY e.ID")
+    events = []
+    for row in cursor.fetchall():
+        events.append({
+            "ID": row[0],
+            "Name": row[1],
+            "Description": row[2]
+        })
+    return events
 
-    if row is None:
-        return {}
+# Utility function to get all future event dates for a specific event based on its name
+def get_event_dates_by_name(cursor: sqlite3.Cursor, event_name: str) -> list:
+    cursor.execute("SELECT ID FROM Events WHERE Name = ?", (event_name,))
+    result = cursor.fetchone()
 
-    # get all event date entries linked to the event
-    cursor.execute("SELECT StartDate, EndDate, StartTime, EndTime, Location FROM EventDates WHERE ParentID = ?", (event_id,))
+    if result is None:
+        return ["Event not found"]
+
+    cursor.execute("SELECT Date, StartTime, EndTime, Location FROM EventDates WHERE ParentID = ? AND Date >= date('now')", (result[0],))
     event_dates = []
     for row in cursor.fetchall():
         event_dates.append({
-            "StartDate": row[0],
-            "EndDate": row[1],
-            "StartTime": row[2],
-            "EndTime": row[3],
-            "Location": row[4]
+            "Date": row[0],
+            "StartTime": row[1],
+            "EndTime": row[2],
+            "Location": row[3]
         })
 
-    event_info = {
-        "Name": row[1],
-        "Description": row[2],
-        "Dates": event_dates
-    }
-
-    return event_info
+    return event_dates
 
 # Utility function to that returns the name, advisor, gpa, credits earned, and programs of study for a student based on their ID.
 def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:

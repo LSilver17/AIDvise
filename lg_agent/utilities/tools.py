@@ -106,8 +106,22 @@ def get_program_requirements_tool(program_name: str) -> str:
         cursor = conn.cursor()
         program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
         return json.dumps(program_requirements)
+    
+@tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
+def get_upcoming_events_tool() -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        upcoming_events = database_utils.get_upcoming_events(cursor)
+        return json.dumps(upcoming_events)
 
-db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_basic_info_tool, get_student_course_history_tool, get_student_interests_tool, get_student_tracked_sections_tool, get_program_requirements_tool]
+@tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
+def get_event_dates_tool(event_name: str) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
+        return json.dumps(event_dates)
+
+db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_basic_info_tool, get_student_course_history_tool, get_student_interests_tool, get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
 def web_search_tool(query: str) -> str:
