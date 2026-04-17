@@ -19,6 +19,15 @@ import utilities.schemas as schemas
 import database_utils
 import json
 
+
+def _normalize_student_id(student_id_state: int | dict) -> int:
+    """Normalize student_id from runtime state to an integer."""
+    if isinstance(student_id_state, dict):
+        if "student_id" in student_id_state:
+            return student_id_state["student_id"]
+        raise ValueError("student_id state dict must contain a 'student_id' key")
+    return student_id_state
+
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
 def course_query_tool_by_code(course_code: str) -> str:
@@ -76,28 +85,28 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
 def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        student_info = database_utils.get_student_basic_info(cursor, tool_runtime.state["student_id"])
+        student_info = database_utils.get_student_basic_info(cursor, runtime.state["student_id"])
         return json.dumps(student_info)
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
 def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        course_history = database_utils.get_student_course_history(cursor, tool_runtime.state["student_id"])
+        course_history = database_utils.get_student_course_history(cursor, runtime.state["student_id"])
         return json.dumps(course_history)
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
 def get_student_interests_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        interests = database_utils.get_student_interests(cursor, tool_runtime.state["student_id"])
+        interests = database_utils.get_student_interests(cursor, runtime.state["student_id"])
         return json.dumps(interests)
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
 def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        tracked_sections = database_utils.get_student_tracked_sections(cursor, tool_runtime.state["student_id"])
+        tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["student_id"])
         return json.dumps(tracked_sections)
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
@@ -135,12 +144,12 @@ web_tools = [web_search_tool]
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_interests(cursor, tool_runtime.state["student_id"], [interest])
+        return database_utils.insert_student_interests(cursor, runtime.state["student_id"], [interest])
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
 def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_tracked_section(cursor, tool_runtime.state["student_id"], course_code, section_id)
+        return database_utils.insert_student_tracked_section(cursor, runtime.state["student_id"], course_code, section_id)
         
 insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]

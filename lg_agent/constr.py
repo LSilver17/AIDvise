@@ -26,7 +26,8 @@ def fetch_info(state: AdvisorState):
     state["db_info"] = info_stash["db_info"]
     state["web_info"] = info_stash["web_info"]
     with open(os.path.join(parent_dir, "student_id.json"), "r") as f:
-        state["student_id"] = json.load(f)
+        student_id_data = json.load(f)
+    state["student_id"] = student_id_data["student_id"]
     state["insertion_result"] = ""
     return state
 
