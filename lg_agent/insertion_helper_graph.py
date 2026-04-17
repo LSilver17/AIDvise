@@ -18,7 +18,7 @@ def should_continue(state: InsertionHelperState):
     last_message = messages[-1]
     if getattr(last_message, "tool_calls", None) and state["loop_count"] < 3:
         return "tool_node"
-    return "END"
+    return END
 
 graph_builder = StateGraph(InsertionHelperState)
 
