@@ -121,11 +121,11 @@ def planning_node(state: AdvisorState) -> AdvisorState:
         messages.append(SystemMessage(content=system_prompt))
 
     for QueryResult in state["db_info"]:
-        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+        messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     for QueryResult in state["web_info"]:
-        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+        messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
-    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
@@ -147,7 +147,7 @@ def db_node(state: DatabaseHelperState):
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
 
@@ -169,7 +169,7 @@ def web_node(state: WebSearchHelperState):
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_web_tools.invoke(messages)
 
@@ -191,7 +191,7 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(SystemMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_insertion_tools.invoke(messages)
 
