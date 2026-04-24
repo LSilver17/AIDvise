@@ -11,7 +11,6 @@ import type { AccountType } from "@/app/lib/account/account_type";
 
 // Hooks
 import { useEffect } from "react";
-import { useAgent } from "@copilotkit/react-core/v2";
 
 function choose_init_message(name: string, interests: UserInterests): string {
   var message_addition = "How can I help you today?";
@@ -22,7 +21,6 @@ function choose_init_message(name: string, interests: UserInterests): string {
 
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();
-  const { agent } = useAgent({agentId:"default", updates:[]});
   const accountType: AccountType = userMetadata?.AccountType;
   
   // useEffect(() => {

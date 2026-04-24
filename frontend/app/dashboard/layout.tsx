@@ -12,6 +12,9 @@ import { get_curr_context } from "@/app/lib/account/account_db_utils";
 import { authSession } from "@/app/lib/account/authSession";
 
 import { signOut } from "next-auth/react";
+import path from "path";
+import { writeFile } from "fs";
+import fs from 'fs';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -28,6 +31,18 @@ export const metadata: Metadata = {
   description: "User dashboard",
 };
 
+async function createJSON(student_id: string) {
+  const id = Number(student_id);
+  try {
+    const filePath = path.join(__dirname, "../../../../../../../student_id.json");
+    const JSONString = JSON.stringify({ student_id: id})
+    fs.writeFileSync(filePath, JSONString, 'utf-8');
+    console.log(`WRITE SUCCESS: ${filePath}`);
+  } catch(e) {
+    console.log("WRITE ERROR: ", e);
+  }
+}
+
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
   // session validation
   const session = await authSession();
@@ -39,6 +54,10 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
   if(!currContext) {
     await signOut({callbackUrl:"/login"});
     redirect("/login");
+  }
+
+  if ( "StudentID" in currContext.userData ) {
+    await createJSON(currContext.userData.StudentID.data);
   }
 
   return (
