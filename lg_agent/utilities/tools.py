@@ -19,7 +19,6 @@ import utilities.schemas as schemas
 import database_utils
 import json
 
-
 def _normalize_student_id(student_id_state: int | dict) -> int:
     """Normalize student_id from runtime state to an integer."""
     if isinstance(student_id_state, dict):
@@ -153,3 +152,70 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
         return database_utils.insert_student_tracked_section(cursor, runtime.state["student_id"], course_code, section_id)
         
 insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]
+
+# alt db tools for chatbot used by advisor
+
+@tool("get_student_id_by_name", description="Tool for getting a student's ID based on their name. The input is the student's name and the output is the student's ID. Only works for students who have the current user as their advisor.", return_direct=True)
+def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT ID FROM Students WHERE name = ? and advisor_id = ?", (student_name, runtime.state["user_id"]))
+        student_id = cursor.fetchone()
+        if student_id:
+            return json.dumps({"student_id": student_id[0]})
+        else:
+            return f"No student found with name {student_name}."
+
+@tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
+def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        advisor_id = cursor.fetchone()
+        if advisor_id is None:
+            return f"No student found with ID {student_id}"
+        elif advisor_id[0] != runtime.state["user_id"]:
+            return f"Student with ID {student_id} is not assigned to the current user."
+        student_info = database_utils.get_student_basic_info(cursor, student_id)
+        return json.dumps(student_info)
+
+@tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
+def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        advisor_id = cursor.fetchone()
+        if advisor_id is None:
+            return f"No student found with ID {student_id}"
+        elif advisor_id[0] != runtime.state["user_id"]:
+            return f"Student with ID {student_id} is not assigned to the current user."
+        course_history = database_utils.get_student_course_history(cursor, student_id)
+        return json.dumps(course_history)
+
+@tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
+def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        advisor_id = cursor.fetchone()
+        if advisor_id is None:
+            return f"No student found with ID {student_id}"
+        elif advisor_id[0] != runtime.state["user_id"]:
+            return f"Student with ID {student_id} is not assigned to the current user."
+        interests = database_utils.get_student_interests(cursor, student_id)
+        return json.dumps(interests)
+
+@tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
+def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        advisor_id = cursor.fetchone()
+        if advisor_id is None:
+            return f"No student found with ID {student_id}"
+        elif advisor_id[0] != runtime.state["user_id"]:
+            return f"Student with ID {student_id} is not assigned to the current user."
+        tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
+        return json.dumps(tracked_sections)
+    
+alt_db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]

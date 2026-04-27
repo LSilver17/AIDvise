@@ -7,105 +7,42 @@ if parent_dir not in sys.path:
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END
-from langgraph.types import Send
-from lg_agent.utilities.state import AdvisorState
-from langchain_core.messages import AIMessage
-from lg_agent.utilities.nodes import planning_node
-from db_helper_graph import db_graph
-from web_helper_graph import web_graph
-from insertion_helper_graph import insertion_graph
-import json
+from lg_agent.utilities.state import RouteState
+from s_chat_graph import s_chat_graph
+from a_chat_graph import a_chat_graph
+from data_pipeline.database.database_dev_tools import __connect
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
 load_dotenv()
 
-def fetch_info(state: AdvisorState):
-    """Function to fetch db and web info from past runs."""
-    with open(os.path.join(parent_dir, "lg_agent", "info_stash.json"), "r") as f:
-        info_stash = json.load(f)
-    state["db_info"] = info_stash["db_info"]
-    state["web_info"] = info_stash["web_info"]
-    with open(os.path.join(parent_dir, "student_id.json"), "r") as f:
-        student_id_data = json.load(f)
-    state["student_id"] = student_id_data["student_id"]
-    state["insertion_result"] = ""
+def state_init(state: RouteState, config) -> RouteState:
+    """Initializes the state for the routing graph."""
+    state["user_id"] = config.get("configurable", {}).get("userId")
+    state["account_type"] = config.get("configurable", {}).get("accountType")
     return state
 
-def reset_loop_count(state: AdvisorState) -> AdvisorState:
-    """Function to reset the loop count in the main graph state before each new question is processed."""
-    state["loop_count"] = 0
-    return state
+def route_node(state: RouteState) -> RouteState:
+    """Routes the user to the appropriate chatbot based on their account type."""
+    match state["account_type"]:
+        case "Student":
+            with __connect() as conn:
+                cur = conn.cursor()
+                cur.execute("SELECT ID FROM students WHERE parent_id = ?", (state["user_id"],))
+                student_id = cur.fetchone()
+                if student_id is None:
+                    raise ValueError(f"No student found for parent_id {state['user_id']}")
+                result = s_chat_graph.invoke({"messages": state["messages"], "loop_count": 0, "student_id": student_id[0]})
+        case "Advisor":
+            result = a_chat_graph.invoke({"messages": state["messages"], "loop_count": 0, "user_id": state["user_id"]})
+        case _:
+            raise ValueError(f"Account type {state['account_type']} not supported.")
+        
+    return {"messages": result["messages"]}
 
-def invoke_db_helper(state: AdvisorState):
-    """Function to invoke the database helper graph and return the results to the main graph."""
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
-    result = db_graph.invoke(db_helper_state)
-    db_info = state["db_info"]
-    db_info.append(result["info"])
-    return {"db_info": db_info}
+graph_builder = StateGraph(RouteState)
+graph_builder.add_node("state_init", state_init)
+graph_builder.add_node("route_node", route_node)
 
-def invoke_web_helper(state: AdvisorState):
-    """Function to invoke the web helper graph and return the results to the main graph."""
-    web_helper_state = {"info_needed": state["plan"]["info_needed_web"], "messages": [], "loop_count": 0}
-    result = web_graph.invoke(web_helper_state)
-    web_info = state["web_info"]
-    web_info.append(result["info"])
-    return {"web_info": web_info}
-
-def invoke_insertion_helper(state: AdvisorState):
-    """Function to invoke the insertion helper graph to insert any new information the advisor has learned about the student into the database."""
-    insertion_helper_state = {"info_to_insert": state["plan"]["info_to_insert"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
-    result = insertion_graph.invoke(insertion_helper_state)
-    return {"insertion_result": result["result"]}
-
-def route_from_planning(state: AdvisorState):
-    """
-    Routing function to determine which helper graph(s) to invoke based on the output of the planning node. If the planning 
-    node indicates that information is needed from the database, the database helper graph will be invoked. If it indicates 
-    that information is needed from the web, the web helper graph will be invoked. If it indicates that both are needed, the 
-    they will be run in parallel. If neither are needed, the graph will route directly to the answer node.
-    """
-    routes = []
-    if state["plan"]["requires_database"]:
-        routes.append("invoke_db_helper")
-    if state["plan"]["requires_web_search"]:
-        routes.append("invoke_web_helper")
-    if state["plan"]["requires_insertion"]:
-        routes.append("invoke_insertion_helper")
-    if not routes:
-        routes.append("answer_node")
-    return [Send(route, state) for route in routes]
-
-def answer_node(state: AdvisorState) -> AdvisorState:
-    """Node that returns the final answer from the planning node."""
-    return {"messages": state["messages"] + [AIMessage(content=state["plan"]["answer"])]}
-
-def update_info_stash(state: AdvisorState):
-    """Function to update the info stash with the latest db and web info after each loop."""
-    info_stash = {"db_info": state["db_info"], "web_info": state["web_info"]}
-    with open(os.path.join(parent_dir, "lg_agent", "info_stash.json"), "w") as f:
-        json.dump(info_stash, f)
-    return state
-
-graph_builder = StateGraph(AdvisorState)
-
-graph_builder.add_node("fetch_info", fetch_info)
-graph_builder.add_node("reset_loop_count", reset_loop_count)
-graph_builder.add_node("planning", planning_node, defer=True)
-graph_builder.add_node("invoke_db_helper", invoke_db_helper)
-graph_builder.add_node("invoke_web_helper", invoke_web_helper)
-graph_builder.add_node("invoke_insertion_helper", invoke_insertion_helper)
-graph_builder.add_node("answer_node", answer_node)
-graph_builder.add_node("update_info_stash", update_info_stash)
-
-graph_builder.add_edge(START, "fetch_info")
-graph_builder.add_edge("fetch_info", "reset_loop_count")
-graph_builder.add_edge("reset_loop_count", "planning")
-graph_builder.add_conditional_edges("planning", route_from_planning, ["invoke_db_helper", "invoke_web_helper", "invoke_insertion_helper", "answer_node"])
-graph_builder.add_edge("invoke_db_helper", "planning")
-graph_builder.add_edge("invoke_web_helper", "planning")
-graph_builder.add_edge("invoke_insertion_helper", "planning")
-graph_builder.add_edge("answer_node", "update_info_stash")
-graph_builder.add_edge("update_info_stash", END)
-
-chat_graph = graph_builder.compile()
+graph_builder.add_edge(START, "state_init")
+graph_builder.add_edge("state_init", "route_node")
+graph_builder.add_edge("route_node", END)
