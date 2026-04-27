@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { SessionProvider } from "next-auth/react";
@@ -8,8 +11,14 @@ type ClientSessionProps = Readonly<{
     session: Session | null;
 }>
 
-// Wrap root in this
-// Session is fetched form the server and can be accessed with client-side useSession() hook
+
+/**
+ * Provider component for session .Session is fetched form the server 
+ * and can be accessed with client-side useSession() hook, although it is recommended to use
+ * the authSession() hook instead. Place within root component.
+ * @param props.session - Session object.
+ * @returns 
+ */
 export default function ClientSession ({children, session}: ClientSessionProps ) {
     return (
         <SessionProvider session={session}>

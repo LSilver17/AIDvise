@@ -1,9 +1,17 @@
+/*
+    Author: Sean Collins
+*/
 import DefaultButton from "@/app/components/features/default_button"
 import { AlertDialog, Flex } from "@radix-ui/themes";
 import { delete_account } from "@/app/lib/account/account_db_utils"
 import { signOut } from "next-auth/react";
 import { alert_popup } from "@/app/lib/alerts/alert_popup";
 
+/**
+ * Component for account deletion, including an account deletion handler and
+ * an alert dialog informing user about account deletion consequences.
+ * @returns 
+ */
 export default function DeleteAccount() {
     const deleteAccount = async () => {
         const result = await delete_account();
@@ -11,7 +19,6 @@ export default function DeleteAccount() {
             alert_popup(`${result?.error}`);
             return;
         }
-        await signOut({callbackUrl:"/login"});
     }
     return (
         <AlertDialog.Root>

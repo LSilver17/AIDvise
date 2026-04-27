@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
@@ -20,6 +23,15 @@ import { alert_popup } from "@/app/lib/alerts/alert_popup";
 import type { AccountType } from '@/app/lib/account/account_type'
 import { Flex } from "@radix-ui/themes";
 
+/**
+ * Registration page component that defines an error state and form submission handler for
+ * user-entered credentials. Form by default handles basic input validation like 
+ * missing fields. After passing the initial check, validation tests are ran on the 
+ * input strings. If validation fails or an error is thrown during API call, the error
+ * is displayed via a window popup on the front-end. If caught before submission, error
+ * messages are displayed near the form field.
+ * @returns 
+ */
 export default function SignUp () {
     const router = useRouter();
 

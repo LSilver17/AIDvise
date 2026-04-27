@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Button, Flex } from "@radix-ui/themes"
@@ -15,6 +18,13 @@ type ButtonProps = {
     variant?: "classic" | "solid" | "soft" | "surface" | "outline" | "ghost" | undefined;
 }
 
+/**
+ * Default button formatting for the frontend.
+ * @param props.size - Prop determining button size.
+ * @param props.onClick - Handler for button click event.
+ * @param props.variant - Visual variant for button.
+ * @returns 
+ */
 export default function AppButton({variant, size, onClick, children} : ButtonProps) {
     size = size ?? "4";
     variant = variant ?? "solid";

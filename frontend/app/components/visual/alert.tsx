@@ -1,3 +1,9 @@
+/*
+    Author: Sean Collins
+    Description: 
+        Dynamically rendered alert component, taking
+        an alert object as theme.
+*/
 // Components
 import { Flex } from "@radix-ui/themes";
 import Card from "@/app/components/visual/card"
@@ -45,6 +51,12 @@ function ClassAlert({alert}: ClassProps) {
     )
 }
 
+/**
+ * Dynamically rendered alert component. Takes either a class or event alert
+ * as prop and renders the corresponding alert card.
+ * @param props.alert - Course or event alert object. 
+ * @returns 
+ */
 export default function SingleAlert({alert}: AlertProps) {
     const minHeight="100px";
     const maxHeight="250px"

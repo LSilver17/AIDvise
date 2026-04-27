@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 import Logo from "@/app/components/visual/logo"
 import NavButton from "@/app/components/navigation/navbutton"
 import { Flex } from "@radix-ui/themes"
@@ -8,6 +11,13 @@ type PropTypes = {
     buttText?: string;
 }
 
+/**
+ * Layout for account login/registration, with a button for switching between the two. 
+ * The proper field should be given as the child component.
+ * @param props.href - Button hyperlink URL.
+ * @param props.buttText - Inner button text.
+ * @returns 
+ */
 export default function AccountLayout({ children, href, buttText}: PropTypes) {
     buttText = buttText ?? "Placeholder";
     href = href ?? "/"

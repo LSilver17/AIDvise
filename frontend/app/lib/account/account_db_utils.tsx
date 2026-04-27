@@ -1,3 +1,10 @@
+/*
+    Author: Sean Collins
+    Co-Author: Luca Silver
+    Description: 
+        A set of utility functions and types for connecting user accounts with
+        the database.
+*/
 'use server'
 
 import sqlite3 from 'sqlite3';
@@ -17,12 +24,20 @@ import { authSession } from "@/app/lib/account/authSession";
 import { UserField } from '@/app/lib/account/user_fields';
 import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
 
+/**
+ * Returns path to database configured in database_config.json.
+ * @returns Database path.
+ */
 function dbPath () {
-    // TODO: Use config to decide which database to use
     const dbPath = path.join(process.cwd(), '..', `${data.database}.db`);
     return dbPath;
 }
 
+/**
+ * Creates database object for database configured in database_config.json.
+ * @param path - Path to the database, by default the configured DB path.
+ * @returns SQLite database object.
+ */
 async function openDB(path = dbPath()) {
     const db = await open({
         filename: path,
@@ -40,6 +55,14 @@ type CreationResult =
     | {success:true, id:string, username: string, account_type: AccountType, academic_id: string}
     | {success:false, error:string};
 
+
+/** 
+    * Validates user-provided credentials against database entries. On successful login, returns on object with the validated credentials, returning an object with an error message otherwise.
+    * @param {string} username - The provided username credential.
+    * @param {string} password - The provided password credential, hashed using the same algorithm used on insertion and compared with the hashed value in the database.
+    * @returns {Promise<LoginResult>} A promise containing an object with login results.
+    * @authors Sean Collins, Luca Silver
+*/
 export async function validate_credentials(username: string, password: string): Promise<LoginResult> {
     var db;
     try {
@@ -67,7 +90,6 @@ export async function validate_credentials(username: string, password: string): 
             return result;
         }
 
-        // TODO: Create unique user ID
         const userCred: LoginResult = {
             success: true,
             username: credential.Username,
@@ -91,6 +113,11 @@ export async function validate_credentials(username: string, password: string): 
     }
 }
 
+/**
+ * Deletes any invalid entries created during the user creation process if an error is thrown.
+ * @param db - SQLite database object.
+ * @param username - Username field of entry to delete.
+ */
 async function delete_invalid_entry(db: any, username: string) {
     if (db) {
         const user = await db.get('SELECT Username, AccountType, ID FROM Users WHERE Username = ?', username);
@@ -102,7 +129,14 @@ async function delete_invalid_entry(db: any, username: string) {
 
 type ValidationResult = {valid: true, table: string} | {valid: false, err: string}
 
-async function id_validation(db: any, account_type: AccountType, person_id: string) {
+/**
+ * Ensures that the provided student/advisor ID has an equivalent within the database before linking an account to it.
+ * @param db - SQLite database object.
+ * @param account_type - Student / Advisor
+ * @param person_id - Person's academic student/advisor ID stored in the database.
+ * @returns {Promise<ValidationResult>} Promise with an object containing table name if ID is valid and an error message if not.
+ */
+async function id_validation(db: any, account_type: AccountType, person_id: string): Promise<ValidationResult> {
     if(account_type) {
         const table = (account_type === "Student") ? "Students" : "Advisors";
         const personID = await db.get(`SELECT ID FROM ${table} WHERE ID = ?`, person_id);
@@ -131,6 +165,17 @@ async function id_validation(db: any, account_type: AccountType, person_id: stri
     }
 }
 
+/**
+ * Creates a new User entry in the database. Accounts can only be created for existing Student or Advisor 
+ * entries in the database. Will return unsuccessful if the username is taken, if there is no person with
+ * an equivalent academic ID in the database, or if there is already an account associated with that person. 
+ * @param username - Username of the new account.
+ * @param password - User's password, to be salted and hashed before entry.
+ * @param account_type - Type of account. Determines privileges and which table to check.
+ * @param person_id - Academic ID of the person to be found in the database.
+ * @returns {Promise<CreationResult>} An object detailing the result of the creation attempt.
+ * @authors Sean Collins, Luca Silver
+ */
 export async function create_user(username: string, password: string, account_type: AccountType, person_id: string): Promise<CreationResult> {
     var db;
     const validAccountTypes = ["Student", "Advisor"];
@@ -194,8 +239,12 @@ export async function create_user(username: string, password: string, account_ty
     }
 }
 
-type Result = { success: true, query?:string } | { success: false, error: string } | null;
+type Result = { success: true, query?:string } | { success: false, error: string };
 
+/**
+ * @param type - Account type (Student / Advisor)
+ * @returns Name of the corresponding table name for provided account type.
+ */
 function accountTypeToTable(type: string | undefined) {
     var tableName;
     switch(type) {
@@ -206,6 +255,14 @@ function accountTypeToTable(type: string | undefined) {
     return tableName;
 }
 
+/**
+ * Updates user entry in database when account details are changed, validating session and ensuring user data exists beforehand.
+ * @param userData - Object from UserContext containing information about the user.
+ * @param userMetadata - Object from UserContext containing information about the user's account.
+ * @param newVal - User-provided value to be inserted.
+ * @param updatedField - Field of the new value.
+ * @returns A promise with an object detailing the result.
+ */
 export async function update_user_entry(userData: UserData, userMetadata: UserMetadata, newVal: string | null, updatedField: string): Promise<Result> {
     var db;
     const session = await authSession();
@@ -253,7 +310,11 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
     }
 }
 
-export async function delete_account() {
+/**
+ * Deletes the account of the user with current active session, then clears the session. Student/Advisor info remains in the academic database.
+ * @returns A promise with an object detailing the result.
+ */
+export async function delete_account(): Promise<Result> {
     let db;
     const session = await authSession();
     if(!session) {
@@ -290,9 +351,11 @@ export async function delete_account() {
         if (db) {
             await db.close();
         }
+        if(session) {
+            await signOut({callbackUrl:"/login"});
+        }
     }
 }
-
 
 export type StudentData = {
     Name: UserField,
@@ -314,9 +377,19 @@ export type UserMetadata = {
     Username: string,
 }
 
+export type UserEventAlerts = {
+    UnseenAlerts: EventAlert[],
+    SeenAlerts: EventAlert[],
+}
+
+export type UserCourseAlerts = {
+    UnseenAlerts: ClassAlert[],
+    SeenAlerts: ClassAlert[],
+}
+
 export type UserAlerts = {
-    UnseenAlerts: Alert[],
-    SeenAlerts: Alert[],
+    EventAlerts: UserEventAlerts,
+    CourseAlerts: UserCourseAlerts
 }
 
 export type UserInterests = {
@@ -335,7 +408,18 @@ export type UserStudents = {
     Students: Student[],
 }
 
-export async function grabUserData() {
+type UserDataResult = {
+    data: UserData,
+    success: true
+} | {
+    success: false,
+    error: string
+}
+/**
+ * Grabs user data from database for Advisor/Student.
+ * @returns An object containing data or an error.
+ */
+export async function grabUserData(): Promise<UserDataResult> {
     const session = await authSession();
     if(!session) {
         redirect("/login");
@@ -383,15 +467,14 @@ export async function grabUserData() {
                     editable: false,
                 }
             }
-            const fieldData = {
+            const fieldData: UserDataResult = {
                 data: data,
-                success:true,
+                success: true,
             };
             return fieldData;
         }
 
         else if (accountType.AccountType === "Advisor") {
-            // TODO: Expand query when advisor accounts are more fleshed out
             const userInfo = await db.get('SELECT Name, ID FROM Advisors WHERE ParentID = ?', id);
             const data: UserData = {
                 Name: {
@@ -405,7 +488,7 @@ export async function grabUserData() {
                     editable: false,
                 },
             }
-            const fieldData = {
+            const fieldData: UserDataResult = {
                 data: data,
                 success: true,
             };
@@ -415,7 +498,7 @@ export async function grabUserData() {
             throw `Account of type ${accountType.AccountType} with ID ${id} does not exist`;
         }
     } catch(e) {
-        const error = {
+        const error: UserDataResult = {
             success: false,
             error:`ERROR: ${e}`,
         };
@@ -427,6 +510,10 @@ export async function grabUserData() {
     }
 }
 
+/**
+ * Handles errors from grabUserData(), returning an object with the data or redirecting to login if user is nonexistent. 
+ * @returns UserData object.
+ */
 export async function getUserObject() {
     // grab user data from database
     try {
@@ -461,11 +548,18 @@ export interface AdvisorContext extends Context{
 }
 
 type AlertReturn = {
-    unseen: Alert[],
-    seen: Alert[],
+    event_unseen: EventAlert[],
+    event_seen: EventAlert[],
+    course_unseen: ClassAlert[],
+    course_seen: ClassAlert[],
 }
 
-export async function get_curr_context(account_type: AccountType) {
+/**
+ * Gathers values for all UserContext state variables into an object.
+ * @param account_type - Student / Advisor
+ * @returns Object containing UserContext data, null if account type is invalid (should not occur).
+ */
+export async function get_curr_context(account_type: AccountType): Promise<StudentContext | AdvisorContext | null> {
         // session validation
     const session = await authSession();
     
@@ -505,8 +599,14 @@ export async function get_curr_context(account_type: AccountType) {
         };
         return currContext;
     }
+    return null;
 }
 
+/**
+ * Grabs student interests from database based on provided student ID.
+ * @param student_id - Academic ID of the student.
+ * @returns A list of interests.
+ */
 async function get_interests(student_id: string) {
     var db;
     var interests: string[] = [];
@@ -527,44 +627,78 @@ async function get_interests(student_id: string) {
     return interests;
 }
 
+/**
+ * Returns an alerts object with seen and unseen alerts, to be stored in UserContext.
+ * @param student_id - Academic student ID.
+ * @returns Promise with object containing seen and unseen alerts.
+ */
 export async function get_alerts(student_id: string): Promise<UserAlerts> {
     const alerts = await alert_fill(student_id);
+    const eventAlerts: UserEventAlerts = {
+        UnseenAlerts: alerts.event_unseen,
+        SeenAlerts: alerts.event_seen,
+    }
+    const courseAlerts: UserCourseAlerts = {
+        UnseenAlerts: alerts.course_unseen,
+        SeenAlerts: alerts.course_seen,
+    }
     const userAlerts: UserAlerts = {
-        UnseenAlerts: alerts.unseen,
-        SeenAlerts: alerts.seen,
+        EventAlerts: eventAlerts,
+        CourseAlerts: courseAlerts,
     }
     return userAlerts;
 }
 
+/**
+ * Sorts list of event alerts chronologically from furthest to closest
+ * @param alerts - Unsorted list of event alerts.
+ * @returns Sorted list of event alerts.
+ */
+function sort_newest_oldest(alerts: EventAlert[]): EventAlert[] {
+    return alerts.sort((a: EventAlert, b: EventAlert) => {
+        const a_datetime: string = a.date + a.time;
+        const b_datetime: string = b.date + b.time;
+        // if b occurs after a, it appears first in list and vice versa
+        if(a_datetime < b_datetime) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    })
+}
+
+/**
+ * Returns object with sorted seen and unseen alerts for events and courses.
+ * @param student_id - Academic ID of student.
+ * @returns Promise for object containing sorted event and course alerts.
+ */
 async function alert_fill(student_id: string): Promise<AlertReturn> {
     var db;
-    let unseenAlerts: Alert[] = [];
-    let seenAlerts: Alert[] = [];
+    let event_unseenAlerts: EventAlert[] = [];
+    let event_seenAlerts: EventAlert[] = [];
     try {
         db = await openDB(dbPath());
         const db_event_alerts = await db.all(`SELECT EventID, AlertStatus, ID FROM RelevantEvents WHERE ParentID = ?`, student_id);
-        for (let alert of db_event_alerts) {
+        for (const alert of db_event_alerts) {
             const eventID = alert.EventID;
             const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
             const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
             const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
             // TODO: check for seen status
             const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date, alert.ID);
-            if (newAlert.status === "Unseen") { unseenAlerts.push(newAlert); }
-            else if (newAlert.status === "Seen") { seenAlerts.push(newAlert); };
+            if (newAlert.status === "Unseen") { event_unseenAlerts.push(newAlert); }
+            else if (newAlert.status === "Seen") { event_seenAlerts.push(newAlert); };
         }
-        // TODO: Implement class alerts
-        // const db_class_alerts = await db.all(`SELECT EventID FROM RelevantEvents WHERE ParentID = ?`, student_id);
-        // const last_check = await db.get(`SELECT LastSectionStatusCheck FROM Students WHERE ID = ?`, student_id)
-        // for (let course of db_class_alerts) {
-        //     console.log(last_check.LastSectionStatusCheck);
-        //     //createClassAlert()
-        // }
+        // TODO: grab course alerts
+        const db_course_alerts = await db.all(`SELECT EventID, AlertStatus, ID FROM RelevantEvents WHERE ParentID = ?`, student_id);
     } catch(e) {
         console.log(`ERROR: ${e}`)
         const alerts: AlertReturn = {
-            unseen: unseenAlerts,
-            seen: seenAlerts,
+            event_unseen: event_unseenAlerts,
+            event_seen: event_seenAlerts,
+            course_unseen: [],
+            course_seen: []
         }
         return alerts;
     } finally {
@@ -572,27 +706,51 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
             await db.close();
         }
     }
+    // TODO: return course alerts
     const alerts: AlertReturn = {
-        unseen: unseenAlerts,
-        seen: seenAlerts,
+        event_unseen: sort_newest_oldest(event_unseenAlerts),
+        event_seen: sort_newest_oldest(event_seenAlerts),
+        course_unseen: [],
+        course_seen: []
     }
     return alerts;
 }
 
+/**
+ * Changes event status in database from "Unseen" to "Seen" and then prepends unseen alerts to seen alerts list.
+ * @param alerts - Current user alerts object.
+ * @returns Updated user alerts object.
+ */
 export async function mark_alerts_as_seen(alerts: UserAlerts): Promise<UserAlerts> {
     var db;
-    const unseen_alerts = alerts.UnseenAlerts;
+    const event_unseen_alerts = alerts.EventAlerts.UnseenAlerts;
+    const course_unseen_alerts = alerts.CourseAlerts.UnseenAlerts;
     try {
         db = await openDB(dbPath());
-        for (const alert of unseen_alerts) {
+        // Updates database entry
+        for (const alert of event_unseen_alerts) {
             await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
         }
+        // TODO: Update course change entry
+        for (const alert of course_unseen_alerts) {
+            //await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
+        }
+
         const userAlerts: UserAlerts = {
-            UnseenAlerts: [],
-            SeenAlerts: [
-                ...alerts.SeenAlerts,
-                ...alerts.UnseenAlerts
-            ]
+            EventAlerts: {
+                UnseenAlerts: [],
+                SeenAlerts: [
+                    ...alerts.EventAlerts.UnseenAlerts,
+                    ...alerts.EventAlerts.SeenAlerts,
+                ]
+            },
+            CourseAlerts: {
+                UnseenAlerts: [],
+                SeenAlerts: [
+                    ...alerts.CourseAlerts.UnseenAlerts,
+                    ...alerts.CourseAlerts.SeenAlerts,
+                ]
+            }
         }
         return userAlerts;
     } catch(e) {
@@ -605,6 +763,11 @@ export async function mark_alerts_as_seen(alerts: UserAlerts): Promise<UserAlert
     }
 }
 
+/**
+ * Grabs all students under an advisor's guidance and places them in a list to be stored in UserContext.
+ * @param advisor_id - Advisor shared by the students.
+ * @returns Promise with a list of all students.
+ */
 async function student_fill(advisor_id: string) : Promise<Student[]> {
     var db;
     let students: Student[] = [];

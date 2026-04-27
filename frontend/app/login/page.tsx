@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { SubmitEventHandler } from "react";
@@ -15,13 +18,21 @@ import type { ErrorTypes } from "@/app/lib/form/form_test_cases";
 import { FormError, loginValidationTests } from "@/app/lib/form/form_test_cases";
 import { alert_popup } from "@/app/lib/alerts/alert_popup";
 
+/**
+ * Login page component that defines an error state and form submission handler for
+ * user-entered credentials. Form by default handles basic input validation like 
+ * missing fields. After passing the initial check, validation tests are ran on the 
+ * input strings. If validation fails or an error is thrown during API call, the error
+ * is displayed via a window popup on the front-end. If caught before submission, error
+ * messages are displayed near the form field.
+ * @returns 
+ */
 export default function Login () {
     const router = useRouter();
     
     const [errors, setErrors] = useState<ErrorTypes>({});
 
-    // TODO: Redirect to dashboard if there is an active session
-
+    
     const handler: SubmitEventHandler<HTMLFormElement> = async (event) => {
         
         // prevents implicit event handling

@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
@@ -10,6 +13,11 @@ import DeleteAccount from "@/app/components/features/delete_account";
 import { useUserData } from "@/app/lib/account/user_context";
 import { UserData } from "@/app/lib/account/account_db_utils";
 
+/**
+ * Grabs user account data to render dynamically as individual fields
+ * in account overview page.
+ * @returns 
+ */
 export default function Account () {
     const { userData } : {userData: UserData} = useUserData();
     return (

@@ -14,6 +14,10 @@ type Props = {
     children: React.ReactNode;
 }
 
+/**
+ * Root layout for form components.
+ * @param props.onSubmit - Form submission handler function.
+ */
 export default function FormRootLayout({onSubmit, justify, children} : Props) {
     justify = justify ?? "center";
     return (

@@ -107,7 +107,7 @@ with open(os.path.join(root_dir, "model_select.json"), 'r') as f:
         case default:
             raise ValueError(f"Model {model_select[mode]["insertion"]} not supported for insertion node.")
 
-def planning_node(state: AdvisorState) -> AdvisorState:
+def planning_node(state: AdvisorState, config) -> AdvisorState:
     """Base node for the academic advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
     structured_llm = planning_llm.with_structured_output(PlanSchema)

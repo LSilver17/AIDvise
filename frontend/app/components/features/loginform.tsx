@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -9,6 +12,11 @@ type Props = {
     onSubmit: SubmitEventHandler<HTMLFormElement>;
 }
 
+/**
+ * Component that constructs the user login form.
+ * @param props.onSubmit - Form submission handler.
+ * @returns 
+ */
 export default function LoginForm({onSubmit} : Props) {
     return (
         <Form.Root onSubmit={onSubmit}>

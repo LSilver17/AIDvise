@@ -1,7 +1,14 @@
+/*
+    Author: Sean Collins
+    Description: 
+        Definition of UserContext, which allows for the data of an 
+        active user to be shared among the provider's child
+        components.
+*/
 "use client"
 
 import { createContext, useContext, useState } from "react";
-import { type UserData, type UserMetadata, type UserAlerts, type UserStudents, type StudentContext, type AdvisorContext, type UserInterests, get_curr_context } from "@/app/lib/account/account_db_utils";
+import { type UserData, type UserMetadata, type UserEventAlerts, type UserStudents, type StudentContext, type AdvisorContext, type UserInterests, get_curr_context } from "@/app/lib/account/account_db_utils";
 
 type Props = {
     children: React.ReactNode,
@@ -10,15 +17,20 @@ type Props = {
 
 const UserContext = createContext(null as any);
 
-// Stores personal user info and account metadata
-
+/**
+ * A provider component for user context. The context stores user data, metadata, and account type specific data such as alerts and
+ * students. 
+ * @param {object} props
+ * @param {React.ReactNode} props.children - Child component to be wrapped in the provider.
+ * @param {StudentContext | AdvisorContext} props.currContext - An object containing data to place inside the user context.
+ */
 export function UserContextProvider({children, currContext}: Props) {
     const [userData, setUserData] = useState<UserData>(currContext.userData);
     const [userMetadata, setUserMetadata] = useState<UserMetadata>(currContext.userMetadata);
 
     if(currContext.userMetadata.AccountType === "Student") {
         const studentContext = currContext as StudentContext;
-        const [userAlerts, setUserAlerts] = useState<UserAlerts>(studentContext.userAlerts);
+        const [userAlerts, setUserAlerts] = useState<UserEventAlerts>(studentContext.userAlerts);
         const [userInterests, setUserInterests] = useState<UserInterests>(studentContext.userInterests);
 
         return (
@@ -46,4 +58,8 @@ export function UserContextProvider({children, currContext}: Props) {
     }
 }
 
+/**
+ * Hook to take state objects from user context given by the nearest provider. 
+ * @returns Object containing the context's state variables.
+ */
 export const useUserData = () => useContext(UserContext);

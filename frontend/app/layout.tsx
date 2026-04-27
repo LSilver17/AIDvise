@@ -1,6 +1,8 @@
+/*
+    Author: Sean Collins
+*/
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { CopilotKit } from "@copilotkit/react-core";
 import ClientSession from "@/app/components/features/clientsession";
 import "@copilotkit/react-ui/styles.css";
 import "@radix-ui/themes/styles.css";
@@ -23,6 +25,11 @@ export const metadata: Metadata = {
   description: "Advisor app",
 };
 
+/**
+ * Root component, wrapping application in theme and session providers.
+ * @param param0 
+ * @returns 
+ */
 export default async function RootLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
   const session = await authSession();
   return (
@@ -31,11 +38,9 @@ export default async function RootLayout({ children, }: Readonly<{children: Reac
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <CopilotKit runtimeUrl="/api/copilotkit">
-            <ClientSession session={session}>
-              {children}
-            </ClientSession>  
-          </CopilotKit>
+          <ClientSession session={session}>
+            {children}
+          </ClientSession>
         </ThemeProvider>
       </body>
     </html>

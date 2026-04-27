@@ -1,3 +1,10 @@
+/*
+    Author: Sean Collins
+    Description: 
+        Provides an expandable list component to display a dynamically rendered
+        series of similar components, provided as a prop. Used for alert and student
+        lists in the dashboard.
+*/
 import type { Dispatch, SetStateAction } from "react";
 import type { ComponentType } from "react";
 import { Flex } from "@radix-ui/themes"
@@ -36,6 +43,14 @@ const toggleExpansion = (stateVar: any, stateSetter: Dispatch<SetStateAction<boo
     stateVar ? stateSetter(false) : stateSetter(true);
 }
 
+/**
+ * Renders either an Alert or Student component.
+ * @param Component - Component to be rendered.
+ * @param val - Alert / Student object.
+ * @param key - Unique key used as component identifier.
+ * @param componentType - String name of component to be rendered.
+ * @returns 
+ */
 function renderComponent(Component: any, val: any, key: number, componentType: string) {
     if (componentType === "Alert") return <Component key={key} alert={val}/>;
     else if (componentType === "Student") return <Component key={key} student={val}/>;
@@ -46,6 +61,10 @@ const get_children = (children: any, displayName: any) =>
         child.type.displayName === displayName ? child : null
     );
 
+/**
+ * Renders a list of components, with state to render in expanded or collapsed state.
+ * @returns 
+ */
 const List = () => {
     const { list, isExpanded, min, Component, componentType, direction, gap, width, wrap} = useContext(ExpandableContext);
     if (!list) return <>Loading...</>
@@ -79,6 +98,20 @@ ExpandableList.Button = ExpandButton;
 
 const ExpandableContext = createContext(null as any);
 
+/**
+ * Component for rendering a list of objects as an expandable list. Requires
+ * ExpandableList.List and ExpandableList.Button children. Currently only
+ * supports Alert and Student objects.
+ * @param props.list - List of objects to render.
+ * @param props.min - Number of components to render when in unexpanded state.
+ * @param props.Component - Component to be rendered, passed as a prop.
+ * @param props.componentType - Name of component to be rendered.
+ * @param props.direction - Direction to render components.
+ * @param props.gap - Gap between components.
+ * @param props.width - Width of list space.
+ * @param props.wrap - Wrap property for list container.
+ * @returns 
+ */
 export function ExpandableList({children, list, min, Component, componentType, direction, gap, width, wrap}: Props) {
     const[isExpanded, setExpanded] = useState(false);
     const List = get_children(children, "List");

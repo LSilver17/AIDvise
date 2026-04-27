@@ -1,3 +1,9 @@
+/*
+    Author: Sean Collins
+    Description: 
+        Extension of the DefaultButton component for
+        creating navigation buttons.
+*/
 "use client"
 
 import { Button, Flex } from "@radix-ui/themes"
@@ -15,6 +21,14 @@ type ButtonProps = {
     onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
+/**
+ * Button component based on DefaultButton that takes an href as prop
+ * to redirect user.
+ * @param props.href - URL extension of base URL used for on-click redirection.
+ * @param props.onClick - Optional custom handler function for click event.
+ * @param props.size - Size of the button.
+ * @returns 
+ */
 export default function NavButton({href, children, size, onClick,}: ButtonProps) {
     const router = useRouter();
     href = href ?? "/";
@@ -31,6 +45,5 @@ export default function NavButton({href, children, size, onClick,}: ButtonProps)
                 {children}
             </Flex>
         </DefaultButton>
-        
     );
 }

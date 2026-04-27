@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Flex } from "@radix-ui/themes";
@@ -11,7 +14,7 @@ import type { SetStateAction, Dispatch } from "react";
 // Lib
 import type { Alert, EventAlert, ClassAlert } from "@/app/lib/alerts/alert"
 import { useUserData } from "@/app/lib/account/user_context";
-import { get_curr_context, UserAlerts, mark_alerts_as_seen } from "@/app/lib/account/account_db_utils";
+import { get_curr_context, UserAlerts, UserEventAlerts, UserCourseAlerts, mark_alerts_as_seen } from "@/app/lib/account/account_db_utils";
 import { redirect } from "next/navigation";
 import { useCopilotKit } from "@copilotkit/react-core/v2";
 import { UserData, StudentData, UserMetadata, UserInterests, get_alerts } from "@/app/lib/account/account_db_utils";
@@ -25,11 +28,36 @@ const direction = "column";
 const gap="5";
 const width = "100%";
 
+function unseenAlerts(alerts: UserAlerts): boolean {
+    return unseenEventAlerts(alerts.EventAlerts) || unseenCourseAlerts(alerts.CourseAlerts);
+}
+
+function unseenEventAlerts(alerts: UserEventAlerts): boolean {
+    return alerts.UnseenAlerts.length !== 0;
+}
+
+function seenEventAlerts(alerts: UserEventAlerts): boolean {
+    return !unseenEventAlerts(alerts);
+}
+
+function unseenCourseAlerts(alerts: UserCourseAlerts): boolean {
+    return alerts.UnseenAlerts.length !== 0;
+}
+
+function seenCourseAlerts(alerts: UserCourseAlerts): boolean {
+    return !unseenCourseAlerts(alerts);
+}
+
+/**
+ * Dynamically renders user alerts with the ExpandableList component. Alerts are categorized into Event
+ * and Course alerts, marked as either Seen or Unseen. The user can mark all seen alerts as seen or
+ * call the alert agent to generate new alerts based on any added interests or events.
+ * @returns 
+ */
 export default function Alerts () {
     
     const { userAlerts, setUserAlerts } : { userAlerts: UserAlerts, setUserAlerts: Dispatch<SetStateAction<UserAlerts | null>>} = useUserData();
     const { userData } : {userData: StudentData} = useUserData();
-    const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
     const { userInterests } : {userInterests: UserInterests} = useUserData();
 
     // setup agent
@@ -61,8 +89,8 @@ export default function Alerts () {
     }
 
     const shownAlerts = 3;
-    const num_unseen = userAlerts.UnseenAlerts.length;
-    const num_seen = userAlerts.SeenAlerts.length;
+    const eventAlerts = userAlerts.EventAlerts;
+    const courseAlerts = userAlerts.CourseAlerts;
 
     return (
         <DashboardLayout>
@@ -75,7 +103,7 @@ export default function Alerts () {
                         Check for new alerts
                     </DefaultButton>
                     {
-                        userAlerts.UnseenAlerts.length !== 0 ? <DefaultButton onClick={mark_as_seen}>
+                        unseenAlerts(userAlerts) ? <DefaultButton onClick={mark_as_seen}>
                             Mark all as seen
                         </DefaultButton> : null
                     }
@@ -84,12 +112,12 @@ export default function Alerts () {
             {
                 (userInterests.Interests && !(userInterests.Interests.length === 0)) ? 
                 <Flex direction="column" gap="5">
-                    {(userAlerts.UnseenAlerts.length !== 0) ? <>
+                    {unseenEventAlerts(eventAlerts) ? <>
                         <DashTitle size="7" gap="1">
-                            Unseen
+                            Unseen Events
                         </DashTitle>
                         <ExpandableList 
-                            list={userAlerts.UnseenAlerts}
+                            list={eventAlerts.UnseenAlerts}
                             min={shownAlerts} 
                             Component={SingleAlert} 
                             componentType="Alert"
@@ -102,12 +130,12 @@ export default function Alerts () {
                         </ExpandableList>
                     </> : null}
                 <Flex height="30px"/>
-                    {(userAlerts.SeenAlerts.length !== 0) ? <>
+                    {(seenEventAlerts(eventAlerts)) ? <>
                         <DashTitle size="7" gap="1">
-                            Seen
+                            Seen Events
                         </DashTitle>
                         <ExpandableList 
-                            list={userAlerts?.SeenAlerts}
+                            list={eventAlerts.SeenAlerts}
                             min={shownAlerts} 
                             Component={SingleAlert} 
                             componentType="Alert"

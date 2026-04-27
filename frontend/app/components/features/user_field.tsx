@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 // Next
@@ -25,6 +28,14 @@ type AccountFieldPropTypes = {
     children?: React.ReactNode,
 }
 
+/**
+ * Renders single account field. Accepts a UserField object which defines the properties of the field,
+ * such as value, title, and editability. Editable fields can be changed by the user and are passed through
+ * backend validation functions.
+ * @param props.field - UserField object with field data.
+ * @param props.fieldName - Name of field, used to select proper field validation function.
+ * @returns 
+ */
 export default function AccountField({field, children, fieldName}: AccountFieldPropTypes) {
     const [isEditing, setIsEditing] = useState(false);
     const {userData, userMetadata} = useUserData();
@@ -42,7 +53,6 @@ export default function AccountField({field, children, fieldName}: AccountFieldP
         const formData = new FormData(event.currentTarget);
         const newVal = formData.get(`${field.title}`) as string;
         
-        //TODO: handle db errors
         try {
             if(!newVal) {
                 throw Error("No new value")

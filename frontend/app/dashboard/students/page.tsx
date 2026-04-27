@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 // Flex
@@ -17,13 +20,17 @@ import { useUserData } from "@/app/lib/account/user_context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+/**
+ * Uses ExpandableList component to dynamically generate a visual list of students
+ * under an advisor.
+ * @returns 
+ */
 export default function Students() {
     // Context and state
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const { userStudents } : { userStudents: UserStudents} = useUserData();
     const minStudents = 3;
     
-    //TODO: redirect
     if(userMetadata.AccountType !== "Advisor") {
         const router = useRouter();
         router.push("/dashboard/home");

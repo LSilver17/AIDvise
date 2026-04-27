@@ -1,3 +1,7 @@
+/*
+    Author: CopilotKit
+    Co-author: Sean Collins
+*/
 import {
   CopilotRuntime,
   ExperimentalEmptyAdapter,

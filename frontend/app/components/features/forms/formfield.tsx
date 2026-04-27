@@ -15,6 +15,14 @@ type Props = {
     hasMissingMessage?: boolean
 }
 
+/**
+ * Component for adding a single field to a form.
+ * @param props.label - Placeholder text when nothing is entered in field.
+ * @param props.inputName - Identifier for form data.
+ * @param props.message - Accompanying field message.
+ * @param props.isPassword - Determines whether to hide inputs within the form.
+ * @param props.hasMissingMessage - Determines whether to display a message when field is empty.
+ */
 export default function FormField({label, inputName, message, isPassword, hasMissingMessage} : Props) {
     var inputType = isPassword ? "password" : "text";
     hasMissingMessage = hasMissingMessage ?? true;

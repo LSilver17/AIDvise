@@ -1,7 +1,10 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import "@copilotkit/react-ui/styles.css";
-import { CopilotChat } from "@copilotkit/react-ui";
+import { CopilotChat } from "@copilotkit/react-core/v2";
 import data from "@/mock/mock.json";
 
 // Lib
@@ -11,6 +14,7 @@ import type { AccountType } from "@/app/lib/account/account_type";
 
 // Hooks
 import { useEffect } from "react";
+import { useCoAgent } from "@copilotkit/react-core";
 
 function choose_init_message(name: string, interests: UserInterests): string {
   var message_addition = "How can I help you today?";
@@ -19,6 +23,9 @@ function choose_init_message(name: string, interests: UserInterests): string {
   return message;
 }
 
+/**
+ * Displays CopilotKit's CopilotChat component with a customized user welcome message.
+ */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();
   const accountType: AccountType = userMetadata?.AccountType;
@@ -40,10 +47,9 @@ export default function Chat() {
   return (
     <CopilotChat
       labels={{
-        title: "Academic ChatBot",
-        initial: message,
+        welcomeMessageText: message,
       }}
-     className="w-full h-full"
+      className="w-full h-full"
     />
   );
 }

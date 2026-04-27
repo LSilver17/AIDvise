@@ -1,19 +1,32 @@
+/*
+    Author: Sean Collins
+*/
+
 import { Text, Flex, Separator, Em } from "@radix-ui/themes"
 import type { Responsive } from "@radix-ui/themes/props";
 import React from "react";
 
 type PropTypes = {
     size?: Responsive<"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"> | undefined;
-    justify?: Responsive<"center" | "start" | "end" | "between"> | undefined;
+    //justify?: Responsive<"center" | "start" | "end" | "between"> | undefined;
     align?: Responsive<"center" | "start" | "end" | "baseline" | "stretch"> | undefined
     children: React.ReactNode;
     gap?: "0" | "1" | "3" | "2" | "4" | "5" | "6" | "7" | "8" | "9" | undefined
     pl?: Responsive<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"> | undefined
 }
 
-export default function Title ({size, children, justify, align, gap, pl}: PropTypes) {
+/**
+ * Standardized title component, containing text and a horizontal rule.
+ * @param props.size - Size of title text.
+ * @param props.children - Title text.
+ * @param props.align - Alignment of title text.
+ * @param props.gap - Space between title and horizontal rule.
+ * @param props.pl - Left padding of title text.
+ * @returns 
+ */
+export default function Title ({size, children, align, gap, pl}: PropTypes) {
     size = size ?? "1";
-    justify = justify ?? "start";
+    // justify = justify ?? "start";
     gap = gap ?? "5";
     align = align ?? "center"
     pl = pl ?? "0"

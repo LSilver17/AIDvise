@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -11,6 +14,11 @@ type Props = {
     size?: Responsive<"4" | "1" | "2" | "3"> | undefined;
 }
 
+/**
+ * Submission button for form component.
+ * @param props.size - Button size.
+ * @returns 
+ */
 export default function FormSubmitButton({children, size} : Props) {
     size = size ?? "4";
     return (

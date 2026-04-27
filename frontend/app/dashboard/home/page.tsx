@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
@@ -6,6 +9,11 @@ import { Em, Flex } from "@radix-ui/themes";
 import { UserMetadata } from "@/app/lib/account/account_db_utils";
 import { useUserData } from "@/app/lib/account/user_context";
 
+/**
+ * Default home page with a title and different welcome messages for
+ * students and advisors.
+ * @returns 
+ */
 export default function Home () {
     const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
     const message = (userMetadata.AccountType === "Student") ? 

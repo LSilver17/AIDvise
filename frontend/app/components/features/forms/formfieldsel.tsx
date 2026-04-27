@@ -19,23 +19,25 @@ type SelectProps = {
     name: string;
 }
 
+/**
+ * @props required
+ * @props name
+ */
 function FieldSelect({required, name}: SelectProps) {
     return (
         <select required={required} name={name} title={name} style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}}>
             <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Student">Student</option>
             <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Advisor">Advisor</option>
         </select>
-        // currently not compatible with radix elements
-        // <Select.Root size={size} required={required}>
-        //     <Select.Trigger placeholder="Account Type" style={{backgroundColor:"white"}}/>
-        //     <Select.Content>
-        //         <Select.Item value="student">Student</Select.Item>
-        //         <Select.Item value="advisor">Advisor</Select.Item>
-        //     </Select.Content>
-        // </Select.Root>
     );
 }
 
+/**
+ * Field component for dropdown selections. Currently only used for account type selection.
+ * @props label - Placeholder text.
+ * @props inputName - Input identifier.
+ * @props required - Determines if field is required.
+ */
 export default function FormField({inputName, message, isPassword, required, size} : FieldProps) {
     var inputType = isPassword ? "password" : "text";
     size = size ?? "3";

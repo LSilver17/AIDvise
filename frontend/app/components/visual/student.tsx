@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 // Lib
 import Card from "@/app/components/visual/card"
 import type { Student } from "@/app/lib/account/account_db_utils";
@@ -7,6 +10,11 @@ export type StudentProps = {
     student: Student,
 }
 
+/**
+ * Renders student card for the "Students" page in an advisor account.
+ * @param props.student - Student object.
+ * @returns 
+ */
 export function Student({student}: StudentProps) {
     const height="15rem";
     const width="15rem";

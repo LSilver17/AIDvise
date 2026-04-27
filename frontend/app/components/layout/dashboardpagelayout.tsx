@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Flex, ScrollArea } from "@radix-ui/themes"
@@ -6,6 +9,10 @@ type Props = {
     children: React.ReactNode,
 }
 
+/**
+ * Scrollable area layout for containing dashboard pages.
+ * @returns 
+ */
 export default function DashboardLayout({children}: Props) {
     return(
         <ScrollArea type="scroll" scrollbars="vertical" style = {{height: "100%", width:"100%", minHeight: "0"}}>

@@ -1,3 +1,7 @@
+/*
+    Author: Sean Collins
+    Description: Component for constructing the dashboard navbar.
+*/
 "use client"
 
 // Library Imports
@@ -14,6 +18,12 @@ import { useUserData } from "@/app/lib/account/user_context";
 import type { UserMetadata } from "@/app/lib/account/account_db_utils";
 import type { AccountType } from "@/app/lib/account/account_type";
 
+/**
+ * Component constructing the sidebar used for navigating the dashboard.
+ * Account type is fetched from the user context and is used for conditional
+ * rendering of navigation buttons.
+ * @returns 
+ */
 export default function Sidebar () {
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const account_type: AccountType = userMetadata.AccountType;

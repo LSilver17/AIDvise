@@ -1,9 +1,18 @@
+/*
+    Author: Sean Collins
+*/
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 // Lib
 import { create_user } from "@/app/lib/account/account_db_utils";
 
+/**
+ * Request handler for user registration actions. Calls the create_user function from
+ * /app/lib/account/account_db_utils and returns a NextResponse with the result of the
+ * creation attempt.
+ * @param req 
+ * @returns 
+ */
 export async function POST(req: Request) {
 
     const credentials = await req.json();

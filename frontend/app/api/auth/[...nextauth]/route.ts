@@ -1,13 +1,17 @@
+/*
+    Author: Sean Collins
+*/
 import NextAuth from "next-auth";
-import { NextResponse } from "next/server";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
-import type { User } from "next-auth";
 
 import { validate_credentials } from "@/app/lib/account/account_db_utils";
-import { PassThrough } from "stream";
 
+/**
+ * API endpoint for any NextAuth requests via hooks like signIn(). Currently credentials
+ * are the only supported provider. Checks provided credentials and matches them against
+ * those stored in the database using functions from /app/lib/account/account_db_utils.
+ */
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
