@@ -1,18 +1,31 @@
 {
-    "mode": "all-claude",
-    "all-claude": {
+    "mode": "token_saver",
+    "all_claude": {
         "planning": "sonnet-4-6",
         "db": "sonnet-4-6",
         "web": "sonnet-4-6",
         "insertion": "sonnet-4-6",
         "alerts": "sonnet-4-6"
     },
-    "testing": {
-        "planning": "testing",
-        "db": "testing",
-        "web": "testing",
-        "insertion": "testing",
-        "alerts": "testing"
+    "token_saver": {
+        "planning": "sonnet-4-6",
+        "db": "free",
+        "web": "free",
+        "insertion": "free",
+        "alerts": "free"
+    },
+    "student_test": {
+        "planning": "student_test",
+        "db": "student_test",
+        "web": "student_test",
+        "insertion": "student_test",
+        "alerts": "student_test"
+    },
+    "advisor_test": {
+        "planning": "advisor_test",
+        "db": "advisor_test",
+        "web": "advisor_test",
+        "insertion": "advisor_test",
+        "alerts": "advisor_test"
     }
-
 }
