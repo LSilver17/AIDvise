@@ -8,7 +8,7 @@
         "alerts": "sonnet-4-6"
     },
     "token_saver": {
-        "planning": "claude-sonnet-4-6",
+        "planning": "sonnet-4-6",
         "db": "free",
         "web": "free",
         "insertion": "free",

@@ -40,12 +40,14 @@ class AState(TypedDict):
     web_info: NotRequired[list[QueryResult]]
     plan: dict
     loop_count: int
+    user_id: int
 
 class DatabaseHelperState(TypedDict):
     info_needed: str
     messages: Annotated[list[AnyMessage], add_messages]
     loop_count: int
-    student_id: NotRequired[int]
+    user_id: int
+    account_type: Literal["Student", "Advisor"]
 
 class DatabaseHelperOutput(TypedDict):
     info: QueryResult

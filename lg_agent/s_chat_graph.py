@@ -20,7 +20,7 @@ load_dotenv()
 
 def invoke_db_helper(state: AdvisorState):
     """Function to invoke the database helper graph and return the results to the main graph."""
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "student_id": state["student_id"]}
+    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "user_id": state["student_id"], "account_type": "Student"}
     result = db_graph.invoke(db_helper_state)
     db_info = state["db_info"]
     db_info.append(result["info"])

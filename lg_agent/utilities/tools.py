@@ -84,28 +84,28 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
 def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        student_info = database_utils.get_student_basic_info(cursor, runtime.state["student_id"])
+        student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
         return json.dumps(student_info)
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
 def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        course_history = database_utils.get_student_course_history(cursor, runtime.state["student_id"])
+        course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
         return json.dumps(course_history)
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
 def get_student_interests_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        interests = database_utils.get_student_interests(cursor, runtime.state["student_id"])
+        interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
         return json.dumps(interests)
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
 def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["student_id"])
+        tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
         return json.dumps(tracked_sections)
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
@@ -134,7 +134,7 @@ db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
 def web_search_tool(query: str) -> str:
     wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=3)
-    search = DuckDuckGoSearchResults(keys_to_include=["title", "snippet"], wrapper=wrapper, output_format="list")
+    search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
     return search.invoke(query)
 
 web_tools = [web_search_tool]
@@ -143,13 +143,13 @@ web_tools = [web_search_tool]
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_interests(cursor, runtime.state["student_id"], [interest])
+        return database_utils.insert_student_interests(cursor, runtime.state["user_id"], [interest])
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
 def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_tracked_section(cursor, runtime.state["student_id"], course_code, section_id)
+        return database_utils.insert_student_tracked_section(cursor, runtime.state["user_id"], course_code, section_id)
         
 insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]
 
@@ -159,18 +159,30 @@ insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT ID FROM Students WHERE name = ? and advisor_id = ?", (student_name, runtime.state["user_id"]))
+        cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, runtime.state["user_id"]))
         student_id = cursor.fetchone()
         if student_id:
             return json.dumps({"student_id": student_id[0]})
         else:
             return f"No student found with name {student_name}."
 
+@tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
+def get_advisor_students_tool(runtime: ToolRuntime) -> str:
+    with __connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (runtime.state["user_id"],))
+        students = cursor.fetchall()
+        if students:
+            student_info = [{"name": student[0], "id": student[1]} for student in students]
+            return json.dumps({"students": student_info})
+        else:
+            return "No students found for the current advisor."
+
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
         advisor_id = cursor.fetchone()
         if advisor_id is None:
             return f"No student found with ID {student_id}"
@@ -183,7 +195,7 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
 def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
         advisor_id = cursor.fetchone()
         if advisor_id is None:
             return f"No student found with ID {student_id}"
@@ -196,7 +208,7 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
 def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
         advisor_id = cursor.fetchone()
         if advisor_id is None:
             return f"No student found with ID {student_id}"
@@ -209,7 +221,7 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
 def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT advisor_id FROM Students WHERE ID = ?", (student_id,))
+        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
         advisor_id = cursor.fetchone()
         if advisor_id is None:
             return f"No student found with ID {student_id}"
@@ -217,5 +229,5 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
             return f"Student with ID {student_id} is not assigned to the current user."
         tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
         return json.dumps(tracked_sections)
-    
-alt_db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
+
+alt_db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, get_advisor_students_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]

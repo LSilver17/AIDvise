@@ -16,10 +16,10 @@ tool_node = ToolNode(web_tools)
 def format_web_output(state: WebSearchHelperState) -> WebSearchHelperOutput:
     return {"info": {"query": state["info_needed"], "result": state["messages"][-1].content}}
 
-def should_continue(state: WebSearchHelperState):
+def tool_route(state: WebSearchHelperState):
     messages = state["messages"]
     last_message = messages[-1]
-    if getattr(last_message, "tool_calls", None):
+    if last_message.tool_calls:
         return "tool_node"
     return "format_web_output"
 
@@ -30,7 +30,7 @@ graph_builder.add_node("tool_node", tool_node)
 graph_builder.add_node("format_web_output", format_web_output)
 
 graph_builder.add_edge(START, "web")
-graph_builder.add_conditional_edges("web", should_continue, ["tool_node", "format_web_output"])
+graph_builder.add_conditional_edges("web", tool_route, ["tool_node", "format_web_output"])
 graph_builder.add_edge("tool_node", "web")
 graph_builder.add_edge("format_web_output", END)
 
