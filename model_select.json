@@ -7,12 +7,18 @@
         "insertion": "sonnet-4-6",
         "alerts": "sonnet-4-6"
     },
-    "testing": {
-        "planning": "testing",
-        "db": "testing",
-        "web": "testing",
-        "insertion": "testing",
-        "alerts": "testing"
+    "student_test": {
+        "planning": "student_test",
+        "db": "student_test",
+        "web": "student_test",
+        "insertion": "student_test",
+        "alerts": "student_test"
+    },
+    "advisor_test": {
+        "planning": "advisor_test",
+        "db": "advisor_test",
+        "web": "advisor_test",
+        "insertion": "advisor_test",
+        "alerts": "advisor_test"
     }
-
 }

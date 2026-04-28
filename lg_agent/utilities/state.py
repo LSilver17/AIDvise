@@ -6,7 +6,7 @@ if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
 from langchain.messages import AIMessage
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 from typing_extensions import TypedDict
 from typing import Annotated, NotRequired
 from langchain_core.messages import AnyMessage
@@ -23,7 +23,7 @@ class QueryResult(TypedDict):
 class RouteState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     user_id: int
-    account_type: str
+    account_type: Literal["Student", "Advisor"]
 
 class AdvisorState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
