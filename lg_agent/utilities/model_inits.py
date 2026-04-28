@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage, ToolCall
 from langchain_openai import ChatOpenAI
+from langchain_openrouter import ChatOpenRouter
 from utilities.TestModel import GenericFakeChatModel
 import json
 
@@ -381,9 +382,20 @@ def _create_model(model_name: str, node_name: str):
 
     match normalized:
         case "sonnet_4_6":
-            return ChatAnthropic(model="claude-sonnet-4-6", temperature=0.2)
+            if env := os.getenv("ANTHROPIC_API_KEY"):
+                return ChatAnthropic(model="claude-sonnet-4-6", temperature=0.2)
+            else:
+                raise ValueError("ANTHROPIC_API_KEY not found in environment variables.")
         case "gpt_4o":
-            return ChatOpenAI(model="gpt-4o", temperature=0.2)
+            if env := os.getenv("OPENAI_API_KEY"):
+                return ChatOpenAI(model="gpt-4o", temperature=0.2)
+            else:
+                raise ValueError("OPENAI_API_KEY not found in environment variables.")
+        case "free":
+            if env := os.getenv("OPENROUTER_API_KEY"):
+                return ChatOpenRouter(model="openrouter/free", temperature=0.2)
+            else:
+                raise ValueError("OPENROUTER_API_KEY not found in environment variables.")
         case "student_test":
             if node_name == "planning":
                 return _s_planning_testing_model()
