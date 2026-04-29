@@ -16,13 +16,6 @@ from typing import Literal
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
 load_dotenv()
 
-def state_init(state: RouteState, config) -> RouteState:
-    """Initializes the state for the routing graph."""
-    if "configurable" in config and "userId" in config["configurable"] and "accountType" in config["configurable"]:
-        state["user_id"] = config.get("configurable", {}).get("userId")
-        state["account_type"] = config.get("configurable", {}).get("accountType")
-    return state
-
 def route(state: RouteState) -> Literal["invoke_s_graph", "invoke_a_graph"]:
     """Routes the user to the appropriate chatbot based on their account type."""
     match state["account_type"]:
@@ -39,21 +32,20 @@ def invoke_s_graph(state: RouteState) -> RouteState:
         student_id = cur.fetchone()
         if student_id is None:
             raise ValueError(f"No student found for parent_id {state['user_id']}")
-        result = s_chat_graph.invoke({"messages": state["messages"], "loop_count": 0, "student_id": student_id[0], "insertion_result": ""})
+        result = s_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "student_id": student_id[0], "insertion_result": ""})
     return {"messages": result["messages"]}
 
 def invoke_a_graph(state: RouteState) -> RouteState:
     """Invokes the advisor chatbot graph."""
-    result = a_chat_graph.invoke({"messages": state["messages"], "loop_count": 0, "user_id": state["user_id"]})
+    result = a_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": state["user_id"]})
     return {"messages": result["messages"]}
 
-graph_builder = StateGraph(RouteState)
-graph_builder.add_node("state_init", state_init)
+graph_builder = StateGraph(RouteState, )
+
 graph_builder.add_node("invoke_s_graph", invoke_s_graph)
 graph_builder.add_node("invoke_a_graph", invoke_a_graph)
 
-graph_builder.add_edge(START, "state_init")
-graph_builder.add_conditional_edges("state_init", route, ["invoke_s_graph", "invoke_a_graph"])
+graph_builder.add_conditional_edges(START, route, ["invoke_s_graph", "invoke_a_graph"])
 graph_builder.add_edge("invoke_s_graph", END)
 graph_builder.add_edge("invoke_a_graph", END)
 

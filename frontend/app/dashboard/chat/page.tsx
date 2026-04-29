@@ -12,6 +12,9 @@ import { useUserData } from "@/app/lib/account/user_context";
 import type { UserData, UserMetadata, UserInterests, StudentData } from "@/app/lib/account/account_db_utils";
 import type { AccountType } from "@/app/lib/account/account_type";
 
+// Hooks
+import { useCoAgent } from "@copilotkit/react-core";
+
 function choose_init_message(name: string, interests: UserInterests, accountType: AccountType): string {
   if(accountType === "Advisor") {
     var message_addition = "How can I help you today?";
@@ -31,7 +34,23 @@ function choose_init_message(name: string, interests: UserInterests, accountType
  */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();
+  
+  let userID;
+  if("StudentID" in userData) {
+    userID = userData.StudentID.data;
+  } else {
+    userID = userData.AdvisorID.data;
+  }
+
   const accountType: AccountType = userMetadata?.AccountType;
+
+  const {state, setState} = useCoAgent({
+    name: "default",
+    initialState: {
+      "user_id": userID,
+      "account_type": accountType,
+    }
+  })
 
   // Set name and message
   var name: string = "User";

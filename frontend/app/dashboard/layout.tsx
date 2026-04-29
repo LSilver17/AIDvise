@@ -56,10 +56,6 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
   return (
     <CopilotKit 
       runtimeUrl="/api/copilotkit"
-      properties={{
-        "academicID": academicID,
-        "accountType": accountType,
-      }}
     >
       <Flex direction="column" height="100vh" width="100vw">
         <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
