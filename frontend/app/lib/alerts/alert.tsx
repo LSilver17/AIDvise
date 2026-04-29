@@ -17,12 +17,16 @@ export type AlertTypes = "Event" | "Class";
 /**
  * Base alert interface.
  * @property {string} name - Title of the alert.
+ * @property {string} date - Date of the alert.
+ * @property {string} time - Time of the alert.
  * @property {AlertStatus} status - Seen / Unseen
  * @property {AlertTypes} type - Seen / Unseen
  * @property {number} id - Unique identifier for student alert.
  */
 export interface Alert {
     readonly name: string,
+    readonly date: string,
+    readonly time: string,
     readonly status: AlertStatus,
     readonly type: AlertTypes,
     readonly id: number,
@@ -37,8 +41,6 @@ export interface Alert {
  */
 export interface EventAlert extends Alert {
     readonly description: string,
-    readonly date: string,
-    readonly time: string,
     readonly type: "Event",
 }
 
@@ -46,6 +48,7 @@ export interface EventAlert extends Alert {
  * Interface for storing information about a course.
  * @extends Alert
  * @property {string} department - Course department.
+ * @property {string} date - Date alert changed.
  * @property {number} code - Course code.
  * @property {string} courseName - Name of the course.
  * @property {string} courseDescription - Description of course content.
@@ -61,8 +64,14 @@ export interface ClassAlert extends Alert {
     readonly courseDescription: string,
     readonly credits: number,
     readonly requirements: string,
-    readonly meetTime: string,
-    readonly days: string,
+    readonly meetSchedule: string,
+    readonly semestersOffered: string,
+    readonly sectionNumber: number,
+    readonly sectionStatus: string,
+    readonly seats: number,
+    readonly seatsLeft: number,
+    readonly method: string,
+    readonly location:string
     readonly type: "Class",
 }
 
@@ -97,27 +106,43 @@ export function createEventAlert(
 export function createClassAlert(
     name: string,
     status: AlertStatus,
+    date: string,
+    time: string,
     department: string,
     code: number,
     courseName: string,
     courseDescription: string,
     credits: number,
     requirements: string,
-    meetTime: string,
-    days: string,
+    meetSchedule: string,
+    semestersOffered: string,
+    sectionNumber: number,
+    sectionStatus: string,
+    seats: number,
+    seatsLeft: number,
+    method: string,
+    location: string,
     id: number,
 ) {
     const event: ClassAlert = {
         name: name,
         status: status,
         department: department,
+        date: date,
+        time: time,
         code: code,
         courseName: courseName,
         courseDescription: courseDescription,
         credits: credits,
         requirements: requirements,
-        meetTime: meetTime,
-        days: days,
+        meetSchedule: meetSchedule,
+        semestersOffered: semestersOffered,
+        sectionNumber: sectionNumber,
+        sectionStatus: sectionStatus,
+        seats: seats,
+        seatsLeft: seatsLeft,
+        method: method,
+        location: location,
         type: "Class",
         id: id,
     }

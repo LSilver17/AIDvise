@@ -377,19 +377,9 @@ export type UserMetadata = {
     Username: string,
 }
 
-export type UserEventAlerts = {
-    UnseenAlerts: EventAlert[],
-    SeenAlerts: EventAlert[],
-}
-
-export type UserCourseAlerts = {
-    UnseenAlerts: ClassAlert[],
-    SeenAlerts: ClassAlert[],
-}
-
 export type UserAlerts = {
-    EventAlerts: UserEventAlerts,
-    CourseAlerts: UserCourseAlerts
+    UnseenAlerts: Alert[],
+    SeenAlerts: Alert[]
 }
 
 export type UserInterests = {
@@ -548,10 +538,8 @@ export interface AdvisorContext extends Context{
 }
 
 type AlertReturn = {
-    event_unseen: EventAlert[],
-    event_seen: EventAlert[],
-    course_unseen: ClassAlert[],
-    course_seen: ClassAlert[],
+    unseen: Alert[],
+    seen: Alert[],
 }
 
 /**
@@ -634,17 +622,9 @@ async function get_interests(student_id: string) {
  */
 export async function get_alerts(student_id: string): Promise<UserAlerts> {
     const alerts = await alert_fill(student_id);
-    const eventAlerts: UserEventAlerts = {
-        UnseenAlerts: alerts.event_unseen,
-        SeenAlerts: alerts.event_seen,
-    }
-    const courseAlerts: UserCourseAlerts = {
-        UnseenAlerts: alerts.course_unseen,
-        SeenAlerts: alerts.course_seen,
-    }
     const userAlerts: UserAlerts = {
-        EventAlerts: eventAlerts,
-        CourseAlerts: courseAlerts,
+        UnseenAlerts: alerts.unseen,
+        SeenAlerts: alerts.seen
     }
     return userAlerts;
 }
@@ -654,8 +634,8 @@ export async function get_alerts(student_id: string): Promise<UserAlerts> {
  * @param alerts - Unsorted list of event alerts.
  * @returns Sorted list of event alerts.
  */
-function sort_newest_oldest(alerts: EventAlert[]): EventAlert[] {
-    return alerts.sort((a: EventAlert, b: EventAlert) => {
+function sort_newest_oldest(alerts: Alert[]): Alert[] {
+    return alerts.sort((a: Alert, b: Alert) => {
         const a_datetime: string = a.date + a.time;
         const b_datetime: string = b.date + b.time;
         // if b occurs after a, it appears first in list and vice versa
@@ -675,8 +655,10 @@ function sort_newest_oldest(alerts: EventAlert[]): EventAlert[] {
  */
 async function alert_fill(student_id: string): Promise<AlertReturn> {
     var db;
-    let event_unseenAlerts: EventAlert[] = [];
-    let event_seenAlerts: EventAlert[] = [];
+    let event_unseenAlerts: Alert[] = [];
+    let event_seenAlerts: Alert[] = [];
+    let course_unseenAlerts: Alert[] = [];
+    let course_seenAlerts: Alert[] = [];
     try {
         db = await openDB(dbPath());
         const db_event_alerts = await db.all(`SELECT EventID, AlertStatus, ID FROM RelevantEvents WHERE ParentID = ?`, student_id);
@@ -691,14 +673,35 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
             else if (newAlert.status === "Seen") { event_seenAlerts.push(newAlert); };
         }
         // TODO: grab course alerts
-        const db_course_alerts = await db.all(`SELECT EventID, AlertStatus, ID FROM RelevantEvents WHERE ParentID = ?`, student_id);
+        const db_course_alerts = await db.all(`SELECT AlertStatus, ChangeID, ID FROM StudentSectionStatusChanges WHERE ParentID = ?`, student_id);
+        for (const alert of db_course_alerts) {
+            const alert_section_id = await db.get(`SELECT SectionID, ChangeTime, NewStatus FROM SectionStatusChanges WHERE ID = ?`, alert.ChangeID);
+            const section_info = await db.get(`SELECT SectionNum, Instructor, StartDate, EndDate, Status, MaxSeats, SeatsLeft, Method, Location, ParentID FROM Sections WHERE ID = ?`, alert_section_id.SectionID);
+            const course_id = await db.get(`SELECT ParentID FROM CoursesOffered WHERE ID = ?`, section_info.ParentID)
+            const class_info = await db.get(`SELECT Department, Code, Name, Description, Credits, Requirements, SemestersOffered FROM Courses WHERE ID = ?`, course_id.ParentID);
+            const [date, time] = alert_section_id.ChangeTime.split(' ');
+            const meet_times = await db.all(`SELECT Day, StartTime, EndTime FROM MeetTimes WHERE ParentID = ?`, alert_section_id.SectionID)
+            let meet_schedule: string = ""
+            for(const time of meet_times) {
+                meet_schedule += `${time.Day}: ${time.StartTime}-${time.EndTime} `;
+            }
+            const newAlert = createClassAlert(`Section ${alert_section_id.NewStatus}`, alert.AlertStatus, date, time, class_info.Department,
+                class_info.Code, class_info.Name, class_info.Description, class_info.Credits,
+                class_info.Requirements, meet_schedule, class_info.SemestersOffered, section_info.SectionNum, 
+                section_info.Status, section_info.MaxSeats, section_info.SeatsLeft, section_info.Method, 
+                section_info.Location, alert.ID
+            );
+            if (newAlert.status === "Unseen") { course_unseenAlerts.push(newAlert); }
+            else if (newAlert.status === "Seen") { course_seenAlerts.push(newAlert); };
+
+        }
     } catch(e) {
         console.log(`ERROR: ${e}`)
+        const unseen = sort_newest_oldest([...event_unseenAlerts, ...course_unseenAlerts])
+        const seen = sort_newest_oldest([...event_seenAlerts, ...course_seenAlerts])
         const alerts: AlertReturn = {
-            event_unseen: event_unseenAlerts,
-            event_seen: event_seenAlerts,
-            course_unseen: [],
-            course_seen: []
+            unseen: unseen,
+            seen: seen,
         }
         return alerts;
     } finally {
@@ -706,12 +709,11 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
             await db.close();
         }
     }
-    // TODO: return course alerts
+    const unseen = sort_newest_oldest([...event_unseenAlerts, ...course_unseenAlerts]);
+    const seen = sort_newest_oldest([...event_seenAlerts, ...course_seenAlerts]);
     const alerts: AlertReturn = {
-        event_unseen: sort_newest_oldest(event_unseenAlerts),
-        event_seen: sort_newest_oldest(event_seenAlerts),
-        course_unseen: [],
-        course_seen: []
+        unseen: unseen,
+        seen: seen,
     }
     return alerts;
 }
@@ -723,34 +725,25 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
  */
 export async function mark_alerts_as_seen(alerts: UserAlerts): Promise<UserAlerts> {
     var db;
-    const event_unseen_alerts = alerts.EventAlerts.UnseenAlerts;
-    const course_unseen_alerts = alerts.CourseAlerts.UnseenAlerts;
+    const unseen_alerts = alerts.UnseenAlerts;
     try {
         db = await openDB(dbPath());
         // Updates database entry
-        for (const alert of event_unseen_alerts) {
-            await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
-        }
-        // TODO: Update course change entry
-        for (const alert of course_unseen_alerts) {
-            //await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
-        }
-
-        const userAlerts: UserAlerts = {
-            EventAlerts: {
-                UnseenAlerts: [],
-                SeenAlerts: [
-                    ...alerts.EventAlerts.UnseenAlerts,
-                    ...alerts.EventAlerts.SeenAlerts,
-                ]
-            },
-            CourseAlerts: {
-                UnseenAlerts: [],
-                SeenAlerts: [
-                    ...alerts.CourseAlerts.UnseenAlerts,
-                    ...alerts.CourseAlerts.SeenAlerts,
-                ]
+        for (const alert of unseen_alerts) {
+            if (alert.type === "Event") {
+                await db.run(`UPDATE RelevantEvents SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
+            } else if(alert.type === "Class") {
+                await db.run(`UPDATE StudentSectionStatusChanges SET AlertStatus = ? WHERE ID = ?`, "Seen", alert.id);
             }
+        }
+        const SeenAlerts = sort_newest_oldest([
+                ...alerts.UnseenAlerts,
+                ...alerts.SeenAlerts,
+            ]
+        );
+        const userAlerts: UserAlerts = {
+            UnseenAlerts: [],
+            SeenAlerts: SeenAlerts,
         }
         return userAlerts;
     } catch(e) {

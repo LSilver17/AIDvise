@@ -35,15 +35,22 @@ function EventAlert({alert}: EventProps) {
 }
 
 function ClassAlert({alert}: ClassProps) {
+    const requirements = alert.requirements ?? "None";
+    const semestersOffered = alert.semestersOffered ?? 'Unknown';
     return (
         <Flex justify="start" direction="column" height="100%" width="100%" gap="2">
             <Flex justify="start" direction="row" height="100%" width="100%" flexGrow="1" wrap="wrap" gapX="3">
-                <Flex><strong>{alert.department}-{alert.code}</strong>: {alert.courseName}</Flex>
+                <Flex><strong>{alert.department} {alert.code}-{alert.sectionNumber}</strong>: {alert.courseName}</Flex>
                 <Flex><strong>Credits</strong>: {alert.credits}</Flex>
-                <Flex><strong>Requirements</strong>: {alert.requirements}</Flex>
+                <Flex><strong>Requirements</strong>: {requirements}</Flex>
                 <Flex direction="row">
-                    <Flex><strong>Schedule</strong>: {alert.days} {alert.meetTime}</Flex>
+                    <Flex><strong>Schedule</strong>: {alert.meetSchedule}</Flex>
                 </Flex>
+                <Flex><strong>Semester Offered</strong>: {semestersOffered}</Flex>
+                <Flex><strong>Status</strong>: {alert.sectionStatus}</Flex>
+                <Flex><strong>Seats Left</strong>: {alert.seatsLeft}/{alert.seats}</Flex>
+                <Flex><strong>Method</strong>: {alert.method}</Flex>
+                <Flex><strong>Location</strong>: {alert.location}</Flex>
             </Flex>
             <Flex pl="1" pr="1">{alert.courseDescription}</Flex>
         </Flex>
@@ -53,13 +60,13 @@ function ClassAlert({alert}: ClassProps) {
 
 /**
  * Dynamically rendered alert component. Takes either a class or event alert
- * as prop and renders the corresponding alert card.
+ * as prop and renders the corresponding alert card with the object's properties.
  * @param props.alert - Course or event alert object. 
  * @returns 
  */
 export default function SingleAlert({alert}: AlertProps) {
     const minHeight="100px";
-    const maxHeight="250px"
+    const maxHeight="350px"
     return (
         <Card minHeight={minHeight} maxHeight={maxHeight} title={alert.name}>
             {
