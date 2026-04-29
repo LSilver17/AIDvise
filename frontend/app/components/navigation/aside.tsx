@@ -28,10 +28,10 @@ export default function Sidebar () {
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const account_type: AccountType = userMetadata.AccountType;
     return (
-        <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="bg-orange-500">
+        <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="menuColor">
             {/*Logo Section*/}
             <DashTitle size="8">
-                <Em>advise.</Em>
+                <Logo/>
             </DashTitle>
             {/*Main Dashboard*/}
             <Flex direction="column" justify="start" align="stretch" gapY="5" flexGrow="1">

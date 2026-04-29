@@ -43,7 +43,7 @@ export default function LoginForm({onSubmit} : Props) {
 
                 <Flex justify="center" width="100%" direction="column" align="center">
                     <Form.Submit asChild>
-                        <button className="nightBG">
+                        <button>
                             Login
                         </button>
                     </Form.Submit>

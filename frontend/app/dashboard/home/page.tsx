@@ -22,7 +22,7 @@ export default function Home () {
     return(
         <DashboardLayout>
             <DashTitle size="8">
-                Welcome to <Em>advise.</Em> !
+                Welcome to <Em>Advise</Em> !
             </DashTitle>
             <Flex>
                 {message}

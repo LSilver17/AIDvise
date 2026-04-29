@@ -98,7 +98,7 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <Flex width="100%" direction="row" gap="2">
-                <Flex width="60rem" gap="4">
+                <Flex width="100%" gap="4">
                     <DefaultButton onClick={generate_alerts} >
                         Check for new alerts
                     </DefaultButton>

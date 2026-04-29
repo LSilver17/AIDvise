@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "advise.",
+  title: "Advise",
   description: "Advisor app",
 };
 
