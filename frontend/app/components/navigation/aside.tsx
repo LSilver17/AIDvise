@@ -47,12 +47,10 @@ export default function Sidebar () {
                         <PersonIcon/>Students
                     </SidebarButton>
                 }
-                {    
-                    (account_type === "Student") ?
-                    <SidebarButton href="/dashboard/chat">
-                        <ChatBubbleIcon/>Chat
-                    </SidebarButton> : <></>
-                }
+                
+                <SidebarButton href="/dashboard/chat">
+                    <ChatBubbleIcon/>Chat
+                </SidebarButton>
                 <SidebarButton href="/dashboard/account">
                     <PersonIcon/>Account
                 </SidebarButton>

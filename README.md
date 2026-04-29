@@ -5,7 +5,7 @@
     - npm
     - Node.js 15.5.12
     - Anthropic API key
-    - Python 3.13.x & 3.12.x
+    - Python 3.12.x
 
 2. Clone the repo into your desired directory
 
