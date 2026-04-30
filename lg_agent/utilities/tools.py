@@ -15,6 +15,7 @@ from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from data_pipeline.database.database_dev_tools import __connect
 from langchain.tools import ToolRuntime
+from datetime import datetime
 import utilities.schemas as schemas
 import database_utils
 import json
@@ -26,6 +27,14 @@ def _normalize_student_id(student_id_state: int | dict) -> int:
             return student_id_state["student_id"]
         raise ValueError("student_id state dict must contain a 'student_id' key")
     return student_id_state
+
+# misc tools
+
+@tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
+def get_current_time_tool() -> str:
+    """Tool for getting the current date and time. The output is a string containing the current date and time."""
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d %H:%M:%S")
 
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
@@ -129,7 +138,7 @@ def get_event_dates_tool(event_name: str) -> str:
         event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
         return json.dumps(event_dates)
 
-db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_basic_info_tool, get_student_course_history_tool, get_student_interests_tool, get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
+db_tools = [get_current_time_tool, course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_basic_info_tool, get_student_course_history_tool, get_student_interests_tool, get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
 def web_search_tool(query: str) -> str:
@@ -230,4 +239,4 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
         tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
         return json.dumps(tracked_sections)
 
-alt_db_tools = [course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, get_advisor_students_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
+alt_db_tools = [get_current_time_tool, course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, get_advisor_students_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
