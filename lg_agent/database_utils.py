@@ -38,13 +38,13 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
     params = []
 
     # If a term filter is specified, add a JOIN to the Sections table and conditions to the query to filter by the specified terms
-    if filters.terms:
+    if "terms" in filters.__dict__ and filters.terms is not None and len(filters.terms) > 0:
         query += " JOIN terms as t ON co.ParentID = t.ID WHERE 1=1"
         term_conditions = []
         for term in filters.terms:
             term_condition = "(t.Year = ? AND t.Season = ?"
             params.extend([term.year, term.season])
-            if term.number is not None:
+            if "number" in term.__dict__ and term.number is not None:
                 term_condition += " AND t.Number = ?"
                 params.append(term.number)
             term_condition += ")"
@@ -54,15 +54,25 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
         query += " WHERE 1=1"
 
     # If a department filter is specified, add a condition to the query to filter by department
-    if filters.departments:
+    if "departments" in filters.__dict__ and filters.departments is not None and len(filters.departments) > 0:
+        if ")" in filters.departments:
+            raise ValueError("Invalid department name: department names cannot contain parentheses (no sql injection allowed)")
         query += " AND c.Department IN ({})".format(",".join("?" for _ in filters.departments))
         params.extend(filters.departments)
 
     # If a credit filter is specified, add a condition to the query to filter by number of credits
-    if filters.credits:
-        condition = filters.credits.condition
-        query += f" AND c.Credits {condition} ?"
-        params.append(filters.credits.credits)
+    if "credits" in filters.__dict__ and filters.credits is not None and len(filters.credits) > 0:
+        query += " AND ("
+        for credit_condition in filters.credits:
+            condition = credit_condition.condition
+            if condition not in ["=", ">", "<", ">=", "<=", "!="]:
+                raise ValueError(f"Invalid credit condition: {condition}")
+            credits = credit_condition.credits
+            query += f" c.Credits {condition} ?"
+            params.append(credits)
+            if credit_condition != filters.credits[-1]:
+                query += " OR"
+        query += ")"
 
     # Execute the query with the specified conditions and return the IDs of the matching courses as a list
     cursor.execute(query, tuple(params))
@@ -88,21 +98,21 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     params = []
 
     # If a course code and/or term filter is specified, add a JOIN to the Courses table
-    if filters.course_codes or filters.terms:
+    if "course_codes" in filters.__dict__ and filters.course_codes is not None and len(filters.course_codes) > 0 or "terms" in filters.__dict__ and filters.terms is not None and len(filters.terms) > 0:
         query += " JOIN CoursesOffered as co ON s.ParentID = co.ID JOIN Courses as c ON co.CourseID = c.ID"
 
     # If a meet time filter is specified, add a JOIN to the MeetTimes table
-    if filters.meet_times:
+    if "meet_times" in filters.__dict__ and filters.meet_times is not None and len(filters.meet_times) > 0:
         query += " JOIN MeetTimes as mt ON s.ID = mt.ParentID"
 
     # If a term filter is specified, add a JOIN to the Terms table and conditions to the query to filter by the specified terms
-    if filters.terms:
+    if "terms" in filters.__dict__ and filters.terms is not None and len(filters.terms) > 0:
         query += " JOIN Terms as t ON co.ParentID = t.ID WHERE 1=1"
         term_conditions = []
         for term in filters.terms:
             term_condition = "(t.Year = ? AND t.Season = ?"
             params.extend([term.year, term.season])
-            if term.number is not None:
+            if "number" in term.__dict__ and term.number is not None:
                 term_condition += " AND t.Number = ?"
                 params.append(term.number)
             term_condition += ")"
@@ -112,7 +122,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         query += " WHERE 1=1"
     
     # If a course code filter is specified, add conditions to the query to filter by the specified course codes
-    if filters.course_codes:
+    if "course_codes" in filters.__dict__ and filters.course_codes is not None and len(filters.course_codes) > 0:
         course_code_conditions = []
         for course_code in filters.course_codes:
             # check if which format the course code is in (e.g. "CSC 101" vs "CSC101") and split accordingly
@@ -131,7 +141,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         query += " AND (" + " OR ".join(course_code_conditions) + ")"
     
     # If an instructor filter is specified, add conditions to the query to filter by the specified instructors
-    if filters.instructors:
+    if "instructors" in filters.__dict__ and filters.instructors is not None and len(filters.instructors) > 0:
         instructor_conditions = []
         for instructor in filters.instructors:
             instructor_conditions.append("(s.Instructor = ?)")
@@ -139,7 +149,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         query += " AND (" + " OR ".join(instructor_conditions) + ")"
     
     # If a teaching method filter is specified, add conditions to the query to filter by the specified teaching methods
-    if filters.teaching_methods:
+    if "teaching_methods" in filters.__dict__ and filters.teaching_methods is not None and len(filters.teaching_methods) > 0:
         teaching_method_conditions = []
         for method in filters.teaching_methods:
             teaching_method_conditions.append("(s.TeachingMethod = ?)")
@@ -147,19 +157,33 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         query += " AND (" + " OR ".join(teaching_method_conditions) + ")"
 
     # If an enrollment capacity filter is specified, add a condition to the query to filter by enrollment capacity
-    if filters.enrollment_capacity:
-        condition = filters.enrollment_capacity.condition
-        query += f" AND s.EnrollmentCapacity {condition} ?"
-        params.append(filters.enrollment_capacity.enrollment)
+    if "enrollment_capacity" in filters.__dict__ and filters.enrollment_capacity is not None and len(filters.enrollment_capacity) > 0:
+        query += " AND ("
+        for enrollment_condition in filters.enrollment_capacity:
+            condition = filters.enrollment_capacity.condition
+            if condition not in ["=", ">", "<", ">=", "<=", "!="]:
+                raise ValueError(f"Invalid enrollment capacity condition: {condition}")
+            query += f"s.EnrollmentCapacity {condition} ?"
+            params.append(filters.enrollment_capacity.enrollment)
+            if enrollment_condition != filters.enrollment_capacity[-1]:
+                query += " OR "
+        query += ")"
 
     # If a current enrollment filter is specified, add a condition to the query to filter by current enrollment
-    if filters.enrollment:
-        condition = filters.enrollment.condition
-        query += f" AND s.CurrentEnrollment {condition} ?"
-        params.append(filters.enrollment.enrollment)
+    if "enrollment" in filters.__dict__ and filters.enrollment is not None and len(filters.enrollment) > 0:
+        query += " AND ("
+        for enrollment_condition in filters.enrollment:
+            condition = filters.enrollment.condition
+            if condition not in ["=", ">", "<", ">=", "<=", "!="]:
+                raise ValueError(f"Invalid enrollment condition: {condition}")
+            query += f"s.CurrentEnrollment {condition} ?"
+            params.append(filters.enrollment.enrollment)
+            if enrollment_condition != filters.enrollment[-1]:
+                query += " OR "
+        query += ")"
 
     # If a location filter is specified, add conditions to the query to filter by the specified locations
-    if filters.locations:
+    if "locations" in filters.__dict__ and filters.locations is not None and len(filters.locations) > 0:
         location_conditions = []
         for location in filters.locations:
             location_conditions.append("(s.Location = ?)")
@@ -167,7 +191,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
         query += " AND (" + " OR ".join(location_conditions) + ")"
     
     # If a meet time filter is specified, add conditions to the query to filter by the specified meet times
-    if filters.meet_times:
+    if "meet_times" in filters.__dict__ and filters.meet_times is not None and len(filters.meet_times) > 0:
         meet_time_conditions = []
         for meet_time in filters.meet_times:
             meet_time_condition = "(mt.Days = ? AND mt.StartTime = ? AND mt.EndTime = ?)"
