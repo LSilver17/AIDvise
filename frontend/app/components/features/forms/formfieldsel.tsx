@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -20,8 +23,8 @@ type SelectProps = {
 }
 
 /**
- * @props required
- * @props name
+ * @param props.required
+ * @param props.name
  */
 function FieldSelect({required, name}: SelectProps) {
     return (
@@ -34,9 +37,9 @@ function FieldSelect({required, name}: SelectProps) {
 
 /**
  * Field component for dropdown selections. Currently only used for account type selection.
- * @props label - Placeholder text.
- * @props inputName - Input identifier.
- * @props required - Determines if field is required.
+ * @param props.label - Placeholder text.
+ * @param props.inputName - Input identifier.
+ * @param props.required - Determines if field is required.
  */
 export default function FormField({inputName, message, isPassword, required, size} : FieldProps) {
     var inputType = isPassword ? "password" : "text";

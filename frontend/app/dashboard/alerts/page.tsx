@@ -14,7 +14,7 @@ import type { SetStateAction, Dispatch } from "react";
 // Lib
 import type { Alert, EventAlert, ClassAlert } from "@/app/lib/alerts/alert"
 import { useUserData } from "@/app/lib/account/user_context";
-import { get_curr_context, UserAlerts, UserEventAlerts, UserCourseAlerts, mark_alerts_as_seen } from "@/app/lib/account/account_db_utils";
+import { get_curr_context, UserAlerts, mark_alerts_as_seen } from "@/app/lib/account/account_db_utils";
 import { redirect } from "next/navigation";
 import { useCopilotKit } from "@copilotkit/react-core/v2";
 import { UserData, StudentData, UserMetadata, UserInterests, get_alerts } from "@/app/lib/account/account_db_utils";
@@ -29,23 +29,11 @@ const gap="5";
 const width = "100%";
 
 function unseenAlerts(alerts: UserAlerts): boolean {
-    return unseenEventAlerts(alerts.EventAlerts) || unseenCourseAlerts(alerts.CourseAlerts);
+    return !(alerts.UnseenAlerts.length === 0)
 }
 
-function unseenEventAlerts(alerts: UserEventAlerts): boolean {
-    return alerts.UnseenAlerts.length !== 0;
-}
-
-function seenEventAlerts(alerts: UserEventAlerts): boolean {
-    return !unseenEventAlerts(alerts);
-}
-
-function unseenCourseAlerts(alerts: UserCourseAlerts): boolean {
-    return alerts.UnseenAlerts.length !== 0;
-}
-
-function seenCourseAlerts(alerts: UserCourseAlerts): boolean {
-    return !unseenCourseAlerts(alerts);
+function seenAlerts(alerts: UserAlerts): boolean  {
+    return !(alerts.SeenAlerts.length === 0)
 }
 
 /**
@@ -89,8 +77,6 @@ export default function Alerts () {
     }
 
     const shownAlerts = 3;
-    const eventAlerts = userAlerts.EventAlerts;
-    const courseAlerts = userAlerts.CourseAlerts;
 
     return (
         <DashboardLayout>
@@ -98,7 +84,7 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <Flex width="100%" direction="row" gap="2">
-                <Flex width="60rem" gap="4">
+                <Flex width="100%" gap="4">
                     <DefaultButton onClick={generate_alerts} >
                         Check for new alerts
                     </DefaultButton>
@@ -112,12 +98,12 @@ export default function Alerts () {
             {
                 (userInterests.Interests && !(userInterests.Interests.length === 0)) ? 
                 <Flex direction="column" gap="5">
-                    {unseenEventAlerts(eventAlerts) ? <>
+                    {unseenAlerts(userAlerts) ? <>
                         <DashTitle size="7" gap="1">
-                            Unseen Events
+                            Unseen
                         </DashTitle>
                         <ExpandableList 
-                            list={eventAlerts.UnseenAlerts}
+                            list={userAlerts.UnseenAlerts}
                             min={shownAlerts} 
                             Component={SingleAlert} 
                             componentType="Alert"
@@ -130,12 +116,12 @@ export default function Alerts () {
                         </ExpandableList>
                     </> : null}
                 <Flex height="30px"/>
-                    {(seenEventAlerts(eventAlerts)) ? <>
+                    {seenAlerts(userAlerts) ? <>
                         <DashTitle size="7" gap="1">
-                            Seen Events
+                            Seen
                         </DashTitle>
                         <ExpandableList 
-                            list={eventAlerts.SeenAlerts}
+                            list={userAlerts.SeenAlerts}
                             min={shownAlerts} 
                             Component={SingleAlert} 
                             componentType="Alert"

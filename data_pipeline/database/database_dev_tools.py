@@ -274,16 +274,6 @@ def setup_database():
                     ON DELETE CASCADE
             )'''
         )
-        # Table to track which sections each student is tracking for course opening alerts
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS TrackedSections(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                SectionID INTEGER NOT NULL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES Students(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
 
         # Table for course opening alerts
         cursor.execute(
