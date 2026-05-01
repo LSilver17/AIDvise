@@ -32,7 +32,7 @@ class AdvisorState(TypedDict):
     insertion_result: str
     plan: dict
     loop_count: int
-    student_id: int
+    user_id: int
 
 class AState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
@@ -64,7 +64,7 @@ class InsertionHelperState(TypedDict):
     info_to_insert: str
     messages: Annotated[list[AnyMessage], add_messages]
     loop_count: int
-    student_id: int
+    user_id: int
 
 class InsertionHelperOutput(TypedDict):
     result: str

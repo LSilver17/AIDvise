@@ -486,6 +486,7 @@ def populate_course_catalog(json_file: str = COURSE_CATALOG):
                     semesters_offered = '/'.join(semesters)
                 else:
                     semesters_offered = None
+                
                 cursor.execute(
                     '''
                     INSERT INTO Courses (Department, Code, Name, Description, Credits, Requirements, SemestersOffered)
