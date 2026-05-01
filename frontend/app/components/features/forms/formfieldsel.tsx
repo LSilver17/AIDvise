@@ -53,10 +53,10 @@ export default function FormField({inputName, message, isPassword, required, siz
                 </Form.Control>
                 {message ? 
                     (
-                        <Text>{message}</Text>
+                        <Text >{message}</Text>
                     ) : null
                 }
-                <Form.Message match="valueMissing">Please enter a {inputName}</Form.Message>
+                <Form.Message match="valueMissing">Please enter an {inputName}</Form.Message>
             </Flex>
         </Form.Field>
     );

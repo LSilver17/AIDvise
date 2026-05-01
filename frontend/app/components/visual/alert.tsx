@@ -35,24 +35,37 @@ function EventAlert({alert}: EventProps) {
 }
 
 function ClassAlert({alert}: ClassProps) {
-    const requirements = alert.requirements ?? "None";
+    const department = alert.department ?? "?";
+    const code = alert.code ?? "?";
+    const sectionNumber = alert.sectionNumber ?? "?";
+    const courseName = alert.courseName ?? "Unknown";
+    const credits = alert.credits ?? "?";
+    const meetSchedule = alert.meetSchedule ?? "Unknown";
+    const requirements = alert.requirements ?? "Unknown";
     const semestersOffered = alert.semestersOffered ?? 'Unknown';
+    const sectionStatus = alert.sectionStatus ?? 'Unknown';
+    const seatsLeft = alert.seatsLeft ?? '?';
+    const seats = alert.seats ?? '?';
+    const method = alert.method ?? 'Unknown';
+    const location = alert.location ?? 'Unknown';
+    const courseDescription = alert.courseDescription ?? 'None';
+
     return (
         <Flex justify="start" direction="column" height="100%" width="100%" gap="2">
             <Flex justify="start" direction="row" height="100%" width="100%" flexGrow="1" wrap="wrap" gapX="3">
-                <Flex><strong>{alert.department} {alert.code}-{alert.sectionNumber}</strong>: {alert.courseName}</Flex>
-                <Flex><strong>Credits</strong>: {alert.credits}</Flex>
+                <Flex><strong>{department} {code}-{sectionNumber}</strong>: {courseName}</Flex>
+                <Flex><strong>Credits</strong>: {credits}</Flex>
                 <Flex><strong>Requirements</strong>: {requirements}</Flex>
                 <Flex direction="row">
-                    <Flex><strong>Schedule</strong>: {alert.meetSchedule}</Flex>
+                    <Flex><strong>Schedule</strong>: {meetSchedule}</Flex>
                 </Flex>
                 <Flex><strong>Semester Offered</strong>: {semestersOffered}</Flex>
-                <Flex><strong>Status</strong>: {alert.sectionStatus}</Flex>
-                <Flex><strong>Seats Left</strong>: {alert.seatsLeft}/{alert.seats}</Flex>
-                <Flex><strong>Method</strong>: {alert.method}</Flex>
-                <Flex><strong>Location</strong>: {alert.location}</Flex>
+                <Flex><strong>Status</strong>: {sectionStatus}</Flex>
+                <Flex><strong>Seats Left</strong>: {seatsLeft}/{seats}</Flex>
+                <Flex><strong>Method</strong>: {method}</Flex>
+                <Flex><strong>Location</strong>: {location}</Flex>
             </Flex>
-            <Flex pl="1" pr="1">{alert.courseDescription}</Flex>
+            <Flex pl="1" pr="1">{courseDescription}</Flex>
         </Flex>
         
     )
