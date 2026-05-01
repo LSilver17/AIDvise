@@ -179,6 +179,36 @@ def insert_interest_dummy_data() -> None:
 
         conn.commit()
 
+def insert_event_dummy_data_only() -> None:
+    with __connect() as conn:
+        cursor = conn.cursor()
+
+        cursor.executemany(
+            """
+            INSERT OR IGNORE INTO Events (Name, Description)
+            VALUES (?, ?)
+            """,
+            [(event_name, event_info["description"]) for event_name, event_info in EVENTS.items()]
+        )
+        event_ids = {event_name: cursor.execute("SELECT ID FROM Events WHERE Name = ?", (event_name,)).fetchone()[0] for event_name in EVENTS.keys()}
+     
+        for event_name, event_info in EVENTS.items():
+            for date_info in event_info["dates"]:
+                cursor.execute(
+                    """
+                    INSERT OR IGNORE INTO EventDates (ParentID, Date, StartTime, EndTime, Location)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        event_ids[event_name],
+                        date_info["date"],
+                        date_info["start_time"],
+                        date_info["end_time"],
+                        date_info["location"]
+                    )
+                )
+
+        conn.commit()
 
 # Utility function to reset event check timestamps and relivent event table as well as move up event dates for testing purposes
 def reset():
@@ -216,4 +246,6 @@ def reset():
         conn.commit()
 
 if __name__ == "__main__":
+    reset()
     insert_interest_dummy_data()
+    #insert_event_dummy_data_only()

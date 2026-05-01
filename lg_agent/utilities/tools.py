@@ -83,9 +83,12 @@ def course_query_tool_by_title(course_title: str) -> str:
                 "Credits": int
             }
             If no course is found with the given title, returns a message indicating that no course was found.
-    """
+    """    
     with __connect() as conn:
         cursor = conn.cursor()
+        if course_title == "Coperative Work Experience":
+            coops = database_utils.get_coops(cursor)
+            return f"There are multiple courses with the title 'Cooperative Work Experience'. Here is a list of them: {', '.join(coops)}. Please try agein using the course code to specify which one you want information about."
         course_id = database_utils.get_courseID_by_title(cursor, course_title)
         if course_id:
             course_info = database_utils.get_course_info_by_id(cursor, course_id)

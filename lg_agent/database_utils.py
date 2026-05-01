@@ -32,6 +32,11 @@ def get_courseID_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
     result = cursor.fetchone()
     return result[0] if result else None
 
+def get_coops(cursor: sqlite3.Cursor) -> list:
+    cursor.execute("SELECT ID, Department, Code FROM Courses WHERE Name = 'Cooperative Work Experience'")
+    results = cursor.fetchall()
+    return [row[0] for row in results]
+
 # Utility function to filter courses based on certain criteria and return their IDs as a list
 def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilters) -> list:
     query = "SELECT co.ID FROM CoursesOffered as co JOIN Courses as c ON co.CourseID = c.ID"
