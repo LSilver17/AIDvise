@@ -311,7 +311,8 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
 }
 
 /**
- * Deletes the account of the user with current active session, then clears the session. Student/Advisor info remains in the academic database.
+ * Deletes the account of the user with current active session. Student/Advisor info remains in the academic database. 
+ * Make sure to clear the session after this function is called using NextAuth's signOut() hook.
  * @returns A promise with an object detailing the result.
  */
 export async function delete_account(): Promise<Result> {
@@ -336,7 +337,6 @@ export async function delete_account(): Promise<Result> {
 
         await db.run(`UPDATE ${account_table} SET ParentID = ? WHERE ParentID = ?`, null, userID);
         await db.run("DELETE FROM Users WHERE ID = ?", userID);
-        
         const result: Result = {
             success:true,
         }
@@ -350,9 +350,6 @@ export async function delete_account(): Promise<Result> {
     } finally {
         if (db) {
             await db.close();
-        }
-        if(session) {
-            await signOut({callbackUrl:"/login"});
         }
     }
 }
