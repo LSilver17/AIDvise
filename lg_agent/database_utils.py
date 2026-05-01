@@ -281,7 +281,7 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
 
 # Utility function that returns the course code and course title for all courses a student has taken based on their ID
 def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
-    cursor.execute("SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN StudentCourses as sc ON c.ID = sc.CourseID WHERE sc.ParentID = ?", (student_id,))
+    cursor.execute("SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN CoursesTaken as sc ON c.ID = sc.CourseID WHERE sc.ParentID = ?", (student_id,))
     course_history = []
     for row in cursor.fetchall():
         course_history.append({
@@ -302,13 +302,13 @@ def get_student_interests(cursor: sqlite3.Cursor, student_id: int) -> list:
 
 # Utility function to get all tracked sections for a student based on their ID
 def get_student_tracked_sections(cursor: sqlite3.Cursor, student_id: int) -> list:
-    cursor.execute("SELECT c.Department, c.Code, c.Name, s.SectionNumber FROM Courses as c JOIN Sections as s JOIN CoursesOffered as co JOIN TrackedSections as ts ON c.ID = co.CourseID AND s.ParentID = co.ID AND s.ID = ts.SectionID WHERE ts.ParentID = ?", (student_id,))
+    cursor.execute("SELECT c.Department, c.Code, c.Name, s.SectionNum FROM Courses as c JOIN Sections as s JOIN CoursesOffered as co JOIN TrackedSections as ts ON c.ID = co.CourseID AND s.ParentID = co.ID AND s.ID = ts.SectionID WHERE ts.ParentID = ?", (student_id,))
     tracked_sections = []
     for row in cursor.fetchall():
         tracked_sections.append({
-            "CourseCode": row[0] + " " + row[1],
-            "SectionNumber": row[3],
-            "Name": row[2]
+            "CourseCode": str(row[0]) + " " + str(row[1]),
+            "SectionNumber": str(row[3]),
+            "Name": str(row[2])
         })
     if not tracked_sections:
         tracked_sections = ["No sections currently being tracked"]
@@ -349,7 +349,7 @@ def insert_student_tracked_section(cursor: sqlite3.Cursor, student_id: int, cour
                 department = course_code[:i]
                 number = course_code[i:]
                 break
-    cursor.execute("SELECT s.ID FROM Sections as s JOIN CoursesOffered as co JOIN Courses as c ON s.ParentID = co.ID AND co.CourseID = c.ID WHERE c.Department = ? AND c.Code = ? AND s.SectionNumber = ?", (department, number, section_number))
+    cursor.execute("SELECT s.ID FROM Sections as s JOIN CoursesOffered as co JOIN Courses as c ON s.ParentID = co.ID AND co.CourseID = c.ID WHERE c.Department = ? AND c.Code = ? AND s.SectionNum = ?", (department, number, section_number))
     result = cursor.fetchone()
 
     if result is None:
