@@ -238,7 +238,7 @@ def get_event_dates_by_name(cursor: sqlite3.Cursor, event_name: str) -> list:
 
 # Utility function to that returns the name, advisor, gpa, credits earned, and programs of study for a student based on their ID.
 def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
-    cursor.execute("SELECT Name, Advisor, GPA, CreditsEarned FROM Students WHERE ID = ?", (student_id,))
+    cursor.execute("SELECT Name, AdvisorID, GPA, CreditsEarned FROM Students WHERE ID = ?", (student_id,))
     row = cursor.fetchone()
 
     if row is None:
