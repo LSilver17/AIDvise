@@ -372,6 +372,7 @@ export type UserData = StudentData | AdvisorData;
 export type UserMetadata = {
     AccountType: AccountType,
     Username: string,
+    AccountID: string,
 }
 
 export type UserAlerts = {
@@ -554,7 +555,8 @@ export async function get_curr_context(account_type: AccountType): Promise<Stude
 
     const userMetadata: UserMetadata = {
         AccountType: session.user.account_type,
-        Username: session.user.username
+        Username: session.user.username,
+        AccountID: session.user.id
     }
 
     if(account_type === "Student") {

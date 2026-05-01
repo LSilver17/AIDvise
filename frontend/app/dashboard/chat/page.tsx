@@ -14,15 +14,16 @@ import type { AccountType } from "@/app/lib/account/account_type";
 
 // Hooks
 import { useCoAgent } from "@copilotkit/react-core";
+import { authSession } from "@/app/lib/account/authSession";
 
-function choose_init_message(name: string, interests: UserInterests, accountType: AccountType): string {
+function choose_init_message(name: string, accountType: AccountType, interests: UserInterests | null = null): string {
   if(accountType === "Advisor") {
     var message_addition = "How can I help you today?";
     const message = `Hi, ${name}! ${message_addition}`;
     return message;
   } else if (accountType === "Student") {
     var message_addition = "How can I help you today?";
-    if (interests.Interests.length == 0) message_addition = "Tell me about your academic and extracurricular interests.";
+    if (interests && interests.Interests.length == 0) message_addition = "Tell me about your academic and extracurricular interests.";
     const message = `Hi, ${name}! ${message_addition}`;
     return message;
   }
@@ -34,20 +35,13 @@ function choose_init_message(name: string, interests: UserInterests, accountType
  */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();
-  
-  let userID;
-  if("StudentID" in userData) {
-    userID = userData.StudentID.data;
-  } else {
-    userID = userData.AdvisorID.data;
-  }
 
   const accountType: AccountType = userMetadata?.AccountType;
 
   const {state, setState} = useCoAgent({
     name: "default",
     initialState: {
-      "user_id": userID,
+      "user_id": userMetadata.AccountID,
       "account_type": accountType,
     }
   })
@@ -56,7 +50,7 @@ export default function Chat() {
   var name: string = "User";
   if(accountType) name = accountType as string;
   if(userData && userData.Name.data) name = userData.Name.data;
-  const message = choose_init_message(name, userInterests, accountType);
+  const message = choose_init_message(name, accountType, userInterests);
 
   return (
     <Flex width="100%" height="100%" direction="row">
