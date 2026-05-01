@@ -6,6 +6,7 @@ import { AlertDialog, Flex } from "@radix-ui/themes";
 import { delete_account } from "@/app/lib/account/account_db_utils"
 import { signOut } from "next-auth/react";
 import { alert_popup } from "@/app/lib/alerts/alert_popup";
+import { authSession } from "@/app/lib/account/authSession";
 
 /**
  * Component for account deletion, including an account deletion handler and
@@ -15,9 +16,13 @@ import { alert_popup } from "@/app/lib/alerts/alert_popup";
 export default function DeleteAccount() {
     const deleteAccount = async () => {
         const result = await delete_account();
+        const session = await authSession();
         if(!result.success) {
             alert_popup(`${result?.error}`);
             return;
+        }
+        else if (session) {
+            await signOut({callbackUrl:"/login"});
         }
     }
     return (

@@ -32,7 +32,7 @@ def invoke_s_graph(state: RouteState) -> RouteState:
         student_id = cur.fetchone()
         if student_id is None:
             raise ValueError(f"No student found for parent_id {state['user_id']}")
-        result = s_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "student_id": student_id[0], "insertion_result": ""})
+        result = s_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": student_id[0], "insertion_result": ""})
     return {"messages": result["messages"]}
 
 def invoke_a_graph(state: RouteState) -> RouteState:

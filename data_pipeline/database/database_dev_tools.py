@@ -11,9 +11,9 @@ if jsons_dir not in sys.path:
     sys.path.append(jsons_dir)
 
 import json, sqlite3
-from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_title
+from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_code
 
-COURSE_CATALOG = "qcc_classes.json"
+COURSE_CATALOG = "course_catalog.json"
 PROGRAMS_CATALOG = "qcc_programs.json"
 
 # Utility function for connecting to database and setting up required pragmas and row factory
@@ -37,9 +37,9 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Department TEXT NOT NULL,
                 Code INTEGER NOT NULL,
-                Name TEXT NOT NULL UNIQUE,
-                Description TEXT NOT NULL,
-                Credits INTEGER NOT NULL,
+                Name TEXT,
+                Description TEXT,
+                Credits INTEGER,
                 Requirements TEXT,
                 SemestersOffered TEXT
             )'''
@@ -51,8 +51,8 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Title TEXT NOT NULL,
                 Description TEXT NOT NULL,
-                CreditsRequired TEXT NOT NULL,
-                Type TEXT NOT NULL CHECK(Type IN ('Certificate', 'Associate in Science', 'Associate in Applied Science', 'Associate in Arts'))
+                CreditsRequired TEXT,
+                Type TEXT CHECK(Type IN ('Certificate', 'Associate in Science', 'Associate in Applied Science', 'Associate in Arts'))
             )'''
         )
         # Table for required courses for each program of study, linked to the program via ParentID foreign key
@@ -470,20 +470,23 @@ def populate_course_catalog(json_file: str = COURSE_CATALOG):
             course_data['courses'] = json.load(f)
             for course in course_data['courses']:
                 # split course code into department and course number
-                department, code = course['course_code'].split()
+                department, code = str(course['course_code']).split()
 
                 # split up semesters (e.g. F/S/SU -> F, S, SU) then convert to proper name (e.g. F -> Fall) then combine back into string to store in database
-                semesters = course['semesters_offered'].split('/')
-                semester_mapping = {
-                    'F': 'Fall',
-                    'S': 'Spring',
-                    'SU': 'Summer',
-                    'IN': 'Winter'
-                }
-                for i, semester in enumerate(semesters):
-                    semesters[i] = semester_mapping[semester]
-                semesters_offered = '/'.join(semesters)
-
+                if course['semesters_offered']:
+                    semesters = str(course['semesters_offered']).split('/')
+                    semester_mapping = {
+                        'F': 'Fall',
+                        'S': 'Spring',
+                        'SU': 'Summer',
+                        'IN': 'Winter'
+                    }
+                    for i, semester in enumerate(semesters):
+                        semesters[i] = semester_mapping[semester]
+                    semesters_offered = '/'.join(semesters)
+                else:
+                    semesters_offered = None
+                
                 cursor.execute(
                     '''
                     INSERT INTO Courses (Department, Code, Name, Description, Credits, Requirements, SemestersOffered)
@@ -499,7 +502,6 @@ def populate_course_catalog(json_file: str = COURSE_CATALOG):
                         semesters_offered
                     )
                 )
-
         # Commit the changes to the database
         conn.commit()
         print("Course catalog populated from JSON file.")
@@ -535,9 +537,9 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
                     last_has_or = has_or
 
                     # check if current course has an OR at the end of its name
-                    if required_course['name'].endswith(' OR'):
+                    if str(required_course).endswith(' OR'):
                         has_or = True
-                        required_course['name'] = required_course['name'].rstrip(' OR') # remove the 'OR' from the course name to match the course titles in the database
+                        required_course = str(required_course).rstrip(' OR') # remove the 'OR' from the course name to match the course titles in the database
 
                     # check if current course works as alternitive for previous one
                     if last_has_or:
@@ -547,7 +549,7 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
                             INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
                             VALUES (?, ?)
                             ''',
-                            (get_courseID_by_title(required_course['name']), previous_requirement_id,)
+                            (get_courseID_by_code(cursor, required_course), previous_requirement_id,)
                         )
                     else:
                         # add current course as a new requirement
@@ -561,13 +563,16 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
                         requirement_id = cursor.lastrowid
 
                         # add current course as an option for the new requirement
-                        cursor.execute(
-                            '''
-                            INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
-                            VALUES (?, ?)
-                            ''',
-                            (get_courseID_by_title(required_course['name']), requirement_id)
-                        )
+                        try:
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (get_courseID_by_code(cursor, required_course), requirement_id)
+                            )
+                        except sqlite3.IntegrityError:
+                            print(f"Course '{required_course}' not found in Courses table. Skipping this course for program '{program['name']}'.")
 
                         previous_requirement_id = requirement_id
 
@@ -582,59 +587,74 @@ def add_new_term(json_file: str = "terms.json"):
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Load term data from JSON file
-        with open(json_file, 'r') as f:
-            term_data = json.load(f)
+        term_data = {"term": {}}
 
-        # TODO: Once term info is added to the JSON, make code to add the new term to the Terms table and get its ID to use as the ParentID for the courses.
+        # Load term data from JSON file
+        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+            term_data['term'] = json.load(f)
+
+        term = term_data['term'][0]
+
+        # add the new term to the Terms table and get its ID to use as the ParentID for the courses.
+        cursor.execute(
+            '''
+            INSERT INTO Terms (Year, Season, Number)
+            VALUES (?, ?, ?)
+            ''',
+            (
+                term['Year'],
+                term['Season'],
+                term['Num']
+            )
+        )
+        term_id = cursor.lastrowid
 
         # Add the courses for the new term to the CoursesOffered table, linking them to the term via ParentID
-        for course in term_data['Courses']:
+        for course in term['CoursesOffered']:
             #check if course already exists for the term to avoid duplicates
             existing_course = cursor.execute(
                 '''
-                SELECT ID
-                FROM CoursesOffered
-                WHERE Department = ? AND Code = ? AND ParentID = ?
+                SELECT co.ID
+                FROM CoursesOffered as co Join Courses as c ON co.CourseID = c.ID
+                WHERE c.Department = ? AND c.Code = ? AND co.ParentID = ?
                 ''',
-                (course['Department'], course['Code'], course['ParentID'])
+                (course['Department'], course['Code'], term_id)
             ).fetchone()
 
             # if the course doesn't already exist for the term, insert it into the CoursesOffered table with the appropriate ParentID linking it to the term
             if not existing_course:
+                # get course ID from Courses table to link to CoursesOffered table
+                course_code = f"{course['Department']} {course['Code']}"
+                course_id = get_courseID_by_code(cursor, course_code)
+
+                if not course_id:
+                    print(f"no course id found for course code {course_code}, skipping course offering for {course_code} in term {term['Season']} {term['Year']}")
+                    continue
+
                 cursor.execute(
                     '''
-                    INSERT INTO CoursesOffered (Department, Code, Name, Description, Credits, ParentID)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO CoursesOffered (CourseID, ParentID)
+                    VALUES (?, ?)
                     ''',
-                    (
-                        course['department'],
-                        int(course['course_number']),
-                        course['name'],
-                        "lorem ipsum",  # TODO: change this placeholder description once we add descriptions to the JSON
-                        float(course['credits']),
-                        1 # TODO: change this placeholder ParentID to link to the correct term based on the JSON data once we add term info to the JSON
-                    )
+                    (course_id, term_id)
                 )
 
-                # TODO: Once requirements are added to the JSON, make code to add them to the CourseRequirements table for each course, linking them to the course via ParentID
-            
             # add the specific section of the course to the Sections table, linking it to the course via ParentID
             cursor.execute(
                 '''
-                INSERT INTO Sections (SectionNum, Instructor, StartDate, EndDate, MaxSeats, SeatsLeft, Method, Location, ParentID)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Sections (SectionNum, Instructor, StartDate, EndDate, Status, MaxSeats, SeatsLeft, Method, Location, ParentID)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''',
                 (
-                    int(course['section']),
-                    course['instructor'],
-                    int(course['begin_date']),
-                    int(course['end_date']),
-                    course['status'],
-                    int(course['seats_total']),
-                    int(course['seats_open']),
-                    course['method'],
-                    course['location'],
+                    int(course['SectionNum']),
+                    course['Instructor'],
+                    course['StartDate'],
+                    course['EndDate'],
+                    course['Status'],
+                    course['MaxSeats'],
+                    course['SeatsLeft'],
+                    course['Method'],
+                    course['Location'],
                     (existing_course['ID'] if existing_course else cursor.lastrowid)
                 )
             )
@@ -642,52 +662,65 @@ def add_new_term(json_file: str = "terms.json"):
             section_id = cursor.lastrowid
             
             # seperate days from times since the JSON format has them combined and we need to split them to fit our schema
-            day_initials, time_unsplit = course['days_time'].split()
-            start_time = time_unsplit[:5]
-            if time_unsplit[5] == '-':
-                end_time = time_unsplit[6:]
-            else:
-                start_time_am_pm = time_unsplit[5:7]
-                end_time = time_unsplit[7:]
-                end_time_am_pm = time_unsplit[7:9]
-
-            # convert start and end times to 24 hour format based on the AM/PM indicators
-            if start_time_am_pm:
-                if start_time == '12:00':
-                    start_time = '00:00'
+            if not course['MeetTimes'] == "00:00-00:00AM":
+            
+                day_initials, time_unsplit = str(course['MeetTimes']).split(maxsplit=1)
+                start_time = time_unsplit[:5]
+                start_time_am_pm = None
+                end_time_am_pm = None
+                if time_unsplit[5] == '-':
+                    end_time = time_unsplit[6:]
                 else:
-                    start_time = f'{int(start_time[:2]) + 12}:{start_time[3:]}'
+                    start_time_am_pm = time_unsplit[5:7]
+                    end_time = time_unsplit[7:]
+                    end_time_am_pm = time_unsplit[7:9]
 
-            if end_time_am_pm == 'PM':
-                if end_time == '12:00':
-                    end_time = '00:00'
-                else:
-                    end_time = f'{int(end_time[:2]) + 12}:{end_time[3:]}'
+                # convert start and end times to 24 hour format based on the AM/PM indicators
+                if start_time_am_pm:
+                    if start_time == '12:00':
+                        start_time = '00:00'
+                    else:
+                        try:
+                            start_time = f'{int(start_time[:2]) + 12}:{start_time[3:]}'
+                        except ValueError:
+                            print(f"Invalid start time format for course {course_code}: {start_time}")
+                            continue
 
-            # Seperate each day initiall from the string of day initials
-            day_list = list(day_initials)
+                if end_time_am_pm == 'PM':
+                    if end_time == '12:00':
+                        end_time = '00:00'
+                    else:
+                        try:
+                            end_time = f'{int(end_time[:2]) + 12}:{end_time[3:]}'
+                        except ValueError:
+                            print(f"Invalid end time format for course {course_code}: {end_time}")
+                            continue
 
-            # Convert day initials to full day names
-            day_mapping = {
-                'M': 'Monday',
-                'T': 'Tuesday',
-                'W': 'Wednesday',
-                'R': 'Thursday',
-                'F': 'Friday'
-            }
+                # Seperate each day initiall from the string of day initials
+                day_list = list(day_initials)
 
-            for day_initials, i in day_list:
-                day_list[i] = day_mapping[day_initials]
+                # Convert day initials to full day names
+                day_mapping = {
+                    'M': 'Monday',
+                    'T': 'Tuesday',
+                    'W': 'Wednesday',
+                    'R': 'Thursday',
+                    'F': 'Friday',
+                    'S': 'Saturday'
+                }
 
-            # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
-            for day in day_list:
-                cursor.execute(
-                    '''
-                    INSERT INTO MeetTimes (Day, StartTime, EndTime, ParentID)
-                    VALUES (?, ?, ?, ?)
-                    ''',
-                    (day, start_time, end_time, section_id)
-                )
+                for i, day_initial in enumerate(day_list):
+                    day_list[i] = day_mapping[day_initial]
+
+                # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
+                for day in day_list:
+                    cursor.execute(
+                        '''
+                        INSERT INTO MeetTimes (Day, StartTime, EndTime, ParentID)
+                        VALUES (?, ?, ?, ?)
+                        ''',
+                        (day, start_time, end_time, section_id)
+                    )
 
         # Commit the changes to the database
         conn.commit()
@@ -714,3 +747,6 @@ def display_term_hierarchy():
 if __name__ == '__main__':
     setup_database()
     create_triggers()
+    populate_course_catalog()
+    populate_programs_catalog()
+    add_new_term("term_data.json")

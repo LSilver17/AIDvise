@@ -25,7 +25,7 @@ export default function LoginForm({onSubmit} : Props) {
                     <Flex justify="center" width="100%" direction="column" align="start">
                         <Form.Label>Username</Form.Label>
                         <Form.Control asChild>
-                            <input name="username" type="username" required/>
+                            <input name="username" type="username" title="username" required/>
                         </Form.Control>
                         <Form.Message match="valueMissing">Please enter a username.</Form.Message>
                     </Flex>
@@ -35,7 +35,7 @@ export default function LoginForm({onSubmit} : Props) {
                     <Flex justify="center" width="100%" direction="column" align="start">
                         <Form.Label>Password</Form.Label>
                         <Form.Control asChild>
-                            <input name="password" type="password" required/>
+                            <input name="password" type="password" title="password" required/>
                         </Form.Control>
                         <Form.Message match="valueMissing">Please enter a password.</Form.Message>
                     </Flex>
