@@ -300,7 +300,7 @@ insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE UserID = ?", (runtime.state["user_id"],)).fetchone()
+        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
         if advisor_id is None:
             return f"No advisor found with user ID {runtime.state['user_id']}."
         cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
@@ -314,7 +314,7 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
 def get_advisor_students_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE UserID = ?", (runtime.state["user_id"],)).fetchone()
+        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
         if advisor_id is None:
             return f"No advisor found with user ID {runtime.state['user_id']}."
         cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
@@ -330,10 +330,11 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        advisor_id = cursor.fetchone()
-        if advisor_id is None:
+        s_advisor_id = cursor.fetchone()
+        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+        if s_advisor_id is None:
             return f"No student found with ID {student_id}"
-        elif advisor_id[0] != runtime.state["user_id"]:
+        elif s_advisor_id[0] != u_advisor_id[0]:
             return f"Student with ID {student_id} is not assigned to the current user."
         student_info = database_utils.get_student_basic_info(cursor, student_id)
         return json.dumps(student_info)
@@ -343,10 +344,11 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
     with __connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        advisor_id = cursor.fetchone()
-        if advisor_id is None:
+        s_advisor_id = cursor.fetchone()
+        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+        if s_advisor_id is None:
             return f"No student found with ID {student_id}"
-        elif advisor_id[0] != runtime.state["user_id"]:
+        elif s_advisor_id[0] != u_advisor_id[0]:
             return f"Student with ID {student_id} is not assigned to the current user."
         course_history = database_utils.get_student_course_history(cursor, student_id)
         return json.dumps(course_history)
@@ -356,10 +358,11 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        advisor_id = cursor.fetchone()
-        if advisor_id is None:
+        s_advisor_id = cursor.fetchone()
+        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+        if s_advisor_id is None:
             return f"No student found with ID {student_id}"
-        elif advisor_id[0] != runtime.state["user_id"]:
+        elif s_advisor_id[0] != u_advisor_id[0]:
             return f"Student with ID {student_id} is not assigned to the current user."
         interests = database_utils.get_student_interests(cursor, student_id)
         return json.dumps(interests)
@@ -369,10 +372,11 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
     with __connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        advisor_id = cursor.fetchone()
-        if advisor_id is None:
+        s_advisor_id = cursor.fetchone()
+        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+        if s_advisor_id is None:
             return f"No student found with ID {student_id}"
-        elif advisor_id[0] != runtime.state["user_id"]:
+        elif s_advisor_id[0] != u_advisor_id[0]:
             return f"Student with ID {student_id} is not assigned to the current user."
         tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
         return json.dumps(tracked_sections)
