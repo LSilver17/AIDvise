@@ -1,5 +1,5 @@
 {
-    "mode": "token_saver",
+    "mode": "all_claude",
     "all_claude": {
         "planning": "sonnet-4-6",
         "db": "sonnet-4-6",
