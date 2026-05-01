@@ -1,3 +1,5 @@
+# Copyright 2026 Luca Silver
+
 import sys, os
     
 # adds root directory to system path if not already there
@@ -20,25 +22,40 @@ import utilities.schemas as schemas
 import database_utils
 import json
 
-def _normalize_student_id(student_id_state: int | dict) -> int:
-    """Normalize student_id from runtime state to an integer."""
-    if isinstance(student_id_state, dict):
-        if "student_id" in student_id_state:
-            return student_id_state["student_id"]
-        raise ValueError("student_id state dict must contain a 'student_id' key")
-    return student_id_state
-
 # misc tools
-
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
-    """Tool for getting the current date and time. The output is a string containing the current date and time."""
+    """
+    Tool for getting the current date and time. 
+    
+    Returns: 
+        str -- A string containing the current date and time:
+            Format: "YYYY-MM-DD HH:MM:SS".
+    """
     now = datetime.now()
     return now.strftime("%Y-%m-%d %H:%M:%S")
 
 # Database query tools
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
 def course_query_tool_by_code(course_code: str) -> str:
+    """
+    Tool for getting information about a specific course from the database.
+
+    Args:
+        course_code (str) -- The code of the course to query:
+            Format: 3-letter department code followed by 3-digit course number (e.g. "CSC 101" | "CSC101").
+    Returns:
+        str -- A string containing the relevant information about the course:
+            Format: {
+                "Department": str (3-letter),
+                "Course Number": int (3-digit),
+                "Title": str,
+                "Description": str,
+                "Prerequisites": list[str],
+                "Credits": int
+            }
+            If no course is found with the given code, returns a message indicating that no course was found.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         course_id = database_utils.get_courseID_by_code(cursor, course_code)
@@ -50,6 +67,23 @@ def course_query_tool_by_code(course_code: str) -> str:
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
 def course_query_tool_by_title(course_title: str) -> str:
+    """
+    Tool for getting information about a specific course from the database.
+
+    Args:
+        course_title (str) -- The title of the course to query (e.g. "Introduction to Computer Science").
+    Returns:
+        str -- A string containing the relevant information about the course:
+            Format: {
+                "Department": str (3-letter),
+                "Course Number": int (3-digit),
+                "Title": str,
+                "Description": str,
+                "Prerequisites": list[str],
+                "Credits": int
+            }
+            If no course is found with the given title, returns a message indicating that no course was found.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         course_id = database_utils.get_courseID_by_title(cursor, course_title)
@@ -61,6 +95,40 @@ def course_query_tool_by_title(course_title: str) -> str:
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a all the courses that match the specified criteria and relivent information about them.", return_direct=True)
 def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
+    """
+    Tool for filtering courses based on specified criteria.
+
+    Args:
+        filters (schemas.CourseFilters) -- A set of filters to apply when querying for courses:
+            Format: {
+                "terms": List[
+                    {
+                        "year": int,
+                        "season": "Fall" | "Spring" | "Summer",
+                        "number": int | None
+                    }
+                ],
+                "departments": List[str], (IE: CSC, MTH, etc.)
+                "credits": List[
+                    {
+                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
+                        "credits": int
+                    }
+                ]
+            }
+            If no filters are needed, this can be left blank or set to None.
+    Returns:
+        str -- A string containing all the courses that match the specified criteria and relevant information about them:
+            Format: List[{
+                "Department": str (3-letter),
+                "Course Number": int (3-digit),
+                "Title": str,
+                "Description": str,
+                "Prerequisites": list[str],
+                "Credits": int
+            }]
+    """
+    
     with __connect() as conn:
         cursor = conn.cursor()
         course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
@@ -76,6 +144,46 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections.", return_direct=True)
 def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
+    """
+    Tool for filtering sections based on specified criteria.
+
+    Args:
+        filters (schemas.SectionFilters) -- A set of filters to apply when querying for sections:
+            Format: {
+                "terms": List[
+                    {
+                        "year": int,
+                        "season": "Fall" | "Spring" | "Summer",
+                        "number": int | None
+                    }
+                ],
+                "course_codes": List[str], (IE: CSC 101, MTH 101, etc.)
+                "instructors": List[str],
+                "teaching_methods": List[str], (IE: Lecture, Lab, Online, etc.)
+                "enrollment_capacity": List[
+                    {
+                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
+                        "enrollment_capacity": int
+                    }
+                ],
+                "enrollment": List[
+                    {
+                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
+                        "enrollment": int
+                    }
+                ],
+                "locations": List[str],
+                "meet_times": List[
+                    {
+                        "days": str (e.g. MW, TR, F, etc.),
+                        "start_time": str (24-hour format e.g. 14:00),
+                        "end_time": str (24-hour format e.g. 15:15)
+                    }
+                ]
+            }
+            If no filters are needed, this can be left blank or set to None.
+    """
+    
     with __connect() as conn:
         cursor = conn.cursor()
         section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
@@ -91,6 +199,22 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, Advisor, GPA, total credits, and programs of study. The output is a string containing the relevant information.", return_direct=True)
 def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
+    """
+    Tool for getting basic information about the current (student) user.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+    Returns:
+        str -- A string containing the relevant information about the student:
+            Format: {
+                "Name": str,
+                "Advisor": str,
+                "GPA": float,
+                "Total Credits": int,
+                "Programs of Study": List[str]
+            }
+    """
+
     with __connect() as conn:
         cursor = conn.cursor()
         student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
@@ -98,6 +222,14 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
 def get_student_course_history_tool(runtime: ToolRuntime) -> str:
+    """
+    Tool for getting the course history for the current (student) user.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+    
+    """
+    
     with __connect() as conn:
         cursor = conn.cursor()
         course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
