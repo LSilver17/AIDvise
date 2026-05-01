@@ -300,7 +300,10 @@ insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, runtime.state["user_id"]))
+        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE UserID = ?", (runtime.state["user_id"],)).fetchone()
+        if advisor_id is None:
+            return f"No advisor found with user ID {runtime.state['user_id']}."
+        cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
         student_id = cursor.fetchone()
         if student_id:
             return json.dumps({"student_id": student_id[0]})
@@ -311,7 +314,10 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
 def get_advisor_students_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (runtime.state["user_id"],))
+        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE UserID = ?", (runtime.state["user_id"],)).fetchone()
+        if advisor_id is None:
+            return f"No advisor found with user ID {runtime.state['user_id']}."
+        cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
         students = cursor.fetchall()
         if students:
             student_info = [{"name": student[0], "id": student[1]} for student in students]
