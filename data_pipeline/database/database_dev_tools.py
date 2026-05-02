@@ -13,11 +13,8 @@ if jsons_dir not in sys.path:
 import json, sqlite3
 from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_code
 
-COURSE_CATALOG = "course_catalog.json"
-PROGRAMS_CATALOG = "qcc_programs.json"
-
-# Utility function for connecting to database and setting up required pragmas and row factory
 def __connect():
+    """Utility function for connecting to the database specified in database config and setting up required pragmas and row factory."""
     with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
         db_config = json.load(f)
     conn = sqlite3.connect(db_config["database"] + ".db")
@@ -25,8 +22,8 @@ def __connect():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Utility function to set up the database with the required tables and schema
 def setup_database():
+    """Sets up the configured database with the required tables and schema."""
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -294,91 +291,8 @@ def setup_database():
             db_config = json.load(f)
         print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
 
-# Utility function to reset the course catalog tables
-def reset_course_catalog():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Reset course catalog tables
-        cursor.execute('DROP TABLE IF EXISTS Courses')
-
-        # Commit the changes to the database
-        conn.commit()
-        print("Course catalog tables reset.")
-
-# Utility function to reset the programs of study catalog tables
-def reset_programs_catalog():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop programs of study catalog tables
-        cursor.execute('DROP TABLE IF EXISTS ProgramsOfStudy')
-        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourseOptions')
-
-        # Commit the changes to the database
-        conn.commit()
-        print("Programs of study catalog tables reset.")
-
-# Utility function to reset the terms and courses offered tables
-def reset_terms_and_courses():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop terms and courses offered tables
-        cursor.execute('DROP TABLE IF EXISTS Terms')
-        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
-        cursor.execute('DROP TABLE IF EXISTS Sections')
-        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
-
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to view the course hierarchy and contents in a readable format
-def reset_events():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop events tables
-        cursor.execute('DROP TABLE IF EXISTS Events')
-        cursor.execute('DROP TABLE IF EXISTS EventDates')
-
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to reset the users, advisors, and students tables
-def reset_users():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-        
-        # Drop users, advisors, and students tables
-        cursor.execute('DROP TABLE IF EXISTS Users')
-        cursor.execute('DROP TABLE IF EXISTS Advisors')
-        cursor.execute('DROP TABLE IF EXISTS Students')
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
-        cursor.execute('DROP TABLE IF EXISTS Interests')
-        cursor.execute('DROP TABLE IF EXISTS ChatLogs')
-        cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
-        
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to reset all tables in the database except for course catalog tables
-def reset_all():
-    reset_course_catalog()
-    reset_programs_catalog()
-    reset_terms_and_courses()
-    reset_events()
-    reset_users()
-
-# Utility function to create database triggers
 def create_triggers():
+    """Creates the necessary triggers in the database for logging section status changes, resetting check fields when a student's ParentID is changed to null, deleting relevant data when a student's ParentID is changed to null, and resetting event check field when a student's interests are added or changed."""
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -459,8 +373,14 @@ def create_triggers():
         # Commit the changes to the database
         conn.commit()
 
-# Utility function to populate the course catalog in the database from a JSON file containing course information (file must be located in the jsons directory)
-def populate_course_catalog(json_file: str = COURSE_CATALOG):
+def populate_course_catalog(json_file: str = "course_catalog.json"):
+    """
+    Populates the course catalog in the configured database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the course catalog data. The file must be located in the jsons directory. Defaults to "course_catalog.json".
+    """
+
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -506,8 +426,13 @@ def populate_course_catalog(json_file: str = COURSE_CATALOG):
         conn.commit()
         print("Course catalog populated from JSON file.")
 
-# Utility function to populate the programs of study catalog in the database from a JSON file containing program information
-def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
+def populate_programs_catalog(json_file: str = "qcc_programs.json"):
+    """
+    Populates the programs of study catalog in the configured database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the programs of study data. The file must be located in the jsons directory. Defaults to "qcc_programs.json".
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -580,8 +505,13 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
         conn.commit()
         print("Programs of study catalog populated from JSON file.")
 
-# Utility function to add a new term and its courses/sections from a JSON file
 def add_new_term(json_file: str = "term_data.json"):
+    """
+    Adds a new term with its courses, sections, and meet times to the database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the term data. The file must be located in the jsons directory. Defaults to "term_data.json". 
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -724,8 +654,13 @@ def add_new_term(json_file: str = "term_data.json"):
         # Commit the changes to the database
         conn.commit()
 
-# Utility function to add students and their information to the database from a JSON file containing student information, including their course history and programs of study (file must be located in the jsons directory)
 def add_students_from_json(json_file: str):
+    """
+    Adds students and their course history and programs of study to the database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the student data. The file must be located in the jsons directory.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -806,25 +741,98 @@ def add_students_from_json(json_file: str):
         conn.commit()
         print(f"Student '{student['Name']}' added to database from JSON file.")
 
-# Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
-def display_term_hierarchy():
+def reset_course_catalog():
+    """Resets the course catalog tables in the configured database."""
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Get id of all terms in the database
-        terms = cursor.execute('SELECT ID FROM Terms').fetchall()
+        # Reset course catalog tables
+        cursor.execute('DROP TABLE IF EXISTS Courses')
 
-        # Display the hierarchy of each term and its courses/sections/meet times using the get_data_with_hierarchy_string utility function
-        for term in terms:
-            term_data = get_data_with_hierarchy_string(
-                cursor,
-                "Terms",
-                term['ID'],
-            )
-            print(term_data)
+        # Commit the changes to the database
+        conn.commit()
+        print("Course catalog tables reset.")
 
-# if this script is run directly, set up the database and display the term hierarchy for debugging purposes
+def reset_programs_catalog():
+    """Resets the programs of study catalog tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop programs of study catalog tables
+        cursor.execute('DROP TABLE IF EXISTS ProgramsOfStudy')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourseOptions')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Programs of study catalog tables reset.")
+
+def reset_students_and_advisors():
+    """Resets the students and advisors tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop students and advisors tables
+        cursor.execute('DROP TABLE IF EXISTS Students')
+        cursor.execute('DROP TABLE IF EXISTS Advisors')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Students and advisors tables reset.")
+
+def reset_terms_and_courses():
+    """Resets the terms and courses offered tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop terms and courses offered tables
+        cursor.execute('DROP TABLE IF EXISTS Terms')
+        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+        cursor.execute('DROP TABLE IF EXISTS Sections')
+        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
+
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_events():
+    """Resets the events tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop events tables
+        cursor.execute('DROP TABLE IF EXISTS Events')
+        cursor.execute('DROP TABLE IF EXISTS EventDates')
+
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_users():
+    """Resets the users table in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+        
+        # Drop users, advisors, and students tables
+        cursor.execute('DROP TABLE IF EXISTS Users')
+        
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_all():
+    """Resets all tables in the configured database."""
+    reset_course_catalog()
+    reset_programs_catalog()
+    reset_terms_and_courses()
+    reset_events()
+    reset_users()
+    print("All tables in the database have been reset.")
+
+# runs if the file is executed directly
 if __name__ == '__main__':
     setup_database()
     create_triggers()
