@@ -79,6 +79,24 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
                 query += " OR"
         query += ")"
 
+    if "keywords" in filters.__dict__ and filters.keywords is not None and len(filters.keywords) > 0:
+        query += " AND ("
+        for keyword in filters.keywords:
+            query += "c.Description LIKE ?"
+            params.extend([f"%{keyword}%"])
+            if keyword != filters.keywords[-1]:
+                query += " OR"
+        query += ")"
+    
+    if "prerequisites" in filters.__dict__ and filters.prerequisites is not None and len(filters.prerequisites) > 0:
+        query += " AND ("
+        for prereq in filters.prerequisites:
+            query += "c.Prerequisites LIKE ?"
+            params.extend([f"%{prereq}%"])
+            if prereq != filters.prerequisites[-1]:
+                query += " OR"
+        query += ")"
+
     # Execute the query with the specified conditions and return the IDs of the matching courses as a list
     cursor.execute(query, tuple(params))
     results = cursor.fetchall()
@@ -281,12 +299,13 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
 
 # Utility function that returns the course code and course title for all courses a student has taken based on their ID
 def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
-    cursor.execute("SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN CoursesTaken as sc ON c.ID = sc.CourseID WHERE sc.ParentID = ?", (student_id,))
+    cursor.execute("SELECT c.Department, c.Code, c.Name, ct.Grade FROM Courses as c JOIN CoursesTaken as ct ON c.ID = ct.CourseID WHERE ct.ParentID = ?", (student_id,))
     course_history = []
     for row in cursor.fetchall():
         course_history.append({
             "CourseCode": str(row[0]) + " " + str(row[1]),
-            "Name": row[2]
+            "Name": row[2],
+            "Grade": row[3]
         })
     if not course_history:
         course_history = ["No courses taken"]

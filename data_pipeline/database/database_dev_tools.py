@@ -1,32 +1,29 @@
 import sys, os
 
 # Add the path to the root directory to the path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 # Add the jsons directory to the path if not already there, 
-jsons_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
-if jsons_dir not in sys.path:
-    sys.path.append(jsons_dir)
+JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
+if JSONS_DIR not in sys.path:
+    sys.path.append(JSONS_DIR)
 
 import json, sqlite3
-from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_code
+from lg_agent.database_utils import get_courseID_by_code
 
-COURSE_CATALOG = "course_catalog.json"
-PROGRAMS_CATALOG = "qcc_programs.json"
-
-# Utility function for connecting to database and setting up required pragmas and row factory
 def __connect():
-    with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+    """Utility function for connecting to the database specified in database config and setting up required pragmas and row factory."""
+    with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
         db_config = json.load(f)
     conn = sqlite3.connect(db_config["database"] + ".db")
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
 
-# Utility function to set up the database with the required tables and schema
 def setup_database():
+    """Sets up the configured database with the required tables and schema."""
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -208,6 +205,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS CoursesTaken(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 CourseID INTEGER NOT NULL,
+                Grade TEXT NOT NULL CHECK(Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'X', 'W', 'NR', "IP")),
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (CourseID) REFERENCES Courses(ID)
                     ON DELETE CASCADE,
@@ -290,95 +288,12 @@ def setup_database():
 
         # Commit the changes to the database
         conn.commit()
-        with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+        with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
             db_config = json.load(f)
         print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
 
-# Utility function to reset the course catalog tables
-def reset_course_catalog():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Reset course catalog tables
-        cursor.execute('DROP TABLE IF EXISTS Courses')
-
-        # Commit the changes to the database
-        conn.commit()
-        print("Course catalog tables reset.")
-
-# Utility function to reset the programs of study catalog tables
-def reset_programs_catalog():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop programs of study catalog tables
-        cursor.execute('DROP TABLE IF EXISTS ProgramsOfStudy')
-        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourses')
-        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourseOptions')
-
-        # Commit the changes to the database
-        conn.commit()
-        print("Programs of study catalog tables reset.")
-
-# Utility function to reset the terms and courses offered tables
-def reset_terms_and_courses():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop terms and courses offered tables
-        cursor.execute('DROP TABLE IF EXISTS Terms')
-        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
-        cursor.execute('DROP TABLE IF EXISTS Sections')
-        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
-
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to view the course hierarchy and contents in a readable format
-def reset_events():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Drop events tables
-        cursor.execute('DROP TABLE IF EXISTS Events')
-        cursor.execute('DROP TABLE IF EXISTS EventDates')
-
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to reset the users, advisors, and students tables
-def reset_users():
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-        
-        # Drop users, advisors, and students tables
-        cursor.execute('DROP TABLE IF EXISTS Users')
-        cursor.execute('DROP TABLE IF EXISTS Advisors')
-        cursor.execute('DROP TABLE IF EXISTS Students')
-        cursor.execute('DROP TABLE IF EXISTS MajorsAndMinors')
-        cursor.execute('DROP TABLE IF EXISTS CoursesTaken')
-        cursor.execute('DROP TABLE IF EXISTS Interests')
-        cursor.execute('DROP TABLE IF EXISTS ChatLogs')
-        cursor.execute('DROP TABLE IF EXISTS RelevantEvents')
-        
-        # Commit the changes to the database
-        conn.commit()
-
-# Utility function to reset all tables in the database except for course catalog tables
-def reset_all():
-    reset_course_catalog()
-    reset_programs_catalog()
-    reset_terms_and_courses()
-    reset_events()
-    reset_users()
-
-# Utility function to create database triggers
 def create_triggers():
+    """Creates the necessary triggers in the database for logging section status changes, resetting check fields when a student's ParentID is changed to null, deleting relevant data when a student's ParentID is changed to null, and resetting event check field when a student's interests are added or changed."""
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -459,13 +374,19 @@ def create_triggers():
         # Commit the changes to the database
         conn.commit()
 
-# Utility function to populate the course catalog in the database from a JSON file containing course information (file must be located in the jsons directory)
-def populate_course_catalog(json_file: str = COURSE_CATALOG):
+def populate_course_catalog(json_file: str = "course_catalog.json"):
+    """
+    Populates the course catalog in the configured database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the course catalog data. The file must be located in the jsons directory. Defaults to "course_catalog.json".
+    """
+
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             course_data = {"courses": {}}
             course_data['courses'] = json.load(f)
             for course in course_data['courses']:
@@ -506,13 +427,18 @@ def populate_course_catalog(json_file: str = COURSE_CATALOG):
         conn.commit()
         print("Course catalog populated from JSON file.")
 
-# Utility function to populate the programs of study catalog in the database from a JSON file containing program information
-def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
+def populate_programs_catalog(json_file: str = "qcc_programs.json"):
+    """
+    Populates the programs of study catalog in the configured database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the programs of study data. The file must be located in the jsons directory. Defaults to "qcc_programs.json".
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             programs_data = {"programs": {}}
             programs_data['programs'] = json.load(f)
             for program in programs_data['programs']:
@@ -580,9 +506,13 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
         conn.commit()
         print("Programs of study catalog populated from JSON file.")
 
-# Utility function to add a new term and its courses/sections from a JSON file
-# TODO: update this to follow new database structure
-def add_new_term(json_file: str = "terms.json"):
+def add_new_term(json_file: str = "term_data.json"):
+    """
+    Adds a new term with its courses, sections, and meet times to the database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the term data. The file must be located in the jsons directory. Defaults to "term_data.json". 
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -590,7 +520,7 @@ def add_new_term(json_file: str = "terms.json"):
         term_data = {"term": {}}
 
         # Load term data from JSON file
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             term_data['term'] = json.load(f)
 
         term = term_data['term'][0]
@@ -668,33 +598,28 @@ def add_new_term(json_file: str = "terms.json"):
                 start_time = time_unsplit[:5]
                 start_time_am_pm = None
                 end_time_am_pm = None
-                if time_unsplit[5] == '-':
-                    end_time = time_unsplit[6:]
-                else:
-                    start_time_am_pm = time_unsplit[5:7]
-                    end_time = time_unsplit[7:]
-                    end_time_am_pm = time_unsplit[7:9]
+                if time_unsplit[5] == '-': # time like nn:nn-nn:nnAM/PM
+                    end_time = time_unsplit[6:11] # get end time by taking the substring after the '-' and before the AM/PM indicator
+                    end_time_am_pm = time_unsplit[11:13] # get AM/PM indicator for end time by taking the last 2 characters of the time string
+                else: # time like nn:nnAM/PM-nn:nnAM/PM
+                    start_time_am_pm = time_unsplit[5:7] # get AM/PM indicator for start time by taking the 2 characters after the start time
+                    end_time = time_unsplit[8:13] # get end time by taking the substring after the start time and its AM/PM indicator and before the end time's AM/PM indicator
+                    end_time_am_pm = time_unsplit[13:15] # get AM/PM indicator for end time by taking the last 2 characters of the time string
 
                 # convert start and end times to 24 hour format based on the AM/PM indicators
-                if start_time_am_pm:
-                    if start_time == '12:00':
-                        start_time = '00:00'
-                    else:
-                        try:
-                            start_time = f'{int(start_time[:2]) + 12}:{start_time[3:]}'
-                        except ValueError:
-                            print(f"Invalid start time format for course {course_code}: {start_time}")
-                            continue
-
+                if start_time_am_pm == 'PM':
+                    if start_time[:2] != '12':
+                        start_time = str(int(start_time[:2]) + 12) + start_time[2:]
+                elif start_time_am_pm == 'AM':
+                    if start_time[:2] == '12':
+                        start_time = '00' + start_time[2:]
+                
                 if end_time_am_pm == 'PM':
-                    if end_time == '12:00':
-                        end_time = '00:00'
-                    else:
-                        try:
-                            end_time = f'{int(end_time[:2]) + 12}:{end_time[3:]}'
-                        except ValueError:
-                            print(f"Invalid end time format for course {course_code}: {end_time}")
-                            continue
+                    if end_time[:2] != '12':
+                        end_time = str(int(end_time[:2]) + 12) + end_time[2:]
+                elif end_time_am_pm == 'AM':
+                    if end_time[:2] == '12':
+                        end_time = '00' + end_time[2:]
 
                 # Seperate each day initiall from the string of day initials
                 day_list = list(day_initials)
@@ -708,9 +633,13 @@ def add_new_term(json_file: str = "terms.json"):
                     'F': 'Friday',
                     'S': 'Saturday'
                 }
-
-                for i, day_initial in enumerate(day_list):
-                    day_list[i] = day_mapping[day_initial]
+                
+                try:
+                    for i, day_initial in enumerate(day_list):
+                        day_list[i] = day_mapping[day_initial]
+                except KeyError as e:
+                    print(f"Invalid day initial found: {e}")
+                    continue
 
                 # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
                 for day in day_list:
@@ -725,28 +654,189 @@ def add_new_term(json_file: str = "terms.json"):
         # Commit the changes to the database
         conn.commit()
 
-# Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
-def display_term_hierarchy():
+def add_students_from_json(json_file: str):
+    """
+    Adds students and their course history and programs of study to the database from a JSON file.
+
+    Args:
+        json_file (str): The name of the JSON file containing the student data. The file must be located in the jsons directory.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Get id of all terms in the database
-        terms = cursor.execute('SELECT ID FROM Terms').fetchall()
+        student_data = {"students": []}
 
-        # Display the hierarchy of each term and its courses/sections/meet times using the get_data_with_hierarchy_string utility function
-        for term in terms:
-            term_data = get_data_with_hierarchy_string(
-                cursor,
-                "Terms",
-                term['ID'],
-            )
-            print(term_data)
+        # Load student data from JSON file
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
+            student_data['students'] = json.load(f)
 
-# if this script is run directly, set up the database and display the term hierarchy for debugging purposes
+        for student in student_data['students']:
+            # check if advisor field is present for the student
+            if "Advisor" in student:
+                advisor_name = student['Advisor']
+                advisor_id = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor_name,)).fetchone()
+                if advisor_id:
+                    advisor_id = advisor_id['ID']
+                else:
+                    print(f"Advisor '{advisor_name}' not found in database. Setting AdvisorID to null for student '{student['Name']}'.")
+                advisor_id = None
+            else:
+                advisor_id = None
+
+            # add the new student to the Students table
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Students (ID, Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ''',
+                    (
+                        student['ID'],
+                        student['Name'],
+                        student['GPA'],
+                        student['CreditsEarned'],
+                        student['IntendedGraduationTerm'],
+                        advisor_id
+                    )
+                )
+                student_id = cursor.lastrowid
+
+                course_history = student['CoursesTaken']
+
+                for course in course_history:
+                    course_code = course['CourseCode']
+                    course_id = get_courseID_by_code(cursor, course_code)
+                    if not course_id:
+                        print(f"Course '{course_code}' not found in database. Skipping this course for student '{student['Name']}'.")
+                        continue
+
+
+                    cursor.execute(
+                        '''
+                        INSERT INTO CoursesTaken (CourseID, Grade, ParentID)
+                        VALUES (?, ?, ?)
+                        ''',
+                        (course_id, course['Grade'], student_id)
+                    )
+
+                programs_of_study = student['ProgramsOfStudy']
+                for program in programs_of_study:
+                    program_id = cursor.execute('SELECT ID FROM ProgramsOfStudy WHERE Title = ?', (program,)).fetchone()
+                    if program_id:
+                        program_id = program_id['ID']
+                        cursor.execute(
+                            '''
+                            INSERT INTO StudentProgramsOfStudy (ProgramID, ParentID)
+                            VALUES (?, ?)
+                            ''',
+                            (program_id, student_id)
+                        )
+                    else:
+                        print(f"Program '{program}' not found in database. Skipping this program for student '{student['Name']}'.")
+            except sqlite3.IntegrityError as e:
+                print(f"Error adding student '{student['Name']}' to database: {e}. Skipping this student.")
+                continue
+
+        # Commit the changes to the database
+        conn.commit()
+        print(f"Student '{student['Name']}' added to database from JSON file.")
+
+def reset_course_catalog():
+    """Resets the course catalog tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Reset course catalog tables
+        cursor.execute('DROP TABLE IF EXISTS Courses')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Course catalog tables reset.")
+
+def reset_programs_catalog():
+    """Resets the programs of study catalog tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop programs of study catalog tables
+        cursor.execute('DROP TABLE IF EXISTS ProgramsOfStudy')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourses')
+        cursor.execute('DROP TABLE IF EXISTS ProgramRequiredCourseOptions')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Programs of study catalog tables reset.")
+
+def reset_students_and_advisors():
+    """Resets the students and advisors tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop students and advisors tables
+        cursor.execute('DROP TABLE IF EXISTS Students')
+        cursor.execute('DROP TABLE IF EXISTS Advisors')
+
+        # Commit the changes to the database
+        conn.commit()
+        print("Students and advisors tables reset.")
+
+def reset_terms_and_courses():
+    """Resets the terms and courses offered tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop terms and courses offered tables
+        cursor.execute('DROP TABLE IF EXISTS Terms')
+        cursor.execute('DROP TABLE IF EXISTS CoursesOffered')
+        cursor.execute('DROP TABLE IF EXISTS Sections')
+        cursor.execute('DROP TABLE IF EXISTS MeetTimes')
+
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_events():
+    """Resets the events tables in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        # Drop events tables
+        cursor.execute('DROP TABLE IF EXISTS Events')
+        cursor.execute('DROP TABLE IF EXISTS EventDates')
+
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_users():
+    """Resets the users table in the configured database."""
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+        
+        # Drop users, advisors, and students tables
+        cursor.execute('DROP TABLE IF EXISTS Users')
+        
+        # Commit the changes to the database
+        conn.commit()
+
+def reset_all():
+    """Resets all tables in the configured database."""
+    reset_course_catalog()
+    reset_programs_catalog()
+    reset_terms_and_courses()
+    reset_events()
+    reset_users()
+    print("All tables in the database have been reset.")
+
+# runs if the file is executed directly
 if __name__ == '__main__':
     setup_database()
     create_triggers()
     populate_course_catalog()
     populate_programs_catalog()
-    add_new_term("term_data.json")
+    add_new_term()

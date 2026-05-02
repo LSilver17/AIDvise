@@ -1,0 +1,65 @@
+[
+    {
+        "ID": 324578,
+        "Name": "John Doe",
+        "GPA": 3.35,
+        "CreditsEarned": 50,
+        "IntendedGraduationTerm": "Spring 2026",
+        "Advisor": "Dr. Jordan Kim",
+        "ProgramsOfStudy": ["Computer Science Transfer", "Engineering"],
+        "CoursesTaken": [
+            {
+                "CourseCode": "CSC 108",
+                "Grade": "A"
+            },
+            {
+                "CourseCode": "ENG 101",
+                "Grade": "B+"
+            },
+            {
+                "CourseCode": "CSC 109",
+                "Grade": "A-"
+            },
+            {
+                "CourseCode": "SPH 101",
+                "Grade": "C+"
+            },
+            {
+                "CourseCode": "CSC 208",
+                "Grade": "A"
+            },
+            {
+                "CourseCode": "CSC 212",
+                "Grade": "B+"
+            },
+            {
+                "CourseCode": "CHM 123",
+                "Grade": "A-"
+            },
+            {
+                "CourseCode": "CHM 124",
+                "Grade": "B"
+            },
+            {
+                "CourseCode": "ERG 101",
+                "Grade": "A"
+            },
+            {
+                "CourseCode": "PHY 105",
+                "Grade": "A-"
+            },
+            {
+                "CourseCode": "ERG 221",
+                "Grade": "B+"
+            },
+            {
+                "CourseCode": "PHY 107",
+                "Grade": "A"
+            },
+            {
+                "CourseCode": "ERG 211",
+                "Grade": "A-"
+            }
+        ]
+    }
+]
