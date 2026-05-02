@@ -21,7 +21,7 @@ def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
                 department = course_code[:i]
                 number = course_code[i:]
                 break
-
+            
     cursor.execute("SELECT ID FROM Courses WHERE Department = ? AND Code = ?", (department, number))
     result = cursor.fetchone()
     return result[0] if result else None
@@ -338,11 +338,18 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
     cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN Programs as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
     program_requirements = []
     for row in cursor.fetchall():
-        cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco JOIN ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prco.ParentID = prc.ID WHERE prc.ID = ?""", (row[0],))
-        options = cursor.fetchall()
+        options = cursor.execute("""SELECT prco.ID FROM ProgramRequiredCourseOptions as prco JOIN ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ?""", (row[0],)).fetchall()
+        c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco ON prco.CourseID IS NOT NULL AND c.ID = prco.CourseID""", (row[0],)).fetchall()
+        d_options = cursor.execute("""SELECT Department FROM ProgramRequiredCourseOptions WHERE CourseID IS NULL""", (row[0],)).fetchall()
         requirement = ""
-        for option in options:
-            requirement += str(option[0]) + " " + str(option[1]) + " " + str(option[2]) + " OR "
+        for option in c_options:
+            requirement += str(option[0]) + " " + str(option[1]) + " " + str(option[2])
+            if option != c_options[-1] or len(d_options) > 0:
+                requirement += " OR "
+        for option in d_options:
+            requirement += "Any " + option[0] + " course"
+            if option != d_options[-1]:
+                requirement += " OR "
         program_requirements.append(requirement)
     
     return program_requirements
