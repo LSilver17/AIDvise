@@ -59,7 +59,6 @@ export default function FormField({label, inputName, message, isPassword, hasMis
                         errorMessage(message as string) : missingMessage(hasMissingMessage, isPassword as boolean, inputName)
                     )
                 }
-                
             </Flex>
         </Form.Field>
     );

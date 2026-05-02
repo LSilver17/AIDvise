@@ -247,5 +247,5 @@ def reset():
 
 if __name__ == "__main__":
     reset()
-    insert_interest_dummy_data()
-    #insert_event_dummy_data_only()
+    #insert_interest_dummy_data()
+    insert_event_dummy_data_only()
