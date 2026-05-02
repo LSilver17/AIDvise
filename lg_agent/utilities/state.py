@@ -14,7 +14,7 @@ from langchain_core.messages import AnyMessage
 from langgraph.graph import add_messages
 from utilities.schemas import RelevantEventsSchema
 
-# States for the AdvisorAgent
+# States for the PlannerAgent
 
 class QueryResult(TypedDict):
     query: str
@@ -25,7 +25,7 @@ class RouteState(TypedDict):
     user_id: int
     account_type: Literal["Student", "Advisor"]
 
-class AdvisorState(TypedDict):
+class SPlannerState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     db_info: NotRequired[list[QueryResult]]
     web_info: NotRequired[list[QueryResult]]
@@ -34,7 +34,7 @@ class AdvisorState(TypedDict):
     loop_count: int
     user_id: int
 
-class AState(TypedDict):
+class APlannerState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     db_info: NotRequired[list[QueryResult]]
     web_info: NotRequired[list[QueryResult]]
