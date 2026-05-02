@@ -581,8 +581,7 @@ def populate_programs_catalog(json_file: str = PROGRAMS_CATALOG):
         print("Programs of study catalog populated from JSON file.")
 
 # Utility function to add a new term and its courses/sections from a JSON file
-# TODO: update this to follow new database structure
-def add_new_term(json_file: str = "terms.json"):
+def add_new_term(json_file: str = "term_data.json"):
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -725,6 +724,88 @@ def add_new_term(json_file: str = "terms.json"):
         # Commit the changes to the database
         conn.commit()
 
+# Utility function to add students and their information to the database from a JSON file containing student information, including their course history and programs of study (file must be located in the jsons directory)
+def add_students_from_json(json_file: str):
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        student_data = {"students": []}
+
+        # Load student data from JSON file
+        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+            student_data['students'] = json.load(f)
+
+        for student in student_data['students']:
+            # check if advisor field is present for the student
+            if "advisor" in student:
+                advisor_name = student['advisor']
+                advisor_id = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor_name,)).fetchone()
+                if advisor_id:
+                    advisor_id = advisor_id['ID']
+                else:
+                    print(f"Advisor '{advisor_name}' not found in database. Setting AdvisorID to null for student '{student['Name']}'.")
+                advisor_id = None
+            else:
+                advisor_id = None
+
+            # add the new student to the Students table
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Students (ID, Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ''',
+                    (
+                        student['ID'],
+                        student['Name'],
+                        student['GPA'],
+                        student['CreditsEarned'],
+                        student['IntendedGraduationTerm'],
+                        advisor_id,
+
+                    )
+                )
+                student_id = cursor.lastrowid
+
+                course_history = student['CoursesTaken']
+
+                for course in course_history:
+                    course_id = get_courseID_by_code(cursor, course)
+                    if not course_id:
+                        print(f"Course '{course}' not found in database. Skipping this course for student '{student['Name']}'.")
+                        continue
+
+                    cursor.execute(
+                        '''
+                        INSERT INTO CoursesTaken (CourseID, ParentID)
+                        VALUES (?, ?)
+                        ''',
+                        (course_id, student_id)
+                    )
+
+                programs_of_study = student['ProgramsOfStudy']
+                for program in programs_of_study:
+                    program_id = cursor.execute('SELECT ID FROM ProgramsOfStudy WHERE Title = ?', (program,)).fetchone()
+                    if program_id:
+                        program_id = program_id['ID']
+                        cursor.execute(
+                            '''
+                            INSERT INTO StudentProgramsOfStudy (ProgramID, ParentID)
+                            VALUES (?, ?)
+                            ''',
+                            (program_id, student_id)
+                        )
+                    else:
+                        print(f"Program '{program}' not found in database. Skipping this program for student '{student['Name']}'.")
+            except sqlite3.IntegrityError as e:
+                print(f"Error adding student '{student['Name']}' to database: {e}. Skipping this student.")
+                continue
+
+        # Commit the changes to the database
+        conn.commit()
+        print(f"Student '{student['Name']}' added to database from JSON file.")
+
 # Utility function to display the hierarchy of terms, courses, sections, and meet times in the database for debugging purposes
 def display_term_hierarchy():
     with __connect() as conn:
@@ -749,4 +830,4 @@ if __name__ == '__main__':
     create_triggers()
     populate_course_catalog()
     populate_programs_catalog()
-    add_new_term("term_data.json")
+    add_new_term()
