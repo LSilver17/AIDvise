@@ -2,8 +2,8 @@
     {
         "ID": 324578,
         "Name": "John Doe",
-        "GPA": 3.35,
-        "CreditsEarned": 50,
+        "GPA": 3.44,
+        "CreditsEarned": 46,
         "IntendedGraduationTerm": "Spring 2026",
         "Advisor": "Dr. Jordan Kim",
         "ProgramsOfStudy": ["Computer Science Transfer", "Engineering"],
@@ -26,11 +26,7 @@
             },
             {
                 "CourseCode": "CSC 208",
-                "Grade": "A"
-            },
-            {
-                "CourseCode": "CSC 212",
-                "Grade": "B+"
+                "Grade": "C+"
             },
             {
                 "CourseCode": "CHM 123",
