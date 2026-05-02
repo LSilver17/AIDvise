@@ -40,7 +40,7 @@ def invoke_a_graph(state: RouteState) -> RouteState:
     result = a_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": state["user_id"]})
     return {"messages": result["messages"]}
 
-graph_builder = StateGraph(RouteState, )
+graph_builder = StateGraph(RouteState)
 
 graph_builder.add_node("invoke_s_graph", invoke_s_graph)
 graph_builder.add_node("invoke_a_graph", invoke_a_graph)

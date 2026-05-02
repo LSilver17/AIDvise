@@ -41,9 +41,9 @@ def route_from_planning(state: APlannerState):
     they will be run in parallel. If neither are needed, the graph will route directly to the answer node.
     """
     routes = []
-    if state["plan"]["requires_database"]:
+    if "requires_database" in state["plan"] and state["plan"]["requires_database"]:
         routes.append("invoke_db_helper")
-    if state["plan"]["requires_web_search"]:
+    if "requires_web_search" in state["plan"] and state["plan"]["requires_web_search"]:
         routes.append("invoke_web_helper")
     if not routes:
         routes.append("answer_node")
