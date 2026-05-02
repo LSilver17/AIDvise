@@ -1,0 +1,25 @@
+[
+    {
+        "ID": 324578,
+        "Name": "John Doe",
+        "GPA": 3.5,
+        "CreditsEarned": 60,
+        "IntendedGraduationTerm": "Spring 2026",
+        "Advisor": "Dr. Jordan Kim",
+        "ProgramsOfStudy": ["Computer Science", "Cybersecurity"],
+        "CoursesTaken": [
+            {
+                "CourseCode": "CSC 101",
+                "Grade": "A"
+            },
+            {
+                "CourseCode": "CSC 212",
+                "Grade": "B+"
+            },
+            {
+                "CourseCode": "CSC 251",
+                "Grade": "A-"
+            }
+        ]
+    }
+]
