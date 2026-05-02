@@ -285,7 +285,7 @@ def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
     course_history = []
     for row in cursor.fetchall():
         course_history.append({
-            "CourseCode": row[0] + " " + row[1],
+            "CourseCode": str(row[0]) + " " + str(row[1]),
             "Name": row[2]
         })
     if not course_history:
@@ -323,7 +323,7 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
         options = cursor.fetchall()
         requirement = ""
         for option in options:
-            requirement += option[0] + " " + option[1] + " " + option[2] + " OR "
+            requirement += str(option[0]) + " " + str(option[1]) + " " + str(option[2]) + " OR "
         program_requirements.append(requirement)
     
     return program_requirements
