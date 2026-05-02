@@ -79,6 +79,24 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
                 query += " OR"
         query += ")"
 
+    if "keywords" in filters.__dict__ and filters.keywords is not None and len(filters.keywords) > 0:
+        query += " AND ("
+        for keyword in filters.keywords:
+            query += "c.Description LIKE ?"
+            params.extend([f"%{keyword}%"])
+            if keyword != filters.keywords[-1]:
+                query += " OR"
+        query += ")"
+    
+    if "prerequisites" in filters.__dict__ and filters.prerequisites is not None and len(filters.prerequisites) > 0:
+        query += " AND ("
+        for prereq in filters.prerequisites:
+            query += "c.Prerequisites LIKE ?"
+            params.extend([f"%{prereq}%"])
+            if prereq != filters.prerequisites[-1]:
+                query += " OR"
+        query += ")"
+
     # Execute the query with the specified conditions and return the IDs of the matching courses as a list
     cursor.execute(query, tuple(params))
     results = cursor.fetchall()

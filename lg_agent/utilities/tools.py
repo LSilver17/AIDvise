@@ -125,6 +125,8 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                         "credits": int
                     }
                 ]
+                "keywords": List[str], (searches for keywords in course descriptions)
+                "prerequisites": List[str] (searches for keywords in course prerequisites)
             }
             If no filters are needed, this can be left blank or set to None.
     Returns:
