@@ -288,7 +288,7 @@ def setup_database():
 
         # Commit the changes to the database
         conn.commit()
-        with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+        with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
             db_config = json.load(f)
         print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
 
@@ -598,33 +598,28 @@ def add_new_term(json_file: str = "term_data.json"):
                 start_time = time_unsplit[:5]
                 start_time_am_pm = None
                 end_time_am_pm = None
-                if time_unsplit[5] == '-':
-                    end_time = time_unsplit[6:]
-                else:
-                    start_time_am_pm = time_unsplit[5:7]
-                    end_time = time_unsplit[7:]
-                    end_time_am_pm = time_unsplit[7:9]
+                if time_unsplit[5] == '-': # time like nn:nn-nn:nnAM/PM
+                    end_time = time_unsplit[6:11] # get end time by taking the substring after the '-' and before the AM/PM indicator
+                    end_time_am_pm = time_unsplit[11:13] # get AM/PM indicator for end time by taking the last 2 characters of the time string
+                else: # time like nn:nnAM/PM-nn:nnAM/PM
+                    start_time_am_pm = time_unsplit[5:7] # get AM/PM indicator for start time by taking the 2 characters after the start time
+                    end_time = time_unsplit[8:13] # get end time by taking the substring after the start time and its AM/PM indicator and before the end time's AM/PM indicator
+                    end_time_am_pm = time_unsplit[13:15] # get AM/PM indicator for end time by taking the last 2 characters of the time string
 
                 # convert start and end times to 24 hour format based on the AM/PM indicators
-                if start_time_am_pm:
-                    if start_time == '12:00':
-                        start_time = '00:00'
-                    else:
-                        try:
-                            start_time = f'{int(start_time[:2]) + 12}:{start_time[3:]}'
-                        except ValueError:
-                            print(f"Invalid start time format for course {course_code}: {start_time}")
-                            continue
-
+                if start_time_am_pm == 'PM':
+                    if start_time[:2] != '12':
+                        start_time = str(int(start_time[:2]) + 12) + start_time[2:]
+                elif start_time_am_pm == 'AM':
+                    if start_time[:2] == '12':
+                        start_time = '00' + start_time[2:]
+                
                 if end_time_am_pm == 'PM':
-                    if end_time == '12:00':
-                        end_time = '00:00'
-                    else:
-                        try:
-                            end_time = f'{int(end_time[:2]) + 12}:{end_time[3:]}'
-                        except ValueError:
-                            print(f"Invalid end time format for course {course_code}: {end_time}")
-                            continue
+                    if end_time[:2] != '12':
+                        end_time = str(int(end_time[:2]) + 12) + end_time[2:]
+                elif end_time_am_pm == 'AM':
+                    if end_time[:2] == '12':
+                        end_time = '00' + end_time[2:]
 
                 # Seperate each day initiall from the string of day initials
                 day_list = list(day_initials)
@@ -638,9 +633,13 @@ def add_new_term(json_file: str = "term_data.json"):
                     'F': 'Friday',
                     'S': 'Saturday'
                 }
-
-                for i, day_initial in enumerate(day_list):
-                    day_list[i] = day_mapping[day_initial]
+                
+                try:
+                    for i, day_initial in enumerate(day_list):
+                        day_list[i] = day_mapping[day_initial]
+                except KeyError as e:
+                    print(f"Invalid day initial found: {e}")
+                    continue
 
                 # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
                 for day in day_list:
@@ -674,7 +673,7 @@ def add_students_from_json(json_file: str):
 
         for student in student_data['students']:
             # check if advisor field is present for the student
-            if "advisor" in student:
+            if "Advisor" in student:
                 advisor_name = student['Advisor']
                 advisor_id = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor_name,)).fetchone()
                 if advisor_id:

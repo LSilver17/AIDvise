@@ -1,12 +1,13 @@
 import sys, os
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
 from pydantic import BaseModel, Field
 import json
 
-CONTEXT_CONFIG_PATH = os.path.join(ROOT_DIR, "prompt_config.json")
+CONTEXT_CONFIG_PATH = os.path.join(ROOT_DIR, "context_config.json")
 
 with open(CONTEXT_CONFIG_PATH, "r") as f:
     CONTEXT_CONFIG = json.load(f)
