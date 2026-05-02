@@ -13,27 +13,27 @@ if root_dir not in sys.path:
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
 from utilities.state import APlannerState, SPlannerState, DatabaseHelperState, WebSearchHelperState, InsertionHelperState
-from utilities.schemas import APlanSchema, PlanSchema
+from utilities.schemas import APlanSchema, SPlanSchema
 from utilities.tools import db_tools, web_tools, insertion_tools, alt_db_tools
 from utilities.model_inits import db_llm, planning_llm, web_llm, insertion_llm
 import json
 
 load_dotenv()
 
-PROMPT_CONFIG_PATH = os.path.join(root_dir, "prompt_config.json")
+CONTEXT_CONFIG_PATH = os.path.join(root_dir, "prompt_config.json")
 
-with open(PROMPT_CONFIG_PATH, "r") as f:
-    PROMPT_CONFIG = json.load(f)
+with open(CONTEXT_CONFIG_PATH, "r") as f:
+    CONTEXT_CONFIG = json.load(f)
 
 def s_planner_node(state: SPlannerState) -> SPlannerState:
     """Base node for the agent when used by a student, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
     state["plan"] = None
 
-    structured_llm = planning_llm.with_structured_output(PlanSchema)
+    structured_llm = planning_llm.with_structured_output(SPlanSchema)
 
-    selected_prompt = PROMPT_CONFIG["s-planner"]["prompt-select"]
-    system_prompt = PROMPT_CONFIG["s-planner"]["prompt-options"][selected_prompt]
+    c_level = CONTEXT_CONFIG["s-planner"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["s-planner"]["context-level"][c_level]
 
     messages = []
     messages.extend(state["messages"])
@@ -67,8 +67,8 @@ def a_planner_node(state: APlannerState) -> APlannerState:
     
     structured_llm = planning_llm.with_structured_output(APlanSchema)
 
-    selected_prompt = PROMPT_CONFIG["a-planner"]["prompt-select"]
-    system_prompt = PROMPT_CONFIG["a-planner"]["prompt-options"][selected_prompt]
+    c_level = CONTEXT_CONFIG["a-planner"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["a-planner"]["context-level"][c_level]
 
     messages = []
     messages.extend(state["messages"])
@@ -99,12 +99,12 @@ def db_node(state: DatabaseHelperState):
 
     if state["account_type"] == "Student":
         llm_with_db_tools = db_llm.bind_tools(db_tools)
-        selected_prompt = PROMPT_CONFIG["s-db"]["prompt-select"]
-        system_prompt = PROMPT_CONFIG["s-db"]["prompt-options"][selected_prompt]
+        c_level = CONTEXT_CONFIG["s-db"]["context-select"]
+        system_prompt = CONTEXT_CONFIG["s-db"]["context-level"][c_level]
     else:
         llm_with_db_tools = db_llm.bind_tools(alt_db_tools)
-        selected_prompt = PROMPT_CONFIG["a-db"]["prompt-select"]
-        system_prompt = PROMPT_CONFIG["a-db"]["prompt-options"][selected_prompt]
+        c_level = CONTEXT_CONFIG["a-db"]["context-select"]
+        system_prompt = CONTEXT_CONFIG["a-db"]["context-level"][c_level]
     
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
@@ -126,8 +126,8 @@ def web_node(state: WebSearchHelperState):
     
     llm_with_web_tools = web_llm.bind_tools(web_tools)
 
-    selected_prompt = PROMPT_CONFIG["web"]["prompt-select"]
-    system_prompt = PROMPT_CONFIG["web"]["prompt-options"][selected_prompt]
+    c_level = CONTEXT_CONFIG["web"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["web"]["context-level"][c_level]
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
@@ -149,8 +149,8 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
 
     llm_with_insertion_tools = insertion_llm.bind_tools(insertion_tools)
 
-    selected_prompt = PROMPT_CONFIG["insertion"]["prompt-select"]
-    system_prompt = PROMPT_CONFIG["insertion"]["prompt-options"][selected_prompt]
+    c_level = CONTEXT_CONFIG["insertion"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["insertion"]["context-level"][c_level]
 
     # if state messages is empty add a message with the info to be inserted, otherwise pass the messages through
     if len(state["messages"]) == 0:

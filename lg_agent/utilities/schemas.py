@@ -1,27 +1,67 @@
-from typing import Optional
+import sys, os
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 from pydantic import BaseModel, Field
+import json
+
+CONTEXT_CONFIG_PATH = os.path.join(ROOT_DIR, "prompt_config.json")
+
+with open(CONTEXT_CONFIG_PATH, "r") as f:
+    CONTEXT_CONFIG = json.load(f)
 
 # Schemas for advisor graph
-class PlanSchema(BaseModel):
-    """Schema for the output of the planning node, which indicates whether a database query or web search is needed, and provides an answer if not."""
 
-    requires_database: bool = Field(description="Indicates if a more database queries are required to answer the question. The database contains information about the courses offered at the student's college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests.")
-    requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question. If information is needed from both the database and the web, both fields should be set to true.")
-    requires_insertion: bool = Field(description="Indicates if the advisor needs to insert information into the database. This should be used if the student mentions interests of their's or course sections they are interested in.")
-    answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise.")
-    info_needed_db: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the database is needed to answer the question. If no info is needed leave this field blank.")
-    info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
-    info_to_insert: str = Field(default=None, description="If the advisor needs to insert information into the database, this field should specify what information needs to be inserted. If no insertion is needed, leave this field blank.")
+if CONTEXT_CONFIG["s-planner"]["context-select"] == "full":
+    class SPlanSchema(BaseModel):
+        """Schema for the output of the planning node, which indicates whether a database query or web search is needed, and provides an answer if not."""
 
-class APlanSchema(BaseModel):
-    """Schema for the output of the  a_planning node, which indicates whether a database query or web search is needed, and provides an answer if not."""
+        requires_database: bool = Field(description="Indicates if a more database queries are required to answer the question. The database contains information about the courses offered at the student's college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests.")
+        requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question. If information is needed from both the database and the web, both fields should be set to true.")
+        requires_insertion: bool = Field(description="Indicates if the advisor needs to insert information into the database. This should be used if the student mentions interests of their's or course sections they are interested in.")
+        answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise.")
+        info_needed_db: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the database is needed to answer the question. If no info is needed leave this field blank.")
+        info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
+        info_to_insert: str = Field(default=None, description="If the advisor needs to insert information into the database, this field should specify what information needs to be inserted. If no insertion is needed, leave this field blank.")
 
-    requires_database: bool = Field(description="Indicates if a more database queries are required to answer the question. The database contains information about the courses offered at the student's college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests.")
-    requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question. If information is needed from both the database and the web, both fields should be set to true.")
-    answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise.")
-    info_needed_db: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the database is needed to answer the question. If no info is needed leave this field blank.")
-    info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
+elif CONTEXT_CONFIG["s-planner"]["context-select"] == "no-db":
+    class SPlanSchema(BaseModel):
+        """Schema for the output of the planning node, which indicates whether a web search is needed, and provides an answer if not."""
+
+        requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question.")
+        answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if the prior field is true. Keep responses clear and concise.")
+        info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
+
+elif CONTEXT_CONFIG["s-planner"]["context-select"] == "no-tools":
+    class SPlanSchema(BaseModel):
+        """Schema for the output of the planning node."""
+
+        answer: str = Field(default=None, description="The answer to the user's question. Keep responses clear and concise.")
+
+if CONTEXT_CONFIG["a-planner"]["context-select"] == "full":
+    class APlanSchema(BaseModel):
+        """Schema for the output of the  a_planning node, which indicates whether a database query or web search is needed, and provides an answer if not."""
+
+        requires_database: bool = Field(description="Indicates if a more database queries are required to answer the question. The database contains information about the courses offered at the student's college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests.")
+        requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question. If information is needed from both the database and the web, both fields should be set to true.")
+        answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise.")
+        info_needed_db: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the database is needed to answer the question. If no info is needed leave this field blank.")
+        info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
+
+elif CONTEXT_CONFIG["a-planner"]["context-select"] == "no-db":
+    class APlanSchema(BaseModel):
+        """Schema for the output of the a_planning node, which indicates whether a web search is needed, and provides an answer if not."""
+
+        requires_web_search: bool = Field(description="Indicates if a web search is required to answer the question.")
+        answer: str = Field(default=None, description="The answer to the user's question, if it can be provided without additional information. Should be left blank if the prior field is true. Keep responses clear and concise.")
+        info_needed_web: str = Field(default=None, description="If the advisor cannot answer the question directly, this field should specify what information from the web is needed to answer the question. If no info is needed leave this field blank.")
+
+elif CONTEXT_CONFIG["a-planner"]["context-select"] == "no-tools":
+    class APlanSchema(BaseModel):
+        """Schema for the output of the a_planning node."""
+
+        answer: str = Field(default=None, description="The answer to the user's question. Keep responses clear and concise.")
 
 class DBTerm(BaseModel):
     """Schema for a term in the academic calendar."""
