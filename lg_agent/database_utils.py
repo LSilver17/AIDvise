@@ -91,7 +91,7 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
     if "prerequisites" in filters.__dict__ and filters.prerequisites is not None and len(filters.prerequisites) > 0:
         query += " AND ("
         for prereq in filters.prerequisites:
-            query += "c.Prerequisites LIKE ?"
+            query += "c.Requirements LIKE ?"
             params.extend([f"%{prereq}%"])
             if prereq != filters.prerequisites[-1]:
                 query += " OR"
@@ -175,7 +175,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     if "teaching_methods" in filters.__dict__ and filters.teaching_methods is not None and len(filters.teaching_methods) > 0:
         teaching_method_conditions = []
         for method in filters.teaching_methods:
-            teaching_method_conditions.append("(s.TeachingMethod = ?)")
+            teaching_method_conditions.append("(s.Method = ?)")
             params.append(method)
         query += " AND (" + " OR ".join(teaching_method_conditions) + ")"
 
@@ -183,11 +183,11 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     if "enrollment_capacity" in filters.__dict__ and filters.enrollment_capacity is not None and len(filters.enrollment_capacity) > 0:
         query += " AND ("
         for enrollment_condition in filters.enrollment_capacity:
-            condition = filters.enrollment_capacity.condition
+            condition = enrollment_condition.condition
             if condition not in ["=", ">", "<", ">=", "<=", "!="]:
                 raise ValueError(f"Invalid enrollment capacity condition: {condition}")
-            query += f"s.EnrollmentCapacity {condition} ?"
-            params.append(filters.enrollment_capacity.enrollment)
+            query += f"s.MaxSeats {condition} ?"
+            params.append(enrollment_condition.enrollment)
             if enrollment_condition != filters.enrollment_capacity[-1]:
                 query += " OR "
         query += ")"
@@ -196,11 +196,11 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     if "enrollment" in filters.__dict__ and filters.enrollment is not None and len(filters.enrollment) > 0:
         query += " AND ("
         for enrollment_condition in filters.enrollment:
-            condition = filters.enrollment.condition
+            condition = enrollment_condition.condition
             if condition not in ["=", ">", "<", ">=", "<=", "!="]:
                 raise ValueError(f"Invalid enrollment condition: {condition}")
-            query += f"s.CurrentEnrollment {condition} ?"
-            params.append(filters.enrollment.enrollment)
+            query += f"s.SeatsLeft {condition} ?"
+            params.append(enrollment_condition.enrollment)
             if enrollment_condition != filters.enrollment[-1]:
                 query += " OR "
         query += ")"
@@ -217,7 +217,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     if "meet_times" in filters.__dict__ and filters.meet_times is not None and len(filters.meet_times) > 0:
         meet_time_conditions = []
         for meet_time in filters.meet_times:
-            meet_time_condition = "(mt.Days = ? AND mt.StartTime = ? AND mt.EndTime = ?)"
+            meet_time_condition = "(mt.Day = ? AND mt.StartTime = ? AND mt.EndTime = ?)"
             params.extend([meet_time.days, meet_time.start_time, meet_time.end_time])
             meet_time_conditions.append(meet_time_condition)
         query += " AND (" + " OR ".join(meet_time_conditions) + ")"
@@ -272,7 +272,7 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
     gpa = row[2]
     credits_earned = row[3]
 
-    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM Programs as p JOIN StudentPrograms as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
+    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM ProgramsOfStudy as p JOIN StudentPrograms as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
     programs_of_study = []
     for row in cursor.fetchall():
         programs_of_study.append({
@@ -335,12 +335,11 @@ def get_student_tracked_sections(cursor: sqlite3.Cursor, student_id: int) -> lis
 
 # Utility function to get the courses required for a specific program of study based on its Title
 def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str) -> list:
-    cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN Programs as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
+    cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN ProgramsOfStudy as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
     program_requirements = []
     for row in cursor.fetchall():
-        options = cursor.execute("""SELECT prco.ID FROM ProgramRequiredCourseOptions as prco JOIN ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ?""", (row[0],)).fetchall()
-        c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco ON prco.CourseID IS NOT NULL AND c.ID = prco.CourseID""", (row[0],)).fetchall()
-        d_options = cursor.execute("""SELECT Department FROM ProgramRequiredCourseOptions WHERE CourseID IS NULL""", (row[0],)).fetchall()
+        c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prc.ID = prco.ParentID WHERE prc.ID = ? AND prco.CourseID IS NOT NULL""", (row[0],)).fetchall()
+        d_options = cursor.execute("""SELECT Department FROM ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ? AND prco.CourseID IS NULL""", (row[0],)).fetchall()
         requirement = ""
         for option in c_options:
             requirement += str(option[0]) + " " + str(option[1]) + " " + str(option[2])
@@ -491,10 +490,40 @@ def get_students_by_advisor(cursor: sqlite3.Cursor, advisorID: str) -> list:
 # test utility functions
 # TODO: make more extensive testing
 if __name__ == "__main__":
-    with sqlite3.connect("TestDB.db") as conn:
+    with sqlite3.connect("DumberDB.db") as conn:
         cursor = conn.cursor()
 
-        print("Beginning tests...")
+        result = get_coops(cursor)
+        print(result)
+
+        result = get_upcoming_events(cursor)
+        print(result)
+
+        result = get_program_requirements_by_title(cursor, "Computer Science Transfer")
+        print(result)
+
+        result = get_student_basic_info(cursor, 1)
+        print(result)
+
+        result = get_student_course_history(cursor, 1)
+        print(result)
+
+        result = get_student_interests(cursor, 1)
+        print(result)
+
+        result = get_student_tracked_sections(cursor, 1)
+        print(result)
+
+        result = get_course_info_by_id(cursor, 1)
+        print(result)
+
+        result = get_courseIDs_by_filters(cursor, schemas.CourseFilters(departments=["CSC"], credits=[schemas.CreditCondition(condition="=", credits=3)], keywords=["programming"], prerequisites=["None"]))
+        print(result)
+
+        result = get_sectionIDs_by_filters(cursor, schemas.SectionFilters(course_codes=["CSC 101"], terms=[schemas.DBTerm(year=2023, season="Fall")], instructors=["Dr. Smith"], teaching_methods=["In-Person"], enrollment_capacity=[schemas.EnrollmentCondition(condition="<", enrollment=30)], enrollment=[schemas.EnrollmentCondition(condition="<", enrollment=30)], locations=["Main Campus"], meet_times=[schemas.DBMeetTime(days="MWF", start_time="10:00", end_time="11:00")], credits=[schemas.CreditCondition(condition="=", credits=3)], keywords=["programming"], prerequisites=["None"]))
+        print(result)
+
+        """print("Beginning tests...")
 
         print("\nTesting get_courseID_by_code and get_courseID_by_title...")
         course_id_by_code = get_courseID_by_code(cursor, "CSC 101")
@@ -518,4 +547,4 @@ if __name__ == "__main__":
             hierarchy_string = get_data_with_hierarchy_string(cursor, "Courses", course_id_by_code)
             print(f"Success: Hierarchy string for course ID {course_id_by_code}: {hierarchy_string}")
         else:
-            print("Error: Course ID not found, cannot test get_data_with_hierarchy_string")
+            print("Error: Course ID not found, cannot test get_data_with_hierarchy_string")"""

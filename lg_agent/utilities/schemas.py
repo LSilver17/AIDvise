@@ -40,6 +40,9 @@ elif CONTEXT_CONFIG["s-planner"]["context-select"] == "no-tools":
 
         answer: str = Field(default=None, description="The answer to the user's question. Keep responses clear and concise.")
 
+else:
+    raise ValueError("Invalid context select value in context_config.json. Must be one of 'full', 'no-db', or 'no-tools'.")
+
 if CONTEXT_CONFIG["a-planner"]["context-select"] == "full":
     class APlanSchema(BaseModel):
         """Schema for the output of the  a_planning node, which indicates whether a database query or web search is needed, and provides an answer if not."""
@@ -63,6 +66,10 @@ elif CONTEXT_CONFIG["a-planner"]["context-select"] == "no-tools":
         """Schema for the output of the a_planning node."""
 
         answer: str = Field(default=None, description="The answer to the user's question. Keep responses clear and concise.")
+
+else:
+    print(CONTEXT_CONFIG["a-planner"]["context-select"])
+    raise ValueError("Invalid context select value in context_config.json. Must be one of 'full', 'no-db', or 'no-tools'.")
 
 class DBTerm(BaseModel):
     """Schema for a term in the academic calendar."""

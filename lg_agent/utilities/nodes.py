@@ -20,7 +20,7 @@ import json
 
 load_dotenv()
 
-CONTEXT_CONFIG_PATH = os.path.join(root_dir, "prompt_config.json")
+CONTEXT_CONFIG_PATH = os.path.join(root_dir, "context_config.json")
 
 with open(CONTEXT_CONFIG_PATH, "r") as f:
     CONTEXT_CONFIG = json.load(f)
