@@ -281,12 +281,13 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
 
 # Utility function that returns the course code and course title for all courses a student has taken based on their ID
 def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
-    cursor.execute("SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN CoursesTaken as sc ON c.ID = sc.CourseID WHERE sc.ParentID = ?", (student_id,))
+    cursor.execute("SELECT c.Department, c.Code, c.Name, ct.Grade FROM Courses as c JOIN CoursesTaken as ct ON c.ID = ct.CourseID WHERE ct.ParentID = ?", (student_id,))
     course_history = []
     for row in cursor.fetchall():
         course_history.append({
             "CourseCode": str(row[0]) + " " + str(row[1]),
-            "Name": row[2]
+            "Name": row[2],
+            "Grade": row[3]
         })
     if not course_history:
         course_history = ["No courses taken"]

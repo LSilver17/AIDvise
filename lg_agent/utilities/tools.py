@@ -138,7 +138,6 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 "Credits": int
             }]
     """
-    
     with __connect() as conn:
         cursor = conn.cursor()
         course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
@@ -193,7 +192,6 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             }
             If no filters are needed, this can be left blank or set to None.
     """
-    
     with __connect() as conn:
         cursor = conn.cursor()
         section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
@@ -224,7 +222,6 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
                 "Programs of Study": List[str]
             }
     """
-
     with __connect() as conn:
         cursor = conn.cursor()
         student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
@@ -238,8 +235,14 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     Args:
         runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
     
+    Returns:
+        str -- A string containing a list of courses the student has taken:
+            Format: List[{
+                "Course Code": str (e.g. "CSC 101"),
+                "Course Title": str (e.g. "Introduction to Computer Science"),
+                "Grade": "A" | "A-" | "B+" | "B" | "B-" | "C+" | "C" | "C-" | "D+" | "D" | "D-" | "F" | "X" | "W" | "NR" | "IP"
+            }]
     """
-    
     with __connect() as conn:
         cursor = conn.cursor()
         course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
@@ -247,6 +250,16 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
 def get_student_interests_tool(runtime: ToolRuntime) -> str:
+    """
+    Tool for getting the interests for the current (student) user.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+
+    Returns:
+        str -- A string containing a list of the student's interests:
+            Format: List[str]
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])

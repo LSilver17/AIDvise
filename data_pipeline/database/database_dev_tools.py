@@ -205,6 +205,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS CoursesTaken(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 CourseID INTEGER NOT NULL,
+                Grade TEXT NOT NULL CHECK(Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'X', 'W', 'NR', "IP")),
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (CourseID) REFERENCES Courses(ID)
                     ON DELETE CASCADE,
@@ -697,8 +698,7 @@ def add_students_from_json(json_file: str):
                         student['GPA'],
                         student['CreditsEarned'],
                         student['IntendedGraduationTerm'],
-                        advisor_id,
-
+                        advisor_id
                     )
                 )
                 student_id = cursor.lastrowid
@@ -706,17 +706,19 @@ def add_students_from_json(json_file: str):
                 course_history = student['CoursesTaken']
 
                 for course in course_history:
-                    course_id = get_courseID_by_code(cursor, course)
+                    course_code = course['CourseCode']
+                    course_id = get_courseID_by_code(cursor, course_code)
                     if not course_id:
-                        print(f"Course '{course}' not found in database. Skipping this course for student '{student['Name']}'.")
+                        print(f"Course '{course_code}' not found in database. Skipping this course for student '{student['Name']}'.")
                         continue
+
 
                     cursor.execute(
                         '''
-                        INSERT INTO CoursesTaken (CourseID, ParentID)
-                        VALUES (?, ?)
+                        INSERT INTO CoursesTaken (CourseID, Grade, ParentID)
+                        VALUES (?, ?, ?)
                         ''',
-                        (course_id, student_id)
+                        (course_id, course['Grade'], student_id)
                     )
 
                 programs_of_study = student['ProgramsOfStudy']
