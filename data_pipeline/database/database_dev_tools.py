@@ -1,21 +1,21 @@
 import sys, os
 
 # Add the path to the root directory to the path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 # Add the jsons directory to the path if not already there, 
-jsons_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
-if jsons_dir not in sys.path:
-    sys.path.append(jsons_dir)
+JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons'))
+if JSONS_DIR not in sys.path:
+    sys.path.append(JSONS_DIR)
 
 import json, sqlite3
-from lg_agent.database_utils import get_data_with_hierarchy_string, get_courseID_by_code
+from lg_agent.database_utils import get_courseID_by_code
 
 def __connect():
     """Utility function for connecting to the database specified in database config and setting up required pragmas and row factory."""
-    with open(os.path.join(root_dir, "database_config.json"), 'r') as f:
+    with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
         db_config = json.load(f)
     conn = sqlite3.connect(db_config["database"] + ".db")
     conn.execute('PRAGMA foreign_keys = ON')
@@ -386,7 +386,7 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             course_data = {"courses": {}}
             course_data['courses'] = json.load(f)
             for course in course_data['courses']:
@@ -438,7 +438,7 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             programs_data = {"programs": {}}
             programs_data['programs'] = json.load(f)
             for program in programs_data['programs']:
@@ -520,7 +520,7 @@ def add_new_term(json_file: str = "term_data.json"):
         term_data = {"term": {}}
 
         # Load term data from JSON file
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             term_data['term'] = json.load(f)
 
         term = term_data['term'][0]
@@ -669,13 +669,13 @@ def add_students_from_json(json_file: str):
         student_data = {"students": []}
 
         # Load student data from JSON file
-        with open(os.path.join(jsons_dir, json_file), 'r') as f:
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             student_data['students'] = json.load(f)
 
         for student in student_data['students']:
             # check if advisor field is present for the student
             if "advisor" in student:
-                advisor_name = student['advisor']
+                advisor_name = student['Advisor']
                 advisor_id = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor_name,)).fetchone()
                 if advisor_id:
                     advisor_id = advisor_id['ID']
