@@ -5,7 +5,7 @@
 
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
 import DashTitle from "@/app/components/visual/title"
-import { Em, Flex } from "@radix-ui/themes";
+import { Em, Flex, Text } from "@radix-ui/themes";
 import { UserMetadata } from "@/app/lib/account/account_db_utils";
 import { useUserData } from "@/app/lib/account/user_context";
 
@@ -26,6 +26,10 @@ export default function Home () {
             </DashTitle>
             <Flex>
                 {message}
+            </Flex>
+            <Flex wrap="wrap" mt="8" direction="column" align="end">
+                <Em><Text color="gray">Programming done by Sean Collins,  Noel Mensah, Luca Silver</Text></Em>
+                <Em><Text color="gray">Graphics done by Nicholas Lahens</Text></Em>
             </Flex>
         </DashboardLayout>
     );

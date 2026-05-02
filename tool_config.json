@@ -30,7 +30,8 @@
         "get_event_dates_tool": true
     },
     "web-tools": {
-        "web_search_tool": true
+        "web_search_tool": true,
+        "get_web_page_content_tool": true
     },
     "insert-tools": {
         "get_student_interests_tool": true, 

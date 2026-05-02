@@ -18,8 +18,10 @@ from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from data_pipeline.database.database_dev_tools import __connect
 from langchain.tools import ToolRuntime
 from datetime import datetime
+from bs4 import BeautifulSoup
 import utilities.schemas as schemas
 import database_utils
+import requests
 import json
 
 TOOL_CONFIG_PATH = os.path.join(root_dir, "tool_config.json")
@@ -292,13 +294,32 @@ db_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time
             get_upcoming_events_tool if TOOL_CONFIG["s-db-tools"]["get_upcoming_events_tool"] else None,
             get_event_dates_tool if TOOL_CONFIG["s-db-tools"]["get_event_dates_tool"] else None]
 
-@tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
-def web_search_tool(query: str) -> str:
-    wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=3)
+@tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
+def web_search_tool(query: str, max_results: int = 3) -> str:
+    wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=max_results)
     search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
     return search.invoke(query)
 
-web_tools = [web_search_tool if TOOL_CONFIG["web-tools"]["web_search_tool"] else None]
+@tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page.", return_direct=True)
+def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        return f"Error fetching from {url}: {e}"
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    for script in soup(["script", "style, noscript"]):
+        script.decompose()
+    
+    text = soup.get_text(separator=' ')
+    text = ' '.join(text.split())
+    if len(text) > max_chars:
+        return text[:max_chars] + "... [truncated]"
+    return text
+
+web_tools = [web_search_tool if TOOL_CONFIG["web-tools"]["web_search_tool"] else None, 
+             get_web_page_content_tool if TOOL_CONFIG["web-tools"]["get_web_page_content_tool"] else None]
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
