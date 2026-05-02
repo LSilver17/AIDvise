@@ -65,7 +65,8 @@ def setup_database():
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS ProgramRequiredCourseOptions(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                CourseID INTEGER NOT NULL,
+                CourseID INTEGER,
+                Department TEXT,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (CourseID) REFERENCES Courses(ID)
                     ON DELETE CASCADE,
@@ -469,14 +470,28 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
 
                     # check if current course works as alternitive for previous one
                     if last_has_or:
-                        # add current course as an option for the previous requirement
-                        cursor.execute(
-                            '''
-                            INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
-                            VALUES (?, ?)
-                            ''',
-                            (get_courseID_by_code(cursor, required_course), previous_requirement_id,)
-                        )
+                        try:
+                            course_id = get_courseID_by_code(cursor, required_course)
+                        except:
+                            course_id = None
+                        if course_id:
+                            # add current course as an option for the previous requirement
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (get_courseID_by_code(cursor, required_course), previous_requirement_id,)
+                            )
+                        elif len(required_course) == 3:
+                            # if the required course is just a department rather than a specific course
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (Department, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (required_course, previous_requirement_id,)
+                            )
                     else:
                         # add current course as a new requirement
                         cursor.execute(
@@ -490,6 +505,10 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
 
                         # add current course as an option for the new requirement
                         try:
+                            course_id = get_courseID_by_code(cursor, required_course)
+                        except:
+                            course_id = None
+                        if course_id:
                             cursor.execute(
                                 '''
                                 INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
@@ -497,8 +516,15 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
                                 ''',
                                 (get_courseID_by_code(cursor, required_course), requirement_id)
                             )
-                        except sqlite3.IntegrityError:
-                            print(f"Course '{required_course}' not found in Courses table. Skipping this course for program '{program['name']}'.")
+                        elif len(required_course) == 3:
+                            # if the required course is just a department rather than a specific course
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (Department, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (required_course, requirement_id)
+                            )
 
                         previous_requirement_id = requirement_id
 
@@ -838,5 +864,5 @@ if __name__ == '__main__':
     setup_database()
     create_triggers()
     populate_course_catalog("course_catalog_plus.json")
-    populate_programs_catalog()
+    populate_programs_catalog("qcc_programs_plus.json")
     add_new_term()
