@@ -22,6 +22,11 @@ import utilities.schemas as schemas
 import database_utils
 import json
 
+TOOL_CONFIG_PATH = os.path.join(root_dir, "tool_config.json")
+
+with open(TOOL_CONFIG_PATH, "r") as f:
+    TOOL_CONFIG = json.load(f)
+
 # misc tools
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
@@ -273,7 +278,19 @@ def get_event_dates_tool(event_name: str) -> str:
         event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
         return json.dumps(event_dates)
 
-db_tools = [get_current_time_tool, course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_basic_info_tool, get_student_course_history_tool, get_student_interests_tool, get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
+
+db_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time_tool"] else None,
+            course_query_tool_by_code if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_code"] else None,
+            course_query_tool_by_title if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_title"] else None,
+            course_filter_tool if TOOL_CONFIG["s-db-tools"]["course_filter_tool"] else None,
+            section_filter_tool if TOOL_CONFIG["s-db-tools"]["section_filter_tool"] else None,
+            get_student_basic_info_tool if TOOL_CONFIG["s-db-tools"]["get_student_basic_info_tool"] else None,
+            get_student_course_history_tool if TOOL_CONFIG["s-db-tools"]["get_student_course_history_tool"] else None,
+            get_student_interests_tool if TOOL_CONFIG["s-db-tools"]["get_student_interests_tool"] else None,
+            get_student_tracked_sections_tool if TOOL_CONFIG["s-db-tools"]["get_student_tracked_sections_tool"] else None,
+            get_program_requirements_tool if TOOL_CONFIG["s-db-tools"]["get_program_requirements_tool"] else None,
+            get_upcoming_events_tool if TOOL_CONFIG["s-db-tools"]["get_upcoming_events_tool"] else None,
+            get_event_dates_tool if TOOL_CONFIG["s-db-tools"]["get_event_dates_tool"] else None]
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the output is a list of search results with sources (limited to top 3 results).", return_direct=True)
 def web_search_tool(query: str) -> str:
@@ -281,7 +298,7 @@ def web_search_tool(query: str) -> str:
     search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
     return search.invoke(query)
 
-web_tools = [web_search_tool]
+web_tools = [web_search_tool if TOOL_CONFIG["web-tools"]["web_search_tool"] else None]
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
@@ -295,7 +312,10 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
         cursor = conn.cursor()
         return database_utils.insert_student_tracked_section(cursor, runtime.state["user_id"], course_code, section_id)
         
-insertion_tools = [get_student_interests_tool, get_student_tracked_sections_tool, insert_student_interests_tool, insert_student_tracked_sections_tool]
+insertion_tools = [get_student_interests_tool if TOOL_CONFIG["insert-tools"]["get_student_interests_tool"] else None,
+                    get_student_tracked_sections_tool if TOOL_CONFIG["insert-tools"]["get_student_tracked_sections_tool"] else None,
+                    insert_student_interests_tool if TOOL_CONFIG["insert-tools"]["insert_student_interests_tool"] else None,
+                    insert_student_tracked_sections_tool if TOOL_CONFIG["insert-tools"]["insert_student_tracked_sections_tool"] else None]
 
 # alt db tools for chatbot used by advisor
 
@@ -384,4 +404,17 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
         tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
         return json.dumps(tracked_sections)
 
-alt_db_tools = [get_current_time_tool, course_query_tool_by_code, course_query_tool_by_title, course_filter_tool, section_filter_tool, get_student_id_by_name_tool, get_advisor_students_tool, a_get_student_basic_info_tool, a_get_student_course_history_tool, a_get_student_interests_tool, a_get_student_tracked_sections_tool, get_program_requirements_tool, get_upcoming_events_tool, get_event_dates_tool]
+alt_db_tools = [get_current_time_tool if TOOL_CONFIG["a-db-tools"]["get_current_time_tool"] else None,
+                 course_query_tool_by_code if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_code"] else None,
+                 course_query_tool_by_title if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_title"] else None,
+                 course_filter_tool if TOOL_CONFIG["a-db-tools"]["course_filter_tool"] else None,
+                 section_filter_tool if TOOL_CONFIG["a-db-tools"]["section_filter_tool"] else None,
+                 get_student_id_by_name_tool if TOOL_CONFIG["a-db-tools"]["get_student_id_by_name_tool"] else None,
+                 get_advisor_students_tool if TOOL_CONFIG["a-db-tools"]["get_advisor_students_tool"] else None,
+                 a_get_student_basic_info_tool if TOOL_CONFIG["a-db-tools"]["a_get_student_basic_info_tool"] else None,
+                 a_get_student_course_history_tool if TOOL_CONFIG["a-db-tools"]["a_get_student_course_history_tool"] else None,
+                 a_get_student_interests_tool if TOOL_CONFIG["a-db-tools"]["a_get_student_interests_tool"] else None,
+                 a_get_student_tracked_sections_tool if TOOL_CONFIG["a-db-tools"]["a_get_student_tracked_sections_tool"] else None,
+                 get_program_requirements_tool if TOOL_CONFIG["a-db-tools"]["get_program_requirements_tool"] else None,
+                 get_upcoming_events_tool if TOOL_CONFIG["a-db-tools"]["get_upcoming_events_tool"] else None,
+                 get_event_dates_tool if TOOL_CONFIG["a-db-tools"]["get_event_dates_tool"] else None]
