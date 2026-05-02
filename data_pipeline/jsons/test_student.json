@@ -2,58 +2,42 @@
     {
         "ID": 324578,
         "Name": "John Doe",
-        "GPA": 3.44,
-        "CreditsEarned": 46,
+        "GPA": 3.16,
+        "CreditsEarned": 29,
         "IntendedGraduationTerm": "Spring 2026",
         "Advisor": "Dr. Jordan Kim",
-        "ProgramsOfStudy": ["Computer Science Transfer", "Engineering"],
+        "ProgramsOfStudy": ["Computer Science Transfer"],
         "CoursesTaken": [
             {
                 "CourseCode": "CSC 108",
-                "Grade": "A"
-            },
+                "Grade": "A-"
+            }, 
             {
                 "CourseCode": "ENG 101",
                 "Grade": "B+"
             },
             {
-                "CourseCode": "CSC 109",
-                "Grade": "A-"
+                "CourseCode": "MAT 233",
+                "Grade": "C"
             },
             {
-                "CourseCode": "SPH 101",
-                "Grade": "C+"
-            },
-            {
-                "CourseCode": "CSC 208",
-                "Grade": "C+"
-            },
-            {
-                "CourseCode": "CHM 123",
-                "Grade": "A-"
-            },
-            {
-                "CourseCode": "CHM 124",
+                "CourseCode": "BIO 101",
                 "Grade": "B"
             },
             {
-                "CourseCode": "ERG 101",
+                "CourseCode": "CSC 109",
                 "Grade": "A"
             },
             {
-                "CourseCode": "PHY 105",
-                "Grade": "A-"
+                "CourseCode": "ENG 102",
+                "Grade": "B"
             },
             {
-                "CourseCode": "ERG 221",
-                "Grade": "B+"
+                "CourseCode": "PHY 101",
+                "Grade": "B-"
             },
             {
-                "CourseCode": "PHY 107",
-                "Grade": "A"
-            },
-            {
-                "CourseCode": "ERG 211",
+                "CourseCode": "SPH 101",
                 "Grade": "A-"
             }
         ]

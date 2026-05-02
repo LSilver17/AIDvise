@@ -837,6 +837,6 @@ def reset_all():
 if __name__ == '__main__':
     setup_database()
     create_triggers()
-    populate_course_catalog()
+    populate_course_catalog("course_catalog_plus.json")
     populate_programs_catalog()
     add_new_term()
