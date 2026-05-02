@@ -73,10 +73,10 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
             if condition not in ["=", ">", "<", ">=", "<=", "!="]:
                 raise ValueError(f"Invalid credit condition: {condition}")
             credits = credit_condition.credits
-            query += f" c.Credits {condition} ?"
+            query += f"c.Credits {condition} ?"
             params.append(credits)
             if credit_condition != filters.credits[-1]:
-                query += " OR"
+                query += " OR "
         query += ")"
 
     if "keywords" in filters.__dict__ and filters.keywords is not None and len(filters.keywords) > 0:
@@ -85,7 +85,7 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
             query += "c.Description LIKE ?"
             params.extend([f"%{keyword}%"])
             if keyword != filters.keywords[-1]:
-                query += " OR"
+                query += " OR "
         query += ")"
     
     if "prerequisites" in filters.__dict__ and filters.prerequisites is not None and len(filters.prerequisites) > 0:
@@ -93,8 +93,12 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
         for prereq in filters.prerequisites:
             query += "c.Requirements LIKE ?"
             params.extend([f"%{prereq}%"])
+            code = get_courseID_by_title(cursor, prereq)
+            if code is not None:
+                query += " OR c.Requirements LIKE ?"
+                params.append(f"%{code}%")
             if prereq != filters.prerequisites[-1]:
-                query += " OR"
+                query += " OR "
         query += ")"
 
     # Execute the query with the specified conditions and return the IDs of the matching courses as a list
@@ -493,7 +497,7 @@ if __name__ == "__main__":
     with sqlite3.connect("DumberDB.db") as conn:
         cursor = conn.cursor()
 
-        result = get_coops(cursor)
+        """result = get_coops(cursor)
         print(result)
 
         result = get_upcoming_events(cursor)
@@ -521,7 +525,7 @@ if __name__ == "__main__":
         print(result)
 
         result = get_sectionIDs_by_filters(cursor, schemas.SectionFilters(course_codes=["CSC 101"], terms=[schemas.DBTerm(year=2023, season="Fall")], instructors=["Dr. Smith"], teaching_methods=["In-Person"], enrollment_capacity=[schemas.EnrollmentCondition(condition="<", enrollment=30)], enrollment=[schemas.EnrollmentCondition(condition="<", enrollment=30)], locations=["Main Campus"], meet_times=[schemas.DBMeetTime(days="MWF", start_time="10:00", end_time="11:00")], credits=[schemas.CreditCondition(condition="=", credits=3)], keywords=["programming"], prerequisites=["None"]))
-        print(result)
+        print(result)"""
 
         """print("Beginning tests...")
 

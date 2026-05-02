@@ -1,0 +1,270 @@
+[
+    {
+        "code": "ACC",
+        "name": "Accounting"
+    },
+    {
+        "code": "ALH",
+        "name": "Algebra"
+    },
+    {
+        "code": "ASL",
+        "name": "American Sign Language"
+    },
+    {
+        "code": "ANT",
+        "name": "Anthropology"
+    },
+    {
+        "code": "ART",
+        "name": "Art"
+    },
+    {
+        "code": "AUT",
+        "name": "Automotive Technology"
+    },
+    {
+        "code": "BIO",
+        "name": "Biology"
+    },
+    {
+        "code": "BTT",
+        "name": "Business Technology"
+    },
+    {
+        "code": "BUS",
+        "name": "Business"
+    },
+    {
+        "code": "BSL",
+        "name": "British Sign Language"
+    },
+    {
+        "code": "BSS",
+        "name": "Behavioral and Social Sciences"
+    },
+    {
+        "code": "CPS",
+        "name": "Computer Programming and Systems"
+    },
+    {
+        "code": "CHM",
+        "name": "Chemistry"
+    },
+    {
+        "code": "CIS",
+        "name": "Computer Information Systems"
+    },
+    {
+        "code": "CSC",
+        "name": "Computer Science"
+    },
+    {
+        "code": "CST",
+        "name": "Construction Technology"
+    },
+    {
+        "code": "CRJ",
+        "name": "Criminal Justice"
+    },
+    {
+        "code": "DAS",
+        "name": "Data Analytics and Statistics"
+    },
+    {
+        "code": "DHY",
+        "name": "Dental Hygiene"
+    },
+    {
+        "code": "ECE",
+        "name": "Early Childhood Education"
+    },
+    {
+        "code": "ECO",
+        "name": "Economics"
+    },
+    {
+        "code": "ELM",
+        "name": "Elementary Education"
+    },
+    {
+        "code": "ELT",
+        "name": "Electrical Technology"
+    },
+    {
+        "code": "EDU",
+        "name": "Education"
+    },
+    {
+        "code": "EMT",
+        "name": "Emergency Medical Technology"
+    },
+    {
+        "code": "ERG",
+        "name": "Engineering"
+    },
+    {
+        "code": "ENG",
+        "name": "English"
+    },
+    {
+        "code": "ESL",
+        "name": "English as a Second Language"
+    },
+    {
+        "code": "FIN",
+        "name": "Finance"
+    },
+    {
+        "code": "FSC",
+        "name": "Fire Science"
+    },
+    {
+        "code": "FRC",
+        "name": "French"
+    },
+    {
+        "code": "GEO",
+        "name": "Geography"
+    },
+    {
+        "code": "GRT",
+        "name": "Gerontology"
+    },
+    {
+        "code": "HVC",
+        "name": "Heating, Ventilation, and Air Conditioning (HVAC)"
+    },
+    {
+        "code": "HST",
+        "name": "History"
+    },
+    {
+        "code": "HRM",
+        "name": "Human Resource Management"
+    },
+    {
+        "code": "HUS",
+        "name": "Human Services"
+    },
+    {
+        "code": "HUM",
+        "name": "Humanities"
+    },
+    {
+        "code": "IMG",
+        "name": "Imaging Technology"
+    },
+    {
+        "code": "IMD",
+        "name": "Interactive Media Design"
+    },
+    {
+        "code": "IDS",
+        "name": "Interdisciplinary Studies"
+    },
+    {
+        "code": "LOG",
+        "name": "Logistics"
+    },
+    {
+        "code": "MGT",
+        "name": "Management"
+    },
+    {
+        "code": "MNT",
+        "name": "Maintenance Technology"
+    },
+    {
+        "code": "MRK",
+        "name": "Marketing"
+    },
+    {
+        "code": "MAT",
+        "name": "Mathematics"
+    },
+    {
+        "code": "COM",
+        "name": "Mass Communication"
+    },
+    {
+        "code": "MSS",
+        "name": "Military Science and Studies"
+    },
+    {
+        "code": "MUS",
+        "name": "Music"
+    },
+    {
+        "code": "NUR",
+        "name": "Nursing"
+    },
+    {
+        "code": "OTA",
+        "name": "Occupational Therapy Assistant"
+    },
+    {
+        "code": "MED",
+        "name": "Medicine"
+    },
+    {
+        "code": "PHI",
+        "name": "Philosophy"
+    },
+    {
+        "code": "PHY",
+        "name": "Physics"
+    },
+    {
+        "code": "PSC",
+        "name": "Political Science"
+    },
+    {
+        "code": "PNP",
+        "name": "Practical Nursing Program"
+    },
+    {
+        "code": "PSY",
+        "name": "Psychology"
+    },
+    {
+        "code": "PHA",
+        "name": "Pharmacy"
+    },
+    {
+        "code": "RDT",
+        "name": "Radiologic Technology"
+    },
+    {
+        "code": "RCP",
+        "name": "Respiratory Care Practitioner"
+    },
+    {
+        "code": "SCI",
+        "name": "Science"
+    },
+    {
+        "code": "SOC",
+        "name": "Sociology"
+    },
+    {
+        "code": "SPN",
+        "name": "Spanish"
+    },
+    {
+        "code": "SPH",
+        "name": "Speech"
+    },
+    {
+        "code": "SUR",
+        "name": "Surgical Technology"
+    },
+    {
+        "code": "THA",
+        "name": "Theater Arts"
+    },
+    {
+        "code": "UTT",
+        "name": "University Transfer"
+    }
+]

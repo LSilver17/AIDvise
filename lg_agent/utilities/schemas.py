@@ -104,7 +104,7 @@ class CourseFilters(BaseModel):
     departments: list[str] = Field(default=[], description="List of departments to filter courses by (e.g. ['CSCI', 'MATH']). If no department filter is needed, leave this field blank.")
     credits: list[CreditCondition] = Field(default=[], description="Filter courses by number of credits. If no credit filter is needed, leave this field blank.")
     keywords: list[str] = Field(default=[], description="List of keywords to search for in course descriptions. If no keyword filter is needed, leave this field blank.")
-    prerequisites: list[str] = Field(default=[], description="List of keywords to search for in course prerequisites. If no prerequisite filter is needed, leave this field blank.")
+    prerequisites: list[str] = Field(default=[], description="List of keywords to search for in course prerequisites. If searching for a course use its code rather than its title. If no prerequisite filter is needed, leave this field blank.")
 
 class SectionFilters(BaseModel):
     """Schema for the filters that can be applied when querying for sections in the database."""

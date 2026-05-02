@@ -1,14 +1,15 @@
 {
     "s-db-tools": {
         "get_current_time_tool": true,
+        "get_department_list_tool": true,
         "course_query_tool_by_code": true,
         "course_query_tool_by_title": true,
         "course_filter_tool": true,
         "section_filter_tool": true,
-        "get_student_basic_info_tool": true,
-        "get_student_course_history_tool": true,
-        "get_student_interests_tool": true,
-        "get_student_tracked_sections_tool": true,
+        "get_student_basic_info_tool": false,
+        "get_student_course_history_tool": false,
+        "get_student_interests_tool": false,
+        "get_student_tracked_sections_tool": false,
         "get_program_requirements_tool": true,
         "get_upcoming_events_tool": true,
         "get_event_dates_tool": true
@@ -35,8 +36,8 @@
     },
     "insert-tools": {
         "get_student_interests_tool": true, 
-        "get_student_tracked_sections_tool": true, 
-        "insert_student_interests_tool": true, 
+        "get_student_tracked_sections_tool": true,
+        "insert_student_interests_tool": true,
         "insert_student_tracked_sections_tool": true
     }
 }
