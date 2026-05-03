@@ -16,6 +16,7 @@
     },
     "a-db-tools": {
         "get_current_time_tool": true, 
+        "get_department_list_tool": true,
         "course_query_tool_by_code": true, 
         "course_query_tool_by_title": true, 
         "course_filter_tool": true, 

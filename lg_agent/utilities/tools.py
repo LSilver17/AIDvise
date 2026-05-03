@@ -49,6 +49,7 @@ def get_current_time_tool() -> str:
     return now.strftime("%Y-%m-%d %H:%M:%S")
 
 # Database query tools
+@tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings.", return_direct=True)
 def get_department_list() -> str:
     """
     Tool for getting a list of all 3-letter department codes.
