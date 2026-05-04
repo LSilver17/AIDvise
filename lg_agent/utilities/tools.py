@@ -63,34 +63,49 @@ def get_department_list() -> str:
     departments = DEPARTMENT_LIST["departments"]
     return json.dumps(departments)
 
-@tool("get_departments_in_category", description="Tool for getting a list of department codes that belong to a specific category. Options: Humanities | Lab Science | Social Sciences | GenEd | General Education", return_direct=True)
+@tool("get_departments_in_category", description="Tool for getting a list of what types of courses are considered a part of a specified category. Options: ['Behavioral Science Elective' | 'Humanities Elective' | 'Mathematics Elective' | 'Science Elective' | 'Lab Science Elective' | 'Social Sciences Elective' | 'Liberal Arts Elective' | 'General Elective' | 'GenEd'] (GenEd = General Education)", return_direct=True)
 def get_departments_in_category_tool(category: str) -> str:
     """
-    Returns a list of what types of courses are considered a part of the specified category.
+    Tool for getting a list of what types of courses are considered a part of a specified category.
 
     Args:
-        category (str) -- "Humanities" | "Social Sciences" | "Lab Science" | "GenEd" | "General Education"
+        category (str) -- "Behavioral Science Elective" | "Humanities Elective" | "Mathematics Elective" | "Science Elective" | "Lab Science Elective" | "Social Sciences Elective" | "Liberal Arts Elective" | "General Elective" | "GenEd"
 
     Returns:
-        str -- A comma separated list of department codes in the specified category.
+        str -- A string containing a list of what types of courses are considered a part of the specified category. 
+            Format: varies based on category, but generally a list of department codes (e.g. "CSC", "MTH", etc.) with any relevant course number or credit requirements.
     """
-    humanities_departments = "ANT, ART, CLT, EAS, ENG, HIS, PHI, REL, SPN"
-    lab_science_departments = "BIO, CHEM, PHYS"
-    social_science_departments = "ECO, PSY, SOC"
-    gened_departments = "check the course requirements for the 'General Studies' program."
+    behavioral_science = "ANT, PSY, SOC"
+    humanities = "ASL, ART, COM, ENG, FRC, GER, HUM, MUS, PHI, SPN, SPH, THA"
+    mathmatics = "MTH (Above 100 Level)"
+    science = "BIO, BTT, CHM, PHY, SCI with at lease 3 credits"
+    lab_science = "BIO, BTT, CHM, PHY with at least 4 credits (with exception of BIO 140)"
+    social_science = "ANT, ECO, GEO, HST, PSC, PSY, SOS, SOC"
+    liberal_arts = "ANT, ASL, ART, BIO, BTT, COM, CHM, ECO, ENG, FRC, GER, GEO, HST, HUM, MUS, MTH (Above 100 Level), PHI, PHY, PSC, PSY, SCI, SOC, SOS, SPN, SPH, THA"
+    general = "Any course (Above 100 level)"
+    gen_ed = "check the course requirements for the 'General Studies' program."
 
     match category:
-        case "Humanities":
-            return humanities_departments
-        case "Lab Science":
-            return lab_science_departments
-        case "Social Sciences":
-            return social_science_departments
+        case "Behavioral Science Elective":
+            return behavioral_science
+        case "Humanities Elective":
+            return humanities
+        case "Mathematics Elective":
+            return mathmatics
+        case "Science Elective":
+            return science
+        case "Lab Science Elective":
+            return lab_science
+        case "Social Sciences Elective":
+            return social_science
+        case "Liberal Arts Elective":
+            return liberal_arts
+        case "General Elective":
+            return general
         case "GenEd" | "General Education":
-            return gened_departments
+            return gen_ed
         case _:
             return f"Invalid category {category}. Check spelling and capitalization."
-
 
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
 def course_query_tool_by_code(course_code: str) -> str:

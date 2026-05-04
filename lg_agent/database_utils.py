@@ -362,7 +362,7 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
     program_requirements = []
     for row in cursor.fetchall():
         c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prc.ID = prco.ParentID WHERE prc.ID = ? AND prco.CourseID IS NOT NULL""", (row[0],)).fetchall()
-        d_options = cursor.execute("""SELECT Department FROM ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ? AND prco.CourseID IS NULL""", (row[0],)).fetchall()
+        d_options = cursor.execute("""SELECT Elective FROM ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ? AND prco.CourseID IS NULL""", (row[0],)).fetchall()
         requirement = ""
         for option in c_options:
             requirement += str(option[0]) + " " + str(option[1]) + " " + str(option[2])

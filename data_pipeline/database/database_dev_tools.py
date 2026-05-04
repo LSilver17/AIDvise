@@ -66,7 +66,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS ProgramRequiredCourseOptions(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 CourseID INTEGER,
-                Department TEXT,
+                Elective TEXT,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (CourseID) REFERENCES Courses(ID)
                     ON DELETE CASCADE,
@@ -470,28 +470,23 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
 
                     # check if current course works as alternitive for previous one
                     if last_has_or:
-                        try:
-                            course_id = get_courseID_by_code(cursor, required_course)
-                        except:
-                            course_id = None
-                        if course_id:
-                            # add current course as an option for the previous requirement
+                        if "Elective" in required_course or len(str(required_course)) == 3:
+                            # if the required course allows anything in a specific department or elective type
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (Elective, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (required_course, previous_requirement_id,)
+                            )
+                        else:
                             cursor.execute(
                                 '''
                                 INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
                                 VALUES (?, ?)
                                 ''',
                                 (get_courseID_by_code(cursor, required_course), previous_requirement_id,)
-                            )
-                        elif len(required_course) == 3:
-                            # if the required course is just a department rather than a specific course
-                            cursor.execute(
-                                '''
-                                INSERT INTO ProgramRequiredCourseOptions (Department, ParentID)
-                                VALUES (?, ?)
-                                ''',
-                                (required_course, previous_requirement_id,)
-                            )
+                            )                            
                     else:
                         # add current course as a new requirement
                         cursor.execute(
@@ -504,26 +499,22 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
                         requirement_id = cursor.lastrowid
 
                         # add current course as an option for the new requirement
-                        try:
-                            course_id = get_courseID_by_code(cursor, required_course)
-                        except:
-                            course_id = None
-                        if course_id:
+                        if "Elective" in required_course or len(str(required_course)) == 3:
+                            # if the required course allows anything in a specific department or elective type
+                            cursor.execute(
+                                '''
+                                INSERT INTO ProgramRequiredCourseOptions (Elective, ParentID)
+                                VALUES (?, ?)
+                                ''',
+                                (required_course, requirement_id)
+                            )
+                        else:
                             cursor.execute(
                                 '''
                                 INSERT INTO ProgramRequiredCourseOptions (CourseID, ParentID)
                                 VALUES (?, ?)
                                 ''',
                                 (get_courseID_by_code(cursor, required_course), requirement_id)
-                            )
-                        elif len(required_course) == 3:
-                            # if the required course is just a department rather than a specific course
-                            cursor.execute(
-                                '''
-                                INSERT INTO ProgramRequiredCourseOptions (Department, ParentID)
-                                VALUES (?, ?)
-                                ''',
-                                (required_course, requirement_id)
                             )
 
                         previous_requirement_id = requirement_id
