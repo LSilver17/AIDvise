@@ -40,14 +40,24 @@ def route_from_planning(state: APlannerState):
     that information is needed from the web, the web helper graph will be invoked. If it indicates that both are needed, the 
     they will be run in parallel. If neither are needed, the graph will route directly to the answer node.
     """
-    routes = []
-    if "requires_database" in state["plan"] and state["plan"]["requires_database"]:
-        routes.append("invoke_db_helper")
-    if "requires_web_search" in state["plan"] and state["plan"]["requires_web_search"]:
-        routes.append("invoke_web_helper")
-    if not routes:
-        routes.append("answer_node")
-    return [Send(route, state) for route in routes]
+    if state["loop_count"] < 3:
+        routes = []
+        if "requires_database" in state["plan"] and state["plan"]["requires_database"]:
+            routes.append("invoke_db_helper")
+        if "requires_web_search" in state["plan"] and state["plan"]["requires_web_search"]:
+            routes.append("invoke_web_helper")
+        if not routes:
+            routes.append("answer_node")
+        return [Send(route, state) for route in routes]
+    elif "answer" in state["plan"] and state["plan"]["answer"] is not None and state["plan"]["answer"] != "":
+        return [Send("answer_node", state)]
+    else:
+        if state["loop_count"] == 3:
+            messages = state["messages"] + [AIMessage(content=state["You went over the loop limit. Give your final answer now."])]
+            return [Send("planning", {"messages": messages, "loop_count": state["loop_count"] + 1})]
+        else:
+            messages = AIMessage(content="Failsafe: AI broke the rules. Please try to rephrase your question.")
+            return [Send("answer_node", {"messages": [messages]})]
 
 def answer_node(state: APlannerState) -> APlannerState:
     """Node that returns the final answer from the planning node."""
