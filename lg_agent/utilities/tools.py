@@ -63,6 +63,35 @@ def get_department_list() -> str:
     departments = DEPARTMENT_LIST["departments"]
     return json.dumps(departments)
 
+@tool("get_departments_in_category", description="Tool for getting a list of department codes that belong to a specific category. Options: Humanities | Lab Science | Social Sciences | GenEd | General Education", return_direct=True)
+def get_departments_in_category_tool(category: str) -> str:
+    """
+    Returns a list of what types of courses are considered a part of the specified category.
+
+    Args:
+        category (str) -- "Humanities" | "Social Sciences" | "Lab Science" | "GenEd" | "General Education"
+
+    Returns:
+        str -- A comma separated list of department codes in the specified category.
+    """
+    humanities_departments = "ANT, ART, CLT, EAS, ENG, HIS, PHI, REL, SPN"
+    lab_science_departments = "BIO, CHEM, PHYS"
+    social_science_departments = "ECO, PSY, SOC"
+    gened_departments = "check the course requirements for the 'General Studies' program."
+
+    match category:
+        case "Humanities":
+            return humanities_departments
+        case "Lab Science":
+            return lab_science_departments
+        case "Social Sciences":
+            return social_science_departments
+        case "GenEd" | "General Education":
+            return gened_departments
+        case _:
+            return f"Invalid category {category}. Check spelling and capitalization."
+
+
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
 def course_query_tool_by_code(course_code: str) -> str:
     """
@@ -458,9 +487,11 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
 
 d_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time_tool"] else None,
            get_department_list if TOOL_CONFIG["s-db-tools"]["get_department_list_tool"] else None,
+           get_departments_in_category_tool if TOOL_CONFIG["s-db-tools"]["get_departments_in_category_tool"] else None,
            course_query_tool_by_code if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_code"] else None,
            course_query_tool_by_title if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_title"] else None,
            course_filter_tool if TOOL_CONFIG["s-db-tools"]["course_filter_tool"] else None,
+           get_course_description_tool if TOOL_CONFIG["s-db-tools"]["get_course_description_tool"] else None,
            section_filter_tool if TOOL_CONFIG["s-db-tools"]["section_filter_tool"] else None,
            get_student_basic_info_tool if TOOL_CONFIG["s-db-tools"]["get_student_basic_info_tool"] else None,
            get_student_course_history_tool if TOOL_CONFIG["s-db-tools"]["get_student_course_history_tool"] else None,
@@ -497,9 +528,11 @@ for tool in i_tools:
 
 ad_tools = [get_current_time_tool if TOOL_CONFIG["a-db-tools"]["get_current_time_tool"] else None,
             get_department_list if TOOL_CONFIG["a-db-tools"]["get_department_list_tool"] else None,
+            get_departments_in_category_tool if TOOL_CONFIG["a-db-tools"]["get_departments_in_category_tool"] else None,
             course_query_tool_by_code if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_code"] else None,
             course_query_tool_by_title if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_title"] else None,
             course_filter_tool if TOOL_CONFIG["a-db-tools"]["course_filter_tool"] else None,
+            get_course_description_tool if TOOL_CONFIG["a-db-tools"]["get_course_description_tool"] else None,
             section_filter_tool if TOOL_CONFIG["a-db-tools"]["section_filter_tool"] else None,
             get_student_id_by_name_tool if TOOL_CONFIG["a-db-tools"]["get_student_id_by_name_tool"] else None,
             get_advisor_students_tool if TOOL_CONFIG["a-db-tools"]["get_advisor_students_tool"] else None,
