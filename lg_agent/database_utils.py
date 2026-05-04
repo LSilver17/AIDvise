@@ -108,7 +108,7 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
 
 # Utility function to get course info by course ID, including all requirements and prerequisites, and return this information as a dictionary
 def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
-    cursor.execute("SELECT * FROM Courses WHERE ID = ?", (course_id,))
+    cursor.execute("SELECT ID, Title, Department, Code, Credits, Requirements FROM Courses WHERE ID = ?", (course_id,))
     row = cursor.fetchone()
     if row is None:
         return {}
@@ -118,6 +118,13 @@ def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
         course_info[col[0]] = row[idx]
     
     return course_info
+
+def get_course_description_by_id(cursor: sqlite3.Cursor, course_id: str) -> str:
+    cursor.execute("SELECT Description FROM Courses WHERE ID = ?", (course_id,))
+    row = cursor.fetchone()
+    if row is None:
+        return "Course not found"
+    return row[0]
 
 # Utility function to filter sections based on certain criteria and return their IDs as a list
 def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFilters) -> list:
@@ -230,6 +237,18 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     cursor.execute(query, tuple(params))
     results = cursor.fetchall()
     return [row[0] for row in results]
+
+def get_section_info_by_id(cursor: sqlite3.Cursor, section_id: str) -> dict:
+    cursor.execute("SELECT s.ID, c.Department, c.Code, c.Name, s.SectionNum, s.Instructor, s.Method, s.Location, s.MaxSeats, s.SeatsLeft FROM Sections as s JOIN CoursesOffered as co ON s.ParentID = co.ID JOIN Courses as c ON co.CourseID = c.ID WHERE s.ID = ?", (section_id,))
+    row = cursor.fetchone()
+    if row is None:
+        return {}
+
+    section_info = {}
+    for idx, col in enumerate(cursor.description):
+        section_info[col[0]] = row[idx]
+    
+    return section_info
 
 # Utility function to get a list of events that have event dates that are in the future
 def get_upcoming_events(cursor: sqlite3.Cursor):

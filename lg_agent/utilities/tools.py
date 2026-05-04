@@ -49,13 +49,16 @@ def get_current_time_tool() -> str:
     return now.strftime("%Y-%m-%d %H:%M:%S")
 
 # Database query tools
-@tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings.", return_direct=True)
+@tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings. Only use this tool if you initially fail to guess the 3-letter code for a department as it can consume a lot of tokens.", return_direct=True)
 def get_department_list() -> str:
     """
     Tool for getting a list of all 3-letter department codes.
 
     Returns:
         str -- A string containing a list of all 3-letter department codes.
+
+    Warning:
+        This tool should only be used if you initialy fail to guess the 3-letter code for a department as it can consume a lot of tokens.
     """
     departments = DEPARTMENT_LIST["departments"]
     return json.dumps(departments)
@@ -120,7 +123,7 @@ def course_query_tool_by_title(course_title: str) -> str:
         else:
             return f"No course found with title {course_title}."
 
-@tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a all the courses that match the specified criteria and relivent information about them.", return_direct=True)
+@tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them.", return_direct=True)
 def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     """
     Tool for filtering courses based on specified criteria.
@@ -152,7 +155,6 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 "Department": str (3-letter),
                 "Course Number": int (3-digit),
                 "Title": str,
-                "Description": str,
                 "Prerequisites": list[str],
                 "Credits": int
             }]
@@ -169,6 +171,25 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             return "\n\n"+info_str
         else:
             return "No courses found matching the specified criteria."
+
+@tool("get_course_description", description="Tool for getting the description of a course based on its ID. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
+def get_course_description_tool(course_id: int) -> str:
+    """
+    Tool for getting the description of a course based on its ID.
+
+    Args:
+        course_id (int) -- The ID of the course for which to get the description.
+
+    Returns:
+        str -- The description of the course.
+    
+    Warning:
+        Don't use this tool for more than a few courses at a time, as it can consume a lot of tokens.
+    """
+    with __connect() as conn:
+        cursor = conn.cursor()
+        description = database_utils.get_course_description_by_id(cursor, course_id)
+        return description
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections.", return_direct=True)
 def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
@@ -217,7 +238,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
         if section_ids:
             sections_info = []
             for section_id in section_ids:
-                section_info = database_utils.get_data_with_hierarchy_string(cursor, "Sections", section_id)
+                section_info = database_utils.get_section_info_by_id(cursor, section_id)
                 sections_info.append(section_info)
             info_str = json.dumps(sections_info)
             return "\n\n"+info_str
@@ -318,7 +339,7 @@ def web_search_tool(query: str, max_results: int = 3) -> str:
     search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
     return search.invoke(query)
 
-@tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page.", return_direct=True)
+@tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
 def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
     try:
         response = requests.get(url, timeout=10)
