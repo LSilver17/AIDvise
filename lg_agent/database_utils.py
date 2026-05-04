@@ -108,7 +108,7 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
 
 # Utility function to get course info by course ID, including all requirements and prerequisites, and return this information as a dictionary
 def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
-    cursor.execute("SELECT ID, Title, Department, Code, Credits, Requirements FROM Courses WHERE ID = ?", (course_id,))
+    cursor.execute("SELECT ID, Name, Department, Code, Credits, Requirements FROM Courses WHERE ID = ?", (course_id,))
     row = cursor.fetchone()
     if row is None:
         return {}

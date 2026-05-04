@@ -1,4 +1,6 @@
 import sys, os
+
+from langchain.messages import AIMessage
     
 # adds utilities directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -28,6 +30,7 @@ with open(CONTEXT_CONFIG_PATH, "r") as f:
 def s_planner_node(state: SPlannerState) -> SPlannerState:
     """Base node for the agent when used by a student, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
+    state["loop_count"] += 1
     state["plan"] = None
 
     structured_llm = planning_llm.with_structured_output(SPlanSchema)
@@ -45,26 +48,27 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
         state["db_info"] = []
     else:
         for QueryResult in state["db_info"]:
-            messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+            messages.append(AIMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     if "web_info" not in state:
         state["web_info"] = []
     else:
         for QueryResult in state["web_info"]:
-            messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+            messages.append(AIMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
     if state["insertion_result"] != "":
-        messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
+        messages.append(AIMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
-    state["loop_count"] += 1
     return state
 
 def a_planner_node(state: APlannerState) -> APlannerState:
     """Base node for the agent when used by an advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
     
+    state["loop_count"] += 1
+
     structured_llm = planning_llm.with_structured_output(APlanSchema)
 
     c_level = CONTEXT_CONFIG["a-planner"]["context-select"]
@@ -80,22 +84,23 @@ def a_planner_node(state: APlannerState) -> APlannerState:
         state["db_info"] = []
     else:
         for QueryResult in state["db_info"]:
-                messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+                messages.append(AIMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     if "web_info" not in state:
         state["web_info"] = []
     else:
         for QueryResult in state["web_info"]:
-            messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+            messages.append(AIMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
-    state["loop_count"] += 1
     return state
 
 def db_node(state: DatabaseHelperState):
     """Node that runs database queries based on the information provided by the planning node."""
+
+    state["loop_count"] += 1
 
     if state["account_type"] == "Student":
         llm_with_db_tools = db_llm.bind_tools(db_tools)
@@ -114,16 +119,17 @@ def db_node(state: DatabaseHelperState):
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
 
-    state["loop_count"] += 1
     return {"messages": [result]}
 
 def web_node(state: WebSearchHelperState):
     """Node that performs web searches based on the information provided by the planning node."""
     
+    state["loop_count"] += 1
+
     llm_with_web_tools = web_llm.bind_tools(web_tools)
 
     c_level = CONTEXT_CONFIG["web"]["context-select"]
@@ -137,15 +143,16 @@ def web_node(state: WebSearchHelperState):
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_web_tools.invoke(messages)
 
-    state["loop_count"] += 1
     return {"messages": [result]}
 
 def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
     """Node that takes any new information the advisor has learned about the student and inserts it into the database."""
+
+    state["loop_count"] += 1
 
     llm_with_insertion_tools = insertion_llm.bind_tools(insertion_tools)
 
@@ -160,9 +167,8 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
     messages = []
     messages.extend(state["messages"])
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_insertion_tools.invoke(messages)
 
-    state["loop_count"] += 1
     return {"messages": [result]}
