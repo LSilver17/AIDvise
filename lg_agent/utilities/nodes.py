@@ -48,17 +48,17 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
         state["db_info"] = []
     else:
         for QueryResult in state["db_info"]:
-            messages.append(AIMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+            messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
     if "web_info" not in state:
         state["web_info"] = []
     else:
         for QueryResult in state["web_info"]:
-            messages.append(AIMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+            messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
     if state["insertion_result"] != "":
-        messages.append(AIMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
+        messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
 
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
@@ -122,7 +122,7 @@ def db_node(state: DatabaseHelperState):
         if isinstance(message, ToolMessage):
             messages.append(message)
     messages.extend(state["messages"][-2:])
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
 
@@ -149,9 +149,7 @@ def web_node(state: WebSearchHelperState):
         if isinstance(message, ToolMessage):
             messages.append(message)
     messages.extend(state["messages"][-2:])
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
-
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_web_tools.invoke(messages)
 
@@ -178,9 +176,7 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
         if isinstance(message, ToolMessage):
             messages.append(message)
     messages.extend(state["messages"][-2:])
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
-
-    messages.append(AIMessage(content="Current loop count: " + str(state["loop_count"])))
+    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
 
     result = llm_with_insertion_tools.invoke(messages)
 
