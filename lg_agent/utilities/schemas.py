@@ -108,20 +108,26 @@ class DBMeetTime(BaseModel):
 class CreditCondition(BaseModel):
     """Schema for a credit filter condition."""
 
-    condition: str = Field(description="The condition to apply to the number of credits (e.g. '=', '>', '<', '>=', '<=', '!=')")
+    condition: str = Field(description="The condition to apply to the number of credits ['=' | '>' | '<' | '>=' | '<=' | '!=']")
     credits: int = Field(description="Number of credits to compare against.")
 
 class EnrollmentCondition(BaseModel):
     """Schema for an enrollment filter condition."""
 
-    condition: str = Field(description="The condition to apply to the enrollment status (e.g. '=', '>', '<', '>=', '<=', '!=')")
+    condition: str = Field(description="The condition to apply to the enrollment status ['=' | '>' | '<' | '>=' | '<=' | '!=']")
     enrollment: int = Field(description="Enrollment number to compare against.")
 
+class CodeCondition(BaseModel):
+    """Schema for a course code filter condition."""
+
+    condition: str = Field(description="The condition to apply to the course code ['=' | '!=' | '>' | '<' | '>=' | '<=']")
+    code: str = Field(description="Course number to compare against (e.g. '101')")
 class CourseFilters(BaseModel):
     """Schema for the filters that can be applied when querying for courses in the database."""
 
     terms: list[DBTerm] = Field(default=[], description="List of terms to filter courses by. Each term should be specified as a year, season, and, if applicable, number (2023, 'Fall', None; 2023, 'Summer', 1, etc). If no term filter is needed, leave this field blank.")
     departments: list[str] = Field(default=[], description="List of departments to filter courses by (e.g. ['CSCI', 'MATH']). If no department filter is needed, leave this field blank.")
+    course_codes: list[CodeCondition] = Field(default=[], description="List of course code conditions to filter courses by. Each condition should specify a comparison condition and a course number to compare against (e.g. [{'condition': '>=', 'code': '100'}] to filter for courses with a number greater than or equal to 100). If no course code filter is needed, leave this field blank.")
     credits: list[CreditCondition] = Field(default=[], description="Filter courses by number of credits. If no credit filter is needed, leave this field blank.")
     keywords: list[str] = Field(default=[], description="List of keywords to search for in course descriptions. If no keyword filter is needed, leave this field blank.")
     prerequisites: list[str] = Field(default=[], description="List of keywords to search for in course prerequisites. If searching for a course use its code rather than its title. If no prerequisite filter is needed, leave this field blank.")

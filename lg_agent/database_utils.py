@@ -39,6 +39,9 @@ def get_coops(cursor: sqlite3.Cursor) -> list:
 
 # Utility function to filter courses based on certain criteria and return their IDs as a list
 def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilters) -> list:
+    if filters is None:
+        return ["No filters specified"]
+
     query = "SELECT co.ID FROM CoursesOffered as co JOIN Courses as c ON co.CourseID = c.ID"
     params = []
 
@@ -65,6 +68,19 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
         query += " AND c.Department IN ({})".format(",".join("?" for _ in filters.departments))
         params.extend(filters.departments)
 
+    if "course_codes" in filters.__dict__ and filters.course_codes is not None and len(filters.course_codes) > 0:
+        query += " AND ("
+        for course_code_condition in filters.course_codes:
+            condition = course_code_condition.condition
+            code = course_code_condition.code
+            if condition not in ["=", ">", "<", ">=", "<=", "!="]:
+                raise ValueError(f"Invalid course code condition: {condition}")
+            query += f"c.Code {condition} ?"
+            params.append(code)
+            if course_code_condition != filters.course_codes[-1]:
+                query += " AND "
+        query += ")"
+
     # If a credit filter is specified, add a condition to the query to filter by number of credits
     if "credits" in filters.__dict__ and filters.credits is not None and len(filters.credits) > 0:
         query += " AND ("
@@ -76,7 +92,7 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
             query += f"c.Credits {condition} ?"
             params.append(credits)
             if credit_condition != filters.credits[-1]:
-                query += " OR "
+                query += " AND "
         query += ")"
 
     if "keywords" in filters.__dict__ and filters.keywords is not None and len(filters.keywords) > 0:
@@ -128,6 +144,9 @@ def get_course_description_by_id(cursor: sqlite3.Cursor, course_id: str) -> str:
 
 # Utility function to filter sections based on certain criteria and return their IDs as a list
 def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFilters) -> list:
+    if filters is None:
+        return ["No filters specified"]
+    
     query = "SELECT s.ID FROM Sections as s"
     params = []
 
@@ -200,7 +219,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
             query += f"s.MaxSeats {condition} ?"
             params.append(enrollment_condition.enrollment)
             if enrollment_condition != filters.enrollment_capacity[-1]:
-                query += " OR "
+                query += " AND "
         query += ")"
 
     # If a current enrollment filter is specified, add a condition to the query to filter by current enrollment
@@ -213,7 +232,7 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
             query += f"s.SeatsLeft {condition} ?"
             params.append(enrollment_condition.enrollment)
             if enrollment_condition != filters.enrollment[-1]:
-                query += " OR "
+                query += " AND "
         query += ")"
 
     # If a location filter is specified, add conditions to the query to filter by the specified locations
@@ -369,7 +388,7 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
             if option != c_options[-1] or len(d_options) > 0:
                 requirement += " OR "
         for option in d_options:
-            requirement += "Any " + option[0] + " course"
+            requirement += "Any " + str(option[0]) + " course"
             if option != d_options[-1]:
                 requirement += " OR "
         program_requirements.append(requirement)

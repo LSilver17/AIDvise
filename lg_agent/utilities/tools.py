@@ -77,11 +77,11 @@ def get_departments_in_category_tool(category: str) -> str:
     """
     behavioral_science = "ANT, PSY, SOC"
     humanities = "ASL, ART, COM, ENG, FRC, GER, HUM, MUS, PHI, SPN, SPH, THA"
-    mathmatics = "MTH (Above 100 Level)"
+    mathmatics = "MAT (Above 100 Level)"
     science = "BIO, BTT, CHM, PHY, SCI with at lease 3 credits"
     lab_science = "BIO, BTT, CHM, PHY with at least 4 credits (with exception of BIO 140)"
     social_science = "ANT, ECO, GEO, HST, PSC, PSY, SOS, SOC"
-    liberal_arts = "ANT, ASL, ART, BIO, BTT, COM, CHM, ECO, ENG, FRC, GER, GEO, HST, HUM, MUS, MTH (Above 100 Level), PHI, PHY, PSC, PSY, SCI, SOC, SOS, SPN, SPH, THA"
+    liberal_arts = "ANT, ASL, ART, BIO, BTT, COM, CHM, ECO, ENG, FRC, GER, GEO, HST, HUM, MAT, (Above 100 Level), MUS, PHI, PHY, PSC, PSY, SCI, SOC, SOS, SPN, SPH, THA"
     general = "Any course (Above 100 level)"
     gen_ed = "check the course requirements for the 'General Studies' program."
 
@@ -167,7 +167,7 @@ def course_query_tool_by_title(course_title: str) -> str:
         else:
             return f"No course found with title {course_title}."
 
-@tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them.", return_direct=True)
+@tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them. Don't use this tool with overly broad filters as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     """
     Tool for filtering courses based on specified criteria.
@@ -183,6 +183,12 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                     }
                 ],
                 "departments": List[str], (IE: CSC, MTH, etc.)
+                "course_codes": List[
+                    {
+                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
+                        "code": str (course number to compare against, e.g. '101')
+                    }
+                ],
                 "credits": List[
                     {
                         "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
@@ -202,6 +208,9 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 "Prerequisites": list[str],
                 "Credits": int
             }]
+    
+    Warning:
+        Don't use this tool with overly broad filters (eg: all courses in a given term or all courses in a department) as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -235,7 +244,7 @@ def get_course_description_tool(course_id: int) -> str:
         description = database_utils.get_course_description_by_id(cursor, course_id)
         return description
 
-@tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections.", return_direct=True)
+@tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections. Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
     """
     Tool for filtering sections based on specified criteria.
@@ -275,6 +284,25 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
                 ]
             }
             If no filters are needed, this can be left blank or set to None.
+    
+    Returns:
+        str -- A string containing a list of all the sections that match the specified criteria and relevant information about them:
+            Format: List[{
+                "Course Code": str (e.g. "CSC 101"),
+                "Section Number": str (e.g. "001"),
+                "Instructor": str,
+                "Teaching Method": str (e.g. "Lecture", "Lab", "Online", etc.),
+                "Enrollment Capacity": int,
+                "Current Enrollment": int,
+                "Location": str,
+                "Meet Times": List[{
+                    "Days": str (e.g. MW, TR, F, etc.),
+                    "Start Time": str (24-hour format e.g. 14:00),
+                    "End Time": str (24-hour format e.g. 15:15)
+                }]
+            
+    Warning:
+        Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
     with __connect() as conn:
         cursor = conn.cursor()

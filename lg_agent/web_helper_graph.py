@@ -5,7 +5,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from langchain_core.messages import ToolMessage
+from langchain_core.messages import AIMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 from utilities.state import WebSearchHelperState, WebSearchHelperOutput
@@ -42,6 +42,8 @@ def tool_route(state: WebSearchHelperState):
         for message in messages:
             if isinstance(message, ToolMessage):
                 tool_dump.append(message)
+            elif isinstance(message, AIMessage):
+                messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
         messages.append("Failsafe: web search agent broke the rules. Returning tool ressults instead.")
         messages.extend(tool_dump)
         return "format_web_output"
