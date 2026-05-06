@@ -16,6 +16,7 @@ from langchain_core.messages import AIMessage, ToolCall
 from langchain_openai import ChatOpenAI
 from langchain_openrouter import ChatOpenRouter
 from utilities.TestModel import GenericFakeChatModel
+from langchain_core.rate_limiters import InMemoryRateLimiter
 import json
 
 load_dotenv()
@@ -27,7 +28,6 @@ def _load_model_config() -> tuple[dict, str]:
     mode = model_select.get("mode")
     models = model_select.get(mode)
     return models, mode
-
 
 def _normalize_model_name(model_name: str) -> str:
     return model_name.strip().lower().replace("-", "_")
@@ -377,23 +377,48 @@ def _insertion_testing_model() -> GenericFakeChatModel:
     )
 
 
+def _load_rate_limiter() -> InMemoryRateLimiter | None:
+    """
+        Loads rate limit details from json, returning a rate limiter if limits are configured
+        and false if they aren't
+    """
+    with open(os.path.join(ROOT_DIR, "rate_limit_config.json"), "r", encoding="utf-8") as f:
+        rate_limit_config = json.load(f)
+    has_rate_limits = rate_limit_config.get("rate_limiting")
+    if (has_rate_limits == False) :
+        return None
+    else :
+        rate_limits = rate_limit_config.get("rate_limits");
+        requests_per_second = rate_limits.get("requests_per_second")
+        check_every_n_seconds = rate_limits.get("check_every_n_seconds")
+        max_bucket_size = rate_limits.get("max_bucket_size")
+        rate_limiter = InMemoryRateLimiter(
+            requests_per_second=requests_per_second,
+            check_every_n_seconds=check_every_n_seconds,
+            max_bucket_size=max_bucket_size,
+        )
+        return rate_limiter
+
+
 def _create_model(model_name: str, node_name: str):
     normalized = _normalize_model_name(model_name)
+
+    rate_limiter = _load_rate_limiter();
 
     match normalized:
         case "sonnet_4_6":
             if env := os.getenv("ANTHROPIC_API_KEY"):
-                return ChatAnthropic(model="claude-sonnet-4-6", temperature=0.2)
+                return ChatAnthropic(model="claude-sonnet-4-6", temperature=0.2, rate_limiter=rate_limiter)
             else:
                 raise ValueError("ANTHROPIC_API_KEY not found in environment variables.")
         case "gpt_4o":
             if env := os.getenv("OPENAI_API_KEY"):
-                return ChatOpenAI(model="gpt-4o", temperature=0.2)
+                return ChatOpenAI(model="gpt-4o", temperature=0.2, rate_limiter=rate_limiter)
             else:
                 raise ValueError("OPENAI_API_KEY not found in environment variables.")
         case "free":
             if env := os.getenv("OPENROUTER_API_KEY"):
-                return ChatOpenRouter(model="openrouter/free", temperature=0.2)
+                return ChatOpenRouter(model="openrouter/free", temperature=0.2, rate_limiter=rate_limiter)
             else:
                 raise ValueError("OPENROUTER_API_KEY not found in environment variables.")
         case "student_test":
