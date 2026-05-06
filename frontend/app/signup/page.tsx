@@ -97,7 +97,7 @@ export default function SignUp () {
     
     return (
         <RegistrationForm justify="start" onSubmit={handler}>
-            <Flex direction="row" gap="2" height="8rem">
+            <Flex direction="row" height="9rem" mb="6" gap="2">
                 <Flex direction="column" justify="start">
                     <FormField label="Username" inputName="username" message={errors?.username}/>
                     <FormField label="Password" inputName="password" message={errors?.password} isPassword/>
@@ -109,7 +109,7 @@ export default function SignUp () {
                 </Flex>
             </Flex>
 
-            <Flex direction="row" justify="center" width="100%">
+            <Flex direction="row" justify="center" width="100%" align="end">
                 <SelectField inputName="account_type" message={errors?.account_type}/>
             </Flex>
             

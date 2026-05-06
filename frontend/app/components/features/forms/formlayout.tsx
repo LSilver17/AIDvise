@@ -1,3 +1,6 @@
+/*
+    Author: Sean Collins
+*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -25,7 +28,7 @@ export default function FormRootLayout({onSubmit, justify, children} : Props) {
             <Flex 
                 justify="between" 
                 direction="column" 
-                gap="4"  
+                gap="2"  
                 overflow="hidden" 
                 flexGrow="0" 
                 flexShrink="0"
