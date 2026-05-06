@@ -1,5 +1,5 @@
 {
-    "rate_limiting": true,
+    "rate_limiting": false,
     "rate_limits": {
         "requests_per_second": 0.1,
         "check_every_n_seconds": 0.1,
