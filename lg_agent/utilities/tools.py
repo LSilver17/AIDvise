@@ -57,7 +57,7 @@ def get_department_list() -> str:
     Returns:
         str -- A string containing a list of all 3-letter department codes.
 
-    Warning:
+    Warnings:
         This tool should only be used if you initialy fail to guess the 3-letter code for a department as it can consume a lot of tokens.
     """
     departments = DEPARTMENT_LIST["departments"]
@@ -198,7 +198,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 "keywords": List[str], (searches for keywords in course descriptions)
                 "prerequisites": List[str] (searches for keywords in course prerequisites)
             }
-            If no filters are needed, this can be left blank or set to None.
+            Filters can be left blank if no filtering is needed for a particular criterion. Never leave all filters blank.
     Returns:
         str -- A string containing all the courses that match the specified criteria and relevant information about them:
             Format: List[{
@@ -209,7 +209,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 "Credits": int
             }]
     
-    Warning:
+    Warnings:
         Don't use this tool with overly broad filters (eg: all courses in a given term or all courses in a department) as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
     with __connect() as conn:
@@ -236,7 +236,7 @@ def get_course_description_tool(course_id: int) -> str:
     Returns:
         str -- The description of the course.
     
-    Warning:
+    Warnings:
         Don't use this tool for more than a few courses at a time, as it can consume a lot of tokens.
     """
     with __connect() as conn:
@@ -283,7 +283,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
                     }
                 ]
             }
-            If no filters are needed, this can be left blank or set to None.
+            Filters can be left blank if no filtering is needed for a particular criterion. Never leave all filters blank.
     
     Returns:
         str -- A string containing a list of all the sections that match the specified criteria and relevant information about them:
@@ -301,7 +301,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
                     "End Time": str (24-hour format e.g. 15:15)
                 }]
             
-    Warning:
+    Warnings:
         Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
     with __connect() as conn:
@@ -379,6 +379,19 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
 def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
+    """
+    Tool for getting a list of course sections the current (student) user is tracking.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+    
+    Returns:
+        str -- A string containing a list of the sections the student is currently tracking:
+            Format: List[{
+                "Course Code": str (e.g. "CSC 101"),
+                "Section Number": str (e.g. "1"),
+                "Name": str (e.g. "Introduction to Computer Science - Section 001")
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
@@ -386,6 +399,20 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
 def get_program_requirements_tool(program_name: str) -> str:
+    """
+    Tool for getting the course requirements for a specific program of study.
+
+    Args:
+        program_name (str) -- The name of the program for which to get the requirements (e.g. "Manufacturing Technology").
+    
+    Returns:
+        str -- A string containing a list of the course requirements for the specified program:
+            Format: List[
+                List of course options and elective options seperated by OR
+                    Format of course option: Dep
+            ]
+            If no program is found with the given name, returns a message indicating that no program was found.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
