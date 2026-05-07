@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { authSession } from "@/app/lib/account/authSession";
 
 /**
- * Base layout for login, checking session to redirect user to dashboard if logged
+ * Base layout for registration, checking session and redirecting user to dashboard if logged
  * in.
  * @returns 
  */

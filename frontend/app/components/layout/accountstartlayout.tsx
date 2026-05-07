@@ -34,7 +34,6 @@ export default function AccountLayout({ children, href, buttText}: PropTypes) {
                 overflow="hidden" 
                 flexGrow="0" 
                 flexShrink="0"
-                gap="0"
                 minWidth="15rem"
                 minHeight="20rem"
                 width="30rem"

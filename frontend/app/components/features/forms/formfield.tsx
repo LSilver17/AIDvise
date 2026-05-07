@@ -4,7 +4,7 @@
 "use client"
 
 import { Form } from "radix-ui"; 
-import { Flex, Text, TextField} from "@radix-ui/themes"
+import { Flex, Text, TextField, Grid} from "@radix-ui/themes"
 import { Responsive } from "@radix-ui/themes/props";
 import "@/app/globals.css"
 
@@ -38,7 +38,7 @@ function errorMessage(message: string) {
 }
 
 /**
- * Component for adding a single field to a form.
+ * Component for adding a single field to a form. Contains space for field and form validation error message.
  * @param props.label - Placeholder text when nothing is entered in field.
  * @param props.inputName - Identifier for form data.
  * @param props.message - Accompanying field message.
@@ -50,16 +50,31 @@ export default function FormField({label, inputName, message, isPassword, hasMis
     hasMissingMessage = hasMissingMessage ?? true;
     return (
         <Form.Field name={inputName}>
-            <Flex justify="start" width="100%" direction="column" align="center" flexGrow="0" flexShrink="0" height="5rem" overflow="clip">
+            <Grid 
+                justify="center" 
+                width="12rem" 
+                columns="1" 
+                rows="2" 
+                align="center" 
+                flexGrow="0" 
+                flexShrink="0" 
+                height="5.2rem" 
+                overflow="clip" 
+                minHeight="0" 
+                minWidth="0" 
+                mt="1" mb="1"
+            >
                 <Form.Control asChild name={inputName} type={inputType}>
                     <TextField.Root required placeholder={label} size="3" style={{backgroundColor:"white"}}/>
                 </Form.Control>
+                <Flex flexShrink="0">
                 {
                     (message ? 
                         errorMessage(message as string) : missingMessage(hasMissingMessage, isPassword as boolean, inputName)
                     )
                 }
-            </Flex>
+                </Flex>
+            </Grid>
         </Form.Field>
     );
 };
