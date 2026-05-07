@@ -142,7 +142,7 @@ def course_query_tool_by_code(course_code: str) -> str:
                 "Prerequisites": list[str],
                 "Credits": int
             }
-            If no course is found with the given code, returns a message indicating that no course was found.
+        If no course is found with the given code, returns a message indicating that no course was found.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -175,7 +175,7 @@ def course_query_tool_by_title(course_title: str) -> str:
                 "Prerequisites": list[str],
                 "Credits": int
             }
-            If no course is found with the given title, returns a message indicating that no course was found.
+        If no course is found with the given title, returns a message indicating that no course was found.
     """    
     with __connect() as conn:
         cursor = conn.cursor()
@@ -381,7 +381,11 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
                 "Advisor": str,
                 "GPA": float,
                 "Total Credits": int,
-                "Programs of Study": List[str]
+                "Programs of Study": List[{
+                    "Title": str,
+                    "Description": str,
+                    "CreditsRequired": int
+                }]
             }
     """
     with __connect() as conn:
@@ -406,7 +410,7 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
         str -- A string containing a list of courses the student has taken:
             Format: List[{
                 "Course Code": str (e.g. "CSC 101"),
-                "Course Title": str (e.g. "Introduction to Computer Science"),
+                "Name": str (e.g. "Introduction to Computer Science"),
                 "Grade": "A" | "A-" | "B+" | "B" | "B-" | "C+" | "C" | "C-" | "D+" | "D" | "D-" | "F" | "X" | "W" | "NR" | "IP"
             }]
     """
@@ -478,11 +482,14 @@ def get_program_requirements_tool(program_name: str) -> str:
     
     Returns:
         str -- A string containing a list of the course requirements for the specified program:
-            Format: List[
-                List of course options and elective options seperated by OR
-                    Format of course option: Dep
-            ]
-            If no program is found with the given name, returns a message indicating that no program was found.
+            Format: List[str]
+                String is formatted as a list of course options and elective options seperated by OR
+                    Format of course option: Department code: str (e.g. "CSC"), Course number: int (e.g. 101), Title: str (e.g. "Introduction to Computer Science")
+                    Format of elective option: Any <category> course (e.g. "Behavioral Science Elective") | Any <department> course (e.g. "HST") 
+        If no program is found with the given name, returns a message indicating that no program was found.
+    
+    Warnings:
+        Don't use this tool on mass (e.g. searching for multiple programs) as it can consume a lot of tokens. It should be used primarily for questions about course planning or if the user is curious about a specific program.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -496,6 +503,17 @@ def get_program_requirements_tool(program_name: str) -> str:
 
 @tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
 def get_upcoming_events_tool() -> str:
+    """
+    Tool for getting a list of upcoming events.
+
+    Returns:
+        str -- A string containing a list of upcoming events with their names and descriptions.
+            Format: List[{
+                "ID": str,
+                "Name": str,
+                "Description": str
+            }]
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -508,6 +526,21 @@ def get_upcoming_events_tool() -> str:
 
 @tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
 def get_event_dates_tool(event_name: str) -> str:
+    """
+    Tool for getting a list of dates/times when a specific event occurs.
+
+    Args:
+        event_name (str) -- The name of the event for which to get the dates (e.g. "Resume Workshop").
+
+    Returns:
+        str -- A string containing a list of dates and their locations for the specified event:
+            Format: List[{
+                "Date": str (e.g. "2024-09-15"),
+                "Start Time": str (e.g. "14:00"),
+                "End Time": str (e.g. "15:30"),
+                "Location": str (e.g. "Room 109A, Herrington Learning Center")
+            }]
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -519,31 +552,87 @@ def get_event_dates_tool(event_name: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
-def web_search_tool(query: str, max_results: int = 3) -> str:
-    wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=max_results)
-    search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
-    return search.invoke(query)
+def web_search_tool(query: str, max_results: int = 5) -> str:
+    """
+    Tool for performing web searches.
+
+    Args:
+        query (str) -- The search query.
+        max_results (int) -- The maximum number of results to return.
+
+    Returns:
+        str -- A string containing a list of search results.
+            Format: List[{
+                "Title": str,
+                "Link": str,
+                "Snippet": str
+            }]
+    
+    Warnings:
+        Don't set the max_results parameter too high as it can consume a lot of tokens.
+    """
+    try:
+        wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=max_results)
+        search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
+        return search.invoke(query)
+    except Exception as e:
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            f.write(f"Error occurred while performing web search: {e}\n")
+        return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
 def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
+    """
+    Tool for getting the text content of a web page.
+
+    Args:
+        url (str) -- The URL of the web page to get the content from.
+        max_chars (int) -- The maximum number of characters to return.
+    
+    Returns:
+        str -- A string containing the text content of the web page.
+
+    Warnings:
+        Use this tool sparingly as it can consume a lot of tokens, especially for if max_chars is set to a high value. Only use this tool if you are confident that the information you need is available on the page.
+    """
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
     except requests.RequestException as e:
-        return f"Error fetching from {url}: {e}"
-    soup = BeautifulSoup(response.text, 'html.parser')
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            f.write(f"Error occurred while fetching web page content from {url}: {e}\n")
+        return f"Error fetching from {url}: {e}. The page may be unavailable or there may be a problem with the URL."
+    try:
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    for script in soup(["script", "style, noscript"]):
-        script.decompose()
-    
-    text = soup.get_text(separator=' ')
-    text = ' '.join(text.split())
-    if len(text) > max_chars:
-        return text[:max_chars] + "... [truncated]"
-    return text
+        for script in soup(["script", "style, noscript"]):
+            script.decompose()
+
+        text = soup.get_text(separator=' ')
+        text = ' '.join(text.split())
+        if len(text) > max_chars:
+            return text[:max_chars] + "... [truncated]"
+        return text
+    except Exception as e:
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            f.write(f"Error occurred while parsing web page content from {url}: {e}\n")
+        return f"Error parsing content from {url}: {e}. The page may be formatted in a way that is difficult to extract text from."
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
+    """
+    Tool for inserting a new interest for the current (student) user.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+        interest (str) -- The interest to add for the student.
+    
+    Returns:
+        str -- A confirmation message indicating success or failure of the operation.
+    
+    Warnings:
+        Always check if a similar interest already exists in the database before adding a new one to avoid duplicates. Don't use this tool if there is already an interest in the database that matches or closely matches the interest you want to add.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -555,6 +644,18 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
 def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
+    """
+    Tool for inserting a new tracked section for the current (student) user. Automatically checks for duplicates before inserting.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+        course_code (str) -- The course code for the section to track (e.g. "CSC 101").
+        section_id (str) -- The section number for the section to track (e.g. "1").
+    
+    Returns:
+        str -- A confirmation message indicating success or failure of the operation.
+    """
+    
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -568,6 +669,20 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
 
 @tool("get_student_id_by_name", description="Tool for getting a student's ID based on their name. The input is the student's name and the output is the student's ID. Only works for students who have the current user as their advisor.", return_direct=True)
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
+    """
+    Tool for getting a student's ID based on their name.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+        student_name (str) -- The name of the student for which to get the ID.
+    
+    Returns:
+        str -- A string containing the student's ID
+        If no student is found with the given name, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+    
+    Warnings:
+        Name must be an exact match. If this fails to find the student, try using the get_advisor_students tool instead.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -577,7 +692,7 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
             cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
             student_id = cursor.fetchone()
             if student_id:
-                return json.dumps({"student_id": student_id[0]})
+                return json.dumps({"Student ID": student_id[0]})
             else:
                 return f"No student found with name {student_name}."
         except Exception as e:
@@ -587,6 +702,20 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
 
 @tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
 def get_advisor_students_tool(runtime: ToolRuntime) -> str:
+    """
+    Tool for getting a list of all students assigned to the current (advisor) user.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+
+    Returns:
+        str -- A string containing a list of the students assigned to the current advisor, including their names and IDs:
+            Format: List[{
+                "Name": str,
+                "ID": int
+            }]
+        If no students are found for the current advisor, returns a message indicating that no students were found.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -607,6 +736,28 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
+    """
+    Tool for getting basic information about a student.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+        student_id (int) -- The ID of the student for whom to fetch basic information.
+    
+    Returns:
+        str -- A string containing the relevant information about the student:
+            Format: {
+                "Name": str,
+                "Advisor": str,
+                "GPA": float,
+                "CreditsEarned": int,
+                "ProgramsOfStudy": List[{
+                    "Title": str,
+                    "Description": str,
+                    "CreditsRequired": int
+                }]
+            }
+        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -627,6 +778,22 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
+        """
+        Tool for getting the course history for a student.
+
+        Args:
+            runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+            student_id (int) -- The ID of the student for whom to fetch course history.
+
+        Returns:
+            str -- A string containing a list of courses the student has taken:
+                Format: List[{
+                    "Course Code": str (e.g. "CSC 101"),
+                    "Name": str (e.g. "Introduction to Computer Science"),
+                    "Grade": "A" | "A-" | "B+" | "B" | "B-" | "C+" | "C" | "C-" | "D+" | "D" | "D-" | "F" | "X" | "W" | "NR" | "IP"
+                }]
+            If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+        """
         cursor = conn.cursor()
         try:
             cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
@@ -645,6 +812,18 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
+    """
+    Tool for getting the interests for a student.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+        student_id (int) -- The ID of the student for whom to fetch interests.
+
+    Returns:
+        str -- A string containing a list of interests for the student.
+            Format: List[str]
+        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -664,6 +843,22 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
+    """
+    Tool for getting a list of course sections a student is tracking.
+
+    Args:
+        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+        student_id (int) -- The ID of the student for whom to fetch tracked sections.
+    
+    Returns:
+        str -- A string containing a list of the sections the student is currently tracking:
+            Format: List[{
+                "Course Code": str (e.g. "CSC 101"),
+                "Section Number": str (e.g. "1"),
+                "Name": str (e.g. "Introduction to Computer Science - Section 001")
+            }]
+        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
