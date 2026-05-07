@@ -62,7 +62,7 @@ def route_from_planning(state: SPlannerState):
         return [Send("answer_node", state)]
     else:
         if state["loop_count"] == 3:
-            messages = state["messages"] + [AIMessage(content=state["You went over the loop limit. Give your final answer now."])]
+            messages = state["messages"] + [AIMessage(content="You went over the loop limit. Give your final answer now.")]
             return [Send("planning", {"messages": messages, "loop_count": state["loop_count"] + 1})]
         else:
             messages = AIMessage(content="Failsafe: AI broke the rules. Please try to rephrase your question.")
