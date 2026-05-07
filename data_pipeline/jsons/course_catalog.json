@@ -4,11 +4,11 @@
     "department": "ACC",
     "course_number": "101",
     "name": "Financial Accounting I",
-    "description": "This course focuses on the relationships between business activities and events and the impact they have on financial statements from a preparer perspective. Students study financial transactions for both service and merchandising businesses and relate the transactions to a company''s assets, liabilities, owners'' equity, revenues, and expenses. Areas of study include the basic accounting model, the process of the accounting cycle, accounting principles and terminology, financial statement preparation, analytics, and computerized accounting applications.",
+    "description": "This course focuses on the relationships between business activities and events and the impact they have on financial statements from a preparer perspective. Students study financial transactions for both service and merchandising businesses and relate the transactions to a company's assets, liabilities, owners' equity, revenues, and expenses. Areas of study include the basic accounting model, the process of the accounting cycle, accounting principles and terminology, financial statement preparation, analytics, and computerized accounting applications.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:55:03.827805"
+    "scraped_at": "2026-04-12T19:31:21.664167"
   },
   {
     "course_code": "ACC 102",
@@ -19,7 +19,7 @@
     "credits": "3",
     "prerequisites": "ACC 101, CIS 111",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:55:10.908990"
+    "scraped_at": "2026-04-12T19:31:28.707016"
   },
   {
     "course_code": "ALH 102",
@@ -30,7 +30,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:55:58.080735"
+    "scraped_at": "2026-04-12T19:34:18.150094"
   },
   {
     "course_code": "ALH 103",
@@ -41,7 +41,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:56:05.562768"
+    "scraped_at": "2026-04-12T19:34:26.302288"
   },
   {
     "course_code": "ALH 106",
@@ -52,7 +52,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T11:56:12.519797"
+    "scraped_at": "2026-04-12T19:34:33.218744"
   },
   {
     "course_code": "ALH 125",
@@ -63,18 +63,18 @@
     "credits": "9",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:56:19.423925"
+    "scraped_at": "2026-04-12T19:36:43.985425"
   },
   {
     "course_code": "ALH 131",
     "department": "ALH",
     "course_number": "131",
     "name": "Introductory Nursing Assistant",
-    "description": "This course provides students with the theory and entry-level skills necessary to safely provide basic nursing assistant level care in a long-term care facility, acute care facility or home health care agency. Students learn the role and responsibilities of the nursing assistant and home health aide within the health care team, including patient and residents'' rights, professionalism, communication skills, basic body structure and function, common disorders, rehabilitation and restorative care, infection control and safety, special care concerns, and basic patient care skills, including vital signs. Upon completion of classroom and skills practice laboratory learning and competency testing, students participate in a clinical rotation at a skilled nursing facility, under the supervision of a registered nurse.",
+    "description": "This course provides students with the theory and entry-level skills necessary to safely provide basic nursing assistant level care in a long-term care facility, acute care facility or home health care agency. Students learn the role and responsibilities of the nursing assistant and home health aide within the health care team, including patient and residents' rights, professionalism, communication skills, basic body structure and function, common disorders, rehabilitation and restorative care, infection control and safety, special care concerns, and basic patient care skills, including vital signs. Upon completion of classroom and skills practice laboratory learning and competency testing, students participate in a clinical rotation at a skilled nursing facility, under the supervision of a registered nurse.",
     "credits": "5",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:58:32.334617"
+    "scraped_at": "2026-04-12T19:36:51.280033"
   },
   {
     "course_code": "ASL 111",
@@ -85,7 +85,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T11:58:44.760538"
+    "scraped_at": "2026-04-12T19:37:05.879599"
   },
   {
     "course_code": "ASL 112",
@@ -96,18 +96,18 @@
     "credits": "3",
     "prerequisites": "ASL 111",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T11:58:51.717725"
+    "scraped_at": "2026-04-12T19:37:11.602348"
   },
   {
     "course_code": "ASL 114",
     "department": "ASL",
     "course_number": "114",
-    "name": null,
-    "description": null,
-    "credits": null,
+    "name": "Issues in Deaf Society",
+    "description": "This course explores relevant issues confronting the deaf members of the Deaf Community. Students examine issues that deal with community/cultural advocacy and advancement, confronting audism, cultural differences, educational, economic and legal barriers and deaf contributions to society. Students focus on preparing themselves for career fields where their constituents are deaf/Deaf or use ASL.",
+    "credits": "3",
     "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T11:59:05.691797"
+    "semesters_offered": "F/S",
+    "scraped_at": "2026-04-12T19:39:20.709393"
   },
   {
     "course_code": "ASL 119",
@@ -118,7 +118,7 @@
     "credits": "3",
     "prerequisites": "ASL 112, ASL 113",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:01:17.581460"
+    "scraped_at": "2026-04-12T19:39:26.939501"
   },
   {
     "course_code": "ASL 200",
@@ -129,18 +129,18 @@
     "credits": "3",
     "prerequisites": "ASL 112, ASL 113, CORI/SORI Check",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:01:24.750216"
+    "scraped_at": "2026-04-12T19:39:33.377034"
   },
   {
     "course_code": "ASL 211",
     "department": "ASL",
     "course_number": "211",
-    "name": "Intermediate Amer Sign Lang. I",
-    "description": "This course focuses on further development of visual-spatial orientation and manipulations skills, sign vocabulary, and complex sentence structures. Students continue learning strategies for opening, sustaining, and closing general conversations on a range of topics. The course concentrates on developing the abilities to question, narrate, and give increasingly detailed descriptions of activities, interactions, plans, and directions. Students learn how to communicate clearly and express themselves in a culturally appropriate way.",
-    "credits": "3",
-    "prerequisites": "ASL 112",
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:01:31.424713"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T19:39:47.444768"
   },
   {
     "course_code": "ASL 212",
@@ -151,7 +151,7 @@
     "credits": "3",
     "prerequisites": "ASL 211",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:01:39.667032"
+    "scraped_at": "2026-04-12T19:39:57.781353"
   },
   {
     "course_code": "ANT 111",
@@ -162,7 +162,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:03:57.130979"
+    "scraped_at": "2026-04-12T19:40:10.507439"
   },
   {
     "course_code": "ART 101",
@@ -173,7 +173,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:04:10.226728"
+    "scraped_at": "2026-04-12T19:40:23.157675"
   },
   {
     "course_code": "ART 111",
@@ -184,7 +184,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T12:04:18.239368"
+    "scraped_at": "2026-04-12T19:42:33.592768"
   },
   {
     "course_code": "ART 131",
@@ -195,7 +195,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:06:32.647728"
+    "scraped_at": "2026-04-12T19:42:39.624517"
   },
   {
     "course_code": "ART 132",
@@ -206,7 +206,7 @@
     "credits": "3",
     "prerequisites": "ART 131",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:06:39.809462"
+    "scraped_at": "2026-04-12T19:42:46.873260"
   },
   {
     "course_code": "ART 141",
@@ -217,7 +217,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:06:46.905932"
+    "scraped_at": "2026-04-12T19:42:54.987387"
   },
   {
     "course_code": "ART 211",
@@ -228,7 +228,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:06:54.881865"
+    "scraped_at": "2026-04-12T19:45:05.617531"
   },
   {
     "course_code": "AUT 113",
@@ -239,18 +239,18 @@
     "credits": "3",
     "prerequisites": "AUT 111 Corequisite: AUT 211",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:46:14.313381"
+    "scraped_at": "2026-04-12T19:45:17.957935"
   },
   {
     "course_code": "AUT 121",
     "department": "AUT",
     "course_number": "121",
     "name": "Basic Gasoline Engines",
-    "description": "This course covers the basic functions of gasoline engines. Topics include operation, design, diagnostic, and repair strategies. Students disassemble measure, inspect, and reassemble engines to blueprint specifications and perform dynamic tests in a laboratory environment. Students learn how to describe the major components of a gasoline engine and explain how they contribute to an engine''s performance and operation.",
+    "description": "This course covers the basic functions of gasoline engines. Topics include operation, design, diagnostic, and repair strategies. Students disassemble measure, inspect, and reassemble engines to blueprint specifications and perform dynamic tests in a laboratory environment. Students learn how to describe the major components of a gasoline engine and explain how they contribute to an engine's performance and operation.",
     "credits": "4",
     "prerequisites": "AUT 102 Corequisite: AUT 125",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:46:21.065713"
+    "scraped_at": "2026-04-12T19:45:24.305980"
   },
   {
     "course_code": "AUT 125",
@@ -261,7 +261,7 @@
     "credits": "4",
     "prerequisites": "AUT 102, AUT 111 Corequisite: AUT 121",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:46:27.631510"
+    "scraped_at": "2026-04-12T19:45:30.352587"
   },
   {
     "course_code": "AUT 211",
@@ -272,7 +272,7 @@
     "credits": "5",
     "prerequisites": "AUT 125 Corequisite: AUT 113",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:46:35.173876"
+    "scraped_at": "2026-04-12T19:47:39.180974"
   },
   {
     "course_code": "AUT 299",
@@ -283,7 +283,7 @@
     "credits": null,
     "prerequisites": null,
     "semesters_offered": null,
-    "scraped_at": "2026-04-10T12:48:51.731978"
+    "scraped_at": "2026-04-12T19:47:53.884296"
   },
   {
     "course_code": "BIO 100",
@@ -294,7 +294,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:49:06.239553"
+    "scraped_at": "2026-04-12T19:48:06.841056"
   },
   {
     "course_code": "BIO 101",
@@ -305,7 +305,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or equivalent placement measures",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:49:14.642016"
+    "scraped_at": "2026-04-12T19:48:13.924971"
   },
   {
     "course_code": "BTT 101",
@@ -316,7 +316,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:49:28.590987"
+    "scraped_at": "2026-04-12T19:50:29.993177"
   },
   {
     "course_code": "BTT 102",
@@ -327,18 +327,18 @@
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:51:38.804897"
+    "scraped_at": "2026-04-12T19:50:37.438955"
   },
   {
     "course_code": "BUS 201",
     "department": "BUS",
     "course_number": "201",
-    "name": "Integrated Communication for Bus",
-    "description": "This course emphasizes the creation, preparation and perfecting of effective business communication and telephone etiquette. Students write and edit letters, memos, proposals, short reports, e-mails, resumes, cover letters, and oral presentations using word processing, spreadsheets, and presentation software. Students create a portfolio of their semester''s work.",
-    "credits": "3",
-    "prerequisites": "CIS 111, Placement into college level English",
-    "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:51:50.585286"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T19:50:56.775785"
   },
   {
     "course_code": "BUS 250",
@@ -349,7 +349,7 @@
     "credits": "3",
     "prerequisites": "CIS 111 Corequisite: ACC 101 or CIS 212",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:51:58.179037"
+    "scraped_at": "2026-04-12T19:53:06.435235"
   },
   {
     "course_code": "BSL 101",
@@ -360,7 +360,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:54:15.325872"
+    "scraped_at": "2026-04-12T19:53:17.908843"
   },
   {
     "course_code": "BSL 102",
@@ -371,7 +371,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T12:54:23.720210"
+    "scraped_at": "2026-04-12T19:53:23.129511"
   },
   {
     "course_code": "BSL 103",
@@ -382,18 +382,18 @@
     "credits": "3",
     "prerequisites": "Corequisite: CIS 111",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:54:31.862615"
+    "scraped_at": "2026-04-12T19:53:28.619772"
   },
   {
     "course_code": "BSS 101",
     "department": "BSS",
     "course_number": "101",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T12:54:50.755891"
+    "name": "Keyboarding Applications",
+    "description": "This course focuses on the alphanumeric touch method of keyboarding with a personal computer, emphasizing the progressive development of speed and accuracy. Students learn basic keyboarding techniques, hardware components, and standard business needs, including business letters, forms, proposals, tabulations, and drafts. Through the course, students develop skills in composition, language arts, proofreading, and formatting. The goal of the course is for students to attain a speed of 30-35 wpm for three minutes with less than three errors.",
+    "credits": "3",
+    "prerequisites": "Placement into college level English",
+    "semesters_offered": "F/S/SU",
+    "scraped_at": "2026-04-12T19:55:43.412898"
   },
   {
     "course_code": "BSS 112",
@@ -404,18 +404,18 @@
     "credits": "3",
     "prerequisites": "ALH 102",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:57:00.417144"
+    "scraped_at": "2026-04-12T19:55:49.388418"
   },
   {
     "course_code": "CPS 298",
     "department": "CPS",
     "course_number": "298",
-    "name": "PreCooperative Education Seminar",
-    "description": "The Pre Cooperative Education Seminar is a required preparatory course designed to provide students with the necessary structure, resources, and support to successfully secure and engage in their cooperative education experience. Students will learn about the attitudes, skills and behaviors expected by employers. They will develop an understanding of Cooperative Education policies, procedures and requirements. Students will prepare an effective cover letter and resume, practice interview skills, job search strategies and learn how to self-market for a successful Co-op experience and post-graduate job search. Students will work with Career Services & Credit for Prior Learning to complete the necessary job readiness workshops.",
-    "credits": "0",
+    "name": null,
+    "description": null,
+    "credits": null,
     "prerequisites": null,
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T12:57:13.155549"
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T19:56:08.449967"
   },
   {
     "course_code": "CHM 101",
@@ -426,7 +426,7 @@
     "credits": "4",
     "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:57:28.043844"
+    "scraped_at": "2026-04-12T19:58:24.399449"
   },
   {
     "course_code": "CHM 105",
@@ -437,7 +437,7 @@
     "credits": "4",
     "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:57:35.021326"
+    "scraped_at": "2026-04-12T19:58:31.882379"
   },
   {
     "course_code": "CHM 106",
@@ -448,18 +448,18 @@
     "credits": "4",
     "prerequisites": "CHM 105",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:59:44.468138"
+    "scraped_at": "2026-04-12T19:58:38.014414"
   },
   {
     "course_code": "CHM 123",
     "department": "CHM",
     "course_number": "123",
-    "name": "Princ Chemistry for Engineers I",
-    "description": "This is the first part of a two-semester course sequence. The course is designed for students in engineering or for students requiring a sound knowledge of chemical principles. Students learn chemical principles of atomic structure, stoichiometry, thermochemistry, gases, quantum theory, chemical bonding, intermolecular forces, and solutions.",
-    "credits": "4",
-    "prerequisites": "Corequisite: MAT 233",
-    "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:59:51.891115"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T19:58:51.852913"
   },
   {
     "course_code": "CHM 124",
@@ -470,7 +470,7 @@
     "credits": "4",
     "prerequisites": "CHM 123, MAT 233",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T12:59:59.719046"
+    "scraped_at": "2026-04-12T20:01:01.202027"
   },
   {
     "course_code": "CHM 201",
@@ -481,7 +481,7 @@
     "credits": "4",
     "prerequisites": "CHM 106 or CHM 124",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:00:07.690720"
+    "scraped_at": "2026-04-12T20:01:07.438642"
   },
   {
     "course_code": "CHM 202",
@@ -492,7 +492,7 @@
     "credits": "4",
     "prerequisites": "CHM 201",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:00:14.927683"
+    "scraped_at": "2026-04-12T20:01:13.379106"
   },
   {
     "course_code": "CIS 105",
@@ -503,7 +503,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:02:32.719937"
+    "scraped_at": "2026-04-12T20:01:26.697628"
   },
   {
     "course_code": "CIS 111",
@@ -514,40 +514,40 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:02:40.310314"
+    "scraped_at": "2026-04-12T20:02:06.819553"
   },
   {
     "course_code": "CSC 101",
     "department": "CSC",
     "course_number": "101",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T13:03:03.171606"
+    "name": "Introduction to Programming Using Python",
+    "description": "This course introduces analytical thinking and problem solving using the Python programming language. Python is a modern language popular in many scientific and engineering disciplines. Students learn key concepts that help them learn how to work with data in their disciplines. This course covers basic logic operations, creating reusable and generic functions, and the use of data structures to represent the components of a problem. Topics include control structures, iterators, functions, and basic data structures, such as list, dictionary, file, etc., which are common in many programming languages. Students implement, comment, test, and debug programs through class assignments.",
+    "credits": "3",
+    "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
+    "semesters_offered": "F/S",
+    "scraped_at": "2026-04-12T20:04:58.336984"
   },
   {
     "course_code": "CSC 105",
     "department": "CSC",
     "course_number": "105",
     "name": "IT Help Desk Concepts",
-    "description": "This course focuses on key information needed by user support professionals, including decision-making, communicating successfully with a client, determining the client''s specific needs, and technical writing for the end user. Students are introduced to the latest in support industry trends, such as the use of Web support, e-mail-based support, self-service support and automated help desk software. Career paths for user-support workers are researched and discussed. This course details real-life scenarios of working professionals and issues in the IT help desk environment.",
+    "description": "This course focuses on key information needed by user support professionals, including decision-making, communicating successfully with a client, determining the client's specific needs, and technical writing for the end user. Students are introduced to the latest in support industry trends, such as the use of Web support, e-mail-based support, self-service support and automated help desk software. Career paths for user-support workers are researched and discussed. This course details real-life scenarios of working professionals and issues in the IT help desk environment.",
     "credits": "2",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:05:14.692821"
+    "scraped_at": "2026-04-12T20:05:04.289802"
   },
   {
     "course_code": "CSC 108",
     "department": "CSC",
     "course_number": "108",
     "name": "Computer Science I",
-    "description": "CSC 108 is the initial course in a structured five-part computer science series, emphasizing foundational principles in procedural programming. Designed to progressively build students'' expertise, proficiency, and professional ethics in software engineering, the course introduces essential programming skills through a language supportive of the procedural paradigm. Central to the curriculum is the structured programming approach, guiding students through the systematic processes of designing, coding, and testing. The course emphasizes algorithmic thinking and methodical problem-solving, teaching students to conceptualize and efficiently decompose complex problems. Key aspects of procedural programming, such as writing functions and understanding control structures (loops, conditionals), are covered in depth to instill disciplined programming practices. In addition to technical skills, the course incorporates critical themes like security awareness, human-computer interaction, and social responsibility, aligning technical learning with broader societal impacts. Clear documentation, effective naming conventions, and a consistent coding style are underscored to promote a meticulous approach to software development. Conducted using a language like C++, the course involves four hours of lectures weekly and serves as the gateway to more advanced topics in the computer science series, equipping students with a robust foundation in procedural programming and its applications.",
+    "description": "CSC 108 is the initial course in a structured five-part computer science series, emphasizing foundational principles in procedural programming. Designed to progressively build students' expertise, proficiency, and professional ethics in software engineering, the course introduces essential programming skills through a language supportive of the procedural paradigm. Central to the curriculum is the structured programming approach, guiding students through the systematic processes of designing, coding, and testing. The course emphasizes algorithmic thinking and methodical problem-solving, teaching students to conceptualize and efficiently decompose complex problems. Key aspects of procedural programming, such as writing functions and understanding control structures (loops, conditionals), are covered in depth to instill disciplined programming practices. In addition to technical skills, the course incorporates critical themes like security awareness, human-computer interaction, and social responsibility, aligning technical learning with broader societal impacts. Clear documentation, effective naming conventions, and a consistent coding style are underscored to promote a meticulous approach to software development. Conducted using a language like C++, the course involves four hours of lectures weekly and serves as the gateway to more advanced topics in the computer science series, equipping students with a robust foundation in procedural programming and its applications.",
     "credits": "4",
     "prerequisites": "CSC 101 or prior AP Computer Science A (CSA), Placement into college level English, MAT 100 or appropriate placement score",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:05:21.618287"
+    "scraped_at": "2026-04-12T20:05:11.820327"
   },
   {
     "course_code": "CSC 109",
@@ -558,18 +558,18 @@
     "credits": "4",
     "prerequisites": "CSC 108 with a grade of \"C\" or higher",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:05:28.941924"
+    "scraped_at": "2026-04-12T20:05:18.524001"
   },
   {
     "course_code": "CSC 140",
     "department": "CSC",
     "course_number": "140",
-    "name": "Mobile Operating Systems",
-    "description": "This course explores information technology devices used in personal and professional capacities, including modern mobile operating systems environments. Students learn how to utilize, configure, and maintain common mobile operating systems including Windows, Android, and IOS in home and enterprise business environments. Students are presented with mobility related subject-matter contained within the CompTIA''s A+, Network+, and Security+ certification exams.",
-    "credits": "3",
+    "name": null,
+    "description": null,
+    "credits": null,
     "prerequisites": null,
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:05:36.550370"
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T20:05:31.924392"
   },
   {
     "course_code": "CSC 141",
@@ -580,7 +580,7 @@
     "credits": "4",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:07:49.610109"
+    "scraped_at": "2026-04-12T20:07:43.389028"
   },
   {
     "course_code": "CSC 201",
@@ -591,51 +591,51 @@
     "credits": "3",
     "prerequisites": "CSC 141 Corequisite: CST 245",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:07:56.851550"
+    "scraped_at": "2026-04-12T20:07:50.186967"
   },
   {
     "course_code": "CSC 208",
     "department": "CSC",
     "course_number": "208",
     "name": "Intro to Architecture and Assembly Language",
-    "description": "CSC 208 is the fourth installment of a comprehensive five-part computer science series. This course provides a comprehensive exploration of computer systems from a programmer''s perspective, bridging the gap between hardware and software. Students will gain a deep understanding of how computer systems execute programs and handle data, delving into topics like data representation, machine-level code, processor architecture, memory hierarchy, system-level I/O, and network programming. Emphasizing the translation of high-level programming languages into machine code, the course enhances skills in software optimization for efficiency and performance. With interactive labs and assignments, it offers practical experience in system-level programming, exploring hardware and software design choices. This course is ideal for those aiming to deepen their knowledge in computer architecture and system software, laying a solid foundation for advanced computer science and engineering studies.",
+    "description": "CSC 208 is the fourth installment of a comprehensive five-part computer science series. This course provides a comprehensive exploration of computer systems from a programmer's perspective, bridging the gap between hardware and software. Students will gain a deep understanding of how computer systems execute programs and handle data, delving into topics like data representation, machine-level code, processor architecture, memory hierarchy, system-level I/O, and network programming. Emphasizing the translation of high-level programming languages into machine code, the course enhances skills in software optimization for efficiency and performance. With interactive labs and assignments, it offers practical experience in system-level programming, exploring hardware and software design choices. This course is ideal for those aiming to deepen their knowledge in computer architecture and system software, laying a solid foundation for advanced computer science and engineering studies.",
     "credits": "4",
     "prerequisites": "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:08:05.180011"
+    "scraped_at": "2026-04-12T20:07:56.285886"
   },
   {
     "course_code": "CSC 210",
     "department": "CSC",
     "course_number": "210",
     "name": "Storage Technologies",
-    "description": "This course covers the information needed to plan, design, manage, and use storage technology infrastructure for information management in an enterprise environment. Students learn information availability and management theories commonly used in business today, including backup, recovery, and replication. Through hands-on activities, students implement solutions using modern storage subsystems such as Direct Attached Storage (DAS), Storage Attached Networks (SANs), Network Attached Storage (NAS), and Content Addressed Storage (CAS). This course contains subject-matter consistent with topics in EMC''s Storage Technologist and CompTIA''s Storage+ exams. Note: Some of the products and technologies discussed in this course are subject to federal government restrictions on exports from the U.S. Accordingly, all students registered for this course shall be subject to review under the \"Denied Persons List\" maintained by the U.S. Department of Commerce''s Bureau of Industry and Security in order to determine their eligibility to receive U.S. goods and technology information.",
+    "description": "This course covers the information needed to plan, design, manage, and use storage technology infrastructure for information management in an enterprise environment. Students learn information availability and management theories commonly used in business today, including backup, recovery, and replication. Through hands-on activities, students implement solutions using modern storage subsystems such as Direct Attached Storage (DAS), Storage Attached Networks (SANs), Network Attached Storage (NAS), and Content Addressed Storage (CAS). This course contains subject-matter consistent with topics in EMC's Storage Technologist and CompTIA's Storage+ exams. Note: Some of the products and technologies discussed in this course are subject to federal government restrictions on exports from the U.S. Accordingly, all students registered for this course shall be subject to review under the \"Denied Persons List\" maintained by the U.S. Department of Commerce's Bureau of Industry and Security in order to determine their eligibility to receive U.S. goods and technology information.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:08:13.496316"
+    "scraped_at": "2026-04-12T20:08:03.055558"
   },
   {
     "course_code": "CSC 212",
     "department": "CSC",
     "course_number": "212",
     "name": "Intro to Software Engineering",
-    "description": "CSC 212, the concluding course in the software engineering series, broadens the student''s perspective to encompass the full software development lifecycle, from initial concept to ongoing maintenance. Emphasizing the analysis and design of medium-sized systems, the course includes a comprehensive team project covering analysis, design, implementation, and testing phases, along with detailed documentation and test plans. Students are introduced to design patterns and advanced programming techniques using data structures and templates. A significant aspect of the course is the integration of professional ethics, software, and information assurance, addressing security concerns and liabilities in computer-based systems. The course culminates in a collaborative research project, culminating in a presentation to a live audience. This comprehensive approach prepares students for professional software development, emphasizing ethical considerations and a thorough understanding of the software lifecycle.",
+    "description": "CSC 212, the concluding course in the software engineering series, broadens the student's perspective to encompass the full software development lifecycle, from initial concept to ongoing maintenance. Emphasizing the analysis and design of medium-sized systems, the course includes a comprehensive team project covering analysis, design, implementation, and testing phases, along with detailed documentation and test plans. Students are introduced to design patterns and advanced programming techniques using data structures and templates. A significant aspect of the course is the integration of professional ethics, software, and information assurance, addressing security concerns and liabilities in computer-based systems. The course culminates in a collaborative research project, culminating in a presentation to a live audience. This comprehensive approach prepares students for professional software development, emphasizing ethical considerations and a thorough understanding of the software lifecycle.",
     "credits": "4",
     "prerequisites": "CSC 109 with a grade of \"C\" or higher or ROS 109 with a grade of \"C\" or higher",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:08:20.812593"
+    "scraped_at": "2026-04-12T20:16:38.970819"
   },
   {
     "course_code": "CST 205",
     "department": "CST",
     "course_number": "205",
     "name": "IT Security Foundations",
-    "description": "This course provides students with knowledge of the basic information security goals of availability, integrity, accuracy, and confidentiality. Vocabulary and terminology specific to the field of information security are discussed. Detection of exposures and vulnerabilities with their appropriate countermeasures, planning, and administrative controls are also discussed. Students become competent in the five areas of security, including general security, communications security, infrastructure security, cryptography, and operational/organizational security. This course presents subject-matter contained within CompTIA''s Security+ exam.",
+    "description": "This course provides students with knowledge of the basic information security goals of availability, integrity, accuracy, and confidentiality. Vocabulary and terminology specific to the field of information security are discussed. Detection of exposures and vulnerabilities with their appropriate countermeasures, planning, and administrative controls are also discussed. Students become competent in the five areas of security, including general security, communications security, infrastructure security, cryptography, and operational/organizational security. This course presents subject-matter contained within CompTIA's Security+ exam.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:10:36.655307"
+    "scraped_at": "2026-04-12T20:16:50.335466"
   },
   {
     "course_code": "CST 206",
@@ -646,40 +646,40 @@
     "credits": "3",
     "prerequisites": "CSC 141",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:10:43.890065"
+    "scraped_at": "2026-04-12T20:16:56.843976"
   },
   {
     "course_code": "CST 207",
     "department": "CST",
     "course_number": "207",
     "name": "Telecommunications in Business",
-    "description": "This course provides students with the key technical and business strategies needed to leverage telecommunications technologies effectively in the business enterprise today. This course covers the principles of implementing and managing secure integrated voice, video, and data for a converged network solution, as well as providing an understanding of the importance of the convergence of voice and data in today''s enterprise. This course introduces voice technologies including VOIP, IVR, phone systems, and call center management; reviews video technologies including IPTV and video conferencing; and explores the implementation of LAN and WAN-based technologies including circuit and packet-switched networks. Students are presented with subject-matter contained within the CompTIA''s Convergence Technologies Professional (CTP+) certification exam.",
+    "description": "This course provides students with the key technical and business strategies needed to leverage telecommunications technologies effectively in the business enterprise today. This course covers the principles of implementing and managing secure integrated voice, video, and data for a converged network solution, as well as providing an understanding of the importance of the convergence of voice and data in today's enterprise. This course introduces voice technologies including VOIP, IVR, phone systems, and call center management; reviews video technologies including IPTV and video conferencing; and explores the implementation of LAN and WAN-based technologies including circuit and packet-switched networks. Students are presented with subject-matter contained within the CompTIA's Convergence Technologies Professional (CTP+) certification exam.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:10:51.029713"
+    "scraped_at": "2026-04-12T20:19:07.942870"
   },
   {
     "course_code": "CST 208",
     "department": "CST",
     "course_number": "208",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T13:11:04.950667"
+    "name": "Enterprise IT Systems Security",
+    "description": "This course presents a modern and relevant introduction to information systems security in business. Topics presented combine technical and managerial competence, skills, experience, and credibility to design, implement, and manage enterprise IT systems and network environments. Students are presented with subject-matter contained within the International Information Systems Security Certification Consortium (ISC)2 Certified Information Security Professional (CISSP) certification exam.",
+    "credits": "3",
+    "prerequisites": "CSC 141",
+    "semesters_offered": "S",
+    "scraped_at": "2026-04-12T20:19:13.537329"
   },
   {
     "course_code": "CST 209",
     "department": "CST",
     "course_number": "209",
     "name": "Ethical Hacking",
-    "description": "This course combines an ethical hacking methodology with the hands-on application of security tools to assist students in maintaining secure computer and network infrastructures. Students learn to identify, counter, and defend hackers from penetrating networks and gaining access to vital information, mitigating potential threats. This course presents subject matter contained in the EC Council''s Certificated Ethical Hackers certification exam.",
+    "description": "This course combines an ethical hacking methodology with the hands-on application of security tools to assist students in maintaining secure computer and network infrastructures. Students learn to identify, counter, and defend hackers from penetrating networks and gaining access to vital information, mitigating potential threats. This course presents subject matter contained in the EC Council's Certificated Ethical Hackers certification exam.",
     "credits": "3",
     "prerequisites": "CSC 201, CST 205",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:13:38.613477"
+    "scraped_at": "2026-04-12T20:19:19.629398"
   },
   {
     "course_code": "CST 211",
@@ -690,18 +690,18 @@
     "credits": "3",
     "prerequisites": "CST 205",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:13:45.912137"
+    "scraped_at": "2026-04-12T20:19:25.827463"
   },
   {
     "course_code": "CST 231",
     "department": "CST",
     "course_number": "231",
-    "name": "Internetworking Princ& Protocols",
-    "description": "This course presents a detailed overview of the implementation of the Transmission Control Protocol/Internet Protocol (TCP/IP) suite, including security protocols. It prepares students with the necessary concepts and skills needed to configure, manage, and troubleshoot the TCP/IP environment. Upon completion of the course, students are able to configure TCP/IP clients and resources, configure and manage TCP/IP services, and troubleshoot network problems using TCP/IP utilities.",
-    "credits": "3",
-    "prerequisites": "Corequisite: CSC 234",
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:13:52.649487"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T20:19:39.366059"
   },
   {
     "course_code": "CST 235",
@@ -712,7 +712,7 @@
     "credits": "3",
     "prerequisites": "CSC 234 Corequisite: CST 231",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:14:00.822026"
+    "scraped_at": "2026-04-12T20:20:20.155928"
   },
   {
     "course_code": "CST 238",
@@ -723,7 +723,7 @@
     "credits": "3",
     "prerequisites": "Corequisite: CSC 241",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:16:13.450233"
+    "scraped_at": "2026-04-12T20:45:50.789801"
   },
   {
     "course_code": "CST 240",
@@ -734,29 +734,29 @@
     "credits": "3",
     "prerequisites": "Corequisite: CST 231",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:16:21.917621"
+    "scraped_at": "2026-04-12T20:45:57.272359"
   },
   {
     "course_code": "CST 245",
     "department": "CST",
     "course_number": "245",
     "name": "Unix Operating Systems",
-    "description": "This course provides students with a strong foundation in UNIX operating systems. Students explore the implementation of UNIX in a networked environment as a file/print server in an end-user environment and also as a special-purpose server, such as Web, e-mail, and database servers. Topics include installation and rebuilding of the operating system kernel, configuration, system administration and maintenance, and troubleshooting. This course presents subject-matter contained within the CompTIA''s Linux+ certification exams.",
+    "description": "This course provides students with a strong foundation in UNIX operating systems. Students explore the implementation of UNIX in a networked environment as a file/print server in an end-user environment and also as a special-purpose server, such as Web, e-mail, and database servers. Topics include installation and rebuilding of the operating system kernel, configuration, system administration and maintenance, and troubleshooting. This course presents subject-matter contained within the CompTIA's Linux+ certification exams.",
     "credits": "4",
     "prerequisites": "Corequisite: CSC 141",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:16:30.205702"
+    "scraped_at": "2026-04-12T20:46:03.838479"
   },
   {
     "course_code": "CST 299",
     "department": "CST",
     "course_number": "299",
     "name": "Computer Systems Cooperative Ed.",
-    "description": "This course provides students with a structured learning experience, in which they apply classroom theory to a practical work experience. The seminar provides opportunities for students to exchange feedback about their work experience. The number of credits earned is determined by the number of weeks and hours per week required by the cooperative work experience and the objectives of the student''s learning contract.",
+    "description": "This course provides students with a structured learning experience, in which they apply classroom theory to a practical work experience. The seminar provides opportunities for students to exchange feedback about their work experience. The number of credits earned is determined by the number of weeks and hours per week required by the cooperative work experience and the objectives of the student's learning contract.",
     "credits": "3",
     "prerequisites": "CPS 298, Approval of Program Coordinator",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:16:38.274659"
+    "scraped_at": "2026-04-12T20:46:10.379958"
   },
   {
     "course_code": "CRJ 101",
@@ -767,7 +767,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:19:31.572291"
+    "scraped_at": "2026-04-12T20:48:27.905040"
   },
   {
     "course_code": "CRJ 102",
@@ -778,7 +778,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/SU",
-    "scraped_at": "2026-04-10T13:19:39.692122"
+    "scraped_at": "2026-04-12T20:48:34.318061"
   },
   {
     "course_code": "CRJ 110",
@@ -789,7 +789,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:19:47.649462"
+    "scraped_at": "2026-04-12T20:48:41.913023"
   },
   {
     "course_code": "CRJ 111",
@@ -800,7 +800,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:19:55.122320"
+    "scraped_at": "2026-04-12T20:48:47.416205"
   },
   {
     "course_code": "CRJ 123",
@@ -811,7 +811,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:20:36.575597"
+    "scraped_at": "2026-04-12T20:50:59.414395"
   },
   {
     "course_code": "CRJ 211",
@@ -822,7 +822,7 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:20:45.045136"
+    "scraped_at": "2026-04-12T20:51:06.501488"
   },
   {
     "course_code": "CRJ 213",
@@ -833,7 +833,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:20:52.722546"
+    "scraped_at": "2026-04-12T21:02:14.662587"
   },
   {
     "course_code": "CRJ 231",
@@ -844,7 +844,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:20:59.959071"
+    "scraped_at": "2026-04-12T21:02:21.758450"
   },
   {
     "course_code": "DAS 105",
@@ -855,7 +855,7 @@
     "credits": "4",
     "prerequisites": "DAS 153 with a grade of \"C\" or higher Corequisite: DAS 111, DAS 124, DAS 155",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:23:21.901559"
+    "scraped_at": "2026-04-12T21:02:38.030861"
   },
   {
     "course_code": "DAS 111",
@@ -866,7 +866,7 @@
     "credits": "3",
     "prerequisites": "DAS 153 with a grade of \"C\" or higher Corequisite: DAS 105, DAS 124, DAS 155",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:23:29.230160"
+    "scraped_at": "2026-04-12T21:04:49.158569"
   },
   {
     "course_code": "DAS 124",
@@ -877,7 +877,7 @@
     "credits": "1",
     "prerequisites": "DAS 153 with a grade of \"C\" or higher Corequisite: DAS 105, DAS 111, DAS 155",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:23:37.182846"
+    "scraped_at": "2026-04-12T21:04:57.279702"
   },
   {
     "course_code": "DAS 155",
@@ -888,7 +888,7 @@
     "credits": "6",
     "prerequisites": "DAS 153 with a grade of \"C\" or higher Corequisite: DAS 105, DAS 111, DAS 124",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:25:46.177702"
+    "scraped_at": "2026-04-12T21:05:04.550304"
   },
   {
     "course_code": "DHY 112",
@@ -899,7 +899,7 @@
     "credits": "5",
     "prerequisites": "BIO 232 with a grade of \"C\" or higher, DHY 116 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:25:58.709870"
+    "scraped_at": "2026-04-12T21:05:18.919126"
   },
   {
     "course_code": "DHY 124",
@@ -910,7 +910,7 @@
     "credits": "2",
     "prerequisites": "DHY 116 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:26:06.642421"
+    "scraped_at": "2026-04-12T21:07:31.019095"
   },
   {
     "course_code": "DHY 126",
@@ -921,7 +921,7 @@
     "credits": "2",
     "prerequisites": "DHY 116 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:26:13.233831"
+    "scraped_at": "2026-04-12T21:07:38.603169"
   },
   {
     "course_code": "DHY 150",
@@ -932,7 +932,7 @@
     "credits": "2",
     "prerequisites": "DHY 116 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:28:23.200420"
+    "scraped_at": "2026-04-12T21:07:45.077609"
   },
   {
     "course_code": "DHY 202",
@@ -943,7 +943,7 @@
     "credits": "2",
     "prerequisites": "DHY 201 with a grade of \"C\" or higher, DHY 211 with a grade of \"C\" or higher, DHY 231 with a grade of \"C\" or higher, DHY 241 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:28:30.166062"
+    "scraped_at": "2026-04-12T21:07:51.494276"
   },
   {
     "course_code": "DHY 212",
@@ -954,7 +954,7 @@
     "credits": "6",
     "prerequisites": "DHY 201 with a grade of \"C\" or higher, DHY 211 with a grade of \"C\" or higher, DHY 231 with a grade of \"C\" or higher, DHY 241 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:28:36.942291"
+    "scraped_at": "2026-04-12T21:10:03.231654"
   },
   {
     "course_code": "DHY 243",
@@ -965,7 +965,7 @@
     "credits": "2",
     "prerequisites": "DHY 201 with a grade of \"C\" or higher, DHY 211 with a grade of \"C\" or higher, DHY 231 with a grade of \"C\" or higher, DHY 241 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:28:46.132010"
+    "scraped_at": "2026-04-12T21:10:13.537762"
   },
   {
     "course_code": "DHY 250",
@@ -976,51 +976,51 @@
     "credits": "2",
     "prerequisites": "DHY 116 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:32:00.368720"
+    "scraped_at": "2026-04-12T21:10:21.942680"
   },
   {
     "course_code": "ECE 101",
     "department": "ECE",
     "course_number": "101",
     "name": "Intro to Early Childhood Educ",
-    "description": "This course is an introduction to early childhood education. Students study the history of the field, including theories and fundamentals essential to quality programming for young children. Course content includes studies of child development framed with an anti-bias lens with respect to diversity in race, culture, gender expression, family configuration, and language. Students learn state health and safety regulations, legal and ethical considerations in teaching, and standards of high-quality teaching practices. Students review the goals, benefits, and appropriate uses of assessment through observations conducted in the Children''s School: QCC''s Early Childhood Education Lab School; local, licensed Child Care program; or public school.",
+    "description": "This course is an introduction to early childhood education. Students study the history of the field, including theories and fundamentals essential to quality programming for young children. Course content includes studies of child development framed with an anti-bias lens with respect to diversity in race, culture, gender expression, family configuration, and language. Students learn state health and safety regulations, legal and ethical considerations in teaching, and standards of high-quality teaching practices. Students review the goals, benefits, and appropriate uses of assessment through observations conducted in the Children's School: QCC's Early Childhood Education Lab School; local, licensed Child Care program; or public school.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:32:14.582697"
+    "scraped_at": "2026-04-12T21:10:36.985954"
   },
   {
     "course_code": "ECE 102",
     "department": "ECE",
     "course_number": "102",
     "name": "Growth & Development/Young Child",
-    "description": "This course covers the dynamics of child growth and development from birth to eight (8) years of age. Students identify a range of child growth and development theories and study cultural, economic, political, psychodynamic, and historical contexts that affect development. Through developmental observations, students describe children''s physical, cognitive, social, and emotional development at various stages, including infant/toddler, preschool, and young school age.",
+    "description": "This course covers the dynamics of child growth and development from birth to eight (8) years of age. Students identify a range of child growth and development theories and study cultural, economic, political, psychodynamic, and historical contexts that affect development. Through developmental observations, students describe children's physical, cognitive, social, and emotional development at various stages, including infant/toddler, preschool, and young school age.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:32:22.450117"
+    "scraped_at": "2026-04-12T21:59:21.147049"
   },
   {
     "course_code": "ECE 112",
     "department": "ECE",
     "course_number": "112",
     "name": "Family Issues & Dynamics",
-    "description": "This course focuses on the family life cycle, economics, family interactions and patterns, and family diversity; and, the course examines the effect these variables have on children''s growth and development. Students relate these variables to their own personal family history and then examine this information in order to support children and families in school settings.",
+    "description": "This course focuses on the family life cycle, economics, family interactions and patterns, and family diversity; and, the course examines the effect these variables have on children's growth and development. Students relate these variables to their own personal family history and then examine this information in order to support children and families in school settings.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:32:29.637428"
+    "scraped_at": "2026-04-12T21:59:28.672775"
   },
   {
     "course_code": "ECE 150",
     "department": "ECE",
     "course_number": "150",
     "name": "Intro Student Teaching Practicum",
-    "description": "This course requires students to participate in 150 hours of practical classroom experience working with children under the age of seven (7) in either the Children''s School: QCC''s Early Childhood Education Lab School or a community school setting under faculty supervision. Competencies introduced include maintaining a developmentally appropriate, safe, and inclusive learning environment; developing, implementing, and evaluating appropriate activities for young children; demonstrating positive and intentional interactions with children; and using positive guidance strategies. Students will demonstrate strategies that keep children safe and healthy. Students participate in seminar and observations with faculty.",
+    "description": "This course requires students to participate in 150 hours of practical classroom experience working with children under the age of seven (7) in either the Children's School: QCC's Early Childhood Education Lab School or a community school setting under faculty supervision. Competencies introduced include maintaining a developmentally appropriate, safe, and inclusive learning environment; developing, implementing, and evaluating appropriate activities for young children; demonstrating positive and intentional interactions with children; and using positive guidance strategies. Students will demonstrate strategies that keep children safe and healthy. Students participate in seminar and observations with faculty.",
     "credits": "4",
     "prerequisites": "Corequisite: ECE 102",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:33:11.416450"
+    "scraped_at": "2026-04-12T21:59:36.770237"
   },
   {
     "course_code": "ECE 202",
@@ -1031,7 +1031,7 @@
     "credits": "3",
     "prerequisites": "ECE 102",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:33:18.751585"
+    "scraped_at": "2026-04-12T21:59:44.604449"
   },
   {
     "course_code": "ECE 221",
@@ -1042,7 +1042,7 @@
     "credits": "3",
     "prerequisites": "ECE 102",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:34:00.451017"
+    "scraped_at": "2026-04-12T22:00:24.380636"
   },
   {
     "course_code": "ECE 232",
@@ -1053,7 +1053,7 @@
     "credits": "3",
     "prerequisites": "ECE 231, ECE 251, ECE 253, ENG 101 Corequisite: ECE 252, ECE 254",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:34:08.353471"
+    "scraped_at": "2026-04-12T22:00:31.679907"
   },
   {
     "course_code": "ECE 242",
@@ -1064,7 +1064,7 @@
     "credits": "3",
     "prerequisites": "ECE 102 or PSY 123, Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:34:15.788165"
+    "scraped_at": "2026-04-12T22:02:42.199141"
   },
   {
     "course_code": "ECO 215",
@@ -1075,7 +1075,7 @@
     "credits": "3",
     "prerequisites": "Corequisite: ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:35:03.869847"
+    "scraped_at": "2026-04-12T22:02:55.986041"
   },
   {
     "course_code": "ECO 216",
@@ -1086,7 +1086,7 @@
     "credits": "3",
     "prerequisites": "Corequisite: ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:35:11.768915"
+    "scraped_at": "2026-04-12T22:03:03.740817"
   },
   {
     "course_code": "ELM 251",
@@ -1097,7 +1097,7 @@
     "credits": "4",
     "prerequisites": "ELT 104, ELT 121",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:35:59.105941"
+    "scraped_at": "2026-04-12T22:05:20.819396"
   },
   {
     "course_code": "ELM 257",
@@ -1108,18 +1108,18 @@
     "credits": "4",
     "prerequisites": "ELT 103",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:36:06.303832"
+    "scraped_at": "2026-04-12T22:05:29.008347"
   },
   {
     "course_code": "ELM 258",
     "department": "ELM",
     "course_number": "258",
     "name": "Mechatronic Systems",
-    "description": "This course provides students with a systems-level overview of mechatronic systems and how they are integrated into today''s highly automated manufacturing environments. Topics include equipment safety, power distribution, pneumatics, controller I/O, SCADA networks, HMI programming, and manufacturing execution systems (MES). Students learn and practice systematic troubleshooting, problem solving, and preventive and corrective maintenance. Classroom material is reinforced by lab activities using a highly automated manufacturing system and other mechatronic systems.",
+    "description": "This course provides students with a systems-level overview of mechatronic systems and how they are integrated into today's highly automated manufacturing environments. Topics include equipment safety, power distribution, pneumatics, controller I/O, SCADA networks, HMI programming, and manufacturing execution systems (MES). Students learn and practice systematic troubleshooting, problem solving, and preventive and corrective maintenance. Classroom material is reinforced by lab activities using a highly automated manufacturing system and other mechatronic systems.",
     "credits": "4",
     "prerequisites": "Corequisite: ELM 257",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:36:13.721480"
+    "scraped_at": "2026-04-12T22:05:36.221515"
   },
   {
     "course_code": "ELM 260",
@@ -1130,18 +1130,18 @@
     "credits": "4",
     "prerequisites": "ELT 121 or MNT 115",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:36:54.555449"
+    "scraped_at": "2026-04-12T22:05:42.588209"
   },
   {
     "course_code": "ELT 103",
     "department": "ELT",
     "course_number": "103",
     "name": "DC and AC Circuits",
-    "description": "This course introduces students to DC and AC electrical circuits. Students learn the concepts of voltage, current, resistance, magnetism, and power and energy and the relationships between them. Methods of circuit analysis using Ohm''s Law, Kirchhoff''s Laws, and network theorems are studied. Concepts of AC, capacitance, and inductance are presented. Impedance, R-L-C circuits, and impedance networks are introduced. In the laboratory, students learn how to read electrical schematics and construct circuits using proper wiring and soldering techniques. Students use a variety of test equipment including digital multi-meters, oscilloscopes, and function generators to analyze and troubleshoot circuits.",
+    "description": "This course introduces students to DC and AC electrical circuits. Students learn the concepts of voltage, current, resistance, magnetism, and power and energy and the relationships between them. Methods of circuit analysis using Ohm's Law, Kirchhoff's Laws, and network theorems are studied. Concepts of AC, capacitance, and inductance are presented. Impedance, R-L-C circuits, and impedance networks are introduced. In the laboratory, students learn how to read electrical schematics and construct circuits using proper wiring and soldering techniques. Students use a variety of test equipment including digital multi-meters, oscilloscopes, and function generators to analyze and troubleshoot circuits.",
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:37:12.158623"
+    "scraped_at": "2026-04-12T22:08:04.433026"
   },
   {
     "course_code": "ELT 104",
@@ -1152,7 +1152,7 @@
     "credits": "4",
     "prerequisites": "ELT 103",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:39:21.730881"
+    "scraped_at": "2026-04-12T22:08:11.472074"
   },
   {
     "course_code": "ELT 121",
@@ -1163,7 +1163,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:39:28.786681"
+    "scraped_at": "2026-04-12T22:08:19.088449"
   },
   {
     "course_code": "ELT 130",
@@ -1174,7 +1174,7 @@
     "credits": "4",
     "prerequisites": "ELT 103, ELT 121",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:39:36.524898"
+    "scraped_at": "2026-04-12T22:08:26.356552"
   },
   {
     "course_code": "EDU 101",
@@ -1185,18 +1185,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T13:41:53.764240"
+    "scraped_at": "2026-04-12T22:10:43.496607"
   },
   {
     "course_code": "EDU 103",
     "department": "EDU",
     "course_number": "103",
     "name": "Found of Multicult Educ & Diver",
-    "description": "This course examines the relationship of cultural values and social contexts to the formation of the child''s self-concept and success in the educational environment. An examination of the role of prejudice, stereotypes, institutional racism and sexism, and cultural incompatibilities in education will be included. Emphasis on considering different world views, preparing future teachers to offer an equal educational opportunity to children of all cultural groups, and considering course concepts in relationship to the work environment. A pre-practicum of 24 hours beyond classroom time is required for successful completion of the course.",
+    "description": "This course examines the relationship of cultural values and social contexts to the formation of the child's self-concept and success in the educational environment. An examination of the role of prejudice, stereotypes, institutional racism and sexism, and cultural incompatibilities in education will be included. Emphasis on considering different world views, preparing future teachers to offer an equal educational opportunity to children of all cultural groups, and considering course concepts in relationship to the work environment. A pre-practicum of 24 hours beyond classroom time is required for successful completion of the course.",
     "credits": "3",
     "prerequisites": "EDU 101, ENG 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:42:00.640146"
+    "scraped_at": "2026-04-12T22:10:50.578338"
   },
   {
     "course_code": "EDU 204",
@@ -1207,7 +1207,7 @@
     "credits": "3",
     "prerequisites": "EDU 202",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T13:49:58.078462"
+    "scraped_at": "2026-04-12T22:10:57.134174"
   },
   {
     "course_code": "EMT 101",
@@ -1218,7 +1218,7 @@
     "credits": "7",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:50:09.540141"
+    "scraped_at": "2026-04-12T22:13:12.645616"
   },
   {
     "course_code": "ERG 101",
@@ -1229,7 +1229,7 @@
     "credits": "3",
     "prerequisites": "MAT 124",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:50:24.302623"
+    "scraped_at": "2026-04-12T22:13:26.334914"
   },
   {
     "course_code": "ERG 211",
@@ -1240,18 +1240,18 @@
     "credits": "3",
     "prerequisites": "CHM 123, PHY 105",
     "semesters_offered": "F/SU",
-    "scraped_at": "2026-04-10T13:52:36.360949"
+    "scraped_at": "2026-04-12T22:13:33.317250"
   },
   {
     "course_code": "ERG 221",
     "department": "ERG",
     "course_number": "221",
-    "name": "Statics",
-    "description": "This course covers a vector approach in studying static systems. Areas of study include the resultant of concentrated and distributed force systems, two and three-dimensional equilibrium, trusses, plane friction, centeroids, and moments of inertia. Students learn how to use integral equations to determine centeroids and moments of inertia for various geometrical shapes and derive and graph equations of shear and moment.",
-    "credits": "3",
-    "prerequisites": "PHY 105 Corequisite: MAT 235",
-    "semesters_offered": "F/IN",
-    "scraped_at": "2026-04-10T13:52:42.826787"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T22:13:47.213139"
   },
   {
     "course_code": "ERG 223",
@@ -1262,18 +1262,18 @@
     "credits": "3",
     "prerequisites": "CHM 124, MAT 235, PHY 107",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:52:50.058731"
+    "scraped_at": "2026-04-12T22:15:56.428603"
   },
   {
     "course_code": "ERG 225",
     "department": "ERG",
     "course_number": "225",
     "name": "Strength of Materials",
-    "description": "This course emphasizes stress and strain and the mechanical properties of materials. Topics include axial load, torsion, bending and deflection of beams, Hooke''s Law, Mohr''s circle, transfer shear, combined loading, stress, strain transformation, design of beams, and buckling of columns. Students use integral and differential equations to solve problems in design of beams and structures.",
+    "description": "This course emphasizes stress and strain and the mechanical properties of materials. Topics include axial load, torsion, bending and deflection of beams, Hooke's Law, Mohr's circle, transfer shear, combined loading, stress, strain transformation, design of beams, and buckling of columns. Students use integral and differential equations to solve problems in design of beams and structures.",
     "credits": "3",
     "prerequisites": "ERG 221, MAT 235 Corequisite: MAT 238",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T13:52:57.275991"
+    "scraped_at": "2026-04-12T22:16:02.724776"
   },
   {
     "course_code": "ERG 280",
@@ -1284,7 +1284,7 @@
     "credits": "3",
     "prerequisites": "MAT 233",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:55:10.408287"
+    "scraped_at": "2026-04-12T22:16:10.604141"
   },
   {
     "course_code": "ENG 099",
@@ -1295,18 +1295,18 @@
     "credits": "3",
     "prerequisites": "Appropriate placement; any student testing into or self-placing into developmental English may enroll in this course",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:55:24.065635"
+    "scraped_at": "2026-04-12T22:16:24.796127"
   },
   {
     "course_code": "ENG 101",
     "department": "ENG",
     "course_number": "101",
     "name": "Composition I",
-    "description": "The course focuses on theme-based argument. Students practice and develop critical reading, thinking, and writing skills necessary for college. Students read, analyze, and summarize college level analytic arguments from various genres (popular, academic, etc.) and compose research-based analytic arguments based on the course''s theme. Students become aware of writing decisions made for different audiences, purposes, and genres, with a focus on academic writing conventions. Students also learn beginning research skills, including appropriate quotation, summary, paraphrase, and documentation skills. At the end of the semester, students compile a portfolio of 15-25 pages, to include their summary, synthesis, and analysis projects.",
+    "description": "The course focuses on theme-based argument. Students practice and develop critical reading, thinking, and writing skills necessary for college. Students read, analyze, and summarize college level analytic arguments from various genres (popular, academic, etc.) and compose research-based analytic arguments based on the course's theme. Students become aware of writing decisions made for different audiences, purposes, and genres, with a focus on academic writing conventions. Students also learn beginning research skills, including appropriate quotation, summary, paraphrase, and documentation skills. At the end of the semester, students compile a portfolio of 15-25 pages, to include their summary, synthesis, and analysis projects.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T13:55:31.515668"
+    "scraped_at": "2026-04-12T22:18:36.361283"
   },
   {
     "course_code": "ESL 103",
@@ -1317,7 +1317,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:57:47.272326"
+    "scraped_at": "2026-04-12T22:18:51.639479"
   },
   {
     "course_code": "ESL 104",
@@ -1328,18 +1328,18 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 103 passed with a grade of \"C\" or higher or appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:57:54.046653"
+    "scraped_at": "2026-04-12T22:18:58.261056"
   },
   {
     "course_code": "ESL 105",
     "department": "ESL",
     "course_number": "105",
-    "name": "ESL: Writing III",
-    "description": "This course develops students'' skills in essay writing. Students focus on writing and revising longer pieces using complex structures and appropriate rhetorical modes. The minimal passing grade for ESL courses is a \"C\".",
-    "credits": "3",
-    "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 104 passed with a grade of \"C\" or higher or appropriate placement score",
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:58:01.122795"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T22:19:12.861588"
   },
   {
     "course_code": "ESL 113",
@@ -1350,7 +1350,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:58:08.752302"
+    "scraped_at": "2026-04-12T22:19:20.527640"
   },
   {
     "course_code": "ESL 114",
@@ -1361,7 +1361,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 113 passed with a grade of \"C\" or higher or appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T13:58:15.360715"
+    "scraped_at": "2026-04-12T22:20:02.243657"
   },
   {
     "course_code": "ESL 115",
@@ -1372,7 +1372,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 114 passed with a grade of \"C\" or higher or appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:00:24.279508"
+    "scraped_at": "2026-04-12T22:20:09.589446"
   },
   {
     "course_code": "ESL 133",
@@ -1383,7 +1383,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:00:30.502111"
+    "scraped_at": "2026-04-12T22:20:17.262607"
   },
   {
     "course_code": "ESL 134",
@@ -1394,7 +1394,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 133 passed with a grade of \"C\" or higher or appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:00:37.684041"
+    "scraped_at": "2026-04-12T22:20:25.343735"
   },
   {
     "course_code": "ESL 135",
@@ -1405,7 +1405,7 @@
     "credits": "3",
     "prerequisites": "Non-native speaker of English, High School Diploma or GED and ESL 134 passed with a grade of \"C\" or higher or appropriate placement score",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:00:44.108728"
+    "scraped_at": "2026-04-12T22:22:34.988806"
   },
   {
     "course_code": "FIN 111",
@@ -1416,7 +1416,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:02:58.581031"
+    "scraped_at": "2026-04-12T22:22:49.815919"
   },
   {
     "course_code": "FIN 250",
@@ -1427,7 +1427,7 @@
     "credits": "3",
     "prerequisites": "ACC 101, Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T14:03:04.604120"
+    "scraped_at": "2026-04-12T22:22:56.887252"
   },
   {
     "course_code": "FSC 101",
@@ -1438,7 +1438,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T14:03:15.664251"
+    "scraped_at": "2026-04-12T22:25:15.289469"
   },
   {
     "course_code": "FSC 104",
@@ -1449,7 +1449,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English, FSC 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T14:05:25.768174"
+    "scraped_at": "2026-04-12T22:25:23.236108"
   },
   {
     "course_code": "FSC 121",
@@ -1460,18 +1460,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English, FSC 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T14:05:32.600761"
+    "scraped_at": "2026-04-12T22:25:30.186300"
   },
   {
     "course_code": "FSC 223",
     "department": "FSC",
     "course_number": "223",
-    "name": "Fire Protection Systems",
-    "description": "This course provides information relating to the features of design and operation of fire alarm systems, water-based fire suppression systems, special hazard fire suppression systems, water supply for fire protection and portable fire extinguishers. This course follows the curriculum established by the Fire and Emergency Services Higher Education (FESHE) network.",
-    "credits": "3",
-    "prerequisites": "FSC 203",
-    "semesters_offered": "S",
-    "scraped_at": "2026-04-10T14:05:38.841246"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T22:25:45.194895"
   },
   {
     "course_code": "FSC 242",
@@ -1482,7 +1482,7 @@
     "credits": "3",
     "prerequisites": "FSC 203, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T14:05:44.170430"
+    "scraped_at": "2026-04-12T22:26:26.160872"
   },
   {
     "course_code": "FSC 263",
@@ -1493,7 +1493,29 @@
     "credits": "3",
     "prerequisites": "FSC 203, SPH 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T14:07:57.194331"
+    "scraped_at": "2026-04-12T22:26:32.840751"
+  },
+  {
+    "course_code": "FYE 101",
+    "department": "FYE",
+    "course_number": "101",
+    "name": "First Year Experience",
+    "description": "This course will help new students make a successful transition to campus, both academically and personally. The course aims to foster a sense of belonging, promote engagement in the curricular and co-curricular life of the college, develop learning strategies, establish career planning skills, and help to clarify purpose, meaning and direction.",
+    "credits": "3",
+    "prerequisites": null,
+    "semesters_offered": "F/S/SU",
+    "scraped_at": "2026-04-12T22:27:19.967724"
+  },
+  {
+    "course_code": "FYE 102",
+    "department": "FYE",
+    "course_number": "102",
+    "name": "Healthcare First Year Experience",
+    "description": "This course will help new Healthcare students make a successful transition to campus, both academically and personally. The course aims to foster a sense of belonging, promote engagement in the curricular and co-curricular life of the college, develop learning strategies, establish health career planning skills, and help to clarify purpose, meaning and direction. This course will offer students interested in healthcare careers the opportunity to identify and examine the admissions requirements of healthcare programs.",
+    "credits": "3",
+    "prerequisites": null,
+    "semesters_offered": "F/S/SU",
+    "scraped_at": "2026-04-12T22:27:27.634294"
   },
   {
     "course_code": "FRC 111",
@@ -1504,7 +1526,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T18:57:57.023217"
+    "scraped_at": "2026-04-12T22:28:15.149248"
   },
   {
     "course_code": "FRC 112",
@@ -1515,7 +1537,7 @@
     "credits": "3",
     "prerequisites": "FRC 111",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T18:58:03.137929"
+    "scraped_at": "2026-04-12T22:30:27.652119"
   },
   {
     "course_code": "GEO 210",
@@ -1526,7 +1548,7 @@
     "credits": "3",
     "prerequisites": "Corequisite: ENG 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T18:58:15.917367"
+    "scraped_at": "2026-04-12T22:30:40.009877"
   },
   {
     "course_code": "GRT 101",
@@ -1537,7 +1559,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:00:36.578274"
+    "scraped_at": "2026-04-12T22:55:39.258731"
   },
   {
     "course_code": "HVC 101",
@@ -1548,62 +1570,62 @@
     "credits": "4",
     "prerequisites": "Enrollment limited to HVC majors only Corequisite: HVC 102, HVC 108",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:00:54.812505"
+    "scraped_at": "2026-04-12T22:55:55.704256"
   },
   {
     "course_code": "HVC 102",
     "department": "HVC",
     "course_number": "102",
     "name": "Basic Electricity",
-    "description": "Students are exposed to AC fundamentals, Ohm''s Law, and other circuit rules effecting circuit behavior, as well as basic electrical components used to develop series and parallel control circuits. Laboratory exercises focus on creating wiring diagrams, and then applying them to actual wiring practices on working circuitry. Students are trained in the use of electrical meters to develop troubleshooting procedures. Electrical Safety is incorporated into all activities. This course includes a laboratory component.",
+    "description": "Students are exposed to AC fundamentals, Ohm's Law, and other circuit rules effecting circuit behavior, as well as basic electrical components used to develop series and parallel control circuits. Laboratory exercises focus on creating wiring diagrams, and then applying them to actual wiring practices on working circuitry. Students are trained in the use of electrical meters to develop troubleshooting procedures. Electrical Safety is incorporated into all activities. This course includes a laboratory component.",
     "credits": "4",
     "prerequisites": "Enrollment limited to HVC majors only Corequisite: HVC 101, HVC 108",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:01:36.248242"
+    "scraped_at": "2026-04-12T22:56:01.699670"
   },
   {
     "course_code": "HVC 108",
     "department": "HVC",
     "course_number": "108",
     "name": "Motors and Motor Controls",
-    "description": "This course provides students with a systems-level overview of electric motors and motor controls and how they are integrated into today''s highly energy efficient HVAC systems. Topics include equipment safety, electrical theory of induction motors, relays, contactors and motor starters. Electrical safety and adherence to the NEC are imbedded in the course topics and lab instruction. Students will learn and practice systematic troubleshooting, problem solving and preventative maintenance. Classroom material is reinforced by lab activities using real world equipment in a lab setting.",
+    "description": "This course provides students with a systems-level overview of electric motors and motor controls and how they are integrated into today's highly energy efficient HVAC systems. Topics include equipment safety, electrical theory of induction motors, relays, contactors and motor starters. Electrical safety and adherence to the NEC are imbedded in the course topics and lab instruction. Students will learn and practice systematic troubleshooting, problem solving and preventative maintenance. Classroom material is reinforced by lab activities using real world equipment in a lab setting.",
     "credits": "4",
     "prerequisites": "Enrollment limited to HVC majors only Corequisite: HVC 101, HVC 102",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:01:42.904865"
+    "scraped_at": "2026-04-12T22:58:12.450136"
   },
   {
     "course_code": "HST 104",
     "department": "HST",
     "course_number": "104",
     "name": "World History I: Beg to 1500",
-    "description": "This course examines the world''s ancient and pre-modern peoples, cultures, and civilizations. It emphasizes themes such as the development of agriculture and rise of civilization, formation of empires, development of religions, and economic and cultural interaction between regions of the world.",
+    "description": "This course examines the world's ancient and pre-modern peoples, cultures, and civilizations. It emphasizes themes such as the development of agriculture and rise of civilization, formation of empires, development of religions, and economic and cultural interaction between regions of the world.",
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:01:56.001832"
+    "scraped_at": "2026-04-12T22:58:25.892914"
   },
   {
     "course_code": "HST 105",
     "department": "HST",
     "course_number": "105",
     "name": "World History II: 1500-WWI HONORS",
-    "description": "This course examines the convergence of the world''s people, cultures, and civilizations on a global scale beginning around the 16th century. It emphasizes themes such as the emerging global economy, colonialism, revolution, industrialization, imperialism, and the rise of the nation-state.",
+    "description": "This course examines the convergence of the world's people, cultures, and civilizations on a global scale beginning around the 16th century. It emphasizes themes such as the emerging global economy, colonialism, revolution, industrialization, imperialism, and the rise of the nation-state.",
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:04:07.055017"
+    "scraped_at": "2026-04-12T22:58:33.657151"
   },
   {
     "course_code": "HST 106",
     "department": "HST",
     "course_number": "106",
     "name": "World History III: WW1-Present",
-    "description": "This course examines recent and current interactions between the world''s peoples, cultures, and civilizations. It emphasizes themes such as nationalism, migrations, technology, and economic and cultural interaction on a global scale.",
+    "description": "This course examines recent and current interactions between the world's peoples, cultures, and civilizations. It emphasizes themes such as nationalism, migrations, technology, and economic and cultural interaction on a global scale.",
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:04:13.903686"
+    "scraped_at": "2026-04-12T23:00:47.020171"
   },
   {
     "course_code": "HST 115",
@@ -1614,18 +1636,18 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:04:22.794736"
+    "scraped_at": "2026-04-12T23:00:54.350889"
   },
   {
     "course_code": "HST 116",
     "department": "HST",
     "course_number": "116",
     "name": "U.S. History: 1865 to Present",
-    "description": "This course surveys the period from the end of the Civil War to present-day. Topics include Reconstruction; Gilded Age, populism and progressivism; imperialism; World War I; Great Depression and New Deal; World War II; Cold War; the Sixties; conservatism; globalization and September 11th''s aftermath. Students examine the Constitution in light of politics, society, economy, and culture of the period.",
+    "description": "This course surveys the period from the end of the Civil War to present-day. Topics include Reconstruction; Gilded Age, populism and progressivism; imperialism; World War I; Great Depression and New Deal; World War II; Cold War; the Sixties; conservatism; globalization and September 11th's aftermath. Students examine the Constitution in light of politics, society, economy, and culture of the period.",
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:04:31.566964"
+    "scraped_at": "2026-04-12T23:01:01.406447"
   },
   {
     "course_code": "HRM 101",
@@ -1636,7 +1658,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:05:20.889215"
+    "scraped_at": "2026-04-12T23:01:14.674129"
   },
   {
     "course_code": "HRM 110",
@@ -1647,7 +1669,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:07:32.948690"
+    "scraped_at": "2026-04-12T23:03:27.945452"
   },
   {
     "course_code": "HRM 111",
@@ -1658,7 +1680,7 @@
     "credits": "4",
     "prerequisites": "Corequisite: HRM 110",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:07:40.573840"
+    "scraped_at": "2026-04-12T23:03:35.393805"
   },
   {
     "course_code": "HRM 112",
@@ -1669,7 +1691,7 @@
     "credits": "4",
     "prerequisites": "Corequisite: HRM 110",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:07:47.437966"
+    "scraped_at": "2026-04-12T23:03:44.389906"
   },
   {
     "course_code": "HRM 115",
@@ -1680,7 +1702,7 @@
     "credits": "1",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:07:54.844270"
+    "scraped_at": "2026-04-12T23:03:51.503296"
   },
   {
     "course_code": "HRM 131",
@@ -1691,18 +1713,18 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:10:06.365310"
+    "scraped_at": "2026-04-12T23:06:04.251794"
   },
   {
     "course_code": "HRM 136",
     "department": "HRM",
     "course_number": "136",
     "name": "Front Office Management",
-    "description": "This course focuses on the application of hospitality service principles related to customer service including planning, organization, implementation and management of service systems and staff. Through case studies, students experience communication, problem solving, and decision-making as related to the effective management of the front office. The course also stresses customer-centered concepts in the areas of hiring, training, and motivating employees. Students participate in the International Customer Service Association''s CS certification program.",
+    "description": "This course focuses on the application of hospitality service principles related to customer service including planning, organization, implementation and management of service systems and staff. Through case studies, students experience communication, problem solving, and decision-making as related to the effective management of the front office. The course also stresses customer-centered concepts in the areas of hiring, training, and motivating employees. Students participate in the International Customer Service Association's CS certification program.",
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:10:13.239809"
+    "scraped_at": "2026-04-12T23:06:12.285513"
   },
   {
     "course_code": "HRM 139",
@@ -1713,7 +1735,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:10:21.439371"
+    "scraped_at": "2026-04-12T23:06:20.538110"
   },
   {
     "course_code": "HRM 201",
@@ -1724,18 +1746,18 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:10:29.928059"
+    "scraped_at": "2026-04-12T23:06:28.099904"
   },
   {
     "course_code": "HRM 215",
     "department": "HRM",
     "course_number": "215",
-    "name": "Contract Foodservice Management",
-    "description": "This course covers the basic systems found in contract foodservice operations such as schools, healthcare facilities, and corporate environments. Students examine consumer needs with an emphasis on planning cyclical and pre-set menus, kitchen layout and design, and facilities planning and equipment selection. Students also review the foodservice and prototype contract, the contracting process, and catering services as a function of contract foodservice operations. Students attend a restaurant trade show or conduct research and complete a project on equipment and/or facility design.",
-    "credits": "3",
-    "prerequisites": "Corequisite: HRM 110 or HRM 115",
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:10:36.385101"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-12T23:06:42.857011"
   },
   {
     "course_code": "HRM 216",
@@ -1746,7 +1768,7 @@
     "credits": "3",
     "prerequisites": "Corequisite: CUL 111 or CUL 112 or CUL 113 or CUL 114 or HRM 110",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:12:47.116049"
+    "scraped_at": "2026-04-12T23:07:26.133603"
   },
   {
     "course_code": "HRM 218",
@@ -1757,7 +1779,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:12:56.473862"
+    "scraped_at": "2026-04-12T23:07:34.498447"
   },
   {
     "course_code": "HRM 235",
@@ -1768,7 +1790,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:13:03.539976"
+    "scraped_at": "2026-04-12T23:09:48.043831"
   },
   {
     "course_code": "HRM 236",
@@ -1779,7 +1801,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:13:12.299559"
+    "scraped_at": "2026-04-12T23:09:55.972615"
   },
   {
     "course_code": "HRM 297",
@@ -1790,7 +1812,7 @@
     "credits": null,
     "prerequisites": null,
     "semesters_offered": null,
-    "scraped_at": "2026-04-10T19:13:25.890200"
+    "scraped_at": "2026-04-12T23:10:10.813697"
   },
   {
     "course_code": "HRM 298",
@@ -1801,7 +1823,7 @@
     "credits": "1",
     "prerequisites": "Approval of Program Coordinator",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:13:33.847001"
+    "scraped_at": "2026-04-12T23:10:18.141401"
   },
   {
     "course_code": "HRM 299",
@@ -1812,7 +1834,7 @@
     "credits": "2",
     "prerequisites": "CPS 298, Approval of Program Coordinator",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:15:45.388442"
+    "scraped_at": "2026-04-12T23:10:25.126229"
   },
   {
     "course_code": "HUS 101",
@@ -1823,7 +1845,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:15:58.529412"
+    "scraped_at": "2026-04-12T23:12:43.206462"
   },
   {
     "course_code": "HUS 121",
@@ -1834,7 +1856,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:16:05.719274"
+    "scraped_at": "2026-04-12T23:12:50.415436"
   },
   {
     "course_code": "HUS 125",
@@ -1845,7 +1867,7 @@
     "credits": "3",
     "prerequisites": "HUS 101, HUS 121",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:16:12.621013"
+    "scraped_at": "2026-04-12T23:12:58.293011"
   },
   {
     "course_code": "HUS 141",
@@ -1856,7 +1878,7 @@
     "credits": "3",
     "prerequisites": "ENG 101, HUS 101, HUS 121",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:18:23.107330"
+    "scraped_at": "2026-04-12T23:15:10.366460"
   },
   {
     "course_code": "HUS 145",
@@ -1867,7 +1889,7 @@
     "credits": "3",
     "prerequisites": "HUS 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:18:30.223965"
+    "scraped_at": "2026-04-12T23:15:18.546350"
   },
   {
     "course_code": "HUS 221",
@@ -1878,7 +1900,7 @@
     "credits": "3",
     "prerequisites": "CRJ 101 or HUS 101, ENG 101, SOC 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:18:38.375385"
+    "scraped_at": "2026-04-12T23:15:26.899818"
   },
   {
     "course_code": "HUS 231",
@@ -1889,7 +1911,7 @@
     "credits": "3",
     "prerequisites": "CRJ 101 or HUS 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:18:45.483535"
+    "scraped_at": "2026-04-12T23:15:33.898271"
   },
   {
     "course_code": "HUS 243",
@@ -1900,7 +1922,7 @@
     "credits": "4",
     "prerequisites": "HUS 101, HUS 141, PSY 231",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:19:27.204194"
+    "scraped_at": "2026-04-12T23:17:46.589938"
   },
   {
     "course_code": "HUM 101",
@@ -1911,7 +1933,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:21:46.768359"
+    "scraped_at": "2026-04-12T23:18:00.811017"
   },
   {
     "course_code": "HUM 105",
@@ -1922,7 +1944,7 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:21:53.776625"
+    "scraped_at": "2026-04-12T23:18:08.804921"
   },
   {
     "course_code": "IMG 100",
@@ -1933,7 +1955,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:22:06.631492"
+    "scraped_at": "2026-04-12T23:20:26.403611"
   },
   {
     "course_code": "IMG 101",
@@ -1944,7 +1966,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:22:14.797723"
+    "scraped_at": "2026-04-12T23:20:33.291211"
   },
   {
     "course_code": "IMG 102",
@@ -1955,7 +1977,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T19:24:23.366768"
+    "scraped_at": "2026-04-12T23:20:40.128544"
   },
   {
     "course_code": "IMG 272",
@@ -1966,7 +1988,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:24:30.103569"
+    "scraped_at": "2026-04-12T23:20:47.708218"
   },
   {
     "course_code": "IMG 288",
@@ -1977,18 +1999,18 @@
     "credits": "4",
     "prerequisites": "IMG 203, IMG 272",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:24:37.914129"
+    "scraped_at": "2026-04-12T23:21:24.427007"
   },
   {
     "course_code": "IMD 105",
     "department": "IMD",
     "course_number": "105",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T19:24:57.691003"
+    "name": "UI/UX Design Fundamentals",
+    "description": "This course introduces the principles and practices of UI/UX design. User Interface (UI) refers to the visual design characteristics of an interface; UX refers to content organizing, structure and user's product interaction. Topics include: interface design elements and principles, information structure and data relevance; ideation and site mapping, personas and storyboarding, wireframes, usability, testing and prototyping. Assignments are completed using industry-standard software and hardware.",
+    "credits": "3",
+    "prerequisites": "Placement into college level English",
+    "semesters_offered": "F/S",
+    "scraped_at": "2026-04-12T23:21:39.225743"
   },
   {
     "course_code": "IMD 114",
@@ -1999,7 +2021,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/SU",
-    "scraped_at": "2026-04-10T19:27:07.431783"
+    "scraped_at": "2026-04-12T23:23:50.463544"
   },
   {
     "course_code": "IMD 115",
@@ -2010,7 +2032,7 @@
     "credits": "3",
     "prerequisites": "IMD 114",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T19:27:13.912870"
+    "scraped_at": "2026-04-12T23:23:57.661580"
   },
   {
     "course_code": "IMD 121",
@@ -2021,7 +2043,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:27:21.595167"
+    "scraped_at": "2026-04-12T23:24:05.025996"
   },
   {
     "course_code": "IMD 122",
@@ -2032,40 +2054,18 @@
     "credits": "3",
     "prerequisites": "IMD 121",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:27:27.868448"
+    "scraped_at": "2026-04-12T23:24:13.561715"
   },
   {
     "course_code": "IMD 154",
     "department": "IMD",
     "course_number": "154",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T19:27:42.264117"
-  },
-  {
-    "course_code": "IMD 155",
-    "department": "IMD",
-    "course_number": "155",
-    "name": "Digital Illustration & Animation",
-    "description": "This course explores illustrative and animation based design processes to create original compositions and narrative styles for digital media production. It introduces cell and timeline computer animation applications to explore concepts of space, motion, and perspective. Students complete assignments using industry-standard software and hardware.",
-    "credits": "3",
-    "prerequisites": "IMD 154",
-    "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T19:28:22.897884"
-  },
-  {
-    "course_code": "IMD 161",
-    "department": "IMD",
-    "course_number": "161",
-    "name": "Digital Photography",
-    "description": "This course covers the digital camera, including the artistic, theoretical, technical, and career aspects of photography. Students learn the relationship between the key features of light, composition, film usage, computer manipulation, scanning, resolution, and the final digital print. Students learn how to use the controls of any digital camera; use computer technology to scan, digitize, and manipulate images; and prepare images for professional display.",
+    "name": "Digital Imaging and Media",
+    "description": "This course introduces the observational and perceptional skills necessary to construct complex and detailed drawings, illustrations, montages, and collages using digital media. Students experiment with line, space, form, volume and color to manipulate and create effects associated with electronic imaging. Students complete assignments using industry-standard software and hardware.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
-    "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:28:29.916829"
+    "semesters_offered": "F/SU",
+    "scraped_at": "2026-04-12T23:24:22.043378"
   },
   {
     "course_code": "IMD 222",
@@ -2076,7 +2076,7 @@
     "credits": "3",
     "prerequisites": "IMD 115, IMD 122",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:30:40.771154"
+    "scraped_at": "2026-04-13T14:11:28.945063"
   },
   {
     "course_code": "IMD 271",
@@ -2087,7 +2087,7 @@
     "credits": "3",
     "prerequisites": "IMD 115, IMD 121",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T19:30:47.750528"
+    "scraped_at": "2026-04-13T14:11:35.226600"
   },
   {
     "course_code": "IDS 200",
@@ -2098,7 +2098,7 @@
     "credits": "3",
     "prerequisites": "Enrollment in Honors Program or permission of Honors Program Coordinator, ENG 102-Honors, 30 college credits",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:31:00.656954"
+    "scraped_at": "2026-04-13T14:11:46.424378"
   },
   {
     "course_code": "IDS 215",
@@ -2109,18 +2109,18 @@
     "credits": "3",
     "prerequisites": "Corequisite: ENG 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:33:12.179842"
+    "scraped_at": "2026-04-13T14:13:57.511504"
   },
   {
     "course_code": "LOG 106",
     "department": "LOG",
     "course_number": "106",
     "name": "Transportation Management",
-    "description": "This course provides students with an understanding of the field of transportation management, which is responsible for the movement of raw materials and finished products throughout the supply chain. The course explores the various modes of freight transportation, the economic fundamentals underlying each, and how each mode might fit into a company''s overall logistics strategy. During the course, students are introduced to the many potential career opportunities available in transportation management.",
+    "description": "This course provides students with an understanding of the field of transportation management, which is responsible for the movement of raw materials and finished products throughout the supply chain. The course explores the various modes of freight transportation, the economic fundamentals underlying each, and how each mode might fit into a company's overall logistics strategy. During the course, students are introduced to the many potential career opportunities available in transportation management.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:33:24.166930"
+    "scraped_at": "2026-04-13T14:14:08.686791"
   },
   {
     "course_code": "LOG 208",
@@ -2131,7 +2131,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:33:31.669533"
+    "scraped_at": "2026-04-13T14:14:16.072809"
   },
   {
     "course_code": "MGT 101",
@@ -2142,7 +2142,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:35:49.159739"
+    "scraped_at": "2026-04-13T14:16:31.997263"
   },
   {
     "course_code": "MGT 211",
@@ -2153,7 +2153,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:35:56.455650"
+    "scraped_at": "2026-04-13T14:16:37.874364"
   },
   {
     "course_code": "MGT 215",
@@ -2164,7 +2164,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:36:04.050230"
+    "scraped_at": "2026-04-13T14:16:43.553409"
   },
   {
     "course_code": "MGT 216",
@@ -2175,7 +2175,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:36:12.535010"
+    "scraped_at": "2026-04-13T14:16:50.926377"
   },
   {
     "course_code": "MNT 100",
@@ -2186,7 +2186,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:36:23.859165"
+    "scraped_at": "2026-04-13T14:17:36.668569"
   },
   {
     "course_code": "MNT 101",
@@ -2197,7 +2197,7 @@
     "credits": "3",
     "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:38:33.979867"
+    "scraped_at": "2026-04-13T14:17:42.709484"
   },
   {
     "course_code": "MNT 103",
@@ -2208,7 +2208,7 @@
     "credits": "3",
     "prerequisites": "ERG 101 or MNT 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:38:42.485286"
+    "scraped_at": "2026-04-13T14:19:53.933126"
   },
   {
     "course_code": "MNT 106",
@@ -2219,7 +2219,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:38:49.911650"
+    "scraped_at": "2026-04-13T14:20:01.091473"
   },
   {
     "course_code": "MNT 108",
@@ -2230,7 +2230,7 @@
     "credits": "3",
     "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:38:56.588687"
+    "scraped_at": "2026-04-13T14:20:07.321593"
   },
   {
     "course_code": "MNT 110",
@@ -2241,18 +2241,7 @@
     "credits": "3",
     "prerequisites": "MAT 095 with a grade of \"C\" or higher or QMAT placement score > 21",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:41:09.451974"
-  },
-  {
-    "course_code": "MNT 115",
-    "department": "MNT",
-    "course_number": "115",
-    "name": "Maintenance and Instrumentation",
-    "description": "This course analyzes modern maintenance applications along with instruments that are frequently used in manufacturing industries to monitor machinery. Students obtain a detailed understanding of modern maintenance applications and the mechanical theory behind the procedures. Emphasis is placed on the operational aspect of monitoring equipment such as pressure gauges, transducers, strain gauges, electronic recorders, and controllers with a strong emphasis placed on safety. Class projects help students develop the analytical ability necessary for the operation and maintenance of manufacturing equipment.",
-    "credits": "3",
-    "prerequisites": null,
-    "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:41:15.964436"
+    "scraped_at": "2026-04-13T14:20:13.674820"
   },
   {
     "course_code": "MNT 215",
@@ -2263,7 +2252,7 @@
     "credits": "4",
     "prerequisites": "MNT 101, MNT 210",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:41:23.747272"
+    "scraped_at": "2026-04-14T17:23:43.042413"
   },
   {
     "course_code": "MNT 216",
@@ -2274,7 +2263,7 @@
     "credits": "4",
     "prerequisites": "MNT 102 or MNT 103, MNT 210",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:41:30.021069"
+    "scraped_at": "2026-04-14T17:23:50.826509"
   },
   {
     "course_code": "MNT 218",
@@ -2285,7 +2274,7 @@
     "credits": "3",
     "prerequisites": "MNT 106",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:41:36.195422"
+    "scraped_at": "2026-04-14T17:23:51.872183"
   },
   {
     "course_code": "MNT 299",
@@ -2296,7 +2285,7 @@
     "credits": "3",
     "prerequisites": "CPS 298, Approval of Program Coordinator",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:45:36.304302"
+    "scraped_at": "2026-04-14T17:23:58.910485"
   },
   {
     "course_code": "MRK 201",
@@ -2307,18 +2296,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:45:49.605567"
+    "scraped_at": "2026-04-14T17:24:43.649280"
   },
   {
     "course_code": "MRK 241",
     "department": "MRK",
     "course_number": "241",
     "name": "Social Media Marketing",
-    "description": "This course examines how social media is used to achieve today''s marketing goals. Students gain a perspective on how traditional marketing professionals have viewed social media, myth busters, and how social media is integral to building a marketing strategy. Students explore how to use social media tools, set social media goals that align with the business''s goals, and analyze and understand metrics. This class encompasses developing a social media strategy, goals and metrics for business or professional career development, as well as hands-on work in a computer lab.",
+    "description": "This course examines how social media is used to achieve today's marketing goals. Students gain a perspective on how traditional marketing professionals have viewed social media, myth busters, and how social media is integral to building a marketing strategy. Students explore how to use social media tools, set social media goals that align with the business's goals, and analyze and understand metrics. This class encompasses developing a social media strategy, goals and metrics for business or professional career development, as well as hands-on work in a computer lab.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:45:56.204900"
+    "scraped_at": "2026-04-14T17:24:50.674663"
   },
   {
     "course_code": "MAT 051",
@@ -2329,7 +2318,7 @@
     "credits": "2",
     "prerequisites": "Corequisite: MAT 121",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:48:13.925502"
+    "scraped_at": "2026-04-14T17:25:04.934575"
   },
   {
     "course_code": "MAT 052",
@@ -2340,7 +2329,7 @@
     "credits": "2",
     "prerequisites": "Corequisite: MAT 122",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:48:22.402217"
+    "scraped_at": "2026-04-14T17:27:17.148306"
   },
   {
     "course_code": "COM 100",
@@ -2351,18 +2340,18 @@
     "credits": "3",
     "prerequisites": "Corequisite: ENG 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:48:35.337171"
+    "scraped_at": "2026-04-14T17:27:29.423309"
   },
   {
     "course_code": "COM 101",
     "department": "COM",
     "course_number": "101",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T19:48:49.856656"
+    "name": "Journalism I",
+    "description": "This course focuses on theory and practice of journalism fundamentals for print and broadcast media including social media (Twitter, Facebook, Instagram, Snapchat) as a part of a brief history of media development and present trends. Students examine basic news reporting for newspaper with emphasis on lead writing, interviewing, researching and preparing new stories. Topics covered include discussions of libel laws and ethics as well as techniques of editing. This course also covers criticism and analysis of college and local area media.",
+    "credits": "3",
+    "prerequisites": "COM 100",
+    "semesters_offered": "F/S",
+    "scraped_at": "2026-04-14T17:27:35.052333"
   },
   {
     "course_code": "MSS 121",
@@ -2373,7 +2362,7 @@
     "credits": "5",
     "prerequisites": "MSS 111",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:51:06.222354"
+    "scraped_at": "2026-04-14T17:29:51.155682"
   },
   {
     "course_code": "MSS 122",
@@ -2384,18 +2373,18 @@
     "credits": "5",
     "prerequisites": "MSS 112",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:51:13.110171"
+    "scraped_at": "2026-04-14T17:29:58.635608"
   },
   {
     "course_code": "MUS 102",
     "department": "MUS",
     "course_number": "102",
     "name": "Music Appreciation",
-    "description": "This course focuses on the importance of understanding the elements of music and the appreciation of the artistic value of music. The course covers an overview of major composers and their works and familiarizes students with the essentials of music sound, wave, rhythm, and notation. Students explore classical European music, American music such as: folk, blues, jazz, and rock ''n'' roll, as well as world music.",
+    "description": "This course focuses on the importance of understanding the elements of music and the appreciation of the artistic value of music. The course covers an overview of major composers and their works and familiarizes students with the essentials of music sound, wave, rhythm, and notation. Students explore classical European music, American music such as: folk, blues, jazz, and rock 'n' roll, as well as world music.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:51:26.227899"
+    "scraped_at": "2026-04-14T17:30:13.827950"
   },
   {
     "course_code": "MUS 121",
@@ -2406,7 +2395,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T19:52:06.784413"
+    "scraped_at": "2026-04-14T17:30:20.414602"
   },
   {
     "course_code": "MUS 135",
@@ -2417,7 +2406,7 @@
     "credits": "1",
     "prerequisites": "MUS 151",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:52:48.287801"
+    "scraped_at": "2026-04-14T17:32:30.635906"
   },
   {
     "course_code": "MUS 136",
@@ -2428,7 +2417,7 @@
     "credits": "1",
     "prerequisites": "MUS 135",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:52:55.567445"
+    "scraped_at": "2026-04-14T17:32:38.377067"
   },
   {
     "course_code": "MUS 137",
@@ -2439,7 +2428,7 @@
     "credits": "1",
     "prerequisites": "MUS 136",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:53:03.259268"
+    "scraped_at": "2026-04-14T17:32:46.816767"
   },
   {
     "course_code": "MUS 151",
@@ -2450,7 +2439,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:53:10.748450"
+    "scraped_at": "2026-04-14T17:32:53.938972"
   },
   {
     "course_code": "MUS 152",
@@ -2461,7 +2450,7 @@
     "credits": "4",
     "prerequisites": "MUS 151",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:53:52.511727"
+    "scraped_at": "2026-04-14T17:35:05.615406"
   },
   {
     "course_code": "MUS 262",
@@ -2472,40 +2461,40 @@
     "credits": "3",
     "prerequisites": "MUS 261",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:53:59.299156"
+    "scraped_at": "2026-04-14T17:35:13.627040"
   },
   {
     "course_code": "NUR 106",
     "department": "NUR",
     "course_number": "106",
     "name": "Intro to Nurs Concepts & Health Care",
-    "description": "This course is the study of contemporary nursing in relation to historical development, nursing theory, social trends, and healthcare changes. The student explores influences of the past on present day nursing, health care settings, trends and legislation, challenges and issues for today''s nurse and future predictions for nursing. Students will integrate concepts of diversity, equity and inclusion in discussion of patient-centered care. Successful completion of this one-credit course with a \"C+\" or higher is required.",
+    "description": "This course is the study of contemporary nursing in relation to historical development, nursing theory, social trends, and healthcare changes. The student explores influences of the past on present day nursing, health care settings, trends and legislation, challenges and issues for today's nurse and future predictions for nursing. Students will integrate concepts of diversity, equity and inclusion in discussion of patient-centered care. Successful completion of this one-credit course with a \"C+\" or higher is required.",
     "credits": "1",
     "prerequisites": "BIO 111 with a grade of \"C\" or higher, ENG 101 Corequisite: BIO 112, NUR 107, PSY 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:54:14.280939"
+    "scraped_at": "2026-04-14T17:35:28.239742"
   },
   {
     "course_code": "NUR 107",
     "department": "NUR",
     "course_number": "107",
-    "name": "Fundamentals of Nursing",
-    "description": "This course provides an introduction to the role of the nurse in the health care system. Nursing Theory, Maslow''s Hierarchy of Needs, and Erikson''s Stages of Psychosocial Development are introduced and utilized as organizing frameworks. Additional integration of professional standards and competencies from National League for Nursing and other professional organizations is included. Students develop an understanding of and ability to use the nursing process as a method for assisting patients to meet healthcare needs. Students develop basic communication skills in order to promote effective relationships with patients, families and members of the health team. Content includes, but is not limited to, oxygenation, health assessment, elimination, medication administration, and basic comfort and care. Students participate in laboratory to acquire nursing skills and demonstrate competency. Clinical experiences are provided to reinforce nursing skills and promote clinical judgment. Successful completion of this eight-credit course with a \"C+\" or higher is required.",
-    "credits": "8",
-    "prerequisites": "BIO 111 with a grade of \"C\" or higher, ENG 101 Corequisite: BIO 112, NUR 106, PSY 101",
-    "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:56:27.721931"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-14T17:35:43.028677"
   },
   {
     "course_code": "NUR 108",
     "department": "NUR",
     "course_number": "108",
     "name": "Medical Surgical Nursing I/ Maternal Newborn",
-    "description": "This course focuses on caring for maternal newborn patients and adults who have health care deviations that require specific nursing interventions. Content includes, but is not limited to, the perioperative experience, cellular proliferation, nutrition, metabolic activity, cardiovascular disorders, substance abuse, reproductive issues, domestic violence and maternal-newborn health. Students will use a developmental focus and a life span approach to concepts of health promotion and deviations. The course is based on Nursing Theory, Maslow''s Hierarchy of Needs, Erikson''s Stages of Psychosocial Development, and the Nursing Process. Students participate in the laboratory to acquire nursing skills and demonstrate competency. Clinical experiences are provided to reinforce nursing skills and promote clinical judgment in the care of maternal newborn patients and adult patients in the acute care, rehabilitation and/or community settings. Successful completion of this nine-credit course with a \"C+\" or higher is required.",
+    "description": "This course focuses on caring for maternal newborn patients and adults who have health care deviations that require specific nursing interventions. Content includes, but is not limited to, the perioperative experience, cellular proliferation, nutrition, metabolic activity, cardiovascular disorders, substance abuse, reproductive issues, domestic violence and maternal-newborn health. Students will use a developmental focus and a life span approach to concepts of health promotion and deviations. The course is based on Nursing Theory, Maslow's Hierarchy of Needs, Erikson's Stages of Psychosocial Development, and the Nursing Process. Students participate in the laboratory to acquire nursing skills and demonstrate competency. Clinical experiences are provided to reinforce nursing skills and promote clinical judgment in the care of maternal newborn patients and adult patients in the acute care, rehabilitation and/or community settings. Successful completion of this nine-credit course with a \"C+\" or higher is required.",
     "credits": "9",
     "prerequisites": "BIO 112 with a grade of \"C\" or higher, NUR 101 with a grade of \"C+\" or higher or NUR 106 with a grade of \"C+\" or higher and NUR 107 with a grade of \"C+\" or higher Corequisite: BIO 232, PSY 121",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T19:56:34.880957"
+    "scraped_at": "2026-04-14T17:36:24.923028"
   },
   {
     "course_code": "OTA 103",
@@ -2516,29 +2505,29 @@
     "credits": "4",
     "prerequisites": "OTA 101, PSY 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:56:50.079533"
+    "scraped_at": "2026-04-14T17:36:39.002040"
   },
   {
     "course_code": "OTA 105",
     "department": "OTA",
     "course_number": "105",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T19:57:04.282827"
+    "name": "Developing Professional Behavior",
+    "description": "This course examines the professional behaviors that are required in a health care setting. Students learn the importance of ethical behavior, dependability, cooperation, empathy, and other behaviors that health care professionals must demonstrate. Students learn how to establish and maintain a therapeutic relationship, how to communicate clearly when speaking and writing, and how to pursue continuing education. This course also covers the development of a professional portfolio, resume writing, and interview skills to help graduates obtain employment.",
+    "credits": "3",
+    "prerequisites": "OTA 101",
+    "semesters_offered": "S",
+    "scraped_at": "2026-04-14T17:38:50.050046"
   },
   {
     "course_code": "OTA 223",
     "department": "OTA",
     "course_number": "223",
     "name": "Concpts & OT Interv Phys Challen",
-    "description": "This course examines the characteristics of physical disabilities. Students study disabilities and the impact of these disabilities on the client''s ability to perform routine activities. Students learn evaluation and treatment techniques that are used to help adults with physical disabilities to live independent and productive lives. The laboratory component includes a minimum of 15 hours Level I fieldwork, which consists of observation and supervised practice in an off-campus facility that treats adult physical disabilities.",
+    "description": "This course examines the characteristics of physical disabilities. Students study disabilities and the impact of these disabilities on the client's ability to perform routine activities. Students learn evaluation and treatment techniques that are used to help adults with physical disabilities to live independent and productive lives. The laboratory component includes a minimum of 15 hours Level I fieldwork, which consists of observation and supervised practice in an off-campus facility that treats adult physical disabilities.",
     "credits": "4",
     "prerequisites": "BIO 111, OTA 101, OTA 131",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:59:14.981153"
+    "scraped_at": "2026-04-14T17:38:57.629000"
   },
   {
     "course_code": "OTA 241",
@@ -2549,7 +2538,7 @@
     "credits": "7",
     "prerequisites": "BIO 112, ENG 102, OTA 105, OTA 211, OTA 215, OTA 221, OTA 223, OTA 231",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:59:22.829188"
+    "scraped_at": "2026-04-14T17:39:04.111159"
   },
   {
     "course_code": "OTA 242",
@@ -2560,7 +2549,7 @@
     "credits": "7",
     "prerequisites": "BIO 112, ENG 102, OTA 105, OTA 211, OTA 215, OTA 221, OTA 223, OTA 231",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T19:59:30.367051"
+    "scraped_at": "2026-04-14T17:39:10.452051"
   },
   {
     "course_code": "MED 150",
@@ -2571,7 +2560,7 @@
     "credits": "4",
     "prerequisites": "MED 110, MED 120, MED 130 Corequisite: MED 160, MED 170, MED 180, MED 190",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:01:49.217608"
+    "scraped_at": "2026-04-14T17:41:28.310997"
   },
   {
     "course_code": "MED 160",
@@ -2582,7 +2571,7 @@
     "credits": "4",
     "prerequisites": "MED 110, MED 120, MED 130 Corequisite: MED 150, MED 170, MED 180, MED 190",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:01:55.828259"
+    "scraped_at": "2026-04-14T17:41:34.757764"
   },
   {
     "course_code": "MED 170",
@@ -2593,7 +2582,7 @@
     "credits": "3",
     "prerequisites": "MED 110, MED 120, MED 130 Corequisite: MED 150, MED 160, MED 180, MED 190",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:02:03.292047"
+    "scraped_at": "2026-04-14T17:41:41.027837"
   },
   {
     "course_code": "MED 180",
@@ -2604,7 +2593,7 @@
     "credits": "2",
     "prerequisites": "MED 110, MED 120, MED 130 Corequisite: MED 150, MED 160, MED 170, MED 190",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:02:10.811299"
+    "scraped_at": "2026-04-14T17:41:48.476173"
   },
   {
     "course_code": "MED 190",
@@ -2615,29 +2604,29 @@
     "credits": "3",
     "prerequisites": "MED 110, MED 120, MED 130 Corequisite: MED 150, MED 160, MED 170, MED 180",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:02:18.928246"
+    "scraped_at": "2026-04-14T17:43:59.816391"
   },
   {
     "course_code": "MED 220",
     "department": "MED",
     "course_number": "220",
     "name": "Field Internship for the Paramedic",
-    "description": "This course gives the student the opportunity to deliver optimum patient care at multiple pre-hospital Advanced Life Support service sites, using a Paramedic preceptor approach with one Paramedic intern per ALS team per ambulance. The student has the opportunity to utilize and refine skills gained through the Paramedic Program in real time, testing student knowledge and ability to perform under pressure. Simulation occurs on a bi-weekly schedule to facilitate the completion of accreditation goals and objectives. This course capstone experience completes the student''s Paramedic training.",
+    "description": "This course gives the student the opportunity to deliver optimum patient care at multiple pre-hospital Advanced Life Support service sites, using a Paramedic preceptor approach with one Paramedic intern per ALS team per ambulance. The student has the opportunity to utilize and refine skills gained through the Paramedic Program in real time, testing student knowledge and ability to perform under pressure. Simulation occurs on a bi-weekly schedule to facilitate the completion of accreditation goals and objectives. This course capstone experience completes the student's Paramedic training.",
     "credits": "5",
     "prerequisites": "MED 210",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:04:29.966832"
+    "scraped_at": "2026-04-14T17:44:06.386249"
   },
   {
     "course_code": "PHI 102",
     "department": "PHI",
     "course_number": "102",
     "name": "Introduction to Philosophy",
-    "description": "This course introduces students to the chief branches of the discipline of philosophy - that is, logic, epistemology, ontology, and metaphysics - through study of the primary works and main ideas of a representative selection of the world''s great philosophers. This survey covers the period from the ancient world through to the present, and may include both Western and Eastern philosophical traditions. Students explore the development of such fields as political philosophy, the philosophy of aesthetics, the philosophy of science, and linguistic philosophy. Student assessment includes a combination of Socratic dialogue, formal debate, formal presentations, unit tests, journal work, and research-supported philosophical essay writing.",
+    "description": "This course introduces students to the chief branches of the discipline of philosophy - that is, logic, epistemology, ontology, and metaphysics - through study of the primary works and main ideas of a representative selection of the world's great philosophers. This survey covers the period from the ancient world through to the present, and may include both Western and Eastern philosophical traditions. Students explore the development of such fields as political philosophy, the philosophy of aesthetics, the philosophy of science, and linguistic philosophy. Student assessment includes a combination of Socratic dialogue, formal debate, formal presentations, unit tests, journal work, and research-supported philosophical essay writing.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:04:44.559263"
+    "scraped_at": "2026-04-14T17:44:19.220471"
   },
   {
     "course_code": "PHI 131",
@@ -2648,18 +2637,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:04:52.739999"
+    "scraped_at": "2026-04-14T17:44:25.465557"
   },
   {
     "course_code": "PHI 203",
     "department": "PHI",
     "course_number": "203",
     "name": "Philosophy of Technology",
-    "description": "This course examines from a philosophical perspective uses of technology, cyberspace, technological forms of communication, ethical and ecological implications of technology, and technology''s effects on human bodies. Students consider how technological objects influence who possesses knowledge and power; what they insinuate about gender, race, and class; and how they impact social practices. Students explore various definitions of the term \"technology\", and reassess their relationship to technology.",
+    "description": "This course examines from a philosophical perspective uses of technology, cyberspace, technological forms of communication, ethical and ecological implications of technology, and technology's effects on human bodies. Students consider how technological objects influence who possesses knowledge and power; what they insinuate about gender, race, and class; and how they impact social practices. Students explore various definitions of the term \"technology\", and reassess their relationship to technology.",
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:07:06.275755"
+    "scraped_at": "2026-04-14T17:46:34.761908"
   },
   {
     "course_code": "PHY 101",
@@ -2670,7 +2659,7 @@
     "credits": "4",
     "prerequisites": "MAT 148 or Corequisite MAT 124",
     "semesters_offered": "F/SU",
-    "scraped_at": "2026-04-10T20:07:20.671963"
+    "scraped_at": "2026-04-14T17:46:47.747026"
   },
   {
     "course_code": "PHY 102",
@@ -2681,29 +2670,29 @@
     "credits": "4",
     "prerequisites": "PHY 101",
     "semesters_offered": "S/SU",
-    "scraped_at": "2026-04-10T20:07:28.265531"
+    "scraped_at": "2026-04-14T17:46:55.509380"
   },
   {
     "course_code": "PHY 105",
     "department": "PHY",
     "course_number": "105",
     "name": "General Physics I: Newtonian Mechanics",
-    "description": "This course covers measurement, kinematics, vectors, Newton''s laws, friction, circular motion, gravitation, work and energy, conservation of energy, linear momentum and collisions, rotational motion about a fixed axis, moments of inertia, and angular momentum and its conservation. Students perform related laboratory experiments.",
+    "description": "This course covers measurement, kinematics, vectors, Newton's laws, friction, circular motion, gravitation, work and energy, conservation of energy, linear momentum and collisions, rotational motion about a fixed axis, moments of inertia, and angular momentum and its conservation. Students perform related laboratory experiments.",
     "credits": "4",
     "prerequisites": "MAT 233",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:07:36.675647"
+    "scraped_at": "2026-04-14T17:49:07.360236"
   },
   {
     "course_code": "PHY 107",
     "department": "PHY",
     "course_number": "107",
     "name": "General Physics II: Electricity & Magnetism",
-    "description": "This course covers waves and oscillations, fluids, electric charge and electric field, Gauss''s Law, electric potential, capacitance, dielectrics, electric energy storage, electric current and resistance, DC circuits, magnetism, sources of magnetic field, electromagnetic induction and Faraday''s Law, inductance and electromagnetic oscillations, and AC circuits. Students perform related laboratory experiments.",
+    "description": "This course covers waves and oscillations, fluids, electric charge and electric field, Gauss's Law, electric potential, capacitance, dielectrics, electric energy storage, electric current and resistance, DC circuits, magnetism, sources of magnetic field, electromagnetic induction and Faraday's Law, inductance and electromagnetic oscillations, and AC circuits. Students perform related laboratory experiments.",
     "credits": "4",
     "prerequisites": "MAT 234, PHY 105",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:08:17.549817"
+    "scraped_at": "2026-04-14T17:49:14.956929"
   },
   {
     "course_code": "PSC 201",
@@ -2714,29 +2703,29 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:10:35.800218"
+    "scraped_at": "2026-04-14T17:49:27.000482"
   },
   {
     "course_code": "PSC 221",
     "department": "PSC",
     "course_number": "221",
-    "name": "State & Local Government",
-    "description": "This course examines the development, organization and function of state and local governments within the United States. Students analyze and compare functions of the governors, state legislatures and courts, as well as explore the relationships among local, state and federal governments.",
-    "credits": "3",
-    "prerequisites": "ENG 101",
-    "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:10:42.977555"
-  },
-  {
-    "course_code": "PNP 101",
-    "department": "PNP",
-    "course_number": "101",
     "name": null,
     "description": null,
     "credits": null,
     "prerequisites": null,
     "semesters_offered": null,
-    "scraped_at": "2026-04-10T20:11:05.711476"
+    "scraped_at": "2026-04-14T17:49:40.181664"
+  },
+  {
+    "course_code": "PNP 101",
+    "department": "PNP",
+    "course_number": "101",
+    "name": "Practical Nursing I:Fundamentals of Nursing",
+    "description": "This course examines contemporary basic nursing practice and the role of the practical nurse. Students study nursing theory and techniques of fundamental nursing skills concurrently in classroom, laboratory, and long-term and rehabilitation clinical practice settings. The course emphasizes health assessment, health maintenance, and adaptation to illness with the older adult. Nursing process is introduced as the framework for meeting the patient's identified self-care needs. Students acquire a level of competency in basic skills.",
+    "credits": "10",
+    "prerequisites": "BIO 100 or BIO 112, PSY 101, Acceptance to the PNP Program",
+    "semesters_offered": "F",
+    "scraped_at": "2026-04-14T17:51:55.847541"
   },
   {
     "course_code": "PNP 111",
@@ -2747,7 +2736,7 @@
     "credits": "3",
     "prerequisites": "BIO 100 or BIO 112, PSY 101, Acceptance to the PNP Program",
     "semesters_offered": "F",
-    "scraped_at": "2026-04-10T20:13:16.530086"
+    "scraped_at": "2026-04-14T17:52:02.786461"
   },
   {
     "course_code": "PNP 210",
@@ -2758,7 +2747,7 @@
     "credits": "1",
     "prerequisites": "PNP 101",
     "semesters_offered": "IN",
-    "scraped_at": "2026-04-10T20:13:24.146904"
+    "scraped_at": "2026-04-14T17:52:09.533676"
   },
   {
     "course_code": "PNP 235",
@@ -2769,18 +2758,18 @@
     "credits": "15",
     "prerequisites": "PNP 101, PNP 111, PNP 210, PNP 233, PSY 121",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:13:31.962820"
+    "scraped_at": "2026-04-14T17:52:16.523903"
   },
   {
     "course_code": "PSY 101",
     "department": "PSY",
     "course_number": "101",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T20:13:54.096439"
+    "name": "Introduction to Psychology",
+    "description": "In this survey course, the student becomes aware of and appreciates the various influences upon behavior. The topics covered include, but are not limited to, the nervous system, sensation and perception, motivation, learning, emotion, and personality. Through an investigation of these areas, within a multiplicity of cultural contexts, the student understands the diversity of the human condition.",
+    "credits": "3",
+    "prerequisites": "Placement into college level English",
+    "semesters_offered": "F/S/SU",
+    "scraped_at": "2026-04-14T18:35:37.390427"
   },
   {
     "course_code": "PHA 100",
@@ -2791,18 +2780,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:16:38.007737"
+    "scraped_at": "2026-04-14T18:35:50.103637"
   },
   {
     "course_code": "PHA 101",
     "department": "PHA",
     "course_number": "101",
-    "name": "Introduction to Public Health",
-    "description": "This course provides an initial overview of public health concepts and practice. The course examines the philosophy, purpose, history, organization, function, tools, and activities of public health practice. Case studies and a variety of practice related exercises serve as a basis for student participation and interaction. The course identifies problems and issues currently facing public health. This course aims at enhancing, facilitating and promoting the use of technologies for obtaining and sharing information.",
-    "credits": "3",
-    "prerequisites": "Placement into college level English",
-    "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:16:45.678805"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-14T18:36:03.324105"
   },
   {
     "course_code": "PHA 102",
@@ -2813,62 +2802,62 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:16:51.682062"
+    "scraped_at": "2026-04-14T18:38:15.639186"
   },
   {
     "course_code": "PHA 299",
     "department": "PHA",
     "course_number": "299",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T20:17:05.879162"
+    "name": "Cooperative Work Experience",
+    "description": "This course provides students with a structured learning experience while applying classroom theory to a practical work experience. Students develop a learning agreement that lists the objectives they will accomplish through their work experience. Evaluation is based on satisfactory completion of the learning agreement objectives and the demonstration of soft skills such as punctuality and attitude.",
+    "credits": "3",
+    "prerequisites": "BIO 241, CPS 298, PHA 103, PSC 201",
+    "semesters_offered": "S",
+    "scraped_at": "2026-04-14T18:38:24.400167"
   },
   {
     "course_code": "RDT 112",
     "department": "RDT",
     "course_number": "112",
     "name": "Medical Imaging II",
-    "description": "This course continues to instruct the student on the principles of medical imaging to include accessory imaging devices and the principles of digital image acquisition, processing and display, and fluoroscopy equipment components and operation principles. Image analysis methods are introduced and practiced to develop students'' ability to recognize suboptimum images and determine appropriate corrective action(s). Lab activities allow students to implement the principles discussed in class and demonstrate the effects of correct and incorrect utilization of imaging equipment and techniques.",
+    "description": "This course continues to instruct the student on the principles of medical imaging to include accessory imaging devices and the principles of digital image acquisition, processing and display, and fluoroscopy equipment components and operation principles. Image analysis methods are introduced and practiced to develop students' ability to recognize suboptimum images and determine appropriate corrective action(s). Lab activities allow students to implement the principles discussed in class and demonstrate the effects of correct and incorrect utilization of imaging equipment and techniques.",
     "credits": "3",
     "prerequisites": "RDT 110",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:19:21.476059"
+    "scraped_at": "2026-04-14T18:38:37.955512"
   },
   {
     "course_code": "RDT 122",
     "department": "RDT",
     "course_number": "122",
-    "name": "Rad Positioning & Anatomy II",
-    "description": "This course continues to develop students'' positioning skills with focus on specific anatomy and positioning procedures of the pelvis, hip, bony thorax, lumbo-sacral, thoracic and cervical spine, GU and GI systems. Students practice these skills through laboratory activities before performing them on live patients in their clinical assignments. The course focuses on problem solving for atypical imaging conditions requiring modification to the usual positioning procedure. Students learn the skeletal anatomy of specified body parts, identify specific structures within these anatomical regions, and simulate any exam procedure discussed during the course.",
-    "credits": "3",
-    "prerequisites": "RDT 121, SPH 101",
-    "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:19:28.646717"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-14T18:38:52.562706"
   },
   {
     "course_code": "RDT 132",
     "department": "RDT",
     "course_number": "132",
     "name": "Medical Radiography Clinic II",
-    "description": "This course expands students'' clinical skills through their participation in more varied and complex radiographic procedures with emphasis on imaging the upper/lower extremities, pelvis, spinal column, bony thorax and GI systems. Students gradually advance to perform these procedures on more acute patients and under atypical conditions and continue to develop their ability to critique images they produce. Satisfactory completion of sixteen (16) imaging competencies is required to pass this course and advance in the RT program.",
+    "description": "This course expands students' clinical skills through their participation in more varied and complex radiographic procedures with emphasis on imaging the upper/lower extremities, pelvis, spinal column, bony thorax and GI systems. Students gradually advance to perform these procedures on more acute patients and under atypical conditions and continue to develop their ability to critique images they produce. Satisfactory completion of sixteen (16) imaging competencies is required to pass this course and advance in the RT program.",
     "credits": "3",
     "prerequisites": "RDT 131",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:19:35.158373"
+    "scraped_at": "2026-04-14T18:41:01.332948"
   },
   {
     "course_code": "RDT 141",
     "department": "RDT",
     "course_number": "141",
-    "name": null,
-    "description": null,
-    "credits": null,
-    "prerequisites": null,
-    "semesters_offered": null,
-    "scraped_at": "2026-04-10T20:19:48.936950"
+    "name": "Radiation Science",
+    "description": "This course covers the properties of particulate and electromagnetic radiations, sources of exposure, the biological implications of irradiation, the medical uses of radiation, and dose limitation methods. Students learn how to answer patients' questions regarding exposure and how to provide appropriate protection for themselves, their patients, the clinical staff, and the general public.",
+    "credits": "2",
+    "prerequisites": "RDT 110",
+    "semesters_offered": "S",
+    "scraped_at": "2026-04-14T18:41:08.714412"
   },
   {
     "course_code": "RDT 232",
@@ -2879,7 +2868,7 @@
     "credits": "3",
     "prerequisites": "RDT 231",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:21:59.075106"
+    "scraped_at": "2026-04-14T18:41:16.159116"
   },
   {
     "course_code": "RCP 135",
@@ -2890,7 +2879,7 @@
     "credits": "3",
     "prerequisites": "BIO 112, RCP 125, RCP 126, RCP 127",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:22:12.864708"
+    "scraped_at": "2026-04-14T18:41:28.448832"
   },
   {
     "course_code": "RCP 136",
@@ -2901,7 +2890,7 @@
     "credits": "7",
     "prerequisites": "BIO 112, RCP 125, RCP 126, RCP 127",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:22:19.578435"
+    "scraped_at": "2026-04-14T18:43:39.036961"
   },
   {
     "course_code": "RCP 137",
@@ -2912,7 +2901,7 @@
     "credits": "2",
     "prerequisites": "BIO 112, RCP 125, RCP 126, RCP 127",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:22:26.262862"
+    "scraped_at": "2026-04-14T18:43:46.003601"
   },
   {
     "course_code": "RCP 265",
@@ -2923,7 +2912,7 @@
     "credits": "3",
     "prerequisites": "RCP 255, RCP 256, RCP 257",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:23:05.613874"
+    "scraped_at": "2026-04-14T18:43:52.176800"
   },
   {
     "course_code": "RCP 266",
@@ -2934,7 +2923,7 @@
     "credits": "8",
     "prerequisites": "RCP 255, RCP 256, RCP 257",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:25:17.164614"
+    "scraped_at": "2026-04-14T18:43:59.122273"
   },
   {
     "course_code": "RCP 267",
@@ -2945,29 +2934,29 @@
     "credits": "2",
     "prerequisites": "RCP 255, RCP 256, RCP 257",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:25:24.602848"
+    "scraped_at": "2026-04-14T18:46:11.374446"
   },
   {
     "course_code": "SCI 103",
     "department": "SCI",
     "course_number": "103",
     "name": "Earth Science",
-    "description": "This course is an introduction to the science of Earth. Students apply fundamental physics and chemistry to the study of Earth''s composition, origin and development. Topics include geology, oceanography, hydrology, earthquakes, volcanoes and other natural hazards.",
+    "description": "This course is an introduction to the science of Earth. Students apply fundamental physics and chemistry to the study of Earth's composition, origin and development. Topics include geology, oceanography, hydrology, earthquakes, volcanoes and other natural hazards.",
     "credits": "3",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or equivalent placement measures",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:25:43.042001"
+    "scraped_at": "2026-04-14T18:46:31.944653"
   },
   {
     "course_code": "SCI 104",
     "department": "SCI",
     "course_number": "104",
-    "name": "Climate & Weather:Causes&Effects",
-    "description": "The focus of this course is the science related to weather and climate, how humans affect weather and climate, and weather and climate''s effect on humans. Students use basic laws and theories of physics and chemistry to describe and explain the composition, structure, and energy distribution of Earth''s atmosphere plus atmospheric phenomena, such as global warming/cooling, the greenhouse effect, ozone depletion, air pollution, severe storms, rainbows, auroras, weather, and climate. Students examine climate change and techniques to measure climate change and compare Earth''s atmosphere to that of other planets.",
-    "credits": "3",
-    "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or equivalent placement measures",
-    "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:27:53.182594"
+    "name": null,
+    "description": null,
+    "credits": null,
+    "prerequisites": null,
+    "semesters_offered": null,
+    "scraped_at": "2026-04-14T18:46:46.723367"
   },
   {
     "course_code": "SCI 105",
@@ -2978,7 +2967,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or equivalent placement measures",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:28:01.151715"
+    "scraped_at": "2026-04-14T18:48:55.751455"
   },
   {
     "course_code": "SCI 106",
@@ -2989,7 +2978,7 @@
     "credits": "4",
     "prerequisites": "Placement into college level English, MAT 095 with a grade of \"C\" or higher or equivalent placement measures",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:28:07.547246"
+    "scraped_at": "2026-04-14T18:49:02.773634"
   },
   {
     "course_code": "SCI 109",
@@ -3000,18 +2989,18 @@
     "credits": "4",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:28:14.511950"
+    "scraped_at": "2026-04-14T18:49:08.901091"
   },
   {
     "course_code": "SCI 110",
     "department": "SCI",
     "course_number": "110",
     "name": "Sustaining Earth's Environment",
-    "description": "This course focuses on the basic concepts of environmental science. Students apply fundamental physics and chemistry to the study of the physical world they live in, and, through the laboratory component, gain an understanding of the methods and applications of science. Topics include consumption and conservation of Earth''s natural resources, the impact of the humans on the environment, waste management and renewable energy sources.",
+    "description": "This course focuses on the basic concepts of environmental science. Students apply fundamental physics and chemistry to the study of the physical world they live in, and, through the laboratory component, gain an understanding of the methods and applications of science. Topics include consumption and conservation of Earth's natural resources, the impact of the humans on the environment, waste management and renewable energy sources.",
     "credits": "4",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:28:22.235451"
+    "scraped_at": "2026-04-14T18:49:14.956683"
   },
   {
     "course_code": "SCI 120",
@@ -3022,7 +3011,7 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:29:01.904599"
+    "scraped_at": "2026-04-14T18:49:22.866222"
   },
   {
     "course_code": "SCI 135",
@@ -3033,18 +3022,18 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:29:09.283768"
+    "scraped_at": "2026-04-14T18:51:33.376443"
   },
   {
     "course_code": "SOC 101",
     "department": "SOC",
     "course_number": "101",
     "name": "Intro Sociology",
-    "description": "This course introduces basic theories and vocabulary of sociology including its historical origins and research process. It examines the major principles that govern the structure and function of society, its institutions, groups, and processes. Students learn how societies meet or do not meet the social, psychological, economic and everyday needs of their members. The course emphasizes making connections between students'' personal lives and the social change occurring around them.",
+    "description": "This course introduces basic theories and vocabulary of sociology including its historical origins and research process. It examines the major principles that govern the structure and function of society, its institutions, groups, and processes. Students learn how societies meet or do not meet the social, psychological, economic and everyday needs of their members. The course emphasizes making connections between students' personal lives and the social change occurring around them.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:31:33.870015"
+    "scraped_at": "2026-04-14T18:51:53.043542"
   },
   {
     "course_code": "SPN 111",
@@ -3055,7 +3044,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:31:47.973026"
+    "scraped_at": "2026-04-14T18:54:10.202202"
   },
   {
     "course_code": "SPN 112",
@@ -3066,7 +3055,7 @@
     "credits": "3",
     "prerequisites": "SPN 111",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:32:28.432440"
+    "scraped_at": "2026-04-14T18:54:18.343620"
   },
   {
     "course_code": "SPH 101",
@@ -3077,18 +3066,18 @@
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S/SU",
-    "scraped_at": "2026-04-10T20:34:47.400461"
+    "scraped_at": "2026-04-14T18:54:33.207606"
   },
   {
     "course_code": "SUR 132",
     "department": "SUR",
     "course_number": "132",
     "name": "Surgical Procedures II",
-    "description": "This course focuses on the critical principles of microbiology, asepsis, and infection control in the surgical environment. Students examine microbiology''s impact on sterile technique and analyze immune responses while understanding the infectious process. The course also emphasizes the importance of asepsis and surgical conscience in patient care. Key topics include the roles of the surgical team, principles of safety, and medical terminology. Students develop practical skills in maintaining sterile fields, preparing instruments, and managing surgical supplies. The laboratory component allows students to observe and demonstrate principles and procedures, reinforcing their competencies in surgical techniques, patient positioning, and preoperative, intraoperative, and postoperative routines.",
+    "description": "This course focuses on the critical principles of microbiology, asepsis, and infection control in the surgical environment. Students examine microbiology's impact on sterile technique and analyze immune responses while understanding the infectious process. The course also emphasizes the importance of asepsis and surgical conscience in patient care. Key topics include the roles of the surgical team, principles of safety, and medical terminology. Students develop practical skills in maintaining sterile fields, preparing instruments, and managing surgical supplies. The laboratory component allows students to observe and demonstrate principles and procedures, reinforcing their competencies in surgical techniques, patient positioning, and preoperative, intraoperative, and postoperative routines.",
     "credits": "8",
     "prerequisites": "BIO 111 with a grade of \"C\" or higher, SUR 131 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:34:59.496219"
+    "scraped_at": "2026-04-14T18:56:52.068158"
   },
   {
     "course_code": "SUR 232",
@@ -3099,7 +3088,7 @@
     "credits": "8",
     "prerequisites": "SUR 231 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:35:06.279828"
+    "scraped_at": "2026-04-14T18:56:59.047047"
   },
   {
     "course_code": "SUR 233",
@@ -3110,29 +3099,29 @@
     "credits": "3",
     "prerequisites": "SUR 231 with a grade of \"C\" or higher",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:35:13.508078"
+    "scraped_at": "2026-04-14T18:57:06.223785"
   },
   {
     "course_code": "THA 101",
     "department": "THA",
     "course_number": "101",
     "name": "Theater Production",
-    "description": "This course covers the basic level of technical experience in various aspects of production design and emphasizes a working knowledge of the hands-on participation skills needed to mount and run theatrical productions. Students focus on crafting an industry-standard production book and work on that semester''s theater productions in assigned areas.",
+    "description": "This course covers the basic level of technical experience in various aspects of production design and emphasizes a working knowledge of the hands-on participation skills needed to mount and run theatrical productions. Students focus on crafting an industry-standard production book and work on that semester's theater productions in assigned areas.",
     "credits": "3",
     "prerequisites": "Placement into college level English",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:36:00.330386"
+    "scraped_at": "2026-04-14T18:57:20.103123"
   },
   {
     "course_code": "THA 102",
     "department": "THA",
     "course_number": "102",
     "name": "Stage Movement",
-    "description": "This course examines the basic techniques of movement with emphasis on developing each student''s potential for effective physicalization of character. This course focuses on tempo, rhythm, period movement, mask, Mythic Gesture; personal mannerisms and their essence are defined and explored.",
+    "description": "This course examines the basic techniques of movement with emphasis on developing each student's potential for effective physicalization of character. This course focuses on tempo, rhythm, period movement, mask, Mythic Gesture; personal mannerisms and their essence are defined and explored.",
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:36:07.408682"
+    "scraped_at": "2026-04-14T18:59:30.597642"
   },
   {
     "course_code": "THA 103",
@@ -3143,7 +3132,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:36:14.937722"
+    "scraped_at": "2026-04-14T18:59:36.293211"
   },
   {
     "course_code": "THA 201",
@@ -3154,7 +3143,7 @@
     "credits": "3",
     "prerequisites": null,
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:36:21.461277"
+    "scraped_at": "2026-04-14T18:59:43.211784"
   },
   {
     "course_code": "THA 203",
@@ -3165,7 +3154,7 @@
     "credits": "3",
     "prerequisites": "ENG 101",
     "semesters_offered": "F/S",
-    "scraped_at": "2026-04-10T20:38:31.881144"
+    "scraped_at": "2026-04-14T18:59:50.786526"
   },
   {
     "course_code": "UTT 111",
@@ -3176,7 +3165,7 @@
     "credits": "3",
     "prerequisites": "UTT 110",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:38:44.680817"
+    "scraped_at": "2026-04-14T19:02:06.605123"
   },
   {
     "course_code": "UTT 299",
@@ -3187,6 +3176,6 @@
     "credits": "3",
     "prerequisites": "Corequisite: UTT 111, UTT 115",
     "semesters_offered": "S",
-    "scraped_at": "2026-04-10T20:38:51.665634"
+    "scraped_at": "2026-04-14T19:02:13.804418"
   }
 ]
