@@ -19,6 +19,7 @@ from data_pipeline.database.database_dev_tools import __connect
 from langchain.tools import ToolRuntime
 from datetime import datetime
 from bs4 import BeautifulSoup
+from pydantic_core import ValidationError
 import utilities.schemas as schemas
 import database_utils
 import requests
@@ -35,6 +36,12 @@ with open(DEPARTMENT_LIST_PATH, "r") as f:
     DEPARTMENT_LIST = {"departments": []}
     DEPARTMENT_LIST["departments"] = json.load(f)
 
+ERROR_LOG_FOLDER_PATH = os.path.join(root_dir, "tool_error_logs")
+os.makedirs(ERROR_LOG_FOLDER_PATH, exist_ok=True)
+ERROR_LOG_FILE_PATH = os.path.join(ERROR_LOG_FOLDER_PATH, f"tool_error_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
+with open(ERROR_LOG_FILE_PATH, "w") as f:
+    f.write(f"Error log created on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
 # misc tools
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
@@ -45,8 +52,13 @@ def get_current_time_tool() -> str:
         str -- A string containing the current date and time:
             Format: "YYYY-MM-DD HH:MM:SS".
     """
-    now = datetime.now()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        now = datetime.now()
+        return now.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception as e:
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            f.write(f"Error occurred while getting current time: {e}\n")
+        return "A problem occurred. End your task early and report the issue to the planning agent."
 
 # Database query tools
 @tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings. Only use this tool if you initially fail to guess the 3-letter code for a department as it can consume a lot of tokens.", return_direct=True)
@@ -60,8 +72,13 @@ def get_department_list() -> str:
     Warnings:
         This tool should only be used if you initialy fail to guess the 3-letter code for a department as it can consume a lot of tokens.
     """
-    departments = DEPARTMENT_LIST["departments"]
-    return json.dumps(departments)
+    try:
+        departments = DEPARTMENT_LIST["departments"]
+        return json.dumps(departments)
+    except Exception as e:
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            f.write(f"Error occurred while getting department list: {e}\n")
+        return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_departments_in_category", description="Tool for getting a list of what types of courses are considered a part of a specified category. Options: ['Behavioral Science Elective' | 'Humanities Elective' | 'Mathematics Elective' | 'Science Elective' | 'Lab Science Elective' | 'Social Sciences Elective' | 'Liberal Arts Elective' | 'General Elective' | 'GenEd'] (GenEd = General Education)", return_direct=True)
 def get_departments_in_category_tool(category: str) -> str:
@@ -129,12 +146,17 @@ def course_query_tool_by_code(course_code: str) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        course_id = database_utils.get_courseID_by_code(cursor, course_code)
-        if course_id:
-            course_info = database_utils.get_course_info_by_id(cursor, course_id)
-            return course_info
-        else:
-            return f"No course found with code {course_code}."
+        try:
+            course_id = database_utils.get_courseID_by_code(cursor, course_code)
+            if course_id:
+                course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                return course_info
+            else:
+                return f"No course found with code {course_code}."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while querying course by code: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
 def course_query_tool_by_title(course_title: str) -> str:
@@ -157,15 +179,20 @@ def course_query_tool_by_title(course_title: str) -> str:
     """    
     with __connect() as conn:
         cursor = conn.cursor()
-        if course_title == "Coperative Work Experience":
-            coops = database_utils.get_coops(cursor)
-            return f"There are multiple courses with the title 'Cooperative Work Experience'. Here is a list of them: {', '.join(coops)}. Please try agein using the course code to specify which one you want information about."
-        course_id = database_utils.get_courseID_by_title(cursor, course_title)
-        if course_id:
-            course_info = database_utils.get_course_info_by_id(cursor, course_id)
-            return course_info
-        else:
-            return f"No course found with title {course_title}."
+        try:
+            if course_title == "Coperative Work Experience":
+                coops = database_utils.get_coops(cursor)
+                return f"There are multiple courses with the title 'Cooperative Work Experience'. Here is a list of them: {', '.join(coops)}. Please try agein using the course code to specify which one you want information about."
+            course_id = database_utils.get_courseID_by_title(cursor, course_title)
+            if course_id:
+                course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                return course_info
+            else:
+                return f"No course found with title {course_title}."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while querying course by title: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them. Don't use this tool with overly broad filters as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
@@ -214,16 +241,25 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
-        if course_ids:
-            courses_info = []
-            for course_id in course_ids:
-                course_info = database_utils.get_course_info_by_id(cursor, course_id)
-                courses_info.append(course_info)
-            info_str = json.dumps(courses_info)
-            return "\n\n"+info_str
-        else:
-            return "No courses found matching the specified criteria."
+        try:
+            course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
+            if course_ids:
+                courses_info = []
+                for course_id in course_ids:
+                    course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                    courses_info.append(course_info)
+                info_str = json.dumps(courses_info)
+                return "\n\n"+info_str
+            else:
+                return "No courses found matching the specified criteria."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while filtering courses: {e}\n")
+            if isinstance(e, ValidationError):
+                return f"Invalid filters provided: {e.errors()}."
+            elif isinstance(e, ValueError) and "Invalid department name: " in str(e) or "Invalid course code condition: " in str(e) or "Invalid credit condition: " in str(e):
+                return e
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_course_description", description="Tool for getting the description of a course based on its ID. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
 def get_course_description_tool(course_id: int) -> str:
@@ -241,8 +277,13 @@ def get_course_description_tool(course_id: int) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        description = database_utils.get_course_description_by_id(cursor, course_id)
-        return description
+        try:
+            description = database_utils.get_course_description_by_id(cursor, course_id)
+            return description
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while querying course description: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections. Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
@@ -306,16 +347,25 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
-        if section_ids:
-            sections_info = []
-            for section_id in section_ids:
-                section_info = database_utils.get_section_info_by_id(cursor, section_id)
-                sections_info.append(section_info)
-            info_str = json.dumps(sections_info)
-            return "\n\n"+info_str
-        else:
-            return "No sections found matching the specified criteria."
+        try:
+            section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
+            if section_ids:
+                sections_info = []
+                for section_id in section_ids:
+                    section_info = database_utils.get_section_info_by_id(cursor, section_id)
+                    sections_info.append(section_info)
+                info_str = json.dumps(sections_info)
+                return "\n\n"+info_str
+            else:
+                return "No sections found matching the specified criteria."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while filtering sections: {e}\n")
+                if isinstance(e, ValidationError):
+                    return f"Invalid filters provided: {e.errors()}."
+                elif isinstance(e, ValueError) and "Invalid enrollment capacity condition: " in str(e) or "Invalid enrollment condition: " in str(e):
+                    return e
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, Advisor, GPA, total credits, and programs of study. The output is a string containing the relevant information.", return_direct=True)
 def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
@@ -336,8 +386,13 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
-        return json.dumps(student_info)
+        try:
+            student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
+            return json.dumps(student_info)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student basic info: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
 def get_student_course_history_tool(runtime: ToolRuntime) -> str:
@@ -357,8 +412,13 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
-        return json.dumps(course_history)
+        try:
+            course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
+            return json.dumps(course_history)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student course history: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
 def get_student_interests_tool(runtime: ToolRuntime) -> str:
@@ -374,8 +434,13 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
-        return json.dumps(interests)
+        try:
+            interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
+            return json.dumps(interests)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student interests: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
 def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
@@ -391,11 +456,17 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
                 "Course Code": str (e.g. "CSC 101"),
                 "Section Number": str (e.g. "1"),
                 "Name": str (e.g. "Introduction to Computer Science - Section 001")
+            }]
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
-        return json.dumps(tracked_sections)
+        try:
+            tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
+            return json.dumps(tracked_sections)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student tracked sections: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
 def get_program_requirements_tool(program_name: str) -> str:
@@ -415,22 +486,37 @@ def get_program_requirements_tool(program_name: str) -> str:
     """
     with __connect() as conn:
         cursor = conn.cursor()
-        program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
-        return json.dumps(program_requirements)
-    
+        try:
+            program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
+            return json.dumps(program_requirements)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching program requirements: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
+
 @tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
 def get_upcoming_events_tool() -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        upcoming_events = database_utils.get_upcoming_events(cursor)
-        return json.dumps(upcoming_events)
+        try:
+            upcoming_events = database_utils.get_upcoming_events(cursor)
+            return json.dumps(upcoming_events)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching upcoming events: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
 def get_event_dates_tool(event_name: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
-        return json.dumps(event_dates)
+        try:
+            event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
+            return json.dumps(event_dates)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching event dates: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
 def web_search_tool(query: str, max_results: int = 3) -> str:
@@ -460,13 +546,23 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_interests(cursor, runtime.state["user_id"], [interest])
+        try:
+            return database_utils.insert_student_interests(cursor, runtime.state["user_id"], [interest])
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while inserting student interests: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
 def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        return database_utils.insert_student_tracked_section(cursor, runtime.state["user_id"], course_code, section_id)
+        try:
+            return database_utils.insert_student_tracked_section(cursor, runtime.state["user_id"], course_code, section_id)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while inserting student tracked sections: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 # alt db tools for chatbot used by advisor
 
@@ -474,86 +570,116 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if advisor_id is None:
-            return f"No advisor found with user ID {runtime.state['user_id']}."
-        cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
-        student_id = cursor.fetchone()
-        if student_id:
-            return json.dumps({"student_id": student_id[0]})
-        else:
-            return f"No student found with name {student_name}."
+        try:
+            advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if advisor_id is None:
+                return f"No advisor found with user ID {runtime.state['user_id']}."
+            cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
+            student_id = cursor.fetchone()
+            if student_id:
+                return json.dumps({"student_id": student_id[0]})
+            else:
+                return f"No student found with name {student_name}."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while getting student ID by name: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
 def get_advisor_students_tool(runtime: ToolRuntime) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if advisor_id is None:
-            return f"No advisor found with user ID {runtime.state['user_id']}."
-        cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
-        students = cursor.fetchall()
-        if students:
-            student_info = [{"name": student[0], "id": student[1]} for student in students]
-            return json.dumps({"students": student_info})
-        else:
-            return "No students found for the current advisor."
+        try:
+            advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if advisor_id is None:
+                return f"No advisor found with user ID {runtime.state['user_id']}."
+            cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
+            students = cursor.fetchall()
+            if students:
+                student_info = [{"name": student[0], "id": student[1]} for student in students]
+                return json.dumps({"students": student_info})
+            else:
+                return "No students found for the current advisor."
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while getting advisor students: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        s_advisor_id = cursor.fetchone()
-        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if s_advisor_id is None:
-            return f"No student found with ID {student_id}"
-        elif s_advisor_id[0] != u_advisor_id[0]:
-            return f"Student with ID {student_id} is not assigned to the current user."
-        student_info = database_utils.get_student_basic_info(cursor, student_id)
-        return json.dumps(student_info)
+        try:
+            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = cursor.fetchone()
+            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if s_advisor_id is None:
+                return f"No student found with ID {student_id}"
+            elif s_advisor_id[0] != u_advisor_id[0]:
+                return f"Student with ID {student_id} is not assigned to the current user."
+            student_info = database_utils.get_student_basic_info(cursor, student_id)
+            return json.dumps(student_info)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student basic info: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        s_advisor_id = cursor.fetchone()
-        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if s_advisor_id is None:
-            return f"No student found with ID {student_id}"
-        elif s_advisor_id[0] != u_advisor_id[0]:
-            return f"Student with ID {student_id} is not assigned to the current user."
-        course_history = database_utils.get_student_course_history(cursor, student_id)
-        return json.dumps(course_history)
+        try:
+            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = cursor.fetchone()
+            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if s_advisor_id is None:
+                return f"No student found with ID {student_id}"
+            elif s_advisor_id[0] != u_advisor_id[0]:
+                return f"Student with ID {student_id} is not assigned to the current user."
+            course_history = database_utils.get_student_course_history(cursor, student_id)
+            return json.dumps(course_history)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student course history: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        s_advisor_id = cursor.fetchone()
-        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if s_advisor_id is None:
-            return f"No student found with ID {student_id}"
-        elif s_advisor_id[0] != u_advisor_id[0]:
-            return f"Student with ID {student_id} is not assigned to the current user."
-        interests = database_utils.get_student_interests(cursor, student_id)
-        return json.dumps(interests)
+        try:
+            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = cursor.fetchone()
+            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if s_advisor_id is None:
+                return f"No student found with ID {student_id}"
+            elif s_advisor_id[0] != u_advisor_id[0]:
+                return f"Student with ID {student_id} is not assigned to the current user."
+            interests = database_utils.get_student_interests(cursor, student_id)
+            return json.dumps(interests)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student interests: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-        s_advisor_id = cursor.fetchone()
-        u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
-        if s_advisor_id is None:
-            return f"No student found with ID {student_id}"
-        elif s_advisor_id[0] != u_advisor_id[0]:
-            return f"Student with ID {student_id} is not assigned to the current user."
-        tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
-        return json.dumps(tracked_sections)
+        try:
+            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = cursor.fetchone()
+            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            if s_advisor_id is None:
+                return f"No student found with ID {student_id}"
+            elif s_advisor_id[0] != u_advisor_id[0]:
+                return f"Student with ID {student_id} is not assigned to the current user."
+            tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
+            return json.dumps(tracked_sections)
+        except Exception as e:
+            with open(ERROR_LOG_FILE_PATH, "a") as f:
+                f.write(f"Error occurred while fetching student tracked sections: {e}\n")
+            return "A problem occurred. End your task early and report the issue to the planning agent."
 
 d_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time_tool"] else None,
            get_department_list if TOOL_CONFIG["s-db-tools"]["get_department_list_tool"] else None,
