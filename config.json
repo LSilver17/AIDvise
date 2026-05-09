@@ -42,7 +42,7 @@
             "alerts": "advisor_test"
         }
     },
-    "context_select": {
+    "context_config": {
         "s-planner": {
             "context-select": "full",
             "context-level": {
@@ -96,10 +96,10 @@
             "course_filter_tool": true,
             "get_course_description_tool": true,
             "section_filter_tool": true,
-            "get_student_basic_info_tool": false,
-            "get_student_course_history_tool": false,
-            "get_student_interests_tool": false,
-            "get_student_tracked_sections_tool": false,
+            "get_student_basic_info_tool": true,
+            "get_student_course_history_tool": true,
+            "get_student_interests_tool": true,
+            "get_student_tracked_sections_tool": true,
             "get_program_requirements_tool": true,
             "get_upcoming_events_tool": true,
             "get_event_dates_tool": true

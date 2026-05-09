@@ -44,7 +44,7 @@ CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
 with open(CONFIG_PATH, "r") as f:
     CONFIG = json.load(f)
-    CONTEXT_CONFIG = CONFIG["context_select"]
+    CONTEXT_CONFIG = CONFIG["context_config"]
     LOOP_CONFIG = CONFIG["loop_limits"]
 
 def s_planner_node(state: SPlannerState) -> SPlannerState:
