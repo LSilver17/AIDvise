@@ -1,9 +1,37 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Student-facing chat agent that routes student queries through planning and helper graphs.
+
+Functions:
+- `invoke_db_helper`: Invokes the database helper graph and merges results back to planner state.
+- `invoke_web_helper`: Invokes the web search helper graph and merges results back to planner state.
+- `invoke_insertion_helper`: Invokes the insertion helper graph for student profile updates.
+- `route_from_planning`: Routes the planner's decision to appropriate helper graphs or answer node. Enforces a maximum number of loops before forcing an answer.
+- `answer_node`: Appends the final planner response to the conversation message history.
+
+Graph Structure:
+- START -> planning
+- planning -> [invoke_db_helper | invoke_web_helper | invoke_insertion_helper | answer_node] (conditional) (can be parallel)
+- invoke_db_helper -> planning (feedback loop) (deferred)
+- invoke_web_helper -> planning (feedback loop) (deferred)
+- invoke_insertion_helper -> planning (feedback loop) (deferred)
+- answer_node -> END
+
+Exports:
+- `s_chat_graph`: Compiled LangGraph student chat agent.
+
+Loop limits are defined in config.json.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END
@@ -14,9 +42,16 @@ from lg_agent.utilities.nodes import s_planner_node
 from db_helper_graph import db_graph
 from web_helper_graph import web_graph
 from insertion_helper_graph import insertion_graph
+import json
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
 load_dotenv()
+
+CONFIG_PATH = os.path.join(PARENT_DIR, "config.json")
+
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    LOOP_CONFIG = CONFIG["loop_limits"]
 
 def invoke_db_helper(state: SPlannerState):
     """
@@ -95,7 +130,7 @@ def route_from_planning(state: SPlannerState):
     Returns:
         list[Send]: One or more graph sends describing the next execution branch.
     """
-    if state["loop_count"] < 3:
+    if state["loop_count"] < LOOP_CONFIG["s-planner"]:
         routes = []
         if "requires_database" in state["plan"] and state["plan"]["requires_database"]:
             routes.append("invoke_db_helper")
@@ -109,7 +144,7 @@ def route_from_planning(state: SPlannerState):
     elif "answer" in state["plan"] and state["plan"]["answer"] is not None and state["plan"]["answer"] != "":
         return [Send("answer_node", state)]
     else:
-        if state["loop_count"] == 3:
+        if state["loop_count"] == LOOP_CONFIG["s-planner"]:
             messages = state["messages"] + [AIMessage(content="You went over the loop limit. Give your final answer now.")]
             return [Send("planning", {"messages": messages, "loop_count": state["loop_count"] + 1})]
         else:

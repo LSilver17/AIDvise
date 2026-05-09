@@ -1,14 +1,27 @@
+
+"""
+Copyright 2026 Luca Silver
+
+Nodes that execute the alerts agent workflow for filtering and inserting relevant events for the current student user.
+
+Functions:
+- `get_new_events`: Queries the database for upcoming events added since the student's last event check.
+- `get_interests`: Retrieves the student's interests from the database for personalized event filtering.
+- `filter_relivent_events`: Filters upcoming events based on student interests and sets urgency levels.
+- `insert_relevant_events`: Inserts the filtered relevant events into the database with their urgency levels.
+"""
+
 import sys, os
     
 # adds root directory to system path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic

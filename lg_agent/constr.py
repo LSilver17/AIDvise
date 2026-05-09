@@ -1,9 +1,30 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Root routing agent that directs requests to either student or advisor chat graphs based on account type.
+
+Functions:
+- `route`: Conditional router that directs to student or advisor graph based on account_type.
+- `invoke_s_graph`: Looks up student ID from parent user ID and invokes the student chat graph.
+- `invoke_a_graph`: Invokes the advisor chat graph with the current conversation state.
+
+Graph Structure:
+- START -> [invoke_s_graph | invoke_a_graph] (conditional routing based on account type)
+- invoke_s_graph -> END
+- invoke_a_graph -> END
+
+Exports:
+- `chat_graph`: Compiled LangGraph root routing agent.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END

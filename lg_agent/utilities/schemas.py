@@ -32,10 +32,11 @@ if ROOT_DIR not in sys.path:
 from pydantic import BaseModel, Field
 import json
 
-CONTEXT_CONFIG_PATH = os.path.join(ROOT_DIR, "context_config.json")
+CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
-with open(CONTEXT_CONFIG_PATH, "r") as f:
-    CONTEXT_CONFIG = json.load(f)
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    CONTEXT_CONFIG = CONFIG["context_config"]
 
 # Schemas for advisor graph
 

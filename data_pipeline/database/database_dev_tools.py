@@ -41,14 +41,15 @@ from lg_agent.database_utils import get_courseID_by_code
 def __connect():
     """Create and return a configured SQLite connection to the project's database.
 
-    Reads the database filename from ``database_config.json`` in the repository root, opens a connection to <database>.db, enables foreign key enforcement, and sets the connection ``row_factory`` to ``sqlite3.Row`` so query results behave like mapping objects.
+    Reads the database filename from ``config.json`` in the repository root, opens a connection to <database>.db, enables foreign key enforcement, and sets the connection ``row_factory`` to ``sqlite3.Row`` so query results behave like mapping objects.
 
     Returns:
         sqlite3.Connection: An open SQLite connection with pragma and row factory set.
     """
-    with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
-        db_config = json.load(f)
-    conn = sqlite3.connect(db_config["database"] + ".db")
+    with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
+        CONFIG = json.load(f)
+        DB_CONFIG = CONFIG["database_config"]
+    conn = sqlite3.connect(DB_CONFIG["database"] + ".db")
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn

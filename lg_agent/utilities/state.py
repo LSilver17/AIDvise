@@ -1,9 +1,32 @@
+"""
+Copyright 2026 Luca Silver
+
+Defines TypedDict schemas for state management across the advisor and alerts LangGraph agents.
+
+Planner Agent State Classes:
+- `QueryResult`: Container for database/web query strings and their results.
+- `RouteState`: Root routing state containing user ID, account type, and messages.
+- `SPlannerState`: State for student planning node, tracking database/web info and loop iterations.
+- `APlannerState`: State for advisor planning node, similar to student but without insertion field.
+- `DatabaseHelperState`: State for database query helper subgraph.
+- `DatabaseHelperOutput`: Output schema for database helper results.
+- `WebSearchHelperState`: State for web search helper subgraph.
+- `WebSearchHelperOutput`: Output schema for web search helper results.
+- `InsertionHelperState`: State for student insertion helper subgraph.
+- `InsertionHelperOutput`: Output schema for insertion helper results.
+
+Alerts Agent State Classes:
+- `AlertsAgentInput`: Input schema containing the student ID to process.
+- `AlertsAgentState`: State containing upcoming events, interests, and relevant filtered events.
+- `AlertsAgentOutput`: Output schema containing the final list of relevant events.
+"""
+
 import sys, os
     
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from langchain.messages import AIMessage
 from typing_extensions import Literal, TypedDict

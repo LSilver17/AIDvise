@@ -1,9 +1,36 @@
 import sys, os
     
+"""
+Copyright 2026 Luca Silver
+
+Constructs the alerts agent graph that filters upcoming events based on student interests.
+
+Functions:
+- `state_initializer`: Initializes alerts agent state with empty containers for events and interests.
+- `checkpoint`: Synchronization node using defer=True to wait for parallel tasks completion.
+- `end_early_check`: Conditional router that skips event filtering if no events or interests are present.
+- `format_response`: Formats the final state into the alerts agent output schema.
+
+Graph Structure:
+- START -> state_initializer
+- state_initializer -> [get_new_events | get_interests] (parallel)
+- get_new_events -> checkpoint (deferred)
+- get_interests -> checkpoint (deferred)
+- checkpoint -> [filter_relivent_events | END] (conditional - early termination if no events/interests)
+- filter_relivent_events -> insert_relevant_events
+- insert_relevant_events -> format_response
+- format_response -> END
+
+Exports:
+- `alert_graph`: Compiled LangGraph alerts agent.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END

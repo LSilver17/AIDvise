@@ -1,16 +1,34 @@
+"""
+Copyright 2026 Luca Silver
+
+Core planning and helper nodes for both student and advisor chat agents.
+
+Planning Nodes:
+- `s_planner_node`: Student planner that decides which sources (database, web, insertion) are needed and what info to gather from them (or what info to insert) for the current user input.
+- `a_planner_node`: Advisor planner that decides what sources (database, web) are needed and what info to gather from them for the current user input.
+
+Helper Nodes:
+- `db_node`: Database helper that formulates and executes database queries using available tools.
+- `web_node`: Web search helper that formulates and executes web searches using available tools.
+- `insertion_node`: Insertion helper that processes student profile updates (interests, tracked sections).
+
+These nodes are integrated into LangGraph agents to provide multi-turn planning and tool execution workflows.
+System prompts and loop limits for each node are defined in config.json and can be adjusted to control agent behavior and prevent infinite loops.
+"""
+
 import sys, os
 
 from langchain.messages import AIMessage, ToolMessage
     
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 # adds root directory to system path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -22,10 +40,12 @@ import json
 
 load_dotenv()
 
-CONTEXT_CONFIG_PATH = os.path.join(root_dir, "context_config.json")
+CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
-with open(CONTEXT_CONFIG_PATH, "r") as f:
-    CONTEXT_CONFIG = json.load(f)
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    CONTEXT_CONFIG = CONFIG["context_select"]
+    LOOP_CONFIG = CONFIG["loop_limits"]
 
 def s_planner_node(state: SPlannerState) -> SPlannerState:
     """
@@ -47,7 +67,7 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
         - Increments the loop counter.
         - May initialize empty db_info and web_info lists.
     """
-    
+
     state["loop_count"] += 1
     state["plan"] = None
 
@@ -60,7 +80,7 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
     messages.extend(state["messages"])
 
     if len(messages) == 1:
-        messages.append(SystemMessage(content=system_prompt))
+        messages.append(SystemMessage(content=system_prompt + ("Loop limit = " + str(LOOP_CONFIG["s-planner"]) if CONTEXT_CONFIG["s-planner"] != "no-tools" else "")))
 
     if "db_info" not in state:
         state["db_info"] = []
@@ -76,7 +96,8 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
     if state["insertion_result"] != "":
         messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    if CONTEXT_CONFIG["s-planner"] != "no-tools":
+        messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
@@ -114,7 +135,7 @@ def a_planner_node(state: APlannerState) -> APlannerState:
     messages.extend(state["messages"])
 
     if len(messages) == 1:
-        messages.append(SystemMessage(content=system_prompt))
+        messages.append(SystemMessage(content=system_prompt + ("Loop limit = " + str(LOOP_CONFIG["a-planner"]) if CONTEXT_CONFIG["a-planner"] != "no-tools" else "")))
 
     if "db_info" not in state:
         state["db_info"] = []
@@ -127,7 +148,8 @@ def a_planner_node(state: APlannerState) -> APlannerState:
         for QueryResult in state["web_info"]:
             messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    if CONTEXT_CONFIG["a-planner"] != "no-tools":
+        messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     response = structured_llm.invoke(messages).model_dump()
     state["plan"] = response
@@ -168,7 +190,7 @@ def db_node(state: DatabaseHelperState):
     
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
-        state["messages"].append(SystemMessage(content=system_prompt))
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["s-db"] if state["account_type"] == "Student" else LOOP_CONFIG["a-db"])))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the database to answer the user's question: {state['info_needed']}"))
     
     messages = []
@@ -180,7 +202,8 @@ def db_node(state: DatabaseHelperState):
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
         messages.extend(state["messages"][-2:])
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
 
@@ -217,7 +240,7 @@ def web_node(state: WebSearchHelperState):
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
-        state["messages"].append(SystemMessage(content=system_prompt))
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["web"])))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the web to answer the user's question: {state['info_needed']}"))
 
     messages = []
@@ -229,7 +252,8 @@ def web_node(state: WebSearchHelperState):
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
         messages.extend(state["messages"][-2:])
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_web_tools.invoke(messages)
 
@@ -266,7 +290,7 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
 
     # if state messages is empty add a message with the info to be inserted, otherwise pass the messages through
     if len(state["messages"]) == 0:
-        state["messages"].append(SystemMessage(content=system_prompt))
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["insertion"])))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information about the student should be added into the database if it is not already present: {state['info_to_insert']}"))
     
     messages = []
@@ -277,8 +301,9 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
                 messages.append(message)
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
-    messages.extend(state["messages"][-2:])
-    messages.append(HumanMessage(content="Current loop count: " + str(state["loop_count"])))
+        messages.extend(state["messages"][-2:])
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_insertion_tools.invoke(messages)
 

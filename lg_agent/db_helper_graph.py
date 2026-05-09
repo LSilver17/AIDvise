@@ -1,9 +1,34 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Database helper subgraph that executes database queries for the planning agents.
+
+Functions:
+- `format_db_output`: Normalizes database helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes database helper loop based on tool calls and loop count.
+
+Graph Structure:
+- START -> db_node
+- db_node -> [tool_node | alt_tool_node | format_db_output] (conditional routing based on tool_route)
+- tool_node -> db_node (feedback loop)
+- alt_tool_node -> db_node (feedback loop)
+- format_db_output -> END
+
+Exports:
+- `db_graph`: Compiled LangGraph database helper subgraph.
+
+Supports both standard (student) and alternate (advisor) tool sets.
+Loop limits are defined in config.json.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from langchain_core.messages import AIMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
@@ -11,6 +36,13 @@ from langgraph.prebuilt import ToolNode
 from utilities.state import DatabaseHelperState, DatabaseHelperOutput
 from utilities.nodes import db_node
 from utilities.tools import db_tools, alt_db_tools
+import json
+
+CONFIG_PATH = os.path.join(PARENT_DIR, "config.json")
+
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    LOOP_CONFIG = CONFIG["loop_limits"]
 
 tool_node = ToolNode(db_tools)
 alt_tool_node = ToolNode(alt_db_tools)
@@ -59,14 +91,14 @@ def tool_route(state: DatabaseHelperState):
     """
     messages = state["messages"]
     last_message = messages[-1]
-    if state["loop_count"] < 3:
+    if state["loop_count"] < LOOP_CONFIG["s-db"] if state["account_type"] == "Student" else LOOP_CONFIG["a-db"]:
         if getattr(last_message, "tool_calls", None):
             if state["account_type"] == "Student":
                 return "tool_node"
             else:
                 return "alt_tool_node"
         return "format_db_output"
-    elif state["loop_count"] == 3:
+    elif state["loop_count"] == LOOP_CONFIG["s-db"] if state["account_type"] == "Student" else LOOP_CONFIG["a-db"]:
         if getattr(last_message, "tool_calls", None):
             messages.append("Loop limit reached. Please provide the final answer without using any more tools.")
             return "db"

@@ -55,14 +55,14 @@ Individual tools can be disabled using the `tool_config.json` file. If a tool is
 import sys, os
     
 # adds root directory to system path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from langchain_core.tools import tool
 from langchain_community.tools import DuckDuckGoSearchResults
@@ -77,18 +77,20 @@ import database_utils
 import requests
 import json
 
-TOOL_CONFIG_PATH = os.path.join(root_dir, "tool_config.json")
+CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
-with open(TOOL_CONFIG_PATH, "r") as f:
-    TOOL_CONFIG = json.load(f)
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
 
-DEPARTMENT_LIST_PATH = os.path.join(root_dir, "department_mapping.json")
+TOOL_CONFIG = CONFIG["tool_select"]
+
+DEPARTMENT_LIST_PATH = os.path.join(ROOT_DIR, "department_mapping.json")
 
 with open(DEPARTMENT_LIST_PATH, "r") as f:
     DEPARTMENT_LIST = {"departments": []}
     DEPARTMENT_LIST["departments"] = json.load(f)
 
-ERROR_LOG_FOLDER_PATH = os.path.join(root_dir, "tool_error_logs")
+ERROR_LOG_FOLDER_PATH = os.path.join(ROOT_DIR, "tool_error_logs")
 os.makedirs(ERROR_LOG_FOLDER_PATH, exist_ok=True)
 ERROR_LOG_FILE_PATH = os.path.join(ERROR_LOG_FOLDER_PATH, f"tool_error_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
 with open(ERROR_LOG_FILE_PATH, "w") as f:
