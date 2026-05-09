@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright 2026
 */
 import Logo from "@/app/components/visual/logo"
 import NavButton from "@/app/components/navigation/navbutton"

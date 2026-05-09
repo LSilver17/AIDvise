@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Expansion of NextAuth module
+    Copyright 2026
 */
 import { JWT } from "next-auth/jwt"
 import NextAuth, { DefaultSession, User } from "next-auth";

@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Interface to store metadata about a user data field.
+    Copyright 2026
 */
 
 /**

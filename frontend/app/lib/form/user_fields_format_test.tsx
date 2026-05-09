@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Validates user-entered form values.
+    Copyright 2026
 */
 
 /**

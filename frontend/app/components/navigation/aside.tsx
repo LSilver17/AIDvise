@@ -1,6 +1,7 @@
 /*
     Author: Sean Collins
     Description: Component for constructing the dashboard navbar.
+    Copyright 2026
 */
 "use client"
 

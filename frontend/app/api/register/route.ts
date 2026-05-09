@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright 2026
 */
 import { NextResponse } from "next/server";
 

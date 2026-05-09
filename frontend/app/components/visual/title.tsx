@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 
 import { Text, Flex, Separator, Em } from "@radix-ui/themes"

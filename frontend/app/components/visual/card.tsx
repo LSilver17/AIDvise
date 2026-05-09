@@ -1,6 +1,7 @@
 /*
     Author: Sean Collins
     Description: Visual card component.
+    Copyright: 2026
 */
 // Components
 import { Flex } from "@radix-ui/themes"

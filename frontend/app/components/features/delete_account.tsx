@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright 2026
 */
 import DefaultButton from "@/app/components/features/default_button"
 import { AlertDialog, Flex } from "@radix-ui/themes";

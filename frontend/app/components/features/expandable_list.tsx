@@ -4,6 +4,7 @@
         Provides an expandable list component to display a dynamically rendered
         series of similar components, provided as a prop. Used for alert and student
         lists in the dashboard.
+    Copyright 2026
 */
 import type { Dispatch, SetStateAction } from "react";
 import type { ComponentType } from "react";
@@ -56,6 +57,12 @@ function renderComponent(Component: any, val: any, key: number, componentType: s
     else if (componentType === "Student") return <Component key={key} student={val}/>;
 }
 
+/**
+ * Grabs child elements from list and button subcomponents.
+ * @param children 
+ * @param displayName 
+ * @returns 
+ */
 const get_children = (children: any, displayName: any) => 
     React.Children.map(children, (child: any) =>
         child.type.displayName === displayName ? child : null

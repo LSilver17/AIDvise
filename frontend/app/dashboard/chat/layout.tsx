@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 import { authSession } from "@/app/lib/account/authSession";
 import { redirect } from "next/navigation";
@@ -7,7 +8,7 @@ import { useUserData } from "@/app/lib/account/user_context";
 import { StudentContext, UserData } from "@/app/lib/account/account_db_utils";
 
 /**
- * Enforces authorization for chat usage based on account type.
+ * Enforces authorization for chat usage based on account type (uncomment session check if you want to restrict based on account).
  * @returns 
  */
 export default async function ChatCheck({ children, }: Readonly<{children: React.ReactNode;}>) {

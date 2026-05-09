@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Definition of literal account type
+    Copyright 2026
 */
 
 /**

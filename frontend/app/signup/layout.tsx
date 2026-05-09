@@ -1,3 +1,7 @@
+/*
+    Author: Sean Collins
+    Copyright: 2026
+*/
 import LoginLayout from "@/app/components/layout/accountstartlayout"
 import { redirect } from "next/navigation";
 import { authSession } from "@/app/lib/account/authSession";

@@ -4,6 +4,7 @@
     Description: 
         A set of utility functions and types for connecting user accounts with
         the database.
+    Copyright 2026
 */
 'use server'
 
@@ -13,7 +14,7 @@ import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import path from "path";
 import { signOut } from "next-auth/react";
-import data from "../../../../database_config.json"
+import data from "../../../../config.json"
 import type { Database } from 'sqlite3';
 
 // User
@@ -29,7 +30,7 @@ import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
  * @returns Database path.
  */
 function dbPath () {
-    const dbPath = path.join(process.cwd(), '..', `${data.database}.db`);
+    const dbPath = path.join(process.cwd(), '..', `${data.database_config.db_name}.db`);
     return dbPath;
 }
 
@@ -666,12 +667,10 @@ async function alert_fill(student_id: string): Promise<AlertReturn> {
             const dbEvent = await db.get(`SELECT Name, Description FROM Events WHERE ID = ?`, eventID);
             const dbEventTimes = await db.get(`SELECT Date, StartTime, EndTime FROM EventDates WHERE ParentID = ?`, eventID);
             const time = `${dbEventTimes.StartTime} - ${dbEventTimes.EndTime}`;
-            // TODO: check for seen status
             const newAlert = createEventAlert(dbEvent.Name, dbEvent.Description, alert.AlertStatus, time, dbEventTimes.Date, alert.ID);
             if (newAlert.status === "Unseen") { event_unseenAlerts.push(newAlert); }
             else if (newAlert.status === "Seen") { event_seenAlerts.push(newAlert); };
         }
-        // TODO: grab course alerts
         const db_course_alerts = await db.all(`SELECT AlertStatus, ChangeID, ID FROM StudentSectionStatusChanges WHERE ParentID = ?`, student_id);
         for (const alert of db_course_alerts) {
             const alert_section_id = await db.get(`SELECT SectionID, ChangeTime, NewStatus FROM SectionStatusChanges WHERE ID = ?`, alert.ChangeID);
@@ -768,7 +767,6 @@ async function student_fill(advisor_id: string) : Promise<Student[]> {
 
         const db_students = await db.all(`SELECT ID, Name, GPA, CreditsEarned, IntendedGraduationTerm FROM Students WHERE AdvisorID = ?`, advisor_id)
         for (let student of db_students) {
-            // TODO: check for seen status
             const newStudent: Student = {
                 Name: student.Name,
                 ID: student.ID,

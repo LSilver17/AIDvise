@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Auth session hook definition
+    Copyright 2026
 */
 "use server"
 
