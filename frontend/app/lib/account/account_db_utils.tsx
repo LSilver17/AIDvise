@@ -14,7 +14,7 @@ import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import path from "path";
 import { signOut } from "next-auth/react";
-import data from "../../../../database_config.json"
+import data from "../../../../config.json"
 import type { Database } from 'sqlite3';
 
 // User
@@ -30,7 +30,7 @@ import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
  * @returns Database path.
  */
 function dbPath () {
-    const dbPath = path.join(process.cwd(), '..', `${data.database}.db`);
+    const dbPath = path.join(process.cwd(), '..', `${data.database_config.db_name}.db`);
     return dbPath;
 }
 
