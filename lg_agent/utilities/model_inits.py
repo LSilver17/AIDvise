@@ -20,7 +20,6 @@ import json
 
 load_dotenv()
 
-
 def _load_model_config() -> tuple[dict, str]:
     with open(os.path.join(ROOT_DIR, "model_select.json"), "r", encoding="utf-8") as f:
         model_select = json.load(f)
@@ -377,6 +376,32 @@ def _insertion_testing_model() -> GenericFakeChatModel:
     )
 
 
+def _alerts_testing_model() -> GenericFakeChatModel:
+    return GenericFakeChatModel(
+        messages=iter(
+            [
+                AIMessage(
+                    content=json.dumps(
+                        {
+                            "relivent_events": [
+                                {"ID": 12, "Urgency": 5},
+                                {"ID": 27, "Urgency": 3},
+                            ]
+                        }
+                    )
+                ),
+                AIMessage(
+                    content=json.dumps(
+                        {
+                            "relivent_events": [],
+                        }
+                    )
+                ),
+            ]
+        )
+    )
+
+
 def _create_model(model_name: str, node_name: str):
     normalized = _normalize_model_name(model_name)
 
@@ -405,6 +430,8 @@ def _create_model(model_name: str, node_name: str):
                 return _s_web_testing_model()
             if node_name == "insertion":
                 return _insertion_testing_model()
+            if node_name == "alerts":
+                return _alerts_testing_model()
             raise ValueError(f"Unknown student testing node: {node_name}")
         case "advisor_test":
             if node_name == "planning":
@@ -415,6 +442,8 @@ def _create_model(model_name: str, node_name: str):
                 return _a_web_testing_model()
             if node_name == "insertion":
                 return _insertion_testing_model()
+            if node_name == "alerts":
+                return _alerts_testing_model()
             raise ValueError(f"Unknown advisor testing node: {node_name}")
         case _:
             raise ValueError(f"Model '{model_name}' not supported for advisor {node_name} node.")
@@ -426,3 +455,4 @@ planning_llm = _create_model(model_select["planning"], "planning")
 db_llm = _create_model(model_select["db"], "db")
 web_llm = _create_model(model_select["web"], "web")
 insertion_llm = _create_model(model_select["insertion"], "insertion")
+alerts_llm = _create_model(model_select["alerts"], "alerts")
