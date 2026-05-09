@@ -50,11 +50,15 @@ def route(state: RouteState) -> Literal["invoke_s_graph", "invoke_a_graph"]:
         Literal["invoke_s_graph", "invoke_a_graph"]: The next node name for the
             state graph.
     """
-    match state["account_type"]:
+    account_type = state.get("account_type")
+    
+    match account_type:
         case "Student":
             return "invoke_s_graph"
         case "Advisor":
             return "invoke_a_graph"
+        case _:
+            raise ValueError(f"Invalid account type: {account_type}. Must be 'Student' or 'Advisor'.")
 
 def invoke_s_graph(state: RouteState) -> RouteState:
     """
