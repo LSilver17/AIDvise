@@ -1,3 +1,9 @@
+"""
+Copyright 2026 Luca Silver
+
+Basic script to add a test student to the database.
+"""
+
 import sys, os
 
 # Add the path to the root directory to the path if not already there

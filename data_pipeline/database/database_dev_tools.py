@@ -4,10 +4,13 @@ Copyright 2026 Luca Silver
 This module provides development tools for managing the SQLite database used by the advising application. It includes functions to set up the database schema, create necessary triggers, populate tables from JSON files, and reset specific groups of tables during development.
 
 Functions:
+-  ``__connect()``: Internal function to establish a connection to the SQLite database with appropriate configuration.
 - ``setup_database()``: Creates the database schema with all required tables.
 - ``create_triggers()``: Creates database triggers for logging section status changes and resetting student check fields.
 - ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
 - ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
+- ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
+- ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and coueses taken table.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
