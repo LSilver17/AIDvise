@@ -24,9 +24,9 @@ Alerts Agent State Classes:
 import sys, os
     
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from langchain.messages import AIMessage
 from typing_extensions import Literal, TypedDict

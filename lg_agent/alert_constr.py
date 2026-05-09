@@ -28,9 +28,9 @@ Exports:
 import sys, os
 
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END

@@ -7,7 +7,7 @@ Insertion helper subgraph that processes student profile updates (interests and 
 
 Functions:
 - `format_insertion_output`: Normalizes insertion helper response into standardized helper output schema.
-- `tool_route`: Conditionally routes insertion helper loop based on tool calls and loop count (max 3 iterations).
+- `tool_route`: Conditionally routes insertion helper loop based on tool calls and loop count.
 
 Graph Structure:
 - START -> insertion_node
@@ -17,14 +17,16 @@ Graph Structure:
 
 Exports:
 - `insertion_graph`: Compiled LangGraph insertion helper subgraph.
+
+Loop limits are defined in config.json.
 """
 
 import sys, os
 
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from langchain_core.messages import AIMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
@@ -32,6 +34,13 @@ from langgraph.prebuilt import ToolNode
 from utilities.state import InsertionHelperState, InsertionHelperOutput
 from utilities.nodes import insertion_node
 from utilities.tools import insertion_tools
+import json
+
+CONFIG_PATH = os.path.join(PARENT_DIR, "config.json")
+
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    LOOP_CONFIG = CONFIG["loop_limits"]
 
 tool_node = ToolNode(insertion_tools)
 
@@ -78,11 +87,11 @@ def tool_route(state: InsertionHelperState):
     """
     messages = state["messages"]
     last_message = messages[-1]
-    if state["loop_count"] < 3:
+    if state["loop_count"] < LOOP_CONFIG["insertion"]:
         if getattr(last_message, "tool_calls", None):
             return "tool_node"
         return "format_insertion_output"
-    elif state["loop_count"] == 3:
+    elif state["loop_count"] == LOOP_CONFIG["insertion"]:
         if getattr(last_message, "tool_calls", None):
             messages.append("Loop limit reached. Please provide the result of your attempts without using any more tools.")
             return "insertion"

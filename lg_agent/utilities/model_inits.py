@@ -47,10 +47,11 @@ import json
 load_dotenv()
 
 def _load_model_config() -> tuple[dict, str]:
-    with open(os.path.join(ROOT_DIR, "model_select.json"), "r", encoding="utf-8") as f:
-        model_select = json.load(f)
-    mode = model_select.get("mode")
-    models = model_select.get(mode)
+    with open(os.path.join(ROOT_DIR, "config.json"), "r", encoding="utf-8") as f:
+        CONFIG = json.load(f)
+        MODEL_SELECT = CONFIG.get("model_select")
+    mode = MODEL_SELECT.get("mode")
+    models = MODEL_SELECT.get(mode)
     return models, mode
 
 

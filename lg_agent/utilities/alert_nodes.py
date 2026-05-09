@@ -14,14 +14,14 @@ Functions:
 import sys, os
     
 # adds root directory to system path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
