@@ -66,10 +66,15 @@ def invoke_db_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the updated "db_info" list.
     """
-    db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "user_id": state["user_id"], "account_type": "Student"}
+    plan = state.get("plan", {})
+    info_needed = plan.get("info_needed_db", "")
+    if not info_needed:
+        return {"db_info": state.get("db_info", [])}
+    
+    db_helper_state = {"info_needed": info_needed, "messages": [], "loop_count": 0, "user_id": state["user_id"], "account_type": "Student"}
     result = db_graph.invoke(db_helper_state)
-    db_info = state["db_info"]
-    db_info.append(result["info"])
+    db_info = state.get("db_info", [])
+    db_info.append(result.get("info", {}))
     return {"db_info": db_info}
 
 def invoke_web_helper(state: SPlannerState):
@@ -87,10 +92,15 @@ def invoke_web_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the updated "web_info" list.
     """
-    web_helper_state = {"info_needed": state["plan"]["info_needed_web"], "messages": [], "loop_count": 0}
+    plan = state.get("plan", {})
+    info_needed = plan.get("info_needed_web", "")
+    if not info_needed:
+        return {"web_info": state.get("web_info", [])}
+    
+    web_helper_state = {"info_needed": info_needed, "messages": [], "loop_count": 0}
     result = web_graph.invoke(web_helper_state)
-    web_info = state["web_info"]
-    web_info.append(result["info"])
+    web_info = state.get("web_info", [])
+    web_info.append(result.get("info", {}))
     return {"web_info": web_info}
 
 def invoke_insertion_helper(state: SPlannerState):
@@ -108,9 +118,14 @@ def invoke_insertion_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the insertion_result string.
     """
-    insertion_helper_state = {"info_to_insert": state["plan"]["info_to_insert"], "messages": [], "loop_count": 0, "user_id": state["user_id"]}
+    plan = state.get("plan", {})
+    info_to_insert = plan.get("info_to_insert", "")
+    if not info_to_insert:
+        return {"insertion_result": "No insertion requested"}
+    
+    insertion_helper_state = {"info_to_insert": info_to_insert, "messages": [], "loop_count": 0, "user_id": state["user_id"]}
     result = insertion_graph.invoke(insertion_helper_state)
-    return {"insertion_result": result["result"]}
+    return {"insertion_result": result.get("result", "")}
 
 def route_from_planning(state: SPlannerState):
     """

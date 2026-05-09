@@ -499,7 +499,7 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
     gpa = row[2]
     credits_earned = row[3]
 
-    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM ProgramsOfStudy as p JOIN StudentPrograms as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
+    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM ProgramsOfStudy as p JOIN StudentProgramsOfStudy as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
     programs_of_study = []
     for row in cursor.fetchall():
         programs_of_study.append({
@@ -608,10 +608,11 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
                 ["No requirements found"] if program has no requirements.
     """
     cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN ProgramsOfStudy as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
-    if cursor.fetchone() is None:
+    requirement_rows = cursor.fetchall()
+    if not requirement_rows:
         return ["Program not found"]
     program_requirements = []
-    for row in cursor.fetchall():
+    for row in requirement_rows:
         c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prc.ID = prco.ParentID WHERE prc.ID = ? AND prco.CourseID IS NOT NULL""", (row[0],)).fetchall()
         d_options = cursor.execute("""SELECT Elective FROM ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ? AND prco.CourseID IS NULL""", (row[0],)).fetchall()
         requirement = ""
