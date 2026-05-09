@@ -99,7 +99,7 @@ def get_current_time_tool() -> str:
     """Return the current date and time as a formatted string.
 
     Returns:
-        str: Current date and time.
+        out (str): Current date and time:
             Format: "YYYY-MM-DD HH:MM:SS"
     """
     try:
@@ -115,7 +115,7 @@ def get_department_list_tool() -> str:
     """Return the list of 3-letter department codes.
 
     Returns:
-        str: JSON-encoded list of all department mappings.
+        out (str): JSON-encoded list of all department mappings:
             Format: List[{
                 "Code": str, 
                     Format: 3-letter department code (e.g. "CSC", "HST", etc).
@@ -139,11 +139,11 @@ def get_departments_in_category_tool(category: str) -> str:
     """Return department codes considered part of the specified elective/category.
 
     Args:
-        str category: The category to query.
+        category (str): The category to query:
             Format: one of ["Behavioral Science Elective" | "Humanities Elective" | "Mathematics Elective" | "Science Elective" | "Lab Science Elective" | "Social Sciences Elective" | "Liberal Arts Elective" | "General Elective" | "GenEd"]
 
     Returns:
-        str: Comma-separated list of department codes or a short explanatory string. The exact format varies by category.
+        out (str): Comma-separated list of department codes or a short explanatory string. The exact format varies by category.
     """
     behavioral_science = "ANT, PSY, SOC"
     humanities = "ASL, ART, COM, ENG, FRC, GER, HUM, MUS, PHI, SPN, SPH, THA"
@@ -184,11 +184,11 @@ def course_query_tool_by_code(course_code: str) -> str:
     Wraps `database_utils.get_courseID_by_code` and `database_utils.get_course_info_by_id`.
 
     Args:
-        ``str course_code``: The course code to look up.
+        course_code (str): The course code to look up:
             Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
 
     Returns:
-        str: Either a not-found message or course metadata for the matched course.
+        out (str): Either a not-found message or course metadata for the matched course:
             Format if found: {
                 "ID": str,
                     Format: Primary key value from `Courses.ID` column (eg. "12345")
@@ -227,11 +227,11 @@ def course_query_tool_by_title(course_title: str) -> str:
     `database_utils.get_course_info_by_id`.
 
     Args:
-        str course_title: The course title to look up.
+        course_title (str): The course title to look up.
             Format: Exact course title as stored in `Courses.Name` column (eg. "Introduction to Computer Science").
 
     Returns:
-        str: Either a not-found/clarification message or course metadata.
+        out (str): Either a not-found/clarification message or course metadata:
             Format if found: {
                 "ID": str,
                     Format: Primary key value from `Courses.ID` column (eg. "12345")
@@ -277,7 +277,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     `database_utils.get_course_info_by_id`.
 
     Args:
-        schemas.CourseFilters filters: Filters to apply to the course search.
+        filters (schemas.CourseFilters): Filters to apply to the course search:
             Format: {
                 Optional[List[DBTerm]] terms,
                     DBTerm format: {
@@ -309,7 +309,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             }
 
     Returns:
-        str: JSON-encoded list of course metadata dicts.
+        out (str): JSON-encoded list of course metadata dicts:
             Format: List[{
                 "ID": str,
                     Format: Primary key value from `Courses.ID` column (eg. "12345")
@@ -327,7 +327,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             Note: If no matches are found, returns "No courses found matching the specified criteria.".
 
     Raises:
-        ValueError: Propagated from underlying filter logic when an invalid operator is provided.
+        ValueError: Propagated from underlying filter logic when an invalid operator is provided:
             Course code error message: "Invalid course code condition: {condition}"
             Credit error message: "Invalid credit condition: {condition}"
 
@@ -363,11 +363,11 @@ def get_course_description_tool(course_id: int) -> str:
     Wraps `database_utils.get_course_description_by_id`.
 
     Args:
-        int course_id: The ID of the course to retrieve the description for.
+        course_id (int): The ID of the course to retrieve the description for:
             Format: Primary key value from `Courses.ID` column (eg. "12345").
 
     Returns:
-        str: Course description as stored in `Courses.Description` for the matched course.
+        out (str): Course description as stored in `Courses.Description` for the matched course:
             Format: Text string from `Courses.Description` column describing the course.
             Note: If no course is found with that ID, returns "Course not found".
 
@@ -392,7 +392,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
     `database_utils.get_section_info_by_id`.
 
     Args:
-        schemas.SectionFilters filters: Filters to apply to the section search.
+        filters (schemas.SectionFilters): Filters to apply to the section search:
             Format: {
                 Optional[List[DBTerm]] terms,
                     DBTerm format: {
@@ -435,7 +435,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             Note: Field-level formats and operator restrictions match `database_utils.get_sectionIDs_by_filters`.
 
     Returns:
-        str: JSON-encoded list of section metadata dicts.
+        out (str): JSON-encoded list of section metadata dicts:
             Format: List[{
                 "ID": str,
                     Format: Primary key value from `Sections.ID` column (eg. "67890")
@@ -461,7 +461,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             Note: If no matches are found, returns "No sections found matching the specified criteria.".
 
     Raises:
-        ValueError: Propagated from underlying filter logic when an invalid operator is provided.
+        ValueError: Propagated from underlying filter logic when an invalid operator is provided:
             Enrollment capacity error message: "Invalid enrollment capacity condition: {condition}"
             Current enrollment error message: "Invalid enrollment condition: {condition}"
 
@@ -497,11 +497,11 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
     Wraps `database_utils.get_student_basic_info` using `runtime.state["user_id"]`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
 
     Returns:
-        str: JSON-encoded student profile info.
+        out (str): JSON-encoded student profile info:
             Format: {
                 "Name": str,
                     Format: Student's full name as stored in `Students.Name` column (e.g. "John Doe")
@@ -538,11 +538,11 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     Wraps `database_utils.get_student_course_history` using `runtime.state["user_id"]`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
 
     Returns:
-        str: JSON-encoded list of course-history entries.
+        out (str): JSON-encoded list of course-history entries:
             Format: List[{
                 "CourseCode": str,
                     Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
@@ -570,11 +570,11 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
     Wraps `database_utils.get_student_interests` using `runtime.state["user_id"]`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        ToolRuntime runtime: Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
 
     Returns:
-        str: JSON-encoded list of interests.
+        out (str): JSON-encoded list of interests:
             Format of list items: Interest string as stored in `Interests.Interest` (e.g. "Artificial Intelligence").
             Note: If no interests are found, serialized value is ["No interests specified"].
     """
@@ -595,11 +595,11 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
     Wraps `database_utils.get_student_tracked_sections` using `runtime.state["user_id"]`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
 
     Returns:
-        str: JSON-encoded list of tracked section entries.
+        out (str): JSON-encoded list of tracked section entries:
             Format: List[{
                 "CourseCode": str,
                     Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
@@ -627,11 +627,11 @@ def get_program_requirements_tool(program_name: str) -> str:
     Wraps `database_utils.get_program_requirements_by_title`.
 
     Args:
-        str program_name: Program title to look up.
+        program_name (str): Program title to look up:
             Format: Exact title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems").
 
     Returns:
-        str: JSON-encoded list of requirement strings.
+        out (str): JSON-encoded list of requirement strings:
             Format of list items: Requirement string with one or more options joined by " OR ".
                 Format for course options: "Department: {Department}, Course Number: {Code}, Title: {Name}"
                 Format for elective options: "Any {Elective} course"
@@ -658,7 +658,7 @@ def get_upcoming_events_tool() -> str:
     Wraps `database_utils.get_upcoming_events`.
 
     Returns:
-        str: JSON-encoded list of upcoming events.
+        out (str): JSON-encoded list of upcoming events:
             Format: List[{
                 "ID": str,
                     Format: Primary key value from `Events.ID` column (eg. "54321")
@@ -685,11 +685,11 @@ def get_event_dates_tool(event_name: str) -> str:
     Wraps `database_utils.get_event_dates_by_name`.
 
     Args:
-        str event_name: Event name to look up.
+        event_name (str): Event name to look up:
             Format: Exact event name as stored in `Events.Name` column (e.g. "Spring Career Fair").
 
     Returns:
-        str: JSON-encoded list of event date entries.
+        out (str): JSON-encoded list of event date entries:
             Format: List[{
                 "Date": str,
                     Format: Date of the event in YYYY-MM-DD format (e.g. "2024-04-15")
@@ -718,11 +718,11 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
     """Performs a web search for the given query and return a list of results.
 
     Args:
-        str query: The search query.
-        int max_results: The maximum number of results to return.
+        query (str): The search query.
+        max_results (int): The maximum number of results to return.
 
     Returns:
-        str: A string containing a list of search results.
+        out (str): A string containing a list of search results:
             Format: List[{
                 "Title": str,
                     Format: Title of the search result as returned by the search engine.
@@ -749,13 +749,13 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
     """Fetches the content of a web page and return it as text.
 
     Args:
-        str url: The URL of the web page to get the content from.
+        url (str): The URL of the web page to get the content from:
             Format: Valid URL string (e.g. "https://www.example.com").
-        int max_chars: The maximum number of characters to return.
+        max_chars (int): The maximum number of characters to return:
             Format: Positive integer (e.g. 3000).
     
     Returns:
-        str: A string containing the text content of the web page.
+        out (str): A string containing the text content of the web page:
             Format: Text content of the web page with all HTML tags removed.
 
     Warnings:
@@ -791,13 +791,13 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     Wraps `database_utils.insert_student_interests` with a single-item list input.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
-        str interest: Interest string to be inserted.
+        interest (str): Interest string to be inserted:
             Format: Value to be stored in `Interests.Interest` column (e.g. "Data Science").
 
     Returns:
-        str: Confirmation string from insert operation.
+        out (str): Confirmation string from insert operation:
             Format: "{counter} new interest(s) added"
 
     Warnings:
@@ -818,15 +818,15 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
     Wraps `database_utils.insert_student_tracked_section`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as a student ID.
-        str course_code: Course code of the section to track.
+        course_code (str): Course code of the section to track:
             Format: "DPT NUM" | "DPTNUM" (e.g. "CSC 101" or "CSC101").
-        str section_id: Section number to track.
+        section_id (str): Section number to track:
             Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50").
 
     Returns:
-        str: Confirmation string indicating result of the insert operation.
+        out (str): Confirmation string indicating result of the insert operation:
             Possible return values:
                 "Section added to tracked sections"
                 "Section not found"
@@ -846,13 +846,13 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     """Tool for getting a student's ID based on their name.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as the advisor's parent user ID
-        str student_name: The name of the student to look up.
+        student_name (str): The name of the student to look up:
             Format: Exact name as stored in `Students.Name` column (e.g. "Alice Smith").
     
     Returns:
-        str: The student's ID.
+        out (str): The student's ID:
             Format: JSON-encoded dict {"Student ID": int} where the value is the primary key from `Students.ID` column (e.g. {"Student ID": 12345})
             Note: If no student with the given name is found or if the student does not have the current user as their advisor, returns "No student found with name {student_name}."
 
@@ -881,11 +881,11 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
     """Return a list of students assigned to the current advisor.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
 
     Returns:
-        str: JSON-encoded list of students assigned to the current advisor.
+        out (str): JSON-encoded list of students assigned to the current advisor:
             Format: List[{
                 "name": str,
                     Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
@@ -919,13 +919,13 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
     Performs advisor ownership checks, then wraps `database_utils.get_student_basic_info`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
-        int student_id: Student ID to retrieve.
+        student_id (int): Student ID to retrieve:
             Format: Primary key value from `Students.ID` column (e.g. 12345).
 
     Returns:
-        str: JSON-encoded student profile info.
+        out (str): JSON-encoded student profile info:
             Format: {
                 "Name": str,
                     Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
@@ -965,31 +965,31 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
+    """Return course history for an advisor-visible student.
+
+    Performs advisor ownership checks, then wraps `database_utils.get_student_course_history`.
+
+    Args:
+        runtime (ToolRuntime): Runtime state for the current tool call:
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+        student_id (int): Student ID to retrieve:
+            Format: Primary key value from `Students.ID` column (e.g. 12345).
+
+    Returns:
+        out (str): JSON-encoded list of course-history entries:
+            Format: List[{
+                "CourseCode": str,
+                    Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` column (e.g. "Introduction to Computer Science")
+                "Grade": str
+                    Format: Grade string as stored in `StudentCourseHistory.Grade` column (e.g. "A", "B+", "Pass", "Fail")
+            }]
+            Note: If no courses are found, serialized value is ["No courses taken"].
+            Access failure format: "Student with ID {student_id} is not assigned to the current user."
+            Not-found format: "No student found with ID {student_id}"
+    """
     with __connect() as conn:
-        """Return course history for an advisor-visible student.
-
-        Performs advisor ownership checks, then wraps `database_utils.get_student_course_history`.
-
-        Args:
-            ToolRuntime runtime: Runtime state for the current tool call.
-                Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
-            int student_id: Student ID to retrieve.
-                Format: Primary key value from `Students.ID` column (e.g. 12345).
-
-        Returns:
-            str: JSON-encoded list of course-history entries.
-                Format: List[{
-                    "CourseCode": str,
-                        Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
-                    "Name": str,
-                        Format: Course name as stored in `Courses.Name` column (e.g. "Introduction to Computer Science")
-                    "Grade": str
-                        Format: Grade string as stored in `StudentCourseHistory.Grade` column (e.g. "A", "B+", "Pass", "Fail")
-                }]
-                Note: If no courses are found, serialized value is ["No courses taken"].
-                Access failure format: "Student with ID {student_id} is not assigned to the current user."
-                Not-found format: "No student found with ID {student_id}"
-        """
         cursor = conn.cursor()
         try:
             cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
@@ -1013,13 +1013,13 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
     Performs advisor ownership checks, then wraps `database_utils.get_student_interests`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
-        int student_id: Student ID to retrieve.
+        student_id (int): Student ID to retrieve:
             Format: Primary key value from `Students.ID` column (e.g. 12345).
 
     Returns:
-        str: JSON-encoded list of interests.
+        out (str): JSON-encoded list of interests:
             Format of list items: Interest string as stored in `Interests.Interest`.
             Note: If no interests are found, serialized value is ["No interests specified"].
             Access failure format: "Student with ID {student_id} is not assigned to the current user."
@@ -1049,13 +1049,13 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
     Performs advisor ownership checks, then wraps `database_utils.get_student_tracked_sections`.
 
     Args:
-        ToolRuntime runtime: Runtime state for the current tool call.
+        runtime (ToolRuntime): Runtime state for the current tool call:
             Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
-        int student_id: Student ID to retrieve.
+        student_id (int): Student ID to retrieve:
             Format: Primary key value from `Students.ID` column (e.g. 12345).
 
     Returns:
-        str: JSON-encoded list of tracked sections.
+        out (str): JSON-encoded list of tracked sections:
             Format: List[{
                 "CourseCode": str,
                     Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
