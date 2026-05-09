@@ -1,16 +1,98 @@
+# =============================================================================
+# CSC 212 — AI Academic Advising Platform
+# Data Pipeline 
+#
+# Copyright (c) 2026 Quinsigamond Community College — CSC 212
+# All rights reserved.
+#
+# This source code is part of a student research project and may not be
+# reproduced, distributed, or used without permission.
+#
+# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+# GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+# Branch:   cws
+# =============================================================================
+
+"""
+@file scrape_registration_sections.py
+@brief Parses a locally saved HTML file of QCC's registration page into structured JSON.
+
+@details
+This module reads a saved HTML snapshot of The Q portal's course registration
+page and extracts all course section data into a list of structured dictionaries.
+The parsed data is saved to registration_sections.json.
+
+This script does not perform live web requests — it parses a pre-saved HTML file.
+For live scraping with automatic refresh, see refresh_registration.py.
+
+@author Data Pipeline — CSC 212 AI Academic Advising Platform
+@date 2026
+
+@par Input
+    saved_pages/registration_page.html — saved HTML snapshot of The Q portal
+
+@par Output
+    registration_sections.json — list of course section dictionaries
+
+@par Dependencies
+    - beautifulsoup4
+    - json (stdlib)
+    - re (stdlib)
+    - datetime (stdlib)
+
+@par Usage
+    python scrape_registration_sections.py
+"""
+
 from bs4 import BeautifulSoup
 import json
 import re
 from datetime import datetime
 
+## @brief Path to the locally saved HTML registration page.
 HTML_FILE = "saved_pages/registration_page.html"
 
 
 def clean_text(text: str) -> str:
+    """
+    @brief Removes excess whitespace from a string.
+
+    @details
+    Splits the input string on any whitespace, then rejoins with single spaces
+    and strips leading/trailing whitespace. Handles newlines, tabs, and
+    multiple consecutive spaces.
+
+    @param text The raw string to clean.
+    @return A normalized single-line string with no extra whitespace.
+
+    @par Example
+    @code
+    clean_text("  ACC   101  ") -> "ACC 101"
+    @endcode
+    """
     return " ".join(text.split()).strip()
 
 
 def parse_seats(seats_str: str) -> dict:
+    """
+    @brief Parses a seats string into open and total seat counts.
+
+    @details
+    The Q portal displays seat availability in the format "1 / 24" or "1 ∕ 24"
+    (using either a standard slash or a Unicode division slash). This function
+    extracts both numbers using a regex pattern that handles both slash variants.
+
+    @param seats_str The raw seats string from the registration table (e.g. "1 / 24").
+    @return A dictionary with keys:
+            - "open" (int or None): number of open seats
+            - "total" (int or None): total seats in the section
+
+    @par Example
+    @code
+    parse_seats("1 ∕ 24") -> {"open": 1, "total": 24}
+    parse_seats("")        -> {"open": None, "total": None}
+    @endcode
+    """
     match = re.search(r"(\d+)\s*[/∕]\s*(\d+)", seats_str)
     if match:
         return {"open": int(match.group(1)), "total": int(match.group(2))}
@@ -18,6 +100,33 @@ def parse_seats(seats_str: str) -> dict:
 
 
 def parse_details(details_str: str) -> dict:
+    """
+    @brief Parses the details column into instructor, schedule, location, and method.
+
+    @details
+    The details column in The Q portal combines multiple fields into a single
+    slash-delimited string with semicolons for sub-fields. The expected format is:
+        "Instructor Name / Days Time; Location / Method"
+
+    Parsing rules:
+    - Part 0 (before first /): instructor name
+    - Part 1 (between first and second /): days/time before semicolon, location after semicolon
+    - Part 2 (after second /): delivery method (e.g. "Lecture", "Online")
+
+    @param details_str The raw details string from the registration table.
+    @return A dictionary with keys:
+            - "instructor" (str or None)
+            - "days_time" (str or None): e.g. "MW 08:00-09:15AM"
+            - "location" (str or None): e.g. "MAIN Campus, Surprenant Hall, 312"
+            - "method" (str or None): e.g. "Lecture"
+
+    @par Example
+    @code
+    parse_details("De Silva, Damindi / MW 08:00-09:15AM; MAIN Campus, Room 312 / Lecture")
+    # -> {"instructor": "De Silva, Damindi", "days_time": "MW 08:00-09:15AM",
+    #     "location": "MAIN Campus, Room 312", "method": "Lecture"}
+    @endcode
+    """
     result = {"instructor": None, "days_time": None, "location": None, "method": None}
     parts = [p.strip() for p in details_str.split("/")]
     if len(parts) >= 1:
@@ -33,13 +142,60 @@ def parse_details(details_str: str) -> dict:
 
 
 def parse_course_code(code: str) -> dict:
+    """
+    @brief Splits a full course code string into department, number, and section.
+
+    @details
+    QCC course codes follow the format "DEPT NUM-SECTION" (e.g. "ACC 101-01").
+    This function extracts each component using a regex match.
+
+    @param code The full course code string (e.g. "ACC 101-01").
+    @return A dictionary with keys:
+            - "department" (str or None): e.g. "ACC"
+            - "number" (str or None): e.g. "101"
+            - "section" (str or None): e.g. "01"
+
+    @par Example
+    @code
+    parse_course_code("ACC 101-01") -> {"department": "ACC", "number": "101", "section": "01"}
+    parse_course_code("invalid")    -> {"department": None, "number": None, "section": None}
+    @endcode
+    """
     match = re.match(r"([A-Z]+)\s+(\d+)-(\w+)", code)
     if match:
         return {"department": match.group(1), "number": match.group(2), "section": match.group(3)}
     return {"department": None, "number": None, "section": None}
 
 
-def parse_registration_html(file_path: str) -> list[dict]:
+def parse_registration_html(file_path: str) -> list:
+    """
+    @brief Parses a saved HTML registration page and returns a list of course section dicts.
+
+    @details
+    Reads the HTML file at the given path, finds all table rows, and extracts
+    course section data from rows that contain a valid course code (matching
+    the pattern "DEPT NUM-SECTION"). Skips header rows and empty rows.
+
+    The column layout detected from The Q portal is:
+    - [idx+0] course_code   e.g. "ACC 101-01"
+    - [idx+1] name          e.g. "Financial Accounting I"
+    - [idx+2] req           (empty, skipped)
+    - [idx+3] note          (empty, skipped)
+    - [idx+4] seats         e.g. "1 ∕ 24"
+    - [idx+5] status        e.g. "Reopened"
+    - [idx+6] details       e.g. "Instructor / Days;Location / Method"
+    - [idx+7] credits       e.g. "3.00"
+    - [idx+8] begin_date    e.g. "01/26/2026"
+    - [idx+9] end_date      e.g. "05/19/2026"
+
+    @param file_path Path to the locally saved HTML file.
+    @return A list of dictionaries, each representing one course section with keys:
+            course_code, department, course_number, section, name, status,
+            seats_open, seats_total, credits, instructor, days_time, location,
+            method, begin_date, end_date, scraped_at.
+
+    @throws FileNotFoundError if the HTML file does not exist at the given path.
+    """
     with open(file_path, "r", encoding="utf-8") as f:
         soup = BeautifulSoup(f, "html.parser")
 
@@ -70,17 +226,6 @@ def parse_registration_html(file_path: str) -> list[dict]:
         if idx is None:
             continue
 
-        # Column layout (confirmed from debug output):
-        # [idx+0] = course code
-        # [idx+1] = name
-        # [idx+2] = req (empty)
-        # [idx+3] = note (empty)
-        # [idx+4] = seats  e.g. "1 ∕ 24"
-        # [idx+5] = status e.g. "Reopened"
-        # [idx+6] = details (instructor / schedule / method)
-        # [idx+7] = credits
-        # [idx+8] = begin date
-        # [idx+9] = end date
         try:
             code_str   = values[idx]
             name       = values[idx + 1]
