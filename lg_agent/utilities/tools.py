@@ -1,4 +1,56 @@
-# Copyright 2026 Luca Silver
+"""
+Copyright 2026 Luca Silver
+
+This file contains the tool implementations for the course-planning agent. Each tool is defined as a function decorated with `@tool` from LangChain, which specifies the tool's name, description, and return behavior.
+
+Database agent tools for student users:
+- `get_current_time_tool`: Retrieves the current date and time as a formatted string.
+- `get_department_list_tool`: Retrieves a list of all 3-letter department codes and their meanings.
+- `get_departments_in_category_tool`: Retrieves a list of what types of courses are considered a part of a specified category.
+- `course_query_tool_by_code`: Retrieves information about a specific course based on its course code.
+- `course_query_tool_by_title`: Retrieves information about a specific course based on its title.
+- `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
+- `get_course_description_tool`: Retrieves the description of a course based on its ID.
+- `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
+- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, advisor, GPA, total credits, and programs of study.
+- `get_student_course_history_tool`: Retrieves the course history for the current student user, including course codes, titles, and grades.
+- `get_student_interests_tool`: Retrieves the interests for the current student user.
+- `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
+- `get_program_requirements_tool`: Retrieves the course requirements for a specified program of study.
+- `get_upcoming_events_tool`: Retrieves a list of upcoming events.
+- `get_event_dates_tool`: Retrieves the dates for a specified event.
+
+Database agent tools for advisor users:
+- `get_current_time_tool`: Retrieves the current date and time as a formatted string.
+- `get_department_list_tool`: Retrieves a list of all 3-letter department codes and their meanings.
+- `get_departments_in_category_tool`: Retrieves a list of what types of courses are considered a part of a specified category.
+- `course_query_tool_by_code`: Retrieves information about a specific course based on its course code.
+- `course_query_tool_by_title`: Retrieves information about a specific course based on its title.
+- `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
+- `get_course_description_tool`: Retrieves the description of a course based on its ID.
+- `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
+- `get_student_id_by_name_tool`: Retrieves a student's ID based on their name. Only works for students who have the current user as their advisor.
+- `get_advisor_students_tool`: Retrieves a list of students assigned to the advisor user, including their names and IDs.
+- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, advisor, GPA, total credits, and programs of study.
+- `a_get_student_course_history_tool`: Retrieves the course history for a specified student who is assigned to the advisor user, including course codes, titles, and grades.
+- `a_get_student_interests_tool`: Retrieves the current interests for a specified student who is assigned to the advisor user.
+- `a_get_student_tracked_sections_tool`: Retrieves the sections that a specified student who is assigned to the advisor user is currently tracking for openings.
+- `get_program_requirements_tool`: Retrieves the course requirements for a specified program of study.
+- `get_upcoming_events_tool`: Retrieves a list of upcoming events.
+- `get_event_dates_tool`: Retrieves the dates for a specified event.
+
+Insertion agent tools:
+- `get_student_interests_tool`: Retrieves the interests for the current student user.
+- `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
+- `insert_student_interests_tool`: Inserts a new interest for the current student user.
+- `insert_student_tracked_section_tool`: Inserts a new tracked section for the current student user.
+
+Web agent tools:
+- `web_search_tool`: Performs a web search for a given query and returns a list of results with sources.
+- `fetch_web_page_content_tool`: Fetches and extracts the main textual content from a specified URL.
+
+Individual tools can be disabled using the `tool_config.json` file. If a tool is disabled, it will not be registered with the agent and cannot be called by the agent's language model. This allows for dynamic control over which tools the agent has access to without needing to modify the code.
+"""
 
 import sys, os
     
@@ -42,15 +94,13 @@ ERROR_LOG_FILE_PATH = os.path.join(ERROR_LOG_FOLDER_PATH, f"tool_error_log_{date
 with open(ERROR_LOG_FILE_PATH, "w") as f:
     f.write(f"Error log created on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
 
-# misc tools
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
-    """
-    Tool for getting the current date and time. 
-    
-    Returns: 
-        str -- A string containing the current date and time:
-            Format: "YYYY-MM-DD HH:MM:SS".
+    """Return the current date and time as a formatted string.
+
+    Returns:
+        str: Current date and time.
+            Format: "YYYY-MM-DD HH:MM:SS"
     """
     try:
         now = datetime.now()
@@ -60,14 +110,18 @@ def get_current_time_tool() -> str:
             f.write(f"Error occurred while getting current time: {e}\n")
         return "A problem occurred. End your task early and report the issue to the planning agent."
 
-# Database query tools
 @tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings. Only use this tool if you initially fail to guess the 3-letter code for a department as it can consume a lot of tokens.", return_direct=True)
-def get_department_list() -> str:
-    """
-    Tool for getting a list of all 3-letter department codes.
+def get_department_list_tool() -> str:
+    """Return the list of 3-letter department codes.
 
     Returns:
-        str -- A string containing a list of all 3-letter department codes.
+        str: JSON-encoded list of all department mappings.
+            Format: List[{
+                "Code": str, 
+                    Format: 3-letter department code (e.g. "CSC", "HST", etc).
+                "Department": str
+                    Format: Full department name corresponding to the code (e.g. "Computer Science", "History", etc).
+            }]
 
     Warnings:
         This tool should only be used if you initialy fail to guess the 3-letter code for a department as it can consume a lot of tokens.
@@ -82,19 +136,18 @@ def get_department_list() -> str:
 
 @tool("get_departments_in_category", description="Tool for getting a list of what types of courses are considered a part of a specified category. Options: ['Behavioral Science Elective' | 'Humanities Elective' | 'Mathematics Elective' | 'Science Elective' | 'Lab Science Elective' | 'Social Sciences Elective' | 'Liberal Arts Elective' | 'General Elective' | 'GenEd'] (GenEd = General Education)", return_direct=True)
 def get_departments_in_category_tool(category: str) -> str:
-    """
-    Tool for getting a list of what types of courses are considered a part of a specified category.
+    """Return department codes considered part of the specified elective/category.
 
     Args:
-        category (str) -- "Behavioral Science Elective" | "Humanities Elective" | "Mathematics Elective" | "Science Elective" | "Lab Science Elective" | "Social Sciences Elective" | "Liberal Arts Elective" | "General Elective" | "GenEd"
+        str category: The category to query.
+            Format: one of ["Behavioral Science Elective" | "Humanities Elective" | "Mathematics Elective" | "Science Elective" | "Lab Science Elective" | "Social Sciences Elective" | "Liberal Arts Elective" | "General Elective" | "GenEd"]
 
     Returns:
-        str -- A string containing a list of what types of courses are considered a part of the specified category. 
-            Format: varies based on category, but generally a list of department codes (e.g. "CSC", "MTH", etc.) with any relevant course number or credit requirements.
+        str: Comma-separated list of department codes or a short explanatory string. The exact format varies by category.
     """
     behavioral_science = "ANT, PSY, SOC"
     humanities = "ASL, ART, COM, ENG, FRC, GER, HUM, MUS, PHI, SPN, SPH, THA"
-    mathmatics = "MAT (Above 100 Level)"
+    mathematics = "MAT (Above 100 Level)"
     science = "BIO, BTT, CHM, PHY, SCI with at lease 3 credits"
     lab_science = "BIO, BTT, CHM, PHY with at least 4 credits (with exception of BIO 140)"
     social_science = "ANT, ECO, GEO, HST, PSC, PSY, SOS, SOC"
@@ -108,7 +161,7 @@ def get_departments_in_category_tool(category: str) -> str:
         case "Humanities Elective":
             return humanities
         case "Mathematics Elective":
-            return mathmatics
+            return mathematics
         case "Science Elective":
             return science
         case "Lab Science Elective":
@@ -126,23 +179,31 @@ def get_departments_in_category_tool(category: str) -> str:
 
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
 def course_query_tool_by_code(course_code: str) -> str:
-    """
-    Tool for getting information about a specific course from the database.
+    """Return course metadata for a course identified by its course code.
+
+    Wraps `database_utils.get_courseID_by_code` and `database_utils.get_course_info_by_id`.
 
     Args:
-        course_code (str) -- The code of the course to query:
-            Format: 3-letter department code followed by 3-digit course number (e.g. "CSC 101" | "CSC101").
+        ``str course_code``: The course code to look up.
+            Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
+
     Returns:
-        str -- A string containing the relevant information about the course:
-            Format: {
-                "Department": str (3-letter),
-                "Course Number": int (3-digit),
-                "Title": str,
-                "Description": str,
-                "Prerequisites": list[str],
-                "Credits": int
+        str: Either a not-found message or course metadata for the matched course.
+            Format if found: {
+                "ID": str,
+                    Format: Primary key value from `Courses.ID` column (eg. "12345")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+                "Department": str,
+                    Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+                "Code": str,
+                    Format: Course number as stored in `Courses.Code` (e.g. "101")
+                "Credits": int,
+                    Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+                "Requirements": str
+                    Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
             }
-        If no course is found with the given code, returns a message indicating that no course was found.
+            Format if not found: "No course found with code {course_code}."
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -160,23 +221,37 @@ def course_query_tool_by_code(course_code: str) -> str:
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
 def course_query_tool_by_title(course_title: str) -> str:
-    """
-    Tool for getting information about a specific course from the database.
+    """Return course metadata for a course identified by its title.
+
+    Wraps `database_utils.get_courseID_by_title`, `database_utils.get_coops`, and
+    `database_utils.get_course_info_by_id`.
 
     Args:
-        course_title (str) -- The title of the course to query (e.g. "Introduction to Computer Science").
+        str course_title: The course title to look up.
+            Format: Exact course title as stored in `Courses.Name` column (eg. "Introduction to Computer Science").
+
     Returns:
-        str -- A string containing the relevant information about the course:
-            Format: {
-                "Department": str (3-letter),
-                "Course Number": int (3-digit),
-                "Title": str,
-                "Description": str,
-                "Prerequisites": list[str],
-                "Credits": int
+        str: Either a not-found/clarification message or course metadata.
+            Format if found: {
+                "ID": str,
+                    Format: Primary key value from `Courses.ID` column (eg. "12345")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+                "Department": str,
+                    Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+                "Code": str,
+                    Format: Course number as stored in `Courses.Code` (e.g. "101")
+                "Credits": int,
+                    Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+                "Requirements": str
+                    Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
             }
-        If no course is found with the given title, returns a message indicating that no course was found.
-    """    
+            Format if not found: "No course found with title {course_title}."
+
+    Warnings:
+        Course-title lookup assumes titles are unique except for "Cooperative Work Experience".
+        For that title, this tool returns a clarification message containing matching course IDs and asks for a code-based query.
+    """
     with __connect() as conn:
         cursor = conn.cursor()
         try:
@@ -196,46 +271,66 @@ def course_query_tool_by_title(course_title: str) -> str:
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them. Don't use this tool with overly broad filters as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
-    """
-    Tool for filtering courses based on specified criteria.
+    """Return courses that match the provided `schemas.CourseFilters`.
+
+    Wraps `database_utils.get_courseIDs_by_filters` then resolves each ID with
+    `database_utils.get_course_info_by_id`.
 
     Args:
-        filters (schemas.CourseFilters) -- A set of filters to apply when querying for courses:
+        schemas.CourseFilters filters: Filters to apply to the course search.
             Format: {
-                "terms": List[
-                    {
+                Optional[List[DBTerm]] terms,
+                    DBTerm format: {
                         "year": int,
-                        "season": "Fall" | "Spring" | "Summer",
-                        "number": int | None
+                            Format: 4-digit year (e.g. 2024)
+                        "season": str,
+                            Format: ["Fall", "Winter", "Spring", "Summer"]
+                        "number": Optional[int]
+                            Format: Integer term number (e.g. 1, 2, 3, etc).
+                            Note: If not provided, filter matches any term number for the given year/season.
                     }
-                ],
-                "departments": List[str], (IE: CSC, MTH, etc.)
-                "course_codes": List[
-                    {
-                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
-                        "code": str (course number to compare against, e.g. '101')
+                Optional[List[str]] departments,
+                    Format: Department abbreviations as stored in `Courses.Department` (e.g. ["PHY", "MAT"]).
+                Optional[List[CodeCondition]] course_codes,
+                    CodeCondition format: {
+                        "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                        "code": str
+                            Format: Course number as stored in `Courses.Code` (e.g. "101", "210").
                     }
-                ],
-                "credits": List[
-                    {
-                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
-                        "credits": int
+                Optional[List[CreditCondition]] credits,
+                    CreditCondition format: {
+                        "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                        "credits": int (e.g. 3 or 4)
                     }
-                ]
-                "keywords": List[str], (searches for keywords in course descriptions)
-                "prerequisites": List[str] (searches for keywords in course prerequisites)
+                Optional[List[str]] keywords,
+                    Format: Keywords searched in `Courses.Description`.
+                Optional[List[str]] prerequisites,
+                    Format: Keywords searched in `Courses.Requirements`.
             }
-            Filters can be left blank if no filtering is needed for a particular criterion. Never leave all filters blank.
+
     Returns:
-        str -- A string containing all the courses that match the specified criteria and relevant information about them:
+        str: JSON-encoded list of course metadata dicts.
             Format: List[{
-                "Department": str (3-letter),
-                "Course Number": int (3-digit),
-                "Title": str,
-                "Prerequisites": list[str],
-                "Credits": int
+                "ID": str,
+                    Format: Primary key value from `Courses.ID` column (eg. "12345")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+                "Department": str,
+                    Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+                "Code": str,
+                    Format: Course number as stored in `Courses.Code` (e.g. "101")
+                "Credits": int,
+                    Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+                "Requirements": str
+                    Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
             }]
-    
+            Note: If no matches are found, returns "No courses found matching the specified criteria.".
+
+    Raises:
+        ValueError: Propagated from underlying filter logic when an invalid operator is provided.
+            Course code error message: "Invalid course code condition: {condition}"
+            Credit error message: "Invalid credit condition: {condition}"
+
     Warnings:
         Don't use this tool with overly broad filters (eg: all courses in a given term or all courses in a department) as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
@@ -257,21 +352,25 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                 f.write(f"Error occurred while filtering courses: {e}\n")
             if isinstance(e, ValidationError):
                 return f"Invalid filters provided: {e.errors()}."
-            elif isinstance(e, ValueError) and "Invalid department name: " in str(e) or "Invalid course code condition: " in str(e) or "Invalid credit condition: " in str(e):
+            elif isinstance(e, ValueError) and "Invalid course code condition: " in str(e) or "Invalid credit condition: " in str(e):
                 return e
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_course_description", description="Tool for getting the description of a course based on its ID. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
 def get_course_description_tool(course_id: int) -> str:
-    """
-    Tool for getting the description of a course based on its ID.
+    """Return the textual description for a course identified by `course_id`.
+
+    Wraps `database_utils.get_course_description_by_id`.
 
     Args:
-        course_id (int) -- The ID of the course for which to get the description.
+        int course_id: The ID of the course to retrieve the description for.
+            Format: Primary key value from `Courses.ID` column (eg. "12345").
 
     Returns:
-        str -- The description of the course.
-    
+        str: Course description as stored in `Courses.Description` for the matched course.
+            Format: Text string from `Courses.Description` column describing the course.
+            Note: If no course is found with that ID, returns "Course not found".
+
     Warnings:
         Don't use this tool for more than a few courses at a time, as it can consume a lot of tokens.
     """
@@ -287,61 +386,85 @@ def get_course_description_tool(course_id: int) -> str:
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections. Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
 def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
-    """
-    Tool for filtering sections based on specified criteria.
+    """Return sections that match the provided `schemas.SectionFilters`.
+
+    Wraps `database_utils.get_sectionIDs_by_filters` then resolves each ID with
+    `database_utils.get_section_info_by_id`.
 
     Args:
-        filters (schemas.SectionFilters) -- A set of filters to apply when querying for sections:
+        schemas.SectionFilters filters: Filters to apply to the section search.
             Format: {
-                "terms": List[
-                    {
+                Optional[List[DBTerm]] terms,
+                    DBTerm format: {
                         "year": int,
-                        "season": "Fall" | "Spring" | "Summer",
-                        "number": int | None
+                            Format: 4-digit year (e.g. 2024)
+                        "season": str,
+                            Format: ["Fall", "Winter", "Spring", "Summer"]
+                        "number": Optional[int]
+                            Format: Integer term number (e.g. 1, 2, 3, etc).
+                            Note: If not provided, filter matches any term number for the given year/season.
                     }
-                ],
-                "course_codes": List[str], (IE: CSC 101, MTH 101, etc.)
-                "instructors": List[str],
-                "teaching_methods": List[str], (IE: Lecture, Lab, Online, etc.)
-                "enrollment_capacity": List[
-                    {
-                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
-                        "enrollment_capacity": int
+                Optional[List[str]] course_codes,
+                    Format: Course codes as stored in `Courses.Code` column (e.g. ["101", "210"]).
+                Optional[List[str]] instructors,
+                    Format: Instructor names as stored in `Sections.Instructor` column (e.g. ["Dr. Smith", "Prof. Johnson"]).
+                Optional[List[str]] teaching_methods,
+                    Format: Teaching methods as stored in `Sections.Method` column (e.g. ["In-Person", "Online", "Hybrid"]).
+                Optional[List[EnrollmentCondition]] enrollment_capacity,
+                    EnrollmentCondition format: {
+                        "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                        "capacity": int (e.g. 30 or 100)
                     }
-                ],
-                "enrollment": List[
-                    {
-                        "condition": "=" | ">" | "<" | ">=" | "<=" | "!=",
-                        "enrollment": int
+                Optional[List[EnrollmentCondition]] enrollment,
+                    EnrollmentCondition format: {
+                        "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                        "enrollment": int (e.g. 25 or 100)
                     }
-                ],
-                "locations": List[str],
-                "meet_times": List[
-                    {
-                        "days": str (e.g. MW, TR, F, etc.),
-                        "start_time": str (24-hour format e.g. 14:00),
-                        "end_time": str (24-hour format e.g. 15:15)
+                Optional[List[str]] locations,
+                    Format: Location strings as stored in `Sections.Location` column (e.g. ["Building A Room 101", "Online"]).
+                Optional[List[DBMeetTime]] meet_times
+                    DBMeetTime format: {
+                        "day": str,
+                            Format: Day of the week (e.g. "Monday", "Tuesday", etc).
+                        "start_time": str,
+                            Format: Start time in 24-hour format (e.g. "13:00" for 1 PM).
+                        "end_time": str,
+                            Format: End time in 24-hour format (e.g. "14:15" for 2:15 PM).
                     }
-                ]
             }
-            Filters can be left blank if no filtering is needed for a particular criterion. Never leave all filters blank.
-    
+            Note: Field-level formats and operator restrictions match `database_utils.get_sectionIDs_by_filters`.
+
     Returns:
-        str -- A string containing a list of all the sections that match the specified criteria and relevant information about them:
+        str: JSON-encoded list of section metadata dicts.
             Format: List[{
-                "Course Code": str (e.g. "CSC 101"),
-                "Section Number": str (e.g. "001"),
+                "ID": str,
+                    Format: Primary key value from `Sections.ID` column (eg. "67890")
+                "Department": str,
+                    Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+                "Code": str,
+                    Format: Course number as stored in `Courses.Code` (e.g. "101")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+                "SectionNum": str,
+                    Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
                 "Instructor": str,
-                "Teaching Method": str (e.g. "Lecture", "Lab", "Online", etc.),
-                "Enrollment Capacity": int,
-                "Current Enrollment": int,
+                    Format: Instructor name as stored in `Sections.Instructor` column (e.g. "Dr. Smith")
+                "Method": str,
+                    Format: Teaching method as stored in `Sections.Method` column (e.g. "In-Person", "Online", "Hybrid")
                 "Location": str,
-                "Meet Times": List[{
-                    "Days": str (e.g. MW, TR, F, etc.),
-                    "Start Time": str (24-hour format e.g. 14:00),
-                    "End Time": str (24-hour format e.g. 15:15)
-                }]
-            
+                    Format: Location string as stored in `Sections.Location` column (e.g. "Building A Room 101", "Online")
+                "MaxSeats": int,
+                    Format: Maximum enrollment capacity as stored in `Sections.MaxSeats` column (e.g. 30 or 100)
+                "SeatsLeft": int
+                    Format: Current available seats as stored in `Sections.SeatsLeft` column (e.g. 25 or 100)
+            }]
+            Note: If no matches are found, returns "No sections found matching the specified criteria.".
+
+    Raises:
+        ValueError: Propagated from underlying filter logic when an invalid operator is provided.
+            Enrollment capacity error message: "Invalid enrollment capacity condition: {condition}"
+            Current enrollment error message: "Invalid enrollment condition: {condition}"
+
     Warnings:
         Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
@@ -369,24 +492,34 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, Advisor, GPA, total credits, and programs of study. The output is a string containing the relevant information.", return_direct=True)
 def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
-    """
-    Tool for getting basic information about the current (student) user.
+    """Return basic profile information for the current student user.
+
+    Wraps `database_utils.get_student_basic_info` using `runtime.state["user_id"]`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
+
     Returns:
-        str -- A string containing the relevant information about the student:
+        str: JSON-encoded student profile info.
             Format: {
                 "Name": str,
+                    Format: Student's full name as stored in `Students.Name` column (e.g. "John Doe")
                 "Advisor": str,
+                    Format: Student's advisor name as stored in `Students.Advisor` column (e.g. "Dr. Smith")
                 "GPA": float,
-                "Total Credits": int,
-                "Programs of Study": List[{
-                    "Title": str,
-                    "Description": str,
-                    "CreditsRequired": int
-                }]
+                    Format: Student's current GPA as stored in `Students.GPA` column (e.g. 3.75)
+                "CreditsEarned": int,
+                    Format: Total number of credits earned as stored in `Students.CreditsEarned` column (e.g. 90)
+                "ProgramsOfStudy": list[dict]
+                    Format: List of dicts representing the student's programs of study.
+                    Each dict format: {
+                        "Title": str,
+                            Format: Program title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems")
+                        "Status": str
+                            Format: Student's status in the program as stored in `StudentPrograms.Status` column (e.g. "Declared", "Undeclared", "Completed", etc)
             }
+            Note: If no student is found with that ID, serialized value is {}.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -400,19 +533,25 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
 def get_student_course_history_tool(runtime: ToolRuntime) -> str:
-    """
-    Tool for getting the course history for the current (student) user.
+    """Return course history for the current student user.
+
+    Wraps `database_utils.get_student_course_history` using `runtime.state["user_id"]`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
+
     Returns:
-        str -- A string containing a list of courses the student has taken:
+        str: JSON-encoded list of course-history entries.
             Format: List[{
-                "Course Code": str (e.g. "CSC 101"),
-                "Name": str (e.g. "Introduction to Computer Science"),
-                "Grade": "A" | "A-" | "B+" | "B" | "B-" | "C+" | "C" | "C-" | "D+" | "D" | "D-" | "F" | "X" | "W" | "NR" | "IP"
+                "CourseCode": str,
+                    Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
+                "Name": str,
+                    Format: Course name as stored in `Courses.Name` column (e.g. "World History Since 1500")
+                "Grade": str
+                    Format: Grade earned in the course as stored in `StudentCourses.Grade` column (e.g. "A", "B+", "Satisfactory", etc)
             }]
+            Note: If no courses are found, serialized value is ["No courses taken"].
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -426,15 +565,18 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
 def get_student_interests_tool(runtime: ToolRuntime) -> str:
-    """
-    Tool for getting the interests for the current (student) user.
+    """Return interests for the current student user.
+
+    Wraps `database_utils.get_student_interests` using `runtime.state["user_id"]`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
 
     Returns:
-        str -- A string containing a list of the student's interests:
-            Format: List[str]
+        str: JSON-encoded list of interests.
+            Format of list items: Interest string as stored in `Interests.Interest` (e.g. "Artificial Intelligence").
+            Note: If no interests are found, serialized value is ["No interests specified"].
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -448,19 +590,25 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
 def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
-    """
-    Tool for getting a list of course sections the current (student) user is tracking.
+    """Return tracked sections for the current student user.
+
+    Wraps `database_utils.get_student_tracked_sections` using `runtime.state["user_id"]`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
+
     Returns:
-        str -- A string containing a list of the sections the student is currently tracking:
+        str: JSON-encoded list of tracked section entries.
             Format: List[{
-                "Course Code": str (e.g. "CSC 101"),
-                "Section Number": str (e.g. "1"),
-                "Name": str (e.g. "Introduction to Computer Science - Section 001")
+                "CourseCode": str,
+                    Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
+                "SectionNumber": str,
+                    Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
+                "Name": str
+                    Format: Course name as stored in `Courses.Name` column (e.g. "World History Since 1500")
             }]
+            Note: If no tracked sections are found, serialized value is ["No sections currently being tracked"].
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -474,22 +622,24 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
 def get_program_requirements_tool(program_name: str) -> str:
-    """
-    Tool for getting the course requirements for a specific program of study.
+    """Return requirement strings for a program identified by title.
+
+    Wraps `database_utils.get_program_requirements_by_title`.
 
     Args:
-        program_name (str) -- The name of the program for which to get the requirements (e.g. "Manufacturing Technology").
-    
+        str program_name: Program title to look up.
+            Format: Exact title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems").
+
     Returns:
-        str -- A string containing a list of the course requirements for the specified program:
-            Format: List[str]
-                String is formatted as a list of course options and elective options seperated by OR
-                    Format of course option: Department code: str (e.g. "CSC"), Course number: int (e.g. 101), Title: str (e.g. "Introduction to Computer Science")
-                    Format of elective option: Any <category> course (e.g. "Behavioral Science Elective") | Any <department> course (e.g. "HST") 
-        If no program is found with the given name, returns a message indicating that no program was found.
-    
+        str: JSON-encoded list of requirement strings.
+            Format of list items: Requirement string with one or more options joined by " OR ".
+                Format for course options: "Department: {Department}, Course Number: {Code}, Title: {Name}"
+                Format for elective options: "Any {Elective} course"
+            Note: If no program is found, serialized value is ["Program not found"].
+            Note: If found but no requirements exist, serialized value is ["No requirements found"].
+
     Warnings:
-        Don't use this tool on mass (e.g. searching for multiple programs) as it can consume a lot of tokens. It should be used primarily for questions about course planning or if the user is curious about a specific program.
+        Avoid high-volume program lookups in one call because payload size can become large. It should be used primarily for questions about course planning or if the user is curious about a specific program.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -503,15 +653,19 @@ def get_program_requirements_tool(program_name: str) -> str:
 
 @tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
 def get_upcoming_events_tool() -> str:
-    """
-    Tool for getting a list of upcoming events.
+    """Return upcoming events that have at least one future date.
+
+    Wraps `database_utils.get_upcoming_events`.
 
     Returns:
-        str -- A string containing a list of upcoming events with their names and descriptions.
+        str: JSON-encoded list of upcoming events.
             Format: List[{
                 "ID": str,
+                    Format: Primary key value from `Events.ID` column (eg. "54321")
                 "Name": str,
+                    Format: Event name as stored in `Events.Name` column (e.g. "Spring Career Fair")
                 "Description": str
+                    Format: Event description as stored in `Events.Description` column (e.g. "An event where students can meet with potential employers and learn about job opportunities.")
             }]
     """
     with __connect() as conn:
@@ -526,20 +680,28 @@ def get_upcoming_events_tool() -> str:
 
 @tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
 def get_event_dates_tool(event_name: str) -> str:
-    """
-    Tool for getting a list of dates/times when a specific event occurs.
+    """Return future dates for a specific event identified by name.
+
+    Wraps `database_utils.get_event_dates_by_name`.
 
     Args:
-        event_name (str) -- The name of the event for which to get the dates (e.g. "Resume Workshop").
+        str event_name: Event name to look up.
+            Format: Exact event name as stored in `Events.Name` column (e.g. "Spring Career Fair").
 
     Returns:
-        str -- A string containing a list of dates and their locations for the specified event:
+        str: JSON-encoded list of event date entries.
             Format: List[{
-                "Date": str (e.g. "2024-09-15"),
-                "Start Time": str (e.g. "14:00"),
-                "End Time": str (e.g. "15:30"),
-                "Location": str (e.g. "Room 109A, Herrington Learning Center")
+                "Date": str,
+                    Format: Date of the event in YYYY-MM-DD format (e.g. "2024-04-15")
+                "StartTime": str,
+                    Format: Start time in 24-hour format (e.g. "13:00" for 1 PM)
+                "EndTime": str,
+                    Format: End time in 24-hour format (e.g. "14:15" for 2:15 PM)
+                "Location": str
+                    Format: Location string as stored in `EventDates.Location` column (e.g. "Building A Room 101", "Online")
             }]
+            Note: If no event is found with the provided name, serialized value is ["Event not found"].
+            Note: If the event exists but has no future dates, serialized value is [].
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -553,19 +715,21 @@ def get_event_dates_tool(event_name: str) -> str:
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
 def web_search_tool(query: str, max_results: int = 5) -> str:
-    """
-    Tool for performing web searches.
+    """Performs a web search for the given query and return a list of results.
 
     Args:
-        query (str) -- The search query.
-        max_results (int) -- The maximum number of results to return.
+        str query: The search query.
+        int max_results: The maximum number of results to return.
 
     Returns:
-        str -- A string containing a list of search results.
+        str: A string containing a list of search results.
             Format: List[{
                 "Title": str,
+                    Format: Title of the search result as returned by the search engine.
                 "Link": str,
+                    Format: URL of the search result as returned by the search engine.
                 "Snippet": str
+                    Format: A brief snippet of text from the search result as returned by the search engine.
             }]
     
     Warnings:
@@ -582,15 +746,17 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
 
 @tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
 def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
-    """
-    Tool for getting the text content of a web page.
+    """Fetches the content of a web page and return it as text.
 
     Args:
-        url (str) -- The URL of the web page to get the content from.
-        max_chars (int) -- The maximum number of characters to return.
+        str url: The URL of the web page to get the content from.
+            Format: Valid URL string (e.g. "https://www.example.com").
+        int max_chars: The maximum number of characters to return.
+            Format: Positive integer (e.g. 3000).
     
     Returns:
-        str -- A string containing the text content of the web page.
+        str: A string containing the text content of the web page.
+            Format: Text content of the web page with all HTML tags removed.
 
     Warnings:
         Use this tool sparingly as it can consume a lot of tokens, especially for if max_chars is set to a high value. Only use this tool if you are confident that the information you need is available on the page.
@@ -620,23 +786,26 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
 def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
-    """
-    Tool for inserting a new interest for the current (student) user.
+    """Insert an interest string for the current student user.
+
+    Wraps `database_utils.insert_student_interests` with a single-item list input.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
-        interest (str) -- The interest to add for the student.
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
+        str interest: Interest string to be inserted.
+            Format: Value to be stored in `Interests.Interest` column (e.g. "Data Science").
+
     Returns:
-        str -- A confirmation message indicating success or failure of the operation.
-    
+        str: Confirmation string from insert operation.
+            Format: "{counter} new interest(s) added"
+
     Warnings:
-        Always check if a similar interest already exists in the database before adding a new one to avoid duplicates. Don't use this tool if there is already an interest in the database that matches or closely matches the interest you want to add.
+        Always check for close duplicates before inserting to avoid duplicate interest rows.
     """
     with __connect() as conn:
-        cursor = conn.cursor()
         try:
-            return database_utils.insert_student_interests(cursor, runtime.state["user_id"], [interest])
+            return database_utils.insert_student_interests(conn, runtime.state["user_id"], [interest])
         except Exception as e:
             with open(ERROR_LOG_FILE_PATH, "a") as f:
                 f.write(f"Error occurred while inserting student interests: {e}\n")
@@ -644,42 +813,49 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
 def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
-    """
-    Tool for inserting a new tracked section for the current (student) user. Automatically checks for duplicates before inserting.
+    """Add a tracked section for the current student user.
+
+    Wraps `database_utils.insert_student_tracked_section`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the student ID of the current user.
-        course_code (str) -- The course code for the section to track (e.g. "CSC 101").
-        section_id (str) -- The section number for the section to track (e.g. "1").
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as a student ID.
+        str course_code: Course code of the section to track.
+            Format: "DPT NUM" | "DPTNUM" (e.g. "CSC 101" or "CSC101").
+        str section_id: Section number to track.
+            Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50").
+
     Returns:
-        str -- A confirmation message indicating success or failure of the operation.
+        str: Confirmation string indicating result of the insert operation.
+            Possible return values:
+                "Section added to tracked sections"
+                "Section not found"
+                "Section already being tracked"
     """
     
     with __connect() as conn:
-        cursor = conn.cursor()
         try:
-            return database_utils.insert_student_tracked_section(cursor, runtime.state["user_id"], course_code, section_id)
+            return database_utils.insert_student_tracked_section(conn, runtime.state["user_id"], course_code, section_id)
         except Exception as e:
             with open(ERROR_LOG_FILE_PATH, "a") as f:
                 f.write(f"Error occurred while inserting student tracked sections: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
-# alt db tools for chatbot used by advisor
-
 @tool("get_student_id_by_name", description="Tool for getting a student's ID based on their name. The input is the student's name and the output is the student's ID. Only works for students who have the current user as their advisor.", return_direct=True)
 def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
-    """
-    Tool for getting a student's ID based on their name.
+    """Tool for getting a student's ID based on their name.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
-        student_name (str) -- The name of the student for which to get the ID.
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID
+        str student_name: The name of the student to look up.
+            Format: Exact name as stored in `Students.Name` column (e.g. "Alice Smith").
     
     Returns:
-        str -- A string containing the student's ID
-        If no student is found with the given name, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
-    
+        str: The student's ID.
+            Format: JSON-encoded dict {"Student ID": int} where the value is the primary key from `Students.ID` column (e.g. {"Student ID": 12345})
+            Note: If no student with the given name is found or if the student does not have the current user as their advisor, returns "No student found with name {student_name}."
+
     Warnings:
         Name must be an exact match. If this fails to find the student, try using the get_advisor_students tool instead.
     """
@@ -702,19 +878,21 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
 
 @tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
 def get_advisor_students_tool(runtime: ToolRuntime) -> str:
-    """
-    Tool for getting a list of all students assigned to the current (advisor) user.
+    """Return a list of students assigned to the current advisor.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
 
     Returns:
-        str -- A string containing a list of the students assigned to the current advisor, including their names and IDs:
+        str: JSON-encoded list of students assigned to the current advisor.
             Format: List[{
-                "Name": str,
-                "ID": int
+                "name": str,
+                    Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
+                "id": int
+                    Format: Primary key value from `Students.ID` column (e.g. 12345)
             }]
-        If no students are found for the current advisor, returns a message indicating that no students were found.
+        Note: If no students are found for the current advisor, returns a message indicating that no students were found.
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -736,27 +914,37 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
-    """
-    Tool for getting basic information about a student.
+    """Return basic profile information for an advisor-visible student.
+
+    Performs advisor ownership checks, then wraps `database_utils.get_student_basic_info`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
-        student_id (int) -- The ID of the student for whom to fetch basic information.
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+        int student_id: Student ID to retrieve.
+            Format: Primary key value from `Students.ID` column (e.g. 12345).
+
     Returns:
-        str -- A string containing the relevant information about the student:
+        str: JSON-encoded student profile info.
             Format: {
                 "Name": str,
+                    Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
                 "Advisor": str,
+                    Format: Advisor name as stored in `Advisors.Name` column (e.g. "Dr. John Doe")
                 "GPA": float,
+                    Format: GPA value as stored in `Students.GPA` column (e.g. 3.75)
                 "CreditsEarned": int,
-                "ProgramsOfStudy": List[{
-                    "Title": str,
-                    "Description": str,
-                    "CreditsRequired": int
-                }]
+                    Format: Total credits earned as stored in `Students.CreditsEarned` column (e.g. 90)
+                "ProgramsOfStudy": list[dict]
+                    Format of list items: {
+                        "Title": str,
+                            Format: Program title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems")
+                        "Status": str
+                            Format: Status string as stored in `StudentProgramsOfStudy.Status` column (e.g. "Declared", "In Progress", "Completed")
+                    }
             }
-        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+            Access failure format: "Student with ID {student_id} is not assigned to the current user."
+            Not-found format: "No student found with ID {student_id}"
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -778,21 +966,29 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
     with __connect() as conn:
-        """
-        Tool for getting the course history for a student.
+        """Return course history for an advisor-visible student.
+
+        Performs advisor ownership checks, then wraps `database_utils.get_student_course_history`.
 
         Args:
-            runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
-            student_id (int) -- The ID of the student for whom to fetch course history.
+            ToolRuntime runtime: Runtime state for the current tool call.
+                Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+            int student_id: Student ID to retrieve.
+                Format: Primary key value from `Students.ID` column (e.g. 12345).
 
         Returns:
-            str -- A string containing a list of courses the student has taken:
+            str: JSON-encoded list of course-history entries.
                 Format: List[{
-                    "Course Code": str (e.g. "CSC 101"),
-                    "Name": str (e.g. "Introduction to Computer Science"),
-                    "Grade": "A" | "A-" | "B+" | "B" | "B-" | "C+" | "C" | "C-" | "D+" | "D" | "D-" | "F" | "X" | "W" | "NR" | "IP"
+                    "CourseCode": str,
+                        Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
+                    "Name": str,
+                        Format: Course name as stored in `Courses.Name` column (e.g. "Introduction to Computer Science")
+                    "Grade": str
+                        Format: Grade string as stored in `StudentCourseHistory.Grade` column (e.g. "A", "B+", "Pass", "Fail")
                 }]
-            If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+                Note: If no courses are found, serialized value is ["No courses taken"].
+                Access failure format: "Student with ID {student_id} is not assigned to the current user."
+                Not-found format: "No student found with ID {student_id}"
         """
         cursor = conn.cursor()
         try:
@@ -812,17 +1008,22 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
-    """
-    Tool for getting the interests for a student.
+    """Return interests for an advisor-visible student.
+
+    Performs advisor ownership checks, then wraps `database_utils.get_student_interests`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
-        student_id (int) -- The ID of the student for whom to fetch interests.
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+        int student_id: Student ID to retrieve.
+            Format: Primary key value from `Students.ID` column (e.g. 12345).
 
     Returns:
-        str -- A string containing a list of interests for the student.
-            Format: List[str]
-        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+        str: JSON-encoded list of interests.
+            Format of list items: Interest string as stored in `Interests.Interest`.
+            Note: If no interests are found, serialized value is ["No interests specified"].
+            Access failure format: "Student with ID {student_id} is not assigned to the current user."
+            Not-found format: "No student found with ID {student_id}"
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -843,21 +1044,29 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
 def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
-    """
-    Tool for getting a list of course sections a student is tracking.
+    """Return tracked sections for an advisor-visible student.
+
+    Performs advisor ownership checks, then wraps `database_utils.get_student_tracked_sections`.
 
     Args:
-        runtime (ToolRuntime) -- The runtime object for the tool, which contains the state of the agent, including the user ID of the current user.
-        student_id (int) -- The ID of the student for whom to fetch tracked sections.
-    
+        ToolRuntime runtime: Runtime state for the current tool call.
+            Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+        int student_id: Student ID to retrieve.
+            Format: Primary key value from `Students.ID` column (e.g. 12345).
+
     Returns:
-        str -- A string containing a list of the sections the student is currently tracking:
+        str: JSON-encoded list of tracked sections.
             Format: List[{
-                "Course Code": str (e.g. "CSC 101"),
-                "Section Number": str (e.g. "1"),
-                "Name": str (e.g. "Introduction to Computer Science - Section 001")
+                "CourseCode": str,
+                    Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
+                "SectionNumber": str,
+                    Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
+                "Name": str,
+                    Format: Section name as stored in `Sections.Name` column (e.g. "Introduction to Computer Science")
             }]
-        If no student is found with the given ID, returns a message indicating that no student was found. If a student is found but does not have the current user as their advisor, returns a message indicating that the student is not assigned to the current user.
+            Note: If no tracked sections are found, serialized value is ["No sections currently being tracked"].
+            Access failure format: "Student with ID {student_id} is not assigned to the current user."
+            Not-found format: "No student found with ID {student_id}"
     """
     with __connect() as conn:
         cursor = conn.cursor()
@@ -877,7 +1086,7 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 d_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time_tool"] else None,
-           get_department_list if TOOL_CONFIG["s-db-tools"]["get_department_list_tool"] else None,
+           get_department_list_tool if TOOL_CONFIG["s-db-tools"]["get_department_list_tool"] else None,
            get_departments_in_category_tool if TOOL_CONFIG["s-db-tools"]["get_departments_in_category_tool"] else None,
            course_query_tool_by_code if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_code"] else None,
            course_query_tool_by_title if TOOL_CONFIG["s-db-tools"]["course_query_tool_by_title"] else None,
@@ -918,7 +1127,7 @@ for tool in i_tools:
         insertion_tools.append(tool)
 
 ad_tools = [get_current_time_tool if TOOL_CONFIG["a-db-tools"]["get_current_time_tool"] else None,
-            get_department_list if TOOL_CONFIG["a-db-tools"]["get_department_list_tool"] else None,
+            get_department_list_tool if TOOL_CONFIG["a-db-tools"]["get_department_list_tool"] else None,
             get_departments_in_category_tool if TOOL_CONFIG["a-db-tools"]["get_departments_in_category_tool"] else None,
             course_query_tool_by_code if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_code"] else None,
             course_query_tool_by_title if TOOL_CONFIG["a-db-tools"]["course_query_tool_by_title"] else None,

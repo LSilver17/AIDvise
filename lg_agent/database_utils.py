@@ -1,15 +1,60 @@
+"""
+Copyright 2026 Luca Silver
+
+Contains various utility functions for interacting with the registration database.
+
+Functions:
+- `get_courseID_by_code`: Return the database course ID matching a course code.
+- `get_courseID_by_title`: Return the database course ID for a given course title.
+- `get_coops`: Return a list of course IDs for all 'Cooperative Work Experience' entries.
+- `get_courseIDs_by_filters`: Return a list of course IDs that match the provided CourseFilters.
+- `get_course_info_by_id`: Return course metadata for a given course ID.
+- `get_course_description_by_id`: Return the textual description for a course identified by `course_id`.
+- `get_sectionIDs_by_filters`: Return a list of section IDs that match the provided SectionFilters.
+- `get_section_info_by_id`: Return section-level metadata for the provided section ID.
+- `get_upcoming_events`: Return a list of upcoming events with their dates.
+- `get_event_dates_by_name`: Return the dates for a specified event.
+- `get_student_basic_info`: Return basic profile information for a given student ID, including their name, advisor, GPA, total credits, and programs of study.
+- `get_student_course_history`: Return the course history for a given student ID, including course codes, titles, and grades.
+- `get_student_interests`: Return a list of interests for a given student ID.
+- `get_student_tracked_sections`: Return a list of section IDs that the student is currently tracking for openings.
+- `get_program_requirements_by_title`: Return a list of course IDs that are requirements for a given program of study.
+- `insert_student_interest`: Insert a new interest for a student.
+- `insert_student_tracked_section`: Insert a new section to track for openings for a student.
+- `get_data_with_hierarchy`: Return data from a specified table along with related data from parent and child tables to provide context for database entries.
+- `_format_hierarchy_node`: Helper function to recursively format a hierarchy node and its children into a nested dictionary structure.
+- `hierarchy_data_to_string`: Convert the nested dictionary structure returned by `get_data_with_hierarchy` into a readable string format for easier interpretation of hierarchical relationships in the database.
+- `get_data_with_hierarchy_string`: Wrapper function that combines `get_data_with_hierarchy` and `hierarchy_data_to_string` to directly return the hierarchical data as a formatted string.
+- `get_ids_by_field_value`: Return a list of IDs from a specified table where a given field matches a specified value.
+- `get_ids_by_parent`: Return a list of IDs from a specified table where the ParentID matches a specified value.
+- `get_students_by_advisor`: Return a list of student IDs for students who have a specified advisor.
+"""
+
 import sys, os
 
 # adds lg_agent directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 from lg_agent.utilities import schemas
 import sqlite3
 
-# Utility function to get course ID by course code
 def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
+    """Return the database course ID matching a course code.
+
+    Accepts course codes in either spaced format ("DPT NUM") or compact format ("DPTNUM").
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str course_code: Course code to look up.
+            Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
+
+    Returns:
+        str: The matching course ID as stored in the `Courses` table.
+            Format if found: Primary key value from `Courses.ID` column corresponding to the provided course code. (eg. "12345")
+            Note: If no course is found with that code, returns ``None``.
+    """
     # check if which format the course code is in (e.g. "CSC 101" vs "CSC101") and split accordingly
     if " " in course_code:
         # split by space
@@ -26,19 +71,67 @@ def get_courseID_by_code(cursor: sqlite3.Cursor, course_code: str) -> str:
     result = cursor.fetchone()
     return result[0] if result else None
 
-# Utility function to get course ID by course title
 def get_courseID_by_title(cursor: sqlite3.Cursor, course_title: str) -> str:
+    """Return the database course ID for a given course title.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str course_title: Course title to look up.
+            Format: Exact course title as stored in the `Courses.Name` column (eg. "Introduction to Computer Science").
+
+    Returns:
+        str: The matching course ID.
+            Format if found: Primary key value from `Courses.ID` column corresponding to the provided course title. (eg. "12345")
+            Note: If no course is found with that title, returns ``None``.
+    
+    Warnings: This is designed for a database with unique course titles (with the exception of "Cooperative Work Experience"). If you plan to use this for a database that may have multiple courses with the same title, consider implementing an alternative lookup method.
+    """
     cursor.execute("SELECT ID FROM Courses WHERE Name = ?", (course_title,))
     result = cursor.fetchone()
     return result[0] if result else None
 
 def get_coops(cursor: sqlite3.Cursor) -> list:
+    """Return a list of course IDs for all 'Cooperative Work Experience' entries.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+
+    Returns:
+        list[str]: List of course IDs (from `Courses.ID`) for all courses with the name "Cooperative Work Experience".
+            Format of list items: Primary key values from `Courses.ID` column corresponding to rows where `Courses.Name` is "Cooperative Work Experience" (eg. ["12345", "67890"]).
+            Note: If no courses are found with that name, returns an empty list.
+    """
     cursor.execute("SELECT ID, Department, Code FROM Courses WHERE Name = 'Cooperative Work Experience'")
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# Utility function to filter courses based on certain criteria and return their IDs as a list
 def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilters) -> list:
+    """Return a list of course IDs that match the provided CourseFilters.
+
+    Builds a parameterized SQL query from schemas.CourseFilters and returns matching
+    CoursesOffered.ID values.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        filters: CourseFilters with optional fields:
+            - terms: List of DBTerm (year, season, optional number). Uses OR logic.
+            - departments: List of dept abbreviations (e.g. ["PHY", "MAT"]). Uses OR.
+            - course_codes: List of CodeCondition (condition, code). Uses AND.
+            - credits: List of CreditCondition (condition, credits). Uses AND.
+            - keywords: Search terms for Courses.Description. Uses OR.
+            - prerequisites: Search terms for Courses.Requirements. Uses OR.
+
+    Returns:
+        list[str]: Primary key values from CoursesOffered.ID matching filters
+                   (e.g. ["12345", "67890"]). Empty list if no matches.
+                   Returns ["No filters specified"] if filters is None.
+
+    Raises:
+        ValueError: Invalid comparison operator in filters.
+                    "Invalid course code condition: {condition}" or
+                    "Invalid credit condition: {condition}".
+
+    """
     if filters is None:
         return ["No filters specified"]
 
@@ -63,8 +156,6 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
 
     # If a department filter is specified, add a condition to the query to filter by department
     if "departments" in filters.__dict__ and filters.departments is not None and len(filters.departments) > 0:
-        if ")" in filters.departments:
-            raise ValueError("Invalid department name: department names cannot contain parentheses (no sql injection allowed)")
         query += " AND c.Department IN ({})".format(",".join("?" for _ in filters.departments))
         params.extend(filters.departments)
 
@@ -122,8 +213,19 @@ def get_courseIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.CourseFilt
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# Utility function to get course info by course ID, including all requirements and prerequisites, and return this information as a dictionary
 def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
+    """Return course metadata for a given course ID.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        course_id: Primary key value from Courses.ID (e.g. "12345").
+
+    Returns:
+        dict: Mapping of column names to values for the matched course with keys:
+              ID, Name, Department, Code, Credits, Requirements.
+              Returns empty dict if no course found with that ID.
+
+    """
     cursor.execute("SELECT ID, Name, Department, Code, Credits, Requirements FROM Courses WHERE ID = ?", (course_id,))
     row = cursor.fetchone()
     if row is None:
@@ -136,14 +238,52 @@ def get_course_info_by_id(cursor: sqlite3.Cursor, course_id: str) -> dict:
     return course_info
 
 def get_course_description_by_id(cursor: sqlite3.Cursor, course_id: str) -> str:
+    """Return the textual description for a course identified by `course_id`.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        course_id: Primary key value from Courses.ID (e.g. "12345").
+
+    Returns:
+        str: Course description from Courses.Description column if found,
+             "Course not found" if no course matches the ID.
+
+    """
     cursor.execute("SELECT Description FROM Courses WHERE ID = ?", (course_id,))
     row = cursor.fetchone()
     if row is None:
         return "Course not found"
     return row[0]
 
-# Utility function to filter sections based on certain criteria and return their IDs as a list
 def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFilters) -> list:
+    """Return a list of section IDs that match the provided SectionFilters.
+
+    Builds a parameterized SQL query from schemas.SectionFilters and returns matching
+    Sections.ID values.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        filters: SectionFilters with optional fields:
+            - terms: List of DBTerm (year, season, optional number). Uses OR.
+            - course_codes: Spaced or compact format (e.g. ["CSC 101", "MAT125"]). OR.
+            - instructors: List of names from Sections.Instructor. Uses OR.
+            - teaching_methods: List of methods (e.g. ["In-Person", "Online"]). OR.
+            - enrollment_capacity: List of EnrollmentCondition for MaxSeats. AND.
+            - enrollment: List of EnrollmentCondition for SeatsLeft. AND.
+            - locations: List of location strings from Sections.Location. OR.
+            - meet_times: List of DBMeetTime (days, start_time, end_time). OR.
+
+    Returns:
+        list[str]: Primary key values from Sections.ID matching filters
+                   (e.g. ["12345", "67890"]). Empty list if no matches.
+                   Returns ["No filters specified"] if filters is None.
+
+    Raises:
+        ValueError: Invalid comparison operator in capacity/enrollment filters.
+                    "Invalid enrollment capacity condition: {condition}" or
+                    "Invalid enrollment condition: {condition}".
+
+    """
     if filters is None:
         return ["No filters specified"]
     
@@ -258,6 +398,20 @@ def get_sectionIDs_by_filters(cursor: sqlite3.Cursor, filters: schemas.SectionFi
     return [row[0] for row in results]
 
 def get_section_info_by_id(cursor: sqlite3.Cursor, section_id: str) -> dict:
+    """Return section-level metadata for the provided section ID.
+
+    Get section metadata combined from Sections, CoursesOffered, and Courses tables.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        section_id: Primary key value from Sections.ID (e.g. "12345").
+
+    Returns:
+        dict: Mapping of column names to values with keys: ID, Department, Code, Name,
+              SectionNum, Instructor, Method, Location, MaxSeats, SeatsLeft.
+              Returns empty dict if section not found.
+
+    """
     cursor.execute("SELECT s.ID, c.Department, c.Code, c.Name, s.SectionNum, s.Instructor, s.Method, s.Location, s.MaxSeats, s.SeatsLeft FROM Sections as s JOIN CoursesOffered as co ON s.ParentID = co.ID JOIN Courses as c ON co.CourseID = c.ID WHERE s.ID = ?", (section_id,))
     row = cursor.fetchone()
     if row is None:
@@ -269,8 +423,15 @@ def get_section_info_by_id(cursor: sqlite3.Cursor, section_id: str) -> dict:
     
     return section_info
 
-# Utility function to get a list of events that have event dates that are in the future
 def get_upcoming_events(cursor: sqlite3.Cursor):
+    """Return a list of upcoming events that have at least one future EventDates row.
+    Args:
+        cursor: Cursor object connected to the registration database.
+
+    Returns:
+        list[dict]: List of dicts with keys "ID", "Name", "Description" for each
+                    upcoming event. Returns empty list if no upcoming events found.
+    """
     cursor.execute("SELECT e.ID, e.Name, e.Description FROM Events as e JOIN EventDates as ed ON e.ID = ed.ParentID WHERE ed.Date >= date('now') GROUP BY e.ID")
     events = []
     for row in cursor.fetchall():
@@ -281,8 +442,19 @@ def get_upcoming_events(cursor: sqlite3.Cursor):
         })
     return events
 
-# Utility function to get all future event dates for a specific event based on its name
 def get_event_dates_by_name(cursor: sqlite3.Cursor, event_name: str) -> list:
+    """Return all future EventDates for an event identified by its name.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        event_name: Exact event name as stored in Events.Name (e.g. "Spring Career Fair").
+
+    Returns:
+        list[dict]: List of dicts with keys "Date", "StartTime", "EndTime", "Location"
+                    for future dates of the event. Returns ["Event not found"] if no event
+                    with that name exists, or empty list if event has no future dates.
+
+    """
     cursor.execute("SELECT ID FROM Events WHERE Name = ?", (event_name,))
     result = cursor.fetchone()
 
@@ -301,8 +473,20 @@ def get_event_dates_by_name(cursor: sqlite3.Cursor, event_name: str) -> list:
 
     return event_dates
 
-# Utility function to that returns the name, advisor, gpa, credits earned, and programs of study for a student based on their ID.
 def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
+    """Return basic profile information for a student.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        student_id: Numeric ID from Students.ID (e.g. 12345).
+
+    Returns:
+        dict: Profile information with keys: Name, Advisor, GPA, CreditsEarned,
+              ProgramsOfStudy. Returns empty dict if student not found.
+              Note: Advisor is "No advisor assigned" if not set. ProgramsOfStudy is
+              ["No program of study"] if student has no programs.
+
+    """
     cursor.execute("SELECT Name, AdvisorID, GPA, CreditsEarned FROM Students WHERE ID = ?", (student_id,))
     row = cursor.fetchone()
 
@@ -339,8 +523,18 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
 
     return student_info
 
-# Utility function that returns the course code and course title for all courses a student has taken based on their ID
 def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
+    """Return a student's course history as a list of course entries.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        student_id: Numeric ID from Students.ID (e.g. 12345).
+
+    Returns:
+        list[dict]: List of dicts with keys "CourseCode", "Name", "Grade" for each course.
+                    Returns ["No courses taken"] if student has no course history.
+
+    """
     cursor.execute("SELECT c.Department, c.Code, c.Name, ct.Grade FROM Courses as c JOIN CoursesTaken as ct ON c.ID = ct.CourseID WHERE ct.ParentID = ?", (student_id,))
     course_history = []
     for row in cursor.fetchall():
@@ -353,16 +547,36 @@ def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
         course_history = ["No courses taken"]
     return course_history
 
-# Utility function to get all interests for a student based on their ID
 def get_student_interests(cursor: sqlite3.Cursor, student_id: int) -> list:
+    """Return a list of interests for the given student.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        student_id: Numeric ID from Students.ID (e.g. 12345).
+
+    Returns:
+        list[str]: Interests from Interests.Interest for the student.
+                   Returns ["No interests specified"] if student has no interests.
+
+    """
     cursor.execute("SELECT Interest FROM Interests WHERE ParentID = ?", (student_id,))
     interests = [row[0] for row in cursor.fetchall()]
     if not interests:
         interests = ["No interests specified"]
     return interests
 
-# Utility function to get all tracked sections for a student based on their ID
 def get_student_tracked_sections(cursor: sqlite3.Cursor, student_id: int) -> list:
+    """Return the list of sections a student is currently tracking.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        student_id: Numeric ID from Students.ID (e.g. 12345).
+
+    Returns:
+        list[dict]: List of tracked sections with keys "CourseCode", "SectionNumber", "Name".
+                    Returns ["No sections currently being tracked"] if student tracks no sections.
+ 
+    """
     cursor.execute("SELECT c.Department, c.Code, c.Name, s.SectionNum FROM Courses as c JOIN Sections as s JOIN CoursesOffered as co JOIN TrackedSections as ts ON c.ID = co.CourseID AND s.ParentID = co.ID AND s.ID = ts.SectionID WHERE ts.ParentID = ?", (student_id,))
     tracked_sections = []
     for row in cursor.fetchall():
@@ -375,9 +589,26 @@ def get_student_tracked_sections(cursor: sqlite3.Cursor, student_id: int) -> lis
         tracked_sections = ["No sections currently being tracked"]
     return tracked_sections
 
-# Utility function to get the courses required for a specific program of study based on its Title
 def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str) -> list:
+    """Return program requirement strings for a program identified by its Title.
+
+    Args:
+        cursor: Cursor object connected to the registration database.
+        program_title: Exact program title from ProgramsOfStudy.Title
+                       (e.g. "Computer Information Systems").
+
+    Returns:
+        list[str]: Requirement strings for the program. Format for options:
+                   "Department: {Dept}, Course Number: {Code}, Title: {Name}"
+                   "Any {Elective} course"
+                   Multiple options separated by " OR ".
+                   Returns ["Program not found"] if no program exists, or
+                   ["No requirements found"] if program has no requirements.
+
+    """
     cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN ProgramsOfStudy as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
+    if cursor.fetchone() is None:
+        return ["Program not found"]
     program_requirements = []
     for row in cursor.fetchall():
         c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prc.ID = prco.ParentID WHERE prc.ID = ? AND prco.CourseID IS NOT NULL""", (row[0],)).fetchall()
@@ -394,18 +625,50 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
                 requirement += " OR "
         program_requirements.append(requirement)
     
+    if not program_requirements:
+        program_requirements = ["No requirements found"]
     return program_requirements
 
-# Utility function to insert new interests for a student based on their ID
-def insert_student_interests(cursor: sqlite3.Cursor, student_id: int, interest: list[str]) -> str:
+def insert_student_interests(conn: sqlite3.Connection, student_id: int, interest: list[str]) -> str:
+    """Insert one or more interest strings for a student.
+
+    Args:
+        conn: Connection object connected to the registration database.
+        student_id: Student's numeric ID from Students.ID (e.g. 12345).
+        interest: List of interest strings (e.g. ["Data Science", "Machine Learning"]).
+
+    Returns:
+        str: Confirmation string "{counter} new interest(s) added".
+
+    """
     counter = 0
+    cursor = conn.cursor()
     for item in interest:
         cursor.execute("INSERT INTO Interests (ParentID, Interest) VALUES (?, ?)", (student_id, item))
         counter += 1
+    conn.commit()
+
     return f"{counter} new interest(s) added"
 
-# Utility function to insert a new tracked section for a student based on their ID and the section code
-def insert_student_tracked_section(cursor: sqlite3.Cursor, student_id: int, course_code: str, section_number: str) -> str:
+def insert_student_tracked_section(conn: sqlite3.Connection, student_id: int, course_code: str, section_number: str) -> str:
+    """Add a tracked section for the student specified.
+
+    Args:
+        sqlite3.Connection conn: Connection object connected to the registration database.
+        int student_id: The student's numeric ID.
+            Format: Primary key value from `Students.ID` column (e.g. 12345).
+        str course_code: The course code of the section to be tracked.
+            Format: Course code in either spaced or compact format (e.g. "CSC 101" or "CSC101").
+        str section_number: The section number of the section to be tracked.
+            Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50", etc).
+
+    Returns:
+        str: Confirmation string indicating the result of the operation.
+            Possible return values:
+                "Section added to tracked sections" - if the section was successfully added to the student's tracked sections.
+                "Section not found" - if no section matches the provided course code and section number.
+                "Section already being tracked" - if the student is already tracking a section with the same course code and section number.
+    """
     # get section ID based on course code and section number
     if " " in course_code:
         # split by space
@@ -417,6 +680,7 @@ def insert_student_tracked_section(cursor: sqlite3.Cursor, student_id: int, cour
                 department = course_code[:i]
                 number = course_code[i:]
                 break
+    cursor = conn.cursor()
     cursor.execute("SELECT s.ID FROM Sections as s JOIN CoursesOffered as co JOIN Courses as c ON s.ParentID = co.ID AND co.CourseID = c.ID WHERE c.Department = ? AND c.Code = ? AND s.SectionNum = ?", (department, number, section_number))
     result = cursor.fetchone()
 
@@ -429,11 +693,36 @@ def insert_student_tracked_section(cursor: sqlite3.Cursor, student_id: int, cour
     if cursor.fetchone() is not None:
         return "Section already being tracked"
     cursor.execute("INSERT INTO TrackedSections (ParentID, SectionID) VALUES (?, ?)", (student_id, section_id))
+    conn.commit()
     return "Section added to tracked sections"
 
-# Utility function to recursively get all data related to a target entry in a table based on the hierarchy of the database schema, starting from the target entry and including all entries that reference it as a foreign key, along with their relevant linked data based on the hierarchy, and returning this information in a structured format that indicates the relationships between the data
-# Note: Don't use this on course catalog or major/minor catalog entries, as the amount of related data can be very large and may cause performance issues. This is best used on more specific entries, such as a specific course offering or a specific student.
 def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: int) -> dict:
+    """Recursively gather an entry and all related rows that reference it.
+
+    Starting from the provided table and targetID, this function fetches the row's
+    non-ID fields and then discovers tables that declare a FOREIGN KEY referencing
+    the target table. For each related table, it recurses and includes that data
+    under the parent entry.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str table: The name of the table to start from (e.g. "Courses", "Students", etc).
+        int targetID: The ID of the row in the specified table to retrieve (e.g. 12345).
+
+    Returns:
+        dict: A nested dictionary representing the target entry and all related entries that reference it, structured to indicate the relationships between the data.
+            Format: {
+                "entry": str,
+                    Format: A string combining the table name and target ID (e.g. "Courses: 12345").
+                "content": dict,
+                    Format: A dictionary containing the fields and values of the target entry, as well as nested dictionaries for any related entries that reference it.
+                    The keys for the fields of the target entry are the column names from the table (excluding "ID" and "ParentID"), and the values are the corresponding field values from the database.
+                    For each related table that references the target entry, there is a key in the content dict with the name of that related table, and its value is a list of dicts representing each entry in that related table that references the target entry. Each of those dicts has the same structure as described here, allowing for recursive nesting to represent multiple levels of relationships.
+            }
+
+    Warnings:
+        This can produce very large results for highly-referenced tables (catalogs).
+    """
     results = {}
     entry = {}
 
@@ -465,6 +754,18 @@ def get_data_with_hierarchy(cursor: sqlite3.Cursor, table: str, targetID: int) -
     return results
 
 def _format_hierarchy_node(node: dict, depth: int = 0) -> str:
+    """Format a hierarchical node (from get_data_with_hierarchy) into a readable string.
+
+    This helper is used by `hierarchy_data_to_string` to pretty-print the nested
+    structure produced by `get_data_with_hierarchy`.
+
+    Args:
+        dict node: A dict representing a node in the hierarchy, with keys "entry" and "content".
+        int depth: Current depth in the hierarchy, used for indentation.
+
+    Returns:
+        str: A formatted multi-line string representing the node and its children in a readable way.
+    """
     indent = "  " * depth
     inner_indent = "  " * (depth + 1)
     lines = [f"{indent}{{"]
@@ -503,91 +804,86 @@ def _format_hierarchy_node(node: dict, depth: int = 0) -> str:
     lines.append(f"{indent}}}")
     return "\n".join(lines)
 
-# Utility function convert output of get_data_with_hierarchy into a readable string format
 def hierarchy_data_to_string(hierarchy_data: dict) -> str:
+    """Convert a hierarchy data dict into a readable multi-line string.
+
+    Args:
+        dict hierarchy_data: A dict representing hierarchical data as produced by `get_data_with_hierarchy`.
+
+    Returns:
+        str: A formatted multi-line string representing the hierarchy in a readable way.
+    """
     return _format_hierarchy_node(hierarchy_data)
 
-# Utility function to get data with hierarchy as a string
 def get_data_with_hierarchy_string(cursor: sqlite3.Cursor, table: str, targetID: str) -> str:
+    """Helper that returns the hierarchical data for a target as a formatted string.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str table: The name of the table to start from (e.g. "Courses", "Students", etc).
+        int targetID: The ID of the row in the specified table to retrieve (e.g. 12345).
+
+    Returns:
+        str: A formatted multi-line string representing the target entry and all related entries that reference it, structured to indicate the relationships between the data.
+            Format: {
+                "entry": str,
+                    Format: A string combining the table name and target ID (e.g. "Courses: 12345").
+                "content": dict,
+                    Format: A dictionary containing the fields and values of the target entry, as well as nested dictionaries for any related entries that reference it.
+                    The keys for the fields of the target entry are the column names from the table (excluding "ID" and "ParentID"), and the values are the corresponding field values from the database.
+                    For each related table that references the target entry, there is a key in the content dict with the name of that related table, and its value is a list of dicts representing each entry in that related table that references the target entry. Each of those dicts has the same structure as described here, allowing for recursive nesting to represent multiple levels of relationships.
+                }
+    
+    Warnings:
+        This can produce very large results for highly-referenced tables (catalogs).
+    """
     hierarchy_data = get_data_with_hierarchy(cursor, table, targetID)
     return hierarchy_data_to_string(hierarchy_data)
 
-# Utility function to get IDs of entries in a table based on a field value
 def get_ids_by_field_value(cursor: sqlite3.Cursor, table: str, field: str, value: str) -> list:
+    """Return a list of IDs in `table` where `field` equals `value`.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str table: The name of the table to query (e.g. "Courses", "Students", etc).
+        str field: The name of the field/column to filter by (e.g. "Department", "AdvisorID", etc).
+        str value: The value to match in the specified field (e.g. "CSC", "Dr. Smith", etc).
+
+    Returns:
+        list[str]: List of IDs (as strings) from the specified table where the specified field matches the provided value.
+            Format of list items: Primary key values from the `ID` column of the specified table that match the condition (e.g. ["12345", "67890", etc]).
+    """
     cursor.execute(f"SELECT ID FROM {table} WHERE {field} = ?", (value,))
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# Utility function to get IDs of all entries in a table that reference a target entry as a foreign key, and return these IDs as a list
 def get_ids_by_parent(cursor: sqlite3.Cursor, table: str, targetID: str) -> list:
+    """Return IDs from `table` whose `ParentID` equals `targetID`.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str table: The name of the table to query (e.g. "Courses", "Students", etc).
+        str targetID: The value to match in the `ParentID` field (e.g. "12345", "67890", etc).
+
+    Returns:
+        list[str]: List of IDs (as strings) from the specified table where `ParentID` matches the provided targetID.
+            Format of list items: Primary key values from the `ID` column of the specified table that match the condition (e.g. ["12345", "67890", etc]).
+    """
     cursor.execute(f"SELECT ID FROM {table} WHERE ParentID = ?", (targetID,))
     results = cursor.fetchall()
     return [row[0] for row in results]
 
-# Utility function to get IDs of all students that are advised by a target advisor, and return these IDs as a list
 def get_students_by_advisor(cursor: sqlite3.Cursor, advisorID: str) -> list:
+    """Return a list of student IDs advised by the given advisor.
+
+    Args:
+        sqlite3.Cursor cursor: cursor object connected to the registration database.
+        str advisorID: Advisor identifier used in `Students.AdvisorID`.
+
+    Returns:
+        list[str]: List of student IDs (as strings) advised by the given advisor.
+            Format of list items: Primary key values from the `ID` column of the `Students` table where `AdvisorID` matches the provided advisorID (e.g. ["12345", "67890", etc]).
+    """
     cursor.execute("SELECT ID FROM Students WHERE AdvisorID = ?", (advisorID,))
     results = cursor.fetchall()
     return [row[0] for row in results]
-
-# test utility functions
-# TODO: make more extensive testing
-if __name__ == "__main__":
-    with sqlite3.connect("DumberDB.db") as conn:
-        cursor = conn.cursor()
-
-        """result = get_coops(cursor)
-        print(result)
-
-        result = get_upcoming_events(cursor)
-        print(result)
-
-        result = get_program_requirements_by_title(cursor, "Computer Science Transfer")
-        print(result)
-
-        result = get_student_basic_info(cursor, 1)
-        print(result)
-
-        result = get_student_course_history(cursor, 1)
-        print(result)
-
-        result = get_student_interests(cursor, 1)
-        print(result)
-
-        result = get_student_tracked_sections(cursor, 1)
-        print(result)
-
-        result = get_course_info_by_id(cursor, 1)
-        print(result)
-
-        result = get_courseIDs_by_filters(cursor, schemas.CourseFilters(departments=["CSC"], credits=[schemas.CreditCondition(condition="=", credits=3)], keywords=["programming"], prerequisites=["None"]))
-        print(result)
-
-        result = get_sectionIDs_by_filters(cursor, schemas.SectionFilters(course_codes=["CSC 101"], terms=[schemas.DBTerm(year=2023, season="Fall")], instructors=["Dr. Smith"], teaching_methods=["In-Person"], enrollment_capacity=[schemas.EnrollmentCondition(condition="<", enrollment=30)], enrollment=[schemas.EnrollmentCondition(condition="<", enrollment=30)], locations=["Main Campus"], meet_times=[schemas.DBMeetTime(days="MWF", start_time="10:00", end_time="11:00")], credits=[schemas.CreditCondition(condition="=", credits=3)], keywords=["programming"], prerequisites=["None"]))
-        print(result)"""
-
-        """print("Beginning tests...")
-
-        print("\nTesting get_courseID_by_code and get_courseID_by_title...")
-        course_id_by_code = get_courseID_by_code(cursor, "CSC 101")
-        course_id_by_title = get_courseID_by_title(cursor, "Intro to Programming")
-        if course_id_by_code and course_id_by_title:
-            assert course_id_by_code == course_id_by_title, "Error: get_courseID_by_code and get_courseID_by_title returned different results"
-            print(f"Success: Course ID for CSC 101: {course_id_by_code}")
-        else:
-            print("Error: Course not found by code or title")
-
-        print("\nTesting get_course_info_by_id...")
-        if course_id_by_code:
-            course_info = get_course_info_by_id(cursor, course_id_by_code)
-            print(f"Success: Course info for course ID {course_id_by_code}: {course_info}")
-            print("Check that the course info includes all relevant fields and values, and that it is accurate based on the data in the database.")
-        else:
-            print("Error: Course ID not found, cannot test get_course_info_by_id")
-
-        print("\nTesting get_data_with_hierarchy_string...")
-        if course_id_by_code:
-            hierarchy_string = get_data_with_hierarchy_string(cursor, "Courses", course_id_by_code)
-            print(f"Success: Hierarchy string for course ID {course_id_by_code}: {hierarchy_string}")
-        else:
-            print("Error: Course ID not found, cannot test get_data_with_hierarchy_string")"""
