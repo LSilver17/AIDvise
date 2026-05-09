@@ -1,5 +1,7 @@
 /*
-    Author: Sean Collins
+  Author: CopilotKit
+  Co-author: Sean Collins
+  Copyright 2026
 */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";

@@ -3,6 +3,7 @@
     Description: 
         Extension of the DefaultButton component for
         creating navigation buttons.
+    Copyright 2026
 */
 "use client"
 

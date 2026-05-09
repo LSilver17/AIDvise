@@ -4,6 +4,7 @@
     Description: 
         A set of utility functions and types for connecting user accounts with
         the database.
+    Copyright 2026
 */
 'use server'
 

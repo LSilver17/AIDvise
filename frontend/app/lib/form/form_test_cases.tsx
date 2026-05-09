@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Runs test cases for user form submissions.
+    Copyright 2026
 */
 import type { AccountType } from '@/app/lib/account/account_type'
 

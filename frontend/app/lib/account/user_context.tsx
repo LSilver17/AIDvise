@@ -4,6 +4,7 @@
         Definition of UserContext, which allows for the data of an 
         active user to be shared among the provider's child
         components.
+    Copyright 2026
 */
 "use client"
 

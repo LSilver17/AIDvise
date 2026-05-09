@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 import { Text, Em } from "@radix-ui/themes"
 import type { Responsive } from "@radix-ui/themes/props";

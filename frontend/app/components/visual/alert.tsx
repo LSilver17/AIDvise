@@ -3,6 +3,7 @@
     Description: 
         Dynamically rendered alert component, taking
         an alert object as theme.
+    Copyright 2026
 */
 // Components
 import { Flex } from "@radix-ui/themes";

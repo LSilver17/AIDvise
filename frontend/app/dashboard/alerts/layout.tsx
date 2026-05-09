@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 import { authSession } from "@/app/lib/account/authSession";
 import { redirect } from "next/navigation";

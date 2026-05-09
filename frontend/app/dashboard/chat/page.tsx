@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 "use client"
 
@@ -16,6 +17,13 @@ import type { AccountType } from "@/app/lib/account/account_type";
 import { useCoAgent } from "@copilotkit/react-core";
 import { authSession } from "@/app/lib/account/authSession";
 
+/**
+ * Customizes user welcome message based on account type and user data.
+ * @param name 
+ * @param accountType 
+ * @param interests 
+ * @returns 
+ */
 function choose_init_message(name: string, accountType: AccountType, interests: UserInterests | null = null): string {
   if(accountType === "Advisor") {
     var message_addition = "How can I help you today?";

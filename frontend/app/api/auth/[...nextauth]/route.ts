@@ -1,5 +1,6 @@
 /*
-    Author: Sean Collins
+    Authors: Sean Collins, NextAuth
+    Copyright 2026
 */
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";

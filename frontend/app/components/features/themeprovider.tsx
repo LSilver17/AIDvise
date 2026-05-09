@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright 2026
 */
 import { Theme } from "@radix-ui/themes"
 

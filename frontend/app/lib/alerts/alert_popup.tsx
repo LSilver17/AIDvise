@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Function for creating error popups.
+    Copyright 2026
 */
 "use client"
 

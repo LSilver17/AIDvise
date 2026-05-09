@@ -2,6 +2,7 @@
     Author: Sean Collins
     Description: 
         Defines interfaces for creating and storing alerts.
+    Copyright 2026
 */
 
 /**
@@ -36,8 +37,6 @@ export interface Alert {
  * Interface for storing information about an event.
  * @extends Alert
  * @property {string} description - Description of the event.
- * @property {string} date - Date of the event.
- * @property {string} time - Time of the event.
  */
 export interface EventAlert extends Alert {
     readonly description: string,
@@ -47,15 +46,20 @@ export interface EventAlert extends Alert {
 /**
  * Interface for storing information about a course.
  * @extends Alert
- * @property {string} department - Course department.
- * @property {string} date - Date alert changed.
- * @property {number} code - Course code.
- * @property {string} courseName - Name of the course.
- * @property {string} courseDescription - Description of course content.
- * @property {number} credits - Number of credit hours.
- * @property {string} requirements - Course requirements to register for the course.
- * @property {string} meetTime - Time frame for the course.
- * @property {string} days - Days the course is held.
+ * @property {string} department - Three letter department code.
+ * @property {number} code - Three digit course code.
+ * @property {string} courseName - Name of course.
+ * @property {string} courseDescription - Description of course.
+ * @property {number} credits - Number of credits.
+ * @property {string} requirements - List of required courses as a single string.
+ * @property {string} meetSchedule - Schedule in format "Day: StartTime-Endtime, ...".
+ * @property {string} semestersOffered - Semesters course is offered (e.g. "F/SU").
+ * @property {number} sectionNumber - Section number code.
+ * @property {string} sectionStatus - Section status (Open, Closed, etc.).
+ * @property {number} seats - Max seats.
+ * @property {number} seatsLeft - Open seats.
+ * @property {string} method - How the course is held (e.g. online, in-person).
+ * @property {string} location - Room/building the class is held in.
  */
 export interface ClassAlert extends Alert {
     readonly department: string,
@@ -77,6 +81,12 @@ export interface ClassAlert extends Alert {
 
 /**
  * Function for initializing an event alert object.
+ * @property {string} name - Description of the event.
+ * @property {string} description - Description of the event.
+ * @property {string} status - Status (Seen/Unseen)
+ * @property {string} time - Time of the event.
+ * @property {string} date - Date of the event.
+ * @property {string} id - Unique ID in RelevantEvents table.
  * @returns Event alert object.
  */
 export function createEventAlert(
@@ -101,6 +111,25 @@ export function createEventAlert(
 
 /**
  * Function for initializing a course alert object.
+ * @property {string} name - Name of the alert (e.g. "Course Open").
+ * @property {string} status - Seen/Unseen.
+ * @property {string} date - Date of course status change.
+ * @property {string} time - Time of course status change.
+ * @property {string} department - Three letter department code.
+ * @property {number} code - Three digit course code.
+ * @property {string} courseName - Name of course.
+ * @property {string} courseDescription - Description of course.
+ * @property {number} credits - Number of credits.
+ * @property {string} requirements - List of required courses as a single string.
+ * @property {string} meetSchedule - Schedule in format "Day: StartTime-Endtime, ...".
+ * @property {string} semestersOffered - Semesters course is offered (e.g. "F/SU").
+ * @property {number} sectionNumber - Section number code.
+ * @property {string} sectionStatus - Section status (Open, Closed, etc.).
+ * @property {number} seats - Max seats.
+ * @property {number} seatsLeft - Open seats.
+ * @property {string} method - How the course is held (e.g. online, in-person).
+ * @property {string} location - Room/building the class is held in.
+ * @property {string} id - Unique ID in StudentSectionStatusChanges table.
  * @returns Course alert object.
  */
 export function createClassAlert(

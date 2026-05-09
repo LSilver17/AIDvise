@@ -1,5 +1,6 @@
 /*
     Author: Sean Collins
+    Copyright: 2026
 */
 // Lib
 import Card from "@/app/components/visual/card"

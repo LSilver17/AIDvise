@@ -1,6 +1,7 @@
 /*
     Author: CopilotKit
     Co-author: Sean Collins
+    Copyright 2026
 */
 import {
   CopilotRuntime,
