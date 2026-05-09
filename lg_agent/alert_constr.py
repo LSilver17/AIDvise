@@ -1,5 +1,3 @@
-import sys, os
-    
 """
 Copyright 2026 Luca Silver
 

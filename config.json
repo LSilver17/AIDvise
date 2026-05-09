@@ -42,7 +42,7 @@
             "alerts": "advisor_test"
         }
     },
-    "context_select": {
+    "context_config": {
         "s-planner": {
             "context-select": "full",
             "context-level": {

@@ -1,16 +1,13 @@
 # =============================================================================
 # CSC 212 — AI Academic Advising Platform
-# Data Pipeline 
-#
+# Data Pipeline
+
 # Copyright (c) 2026 Quinsigamond Community College — CSC 212
 # All rights reserved.
-#
-# This source code is part of a student research project and may not be
-# reproduced, distributed, or used without permission.
-#
-# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+
+# Author:   Noel Mensah
 # GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
-# Branch:   cws
+
 # =============================================================================
 
 """
@@ -32,7 +29,6 @@ Description extraction scans all content elements for the first substantial
 paragraph containing program-related keywords, since QCC wraps descriptions
 in nested div elements rather than placing them as direct siblings of headings.
 
-@author Data Pipeline — CSC 212 AI Academic Advising Platform
 @date 2026
 
 @par Input

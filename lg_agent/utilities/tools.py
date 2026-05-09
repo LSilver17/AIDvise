@@ -90,11 +90,7 @@ with open(DEPARTMENT_LIST_PATH, "r") as f:
     DEPARTMENT_LIST = {"departments": []}
     DEPARTMENT_LIST["departments"] = json.load(f)
 
-ERROR_LOG_FOLDER_PATH = os.path.join(ROOT_DIR, "tool_error_logs")
-os.makedirs(ERROR_LOG_FOLDER_PATH, exist_ok=True)
-ERROR_LOG_FILE_PATH = os.path.join(ERROR_LOG_FOLDER_PATH, f"tool_error_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
-with open(ERROR_LOG_FILE_PATH, "w") as f:
-    f.write(f"Error log created on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+START_TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
@@ -108,8 +104,13 @@ def get_current_time_tool() -> str:
         now = datetime.now()
         return now.strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
+        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
         with open(ERROR_LOG_FILE_PATH, "a") as f:
-            f.write(f"Error occurred while getting current time: {e}\n")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Error occurred while getting current time: {e}\n")
         return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_department_list", description="Tool for getting a list of all 3-letter department codes and their meanings. Only use this tool if you initially fail to guess the 3-letter code for a department as it can consume a lot of tokens.", return_direct=True)
@@ -132,8 +133,13 @@ def get_department_list_tool() -> str:
         departments = DEPARTMENT_LIST["departments"]
         return json.dumps(departments)
     except Exception as e:
+        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
         with open(ERROR_LOG_FILE_PATH, "a") as f:
-            f.write(f"Error occurred while getting department list: {e}\n")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Error occurred while getting department list: {e}\n")
         return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_departments_in_category", description="Tool for getting a list of what types of courses are considered a part of a specified category. Options: ['Behavioral Science Elective' | 'Humanities Elective' | 'Mathematics Elective' | 'Science Elective' | 'Lab Science Elective' | 'Social Sciences Elective' | 'Liberal Arts Elective' | 'General Elective' | 'GenEd'] (GenEd = General Education)", return_direct=True)
@@ -217,8 +223,13 @@ def course_query_tool_by_code(course_code: str) -> str:
             else:
                 return f"No course found with code {course_code}."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while querying course by code: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while querying course by code: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
@@ -267,8 +278,13 @@ def course_query_tool_by_title(course_title: str) -> str:
             else:
                 return f"No course found with title {course_title}."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while querying course by title: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while querying course by title: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them. Don't use this tool with overly broad filters as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
@@ -350,8 +366,13 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             else:
                 return "No courses found matching the specified criteria."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while filtering courses: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while filtering courses: {e}\n")
             if isinstance(e, ValidationError):
                 return f"Invalid filters provided: {e.errors()}."
             elif isinstance(e, ValueError) and "Invalid course code condition: " in str(e) or "Invalid credit condition: " in str(e):
@@ -382,8 +403,13 @@ def get_course_description_tool(course_id: int) -> str:
             description = database_utils.get_course_description_by_id(cursor, course_id)
             return description
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while querying course description: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while querying course description: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections. Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
@@ -484,8 +510,13 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             else:
                 return "No sections found matching the specified criteria."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while filtering sections: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while filtering sections: {e}\n")
                 if isinstance(e, ValidationError):
                     return f"Invalid filters provided: {e.errors()}."
                 elif isinstance(e, ValueError) and "Invalid enrollment capacity condition: " in str(e) or "Invalid enrollment condition: " in str(e):
@@ -529,8 +560,13 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
             return json.dumps(student_info)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student basic info: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student basic info: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
@@ -561,8 +597,13 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
             course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
             return json.dumps(course_history)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student course history: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student course history: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
@@ -586,8 +627,13 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
             interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
             return json.dumps(interests)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student interests: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student interests: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
@@ -618,8 +664,13 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
             tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
             return json.dumps(tracked_sections)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student tracked sections: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student tracked sections: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
@@ -649,8 +700,13 @@ def get_program_requirements_tool(program_name: str) -> str:
             program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
             return json.dumps(program_requirements)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching program requirements: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching program requirements: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
@@ -676,8 +732,13 @@ def get_upcoming_events_tool() -> str:
             upcoming_events = database_utils.get_upcoming_events(cursor)
             return json.dumps(upcoming_events)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching upcoming events: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching upcoming events: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
@@ -711,8 +772,13 @@ def get_event_dates_tool(event_name: str) -> str:
             event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
             return json.dumps(event_dates)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching event dates: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching event dates: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
@@ -742,8 +808,13 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
         search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
         return search.invoke(query)
     except Exception as e:
+        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
         with open(ERROR_LOG_FILE_PATH, "a") as f:
-            f.write(f"Error occurred while performing web search: {e}\n")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Error occurred while performing web search: {e}\n")
         return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
@@ -767,8 +838,13 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
     except requests.RequestException as e:
+        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
         with open(ERROR_LOG_FILE_PATH, "a") as f:
-            f.write(f"Error occurred while fetching web page content from {url}: {e}\n")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Error occurred while fetching web page content from {url}: {e}\n")
         return f"Error fetching from {url}: {e}. The page may be unavailable or there may be a problem with the URL."
     try:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -782,8 +858,13 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
             return text[:max_chars] + "... [truncated]"
         return text
     except Exception as e:
+        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
         with open(ERROR_LOG_FILE_PATH, "a") as f:
-            f.write(f"Error occurred while parsing web page content from {url}: {e}\n")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Error occurred while parsing web page content from {url}: {e}\n")
         return f"Error parsing content from {url}: {e}. The page may be formatted in a way that is difficult to extract text from."
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
@@ -809,8 +890,13 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
         try:
             return database_utils.insert_student_interests(conn, runtime.state["user_id"], [interest])
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while inserting student interests: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while inserting student interests: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
@@ -839,8 +925,13 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
         try:
             return database_utils.insert_student_tracked_section(conn, runtime.state["user_id"], course_code, section_id)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while inserting student tracked sections: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while inserting student tracked sections: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_student_id_by_name", description="Tool for getting a student's ID based on their name. The input is the student's name and the output is the student's ID. Only works for students who have the current user as their advisor.", return_direct=True)
@@ -874,8 +965,10 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
             else:
                 return f"No student found with name {student_name}."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while getting student ID by name: {e}\n")
+                f.write(f"[{current_timestamp}] Error occurred while getting student ID by name: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
@@ -910,8 +1003,13 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
             else:
                 return "No students found for the current advisor."
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while getting advisor students: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while getting advisor students: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
@@ -961,8 +1059,13 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             student_info = database_utils.get_student_basic_info(cursor, student_id)
             return json.dumps(student_info)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student basic info: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student basic info: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
@@ -1004,8 +1107,13 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
             course_history = database_utils.get_student_course_history(cursor, student_id)
             return json.dumps(course_history)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student course history: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student course history: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
@@ -1040,8 +1148,13 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
             interests = database_utils.get_student_interests(cursor, student_id)
             return json.dumps(interests)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student interests: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student interests: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
@@ -1083,8 +1196,13 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
             tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
             return json.dumps(tracked_sections)
         except Exception as e:
+            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            if not os.path.exists(ERROR_LOG_FILE_PATH):
+                with open(ERROR_LOG_FILE_PATH, "w") as f:
+                    f.write(f"Error log for {START_TIMESTAMP}\n\n")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
-                f.write(f"Error occurred while fetching student tracked sections: {e}\n")
+                current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"[{current_timestamp}] Error occurred while fetching student tracked sections: {e}\n")
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 d_tools = [get_current_time_tool if TOOL_CONFIG["s-db-tools"]["get_current_time_tool"] else None,
