@@ -15,6 +15,22 @@ from utilities.tools import web_tools
 tool_node = ToolNode(web_tools)
 
 def format_web_output(state: WebSearchHelperState) -> WebSearchHelperOutput:
+    """
+    Normalizes the web helper response into the helper output schema.
+
+    If the last message is a tool message (meaning the web search helper passed its 
+    loop limit without providing a final answer), the full message history is serialized 
+    into a single string so the planner can inspect the tool trail. Otherwise, the final 
+    AI message content is returned directly as the web result.
+
+    Args:
+        state (WebSearchHelperState): Helper state containing the search request
+            context and the message history produced by the web helper loop.
+
+    Returns:
+        WebSearchHelperOutput: Output object containing the original query and the
+            formatted web result string.
+    """
     if isinstance(state["messages"][-1], ToolMessage):
         message_dump = ""
         for message in state["messages"]:
@@ -25,6 +41,21 @@ def format_web_output(state: WebSearchHelperState) -> WebSearchHelperOutput:
         return {"info": {"query": state["info_needed"], "result": state["messages"][-1].content}}
 
 def tool_route(state: WebSearchHelperState):
+    """
+    Routes the web helper loop based on tool usage and loop count.
+
+    The web helper is allowed a limited number of iterations. If the latest AI
+    message includes tool calls, the graph routes to the tool node. Otherwise it
+    formats the output. If the loop limit is reached, the function enforces a final
+    response path and includes a fallback message when necessary.
+
+    Args:
+        state (WebSearchHelperState): Current helper state including messages,
+            loop counter, and requested web information.
+
+    Returns:
+        str: The next node name to execute.
+    """
     messages = state["messages"]
     last_message = messages[-1]
     if state["loop_count"] < 3:

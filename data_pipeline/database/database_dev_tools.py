@@ -10,7 +10,7 @@ Functions:
 - ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
 - ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
-- ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and coueses taken table.
+- ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
@@ -44,7 +44,7 @@ def __connect():
     Reads the database filename from ``database_config.json`` in the repository root, opens a connection to <database>.db, enables foreign key enforcement, and sets the connection ``row_factory`` to ``sqlite3.Row`` so query results behave like mapping objects.
 
     Returns:
-        ``sqlite3.Connection``: An open SQLite connection with pragma and row factory set.
+        sqlite3.Connection: An open SQLite connection with pragma and row factory set.
     """
     with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
         db_config = json.load(f)
@@ -54,7 +54,7 @@ def __connect():
     return conn
 
 def setup_database():
-    """Create the database schema required by the advising application.
+    """Create the project's database schema.
 
     This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, chat logs, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
 
@@ -426,7 +426,7 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
     The function converts ``course_code`` into the ``Department`` and numeric ``Code`` columns, maps semester initials to full names (F -> Fall, S -> Spring, SU -> Summer, IN -> Winter), and inserts a row into the ``Courses`` table for each course. Operation is committed at the end.
 
     Args:
-        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``course_catalog.json``.
+        json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``course_catalog.json``.
 
     Notes:
         If ``semesters_offered`` is empty/falsey in the input, ``SemestersOffered`` is stored as ``NULL`` in the database.
@@ -483,7 +483,7 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
     The input JSON (in the ``jsons`` directory) should contain program records with fields such as ``name``, ``description``, ``total_credits``, ``area_of_study``, and ``required_courses``. Each program is inserted into ``ProgramsOfStudy`` and program requirements are split into rows in ``ProgramRequiredCourses`` and ``ProgramRequiredCourseOptions``.
 
     Args:
-        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``qcc_programs.json``.
+        json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``qcc_programs.json``.
 
     Notes:
         If a required course string ends with ``" OR"``, it is treated as an alternative to the previous requirement and inserted into the ``ProgramRequiredCourseOptions`` table.
@@ -587,7 +587,7 @@ def add_new_term(json_file: str = "term_data.json"):
     - Parses the ``MeetTimes`` string to split day initials and start/end times, converts AM/PM times to 24-hour format, and inserts one ``MeetTimes`` row per day.
 
     Args:
-        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``term_data.json``.
+        json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``term_data.json``.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -749,7 +749,7 @@ def add_students_from_json(json_file: str):
     - Associates programs with the student if the program title exists in ``ProgramsOfStudy``.
 
     Args:
-        str json_file: Filename in the ``jsons`` directory to load.
+        json_file (str): Filename in the ``jsons`` directory to load.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands

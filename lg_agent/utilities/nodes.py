@@ -28,7 +28,25 @@ with open(CONTEXT_CONFIG_PATH, "r") as f:
     CONTEXT_CONFIG = json.load(f)
 
 def s_planner_node(state: SPlannerState) -> SPlannerState:
-    """Base node for the agent when used by a student, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
+    """
+    Builds the next plan for the student-facing agent.
+
+    This node collects the current conversation plus any database, web, or insertion
+    results that have already been gathered, then asks the planning model to decide
+    whether more tool use is required. The returned plan is stored in state and used
+    by the graph router to decide the next branch.
+
+    Args:
+        state (SPlannerState): Current student-agent state containing messages,
+            loop counter, prior tool results, and user metadata.
+
+    Returns:
+        SPlannerState: Updated state with a new "plan" value from the planning model.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May initialize empty db_info and web_info lists.
+    """
     
     state["loop_count"] += 1
     state["plan"] = None
@@ -65,7 +83,25 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
     return state
 
 def a_planner_node(state: APlannerState) -> APlannerState:
-    """Base node for the agent when used by an advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
+    """
+    Builds the next plan for the advisor-facing agent.
+
+    This node is the advisor counterpart to the student planner. It gathers the
+    current conversation, prior database and web results, and loop context, then
+    asks the planning model to decide whether more tool use is needed before a final
+    answer can be produced.
+
+    Args:
+        state (APlannerState): Current advisor-agent state containing messages,
+            loop counter, prior tool results, and user metadata.
+
+    Returns:
+        APlannerState: Updated state with a new "plan" value from the planning model.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May initialize empty db_info and web_info lists.
+    """
 
     state["loop_count"] += 1
     
@@ -98,7 +134,26 @@ def a_planner_node(state: APlannerState) -> APlannerState:
     return state
 
 def db_node(state: DatabaseHelperState):
-    """Node that runs database queries based on the information provided by the planning node."""
+    """
+    Executes the database helper model with the appropriate tool set.
+
+    The node chooses between student and advisor database tools based on the user's 
+    account type, seeds the message list with system guidance when this is the first turn, 
+    preserves prior tool messages, and sends the curated conversation to the database LLM. 
+    The LLM may decide to call one or more database tools before producing its response.
+
+    Args:
+        state (DatabaseHelperState): Helper state containing the requested information,
+            message history, loop counter, user ID, and account type.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and task description to state messages.
+    """
 
     state["loop_count"] += 1
 
@@ -132,7 +187,26 @@ def db_node(state: DatabaseHelperState):
     return {"messages": [result]}
 
 def web_node(state: WebSearchHelperState):
-    """Node that performs web searches based on the information provided by the planning node."""
+    """
+    Executes the web search helper model with the search tool set.
+
+    The node prepares the message history for the web LLM, including an initial
+    system prompt and search goal on the first pass. It preserves prior tool records
+    and sends the curated conversation to the model so it can search the web or
+    summarize the gathered results.
+
+    Args:
+        state (WebSearchHelperState): Helper state containing the requested web
+            information, message history, and loop counter.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and task description to state messages.
+    """
     
     state["loop_count"] += 1
 
@@ -162,7 +236,26 @@ def web_node(state: WebSearchHelperState):
     return {"messages": [result]}
 
 def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
-    """Node that takes any new information the advisor has learned about the student and inserts it into the database."""
+    """
+    Executes the insertion helper model to persist new student information.
+
+    This node prepares a tool-enabled conversation for the insertion LLM, which is
+    used to decide whether any new student information should be written into the
+    database. On the first pass it seeds the conversation with instructions that
+    describe what should be inserted.
+
+    Args:
+        state (InsertionHelperState): Helper state containing the information to
+            insert, message history, loop counter, and user ID.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and insertion request to state messages.
+    """
 
     state["loop_count"] += 1
 

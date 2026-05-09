@@ -18,7 +18,20 @@ from web_helper_graph import web_graph
 load_dotenv()
 
 def invoke_db_helper(state: APlannerState):
-    """Function to invoke the database helper graph and return the results to the main graph."""
+    """
+    Invokes the advisor database helper graph and merges its result back into state.
+
+    The advisor planner may request database information about a student or course.
+    This node forwards that request to the database helper graph, then appends the
+    returned query/result pair to the accumulated db_info list.
+
+    Args:
+        state (APlannerState): Current planner state containing the selected database
+            request in plan["info_needed_db"].
+
+    Returns:
+        dict: Partial state update with the updated "db_info" list.
+    """
     db_helper_state = {"info_needed": state["plan"]["info_needed_db"], "messages": [], "loop_count": 0, "user_id": state["user_id"], "account_type": "Advisor"}
     result = db_graph.invoke(db_helper_state)
     db_info = state["db_info"]
@@ -26,7 +39,20 @@ def invoke_db_helper(state: APlannerState):
     return {"db_info": db_info}
 
 def invoke_web_helper(state: APlannerState):
-    """Function to invoke the web helper graph and return the results to the main graph."""
+    """
+    Invokes the web helper graph and merges its result back into state.
+
+    The advisor planner may request web information to support an answer. This node
+    forwards that request to the web helper graph, then appends the returned
+    query/result pair to the accumulated web_info list.
+
+    Args:
+        state (APlannerState): Current planner state containing the selected web
+            request in plan["info_needed_web"].
+
+    Returns:
+        dict: Partial state update with the updated "web_info" list.
+    """
     web_helper_state = {"info_needed": state["plan"]["info_needed_web"], "messages": [], "loop_count": 0}
     result = web_graph.invoke(web_helper_state)
     web_info = state["web_info"]
@@ -35,10 +61,19 @@ def invoke_web_helper(state: APlannerState):
 
 def route_from_planning(state: APlannerState):
     """
-    Routing function to determine which helper graph(s) to invoke based on the output of the planning node. If the planning 
-    node indicates that information is needed from the database, the database helper graph will be invoked. If it indicates 
-    that information is needed from the web, the web helper graph will be invoked. If it indicates that both are needed, the 
-    they will be run in parallel. If neither are needed, the graph will route directly to the answer node.
+    Chooses which helper graphs to run after planning.
+
+    The planner can request database lookups or web lookups, or provide a final
+    answer directly. This router converts the plan into one or more graph sends.
+    When both database and web information are requested, they are dispatched in
+    parallel. If no tools are needed, control routes directly to the answer node.
+
+    Args:
+        state (APlannerState): Current planner state containing the loop counter and
+            the structured plan produced by the planning node.
+
+    Returns:
+        list[Send]: One or more graph sends describing the next execution branch.
     """
     if state["loop_count"] < 3:
         routes = []
@@ -60,7 +95,16 @@ def route_from_planning(state: APlannerState):
             return [Send("answer_node", {"messages": [messages]})]
 
 def answer_node(state: APlannerState) -> APlannerState:
-    """Node that returns the final answer from the planning node."""
+    """
+    Appends the final planner answer to the conversation state.
+
+    Args:
+        state (APlannerState): Current planner state containing the final answer in
+            plan["answer"].
+
+    Returns:
+        APlannerState: Updated state with the final AI answer appended to messages.
+    """
     return {"messages": state["messages"] + [AIMessage(content=state["plan"]["answer"])]}
 
 graph_builder = StateGraph(APlannerState)

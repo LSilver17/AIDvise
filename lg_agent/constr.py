@@ -17,7 +17,20 @@ from typing import Literal
 load_dotenv()
 
 def route(state: RouteState) -> Literal["invoke_s_graph", "invoke_a_graph"]:
-    """Routes the user to the appropriate chatbot based on their account type."""
+    """
+    Chooses the main chat graph based on the user's account type.
+
+    Student users are routed to the student chat graph, while advisor users are
+    routed to the advisor chat graph.
+
+    Args:
+        state (RouteState): Routing state containing the authenticated user ID,
+            account type, and current messages.
+
+    Returns:
+        Literal["invoke_s_graph", "invoke_a_graph"]: The next node name for the
+            state graph.
+    """
     match state["account_type"]:
         case "Student":
             return "invoke_s_graph"
@@ -25,7 +38,23 @@ def route(state: RouteState) -> Literal["invoke_s_graph", "invoke_a_graph"]:
             return "invoke_a_graph"
 
 def invoke_s_graph(state: RouteState) -> RouteState:
-    """Invokes the student chatbot graph."""
+    """
+    Resolves the current student ID and invokes the student chat graph.
+
+    The route state contains the user ID. This node looks up the corresponding student ID, 
+    then seeds the student chat graph with the message history and the student-specific 
+    identifiers needed downstream.
+
+    Args:
+        state (RouteState): Routing state containing the current messages, user ID,
+            and account type.
+
+    Returns:
+        RouteState: State update containing the messages returned by the student graph.
+
+    Raises:
+        ValueError: If no student row exists for the provided parent user ID.
+    """
     with __connect() as conn:
         cur = conn.cursor()
         cur.execute("SELECT ID FROM students WHERE ParentID = ?", (state["user_id"],))
@@ -36,7 +65,16 @@ def invoke_s_graph(state: RouteState) -> RouteState:
     return {"messages": result["messages"]}
 
 def invoke_a_graph(state: RouteState) -> RouteState:
-    """Invokes the advisor chatbot graph."""
+    """
+    Invokes the advisor chat graph with the current conversation state.
+
+    Args:
+        state (RouteState): Routing state containing the current messages, user ID,
+            and account type.
+
+    Returns:
+        RouteState: State update containing the messages returned by the advisor graph.
+    """
     result = a_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": state["user_id"]})
     return {"messages": result["messages"]}
 
