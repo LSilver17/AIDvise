@@ -49,7 +49,7 @@ def __connect():
     with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
         CONFIG = json.load(f)
         DB_CONFIG = CONFIG["database_config"]
-    conn = sqlite3.connect(DB_CONFIG["database"] + ".db")
+    conn = sqlite3.connect(DB_CONFIG["db_name"] + ".db")
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
