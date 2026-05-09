@@ -1,3 +1,18 @@
+# =============================================================================
+# CSC 212 — AI Academic Advising Platform
+# Data Pipeline 
+#
+# Copyright (c) 2026 Quinsigamond Community College — CSC 212
+# All rights reserved.
+#
+# This source code is part of a student research project and may not be
+# reproduced, distributed, or used without permission.
+#
+# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+# GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+# Branch:   cws
+# =============================================================================
+
 """
 @file scrape_programs.py
 @brief Scrapes the public QCC website for all programs of study with full details.

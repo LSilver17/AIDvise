@@ -1,22 +1,113 @@
-"""
-create_registration_db.py
---------------------------
-Creates a SQLite database from registration_sections.json.
-Run this once to initialize the database.
+# =============================================================================
+# CSC 212 — AI Academic Advising Platform
+# Data Pipeline 
+#
+# Copyright (c) 2026 Quinsigamond Community College — CSC 212
+# All rights reserved.
+#
+# This source code is part of a student research project and may not be
+# reproduced, distributed, or used without permission.
+#
+# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+# GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+# Branch:   cws
+# =============================================================================
 
-USAGE:
+"""
+@file create_registration_db.py
+@brief Initializes the SQLite registration database from registration_sections.json.
+
+@details
+This module creates the registration.db SQLite database and populates it with
+course section data from registration_sections.json. It is intended to be run
+once to initialize the database. For subsequent refreshes (upsert on conflict),
+use refresh_registration.py instead.
+
+The database schema includes a UNIQUE constraint on course_code, so duplicate
+entries are silently ignored (INSERT OR IGNORE). Four indexes are created for
+fast querying by department, course code, status, and instructor.
+
+Database schema:
+@code
+CREATE TABLE courses (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    course_code   TEXT NOT NULL UNIQUE,
+    department    TEXT,
+    course_number TEXT,
+    section       TEXT,
+    name          TEXT,
+    status        TEXT,
+    seats_open    INTEGER,
+    seats_total   INTEGER,
+    credits       TEXT,
+    instructor    TEXT,
+    days_time     TEXT,
+    location      TEXT,
+    method        TEXT,
+    begin_date    TEXT,
+    end_date      TEXT,
+    scraped_at    TEXT
+);
+@endcode
+
+@author Data Pipeline — CSC 212 AI Academic Advising Platform
+@date 2026
+
+@par Input
+    registration_sections.json — scraped course section data
+
+@par Output
+    registration.db — initialized SQLite database
+
+@par Dependencies
+    - sqlite3 (stdlib)
+    - json (stdlib)
+    - os (stdlib)
+
+@par Usage
     python create_registration_db.py
+
+@note Run scrape_registration_sections.py or refresh_registration.py first
+      to generate registration_sections.json before running this script.
 """
 
 import json
 import sqlite3
 import os
 
+## @brief Path to the input registration sections JSON file.
 JSON_FILE = "registration_sections.json"
+
+## @brief Path to the output SQLite database file.
 DB_FILE   = "registration.db"
 
 
 def create_db(json_file: str, db_file: str):
+    """
+    @brief Creates the SQLite database and populates it from the JSON file.
+
+    @details
+    Reads all course sections from the JSON file, connects to (or creates)
+    the SQLite database at db_file, creates the courses table and indexes
+    if they do not exist, and inserts all course records using INSERT OR IGNORE
+    to skip duplicates based on the unique course_code constraint.
+
+    Indexes created:
+    - idx_department  on courses(department)
+    - idx_course_code on courses(course_code)
+    - idx_status      on courses(status)
+    - idx_instructor  on courses(instructor)
+
+    @param json_file Path to the registration_sections.json input file.
+    @param db_file   Path to the SQLite database file to create or update.
+
+    @par Side Effects
+        Creates or modifies the SQLite database file at db_file.
+        Prints a summary of inserted and skipped records on completion.
+
+    @throws FileNotFoundError if json_file does not exist (handled by caller).
+    @throws sqlite3.Error for individual record insert failures (logged, not raised).
+    """
     # Load JSON
     with open(json_file, "r", encoding="utf-8") as f:
         courses = json.load(f)
@@ -27,7 +118,7 @@ def create_db(json_file: str, db_file: str):
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
 
-    # Create table
+    # Create table and indexes
     cursor.executescript("""
         CREATE TABLE IF NOT EXISTS courses (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
