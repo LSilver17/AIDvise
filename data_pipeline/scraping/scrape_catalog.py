@@ -1,16 +1,13 @@
 # =============================================================================
 # CSC 212 — AI Academic Advising Platform
-# Data Pipeline 
-#
+# Data Pipeline
+
 # Copyright (c) 2026 Quinsigamond Community College — CSC 212
 # All rights reserved.
-#
-# This source code is part of a student research project and may not be
-# reproduced, distributed, or used without permission.
-#
-# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+
+# Author:   Noel Mensah
 # GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
-# Branch:   cws
+
 # =============================================================================
 
 """
@@ -30,7 +27,6 @@ all departments, it clicks into the course detail page and extracts:
 Only one section per unique base course code is scraped (e.g. ACC 101, not ACC 101-01
 and ACC 101-02 separately), making this a catalog scraper rather than a section scraper.
 
-@author Data Pipeline — CSC 212 AI Academic Advising Platform
 @date 2026
 
 @par Input

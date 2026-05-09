@@ -1,16 +1,13 @@
 # =============================================================================
 # CSC 212 — AI Academic Advising Platform
 # Data Pipeline
-#
+
 # Copyright (c) 2026 Quinsigamond Community College — CSC 212
 # All rights reserved.
-#
-# This source code is part of a student research project and may not be
-# reproduced, distributed, or used without permission.
-#
-# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+
+# Author:   Noel Mensah
 # GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
-# Branch:   cws
+
 # =============================================================================
 
 """
@@ -31,7 +28,6 @@ This script handles the full refresh cycle in three steps:
 For parsing a pre-saved HTML snapshot instead of live scraping,
 see scrape_registration_sections.py.
 
-@author Data Pipeline — CSC 212 AI Academic Advising Platform
 @date 2026
 
 @par Configuration
