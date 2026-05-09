@@ -1,3 +1,18 @@
+"""
+Copyright 2026 Luca Silver
+
+Extended fake chat model for testing that adds tool binding and structured output support.
+
+Classes:
+- `GenericFakeChatModel`: Extends LangChain's fake chat model with tool binding and structured output capabilities.
+  - `bind_tools`: Binds tools to the model for simulating tool-calling scenarios during testing.
+  - `with_structured_output`: Enables structured JSON output that matches a provided Pydantic schema.
+
+Purpose:
+- Provides a test double for LangChain chat models that allows simulating tool calls and structured responses
+  without making actual API calls, enabling faster and cheaper testing of agent graphs and workflows.
+"""
+
 from typing import Any, Dict
 
 from langchain_core.language_models import GenericFakeChatModel as _GenericFakeChatModel

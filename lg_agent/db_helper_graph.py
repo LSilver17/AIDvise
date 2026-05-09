@@ -1,5 +1,29 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Database helper subgraph that executes database queries for the planning agents.
+
+Functions:
+- `format_db_output`: Normalizes database helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes database helper loop based on tool calls and loop count (max 3 iterations).
+
+Graph Structure:
+- START -> db_node
+- db_node -> [tool_node | alt_tool_node | format_db_output] (conditional routing based on tool_route)
+- tool_node -> db_node (feedback loop)
+- alt_tool_node -> db_node (feedback loop)
+- format_db_output -> END
+
+Exports:
+- `db_graph`: Compiled LangGraph database helper subgraph.
+
+Supports both standard (student) and alternate (advisor) tool sets.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:

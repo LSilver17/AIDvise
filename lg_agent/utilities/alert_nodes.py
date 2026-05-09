@@ -1,3 +1,16 @@
+
+"""
+Copyright 2026 Luca Silver
+
+Nodes that execute the alerts agent workflow for filtering and inserting relevant events for the current student user.
+
+Functions:
+- `get_new_events`: Queries the database for upcoming events added since the student's last event check.
+- `get_interests`: Retrieves the student's interests from the database for personalized event filtering.
+- `filter_relivent_events`: Filters upcoming events based on student interests and sets urgency levels.
+- `insert_relevant_events`: Inserts the filtered relevant events into the database with their urgency levels.
+"""
+
 import sys, os
     
 # adds root directory to system path if not already there

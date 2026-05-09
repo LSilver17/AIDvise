@@ -1,5 +1,31 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Student-facing chat agent that routes student queries through planning and helper graphs.
+
+Functions:
+- `invoke_db_helper`: Invokes the database helper graph and merges results back to planner state.
+- `invoke_web_helper`: Invokes the web search helper graph and merges results back to planner state.
+- `invoke_insertion_helper`: Invokes the insertion helper graph for student profile updates.
+- `route_from_planning`: Routes the planner's decision to appropriate helper graphs or answer node. Enforces a maximum of 3 loops before forcing an answer.
+- `answer_node`: Appends the final planner response to the conversation message history.
+
+Graph Structure:
+- START -> planning
+- planning -> [invoke_db_helper | invoke_web_helper | invoke_insertion_helper | answer_node] (conditional) (can be parallel)
+- invoke_db_helper -> planning (feedback loop) (deferred)
+- invoke_web_helper -> planning (feedback loop) (deferred)
+- invoke_insertion_helper -> planning (feedback loop) (deferred)
+- answer_node -> END
+
+Exports:
+- `s_chat_graph`: Compiled LangGraph student chat agent.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:

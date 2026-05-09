@@ -1,3 +1,29 @@
+"""
+Copyright 2026 Luca Silver
+
+Initializes language models for different agent nodes and modes (production or testing).
+
+Functions:
+- `_load_model_config`: Loads model configuration from model_select.json.
+- `_normalize_model_name`: Normalizes model names by converting to lowercase and replacing hyphens with underscores.
+- `_s_planning_testing_model`: Creates a fake testing model for the student planning node.
+- `_a_planning_testing_model`: Creates a fake testing model for the advisor planning node.
+- `_s_db_testing_model`: Creates a fake testing model for the student database helper node.
+- `_a_db_testing_model`: Creates a fake testing model for the advisor database helper node.
+- `_s_web_testing_model`: Creates a fake testing model for the student web helper node.
+- `_a_web_testing_model`: Creates a fake testing model for the advisor web helper node.
+- `_insertion_testing_model`: Creates a fake testing model for the insertion helper node.
+- `_alerts_testing_model`: Creates a fake testing model for the alerts agent node.
+- `_create_model`: Factory function that creates appropriate chat models based on model name and node type.
+
+Modules Initialized:
+- `planning_llm`: Language model for planning nodes.
+- `db_llm`: Language model for database helper nodes.
+- `web_llm`: Language model for web search helper nodes.
+- `insertion_llm`: Language model for insertion helper nodes.
+- `alerts_llm`: Language model for alerts agent nodes.
+"""
+
 import os, sys
 
 # adds utilities directory to system path if not already there

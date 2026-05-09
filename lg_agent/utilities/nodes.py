@@ -1,3 +1,20 @@
+"""
+Copyright 2026 Luca Silver
+
+Core planning and helper nodes for both student and advisor chat agents.
+
+Planning Nodes:
+- `s_planner_node`: Student planner that decides which sources (database, web, insertion) are needed and what info to gather from them (or what info to insert) for the current user input.
+- `a_planner_node`: Advisor planner that decides what sources (database, web) are needed and what info to gather from them for the current user input.
+
+Helper Nodes:
+- `db_node`: Database helper that formulates and executes database queries using available tools.
+- `web_node`: Web search helper that formulates and executes web searches using available tools.
+- `insertion_node`: Insertion helper that processes student profile updates (interests, tracked sections).
+
+These nodes are integrated into LangGraph agents to provide multi-turn planning and tool execution workflows.
+"""
+
 import sys, os
 
 from langchain.messages import AIMessage, ToolMessage

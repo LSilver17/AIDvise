@@ -1,5 +1,26 @@
 import sys, os
 
+"""
+Copyright 2026 Luca Silver
+
+Web search helper subgraph that executes web searches for the planning agents.
+
+Functions:
+- `format_web_output`: Normalizes web search helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes web helper loop based on tool calls and loop count (max 3 iterations).
+
+Graph Structure:
+- START -> web_node
+- web_node -> [tool_node | format_web_output] (conditional routing based on tool_route)
+- tool_node -> web_node (feedback loop)
+- format_web_output -> END
+
+Exports:
+- `web_graph`: Compiled LangGraph web search helper subgraph.
+"""
+
+import sys, os
+
 # adds lg_agent directory to system path if not already there
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if parent_dir not in sys.path:
