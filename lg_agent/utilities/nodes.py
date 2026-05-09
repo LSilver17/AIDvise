@@ -202,6 +202,7 @@ def db_node(state: DatabaseHelperState):
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
         messages.extend(state["messages"][-2:])
+    
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_db_tools.invoke(messages)
@@ -251,6 +252,7 @@ def web_node(state: WebSearchHelperState):
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
         messages.extend(state["messages"][-2:])
+    
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_web_tools.invoke(messages)
@@ -299,7 +301,8 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
                 messages.append(message)
             elif isinstance(message, AIMessage):
                 messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
-    messages.extend(state["messages"][-2:])
+        messages.extend(state["messages"][-2:])
+    
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
     result = llm_with_insertion_tools.invoke(messages)
