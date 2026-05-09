@@ -1,3 +1,25 @@
+"""
+Copyright 2026 Luca Silver
+
+This module provides development tools for managing the SQLite database used by the advising application. It includes functions to set up the database schema, create necessary triggers, populate tables from JSON files, and reset specific groups of tables during development.
+
+Functions:
+- ``setup_database()``: Creates the database schema with all required tables.
+- ``create_triggers()``: Creates database triggers for logging section status changes and resetting student check fields.
+- ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
+- ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
+- Reset functions:
+    - ``reset_course_catalog()``: Drops course-related tables.
+    - ``reset_programs_catalog()``: Drops program-of-study related tables.
+    - ``reset_students_and_advisors()``: Drops the ``Students`` and ``Advisors`` tables.
+    - ``reset_terms_and_courses()``: Drops term- and offering-related tables.
+    - ``reset_events()``: Drops event-related tables.
+    - ``reset_users()``: Drops the ``Users`` table (cascades to related data).
+    - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
+
+Can also be executed directly to set up the database and create triggers without populating data. Use the individual functions in an interactive Python session or script to manage the database during development. Exercise caution with reset functions as they permanently delete data.
+"""
+
 import sys, os
 
 # Add the path to the root directory to the path if not already there
@@ -14,7 +36,13 @@ import json, sqlite3
 from lg_agent.database_utils import get_courseID_by_code
 
 def __connect():
-    """Utility function for connecting to the database specified in database config and setting up required pragmas and row factory."""
+    """Create and return a configured SQLite connection to the project's database.
+
+    Reads the database filename from ``database_config.json`` in the repository root, opens a connection to <database>.db, enables foreign key enforcement, and sets the connection ``row_factory`` to ``sqlite3.Row`` so query results behave like mapping objects.
+
+    Returns:
+        ``sqlite3.Connection``: An open SQLite connection with pragma and row factory set.
+    """
     with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
         db_config = json.load(f)
     conn = sqlite3.connect(db_config["database"] + ".db")
@@ -23,7 +51,12 @@ def __connect():
     return conn
 
 def setup_database():
-    """Sets up the configured database with the required tables and schema."""
+    """Create the database schema required by the advising application.
+
+    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, chat logs, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
+
+    The function commits the schema changes and prints a confirmation message indicating which database file was initialized.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -294,7 +327,14 @@ def setup_database():
         print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
 
 def create_triggers():
-    """Creates the necessary triggers in the database for logging section status changes, resetting check fields when a student's ParentID is changed to null, deleting relevant data when a student's ParentID is changed to null, and resetting event check field when a student's interests are added or changed."""
+    """Create database triggers used by the application.
+    
+    The following triggers are created (if they do not already exist):
+    - ``LogSectionStatusChange``: inserts a row in ``SectionStatusChanges`` when a section's ``Status`` column changes.
+    - ``ResetCheckFields``: resets a student's ``LastEventCheck`` and ``LastSectionStatusCheck`` timestamps when their ``ParentID`` becomes NULL.
+    - ``DeleteStudentData``: deletes related rows (relevant events, interests, tracked sections, student alerts) when a student's ``ParentID`` is set to NULL.
+    - ``ResetEventCheckOnInterestChange`` (insert and update variants): reset a student's ``LastEventCheck`` when interests are inserted or updated.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -376,11 +416,17 @@ def create_triggers():
         conn.commit()
 
 def populate_course_catalog(json_file: str = "course_catalog.json"):
-    """
-    Populates the course catalog in the configured database from a JSON file.
+    """Load catalog of course from a JSON file and insert them into ``Courses``.
+
+    The JSON file is expected to be located in the repository's ``jsons`` directory. Each entry should contain at minimum the fields used below: ``course_code`` (format: "DPT NUM"), ``name``, ``description``, ``credits``, ``prerequisites``, and ``semesters_offered`` (e.g. "F/S/SU").
+
+    The function converts ``course_code`` into the ``Department`` and numeric ``Code`` columns, maps semester initials to full names (F -> Fall, S -> Spring, SU -> Summer, IN -> Winter), and inserts a row into the ``Courses`` table for each course. Operation is committed at the end.
 
     Args:
-        json_file (str): The name of the JSON file containing the course catalog data. The file must be located in the jsons directory. Defaults to "course_catalog.json".
+        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``course_catalog.json``.
+
+    Notes:
+        If ``semesters_offered`` is empty/falsey in the input, ``SemestersOffered`` is stored as ``NULL`` in the database.
     """
 
     with __connect() as conn:
@@ -429,11 +475,15 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
         print("Course catalog populated from JSON file.")
 
 def populate_programs_catalog(json_file: str = "qcc_programs.json"):
-    """
-    Populates the programs of study catalog in the configured database from a JSON file.
+    """Load programs of study from JSON and populate ``ProgramsOfStudy`` and related requirement tables.
+
+    The input JSON (in the ``jsons`` directory) should contain program records with fields such as ``name``, ``description``, ``total_credits``, ``area_of_study``, and ``required_courses``. Each program is inserted into ``ProgramsOfStudy`` and program requirements are split into rows in ``ProgramRequiredCourses`` and ``ProgramRequiredCourseOptions``.
 
     Args:
-        json_file (str): The name of the JSON file containing the programs of study data. The file must be located in the jsons directory. Defaults to "qcc_programs.json".
+        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``qcc_programs.json``.
+
+    Notes:
+        If a required course string ends with ``" OR"``, it is treated as an alternative to the previous requirement and inserted into the ``ProgramRequiredCourseOptions`` table.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -524,11 +574,17 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
         print("Programs of study catalog populated from JSON file.")
 
 def add_new_term(json_file: str = "term_data.json"):
-    """
-    Adds a new term with its courses, sections, and meet times to the database from a JSON file.
+    """Insert a new term and all of its course offerings, sections, and meet times from a JSON export.
+
+    The JSON must be located in the ``jsons`` directory and contain at least one term object with the keys: ``Year``, ``Season``, ``Num`` and a ``CoursesOffered`` list. Each course offering should include fields used below such as ``Department``, ``Code``, ``SectionNum``, ``Instructor``, ``StartDate``, ``EndDate``, ``Status``, ``MaxSeats``, ``SeatsLeft``, ``Method``, ``Location`` and ``MeetTimes``.
+
+    Behavior:
+    - Inserts a row into ``Terms`` and uses the inserted term ID as the ``ParentID`` for ``CoursesOffered`` rows.
+    - Skips course offerings when the base course cannot be found in ``Courses`` (logs a message and continues).
+    - Parses the ``MeetTimes`` string to split day initials and start/end times, converts AM/PM times to 24-hour format, and inserts one ``MeetTimes`` row per day.
 
     Args:
-        json_file (str): The name of the JSON file containing the term data. The file must be located in the jsons directory. Defaults to "term_data.json". 
+        str json_file: Filename in the ``jsons`` directory to load. Defaults to ``term_data.json``.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -672,11 +728,25 @@ def add_new_term(json_file: str = "term_data.json"):
         conn.commit()
 
 def add_students_from_json(json_file: str):
-    """
-    Adds students and their course history and programs of study to the database from a JSON file.
+    """Insert student accounts, course histories, and declared programs from a JSON file into the database.
+
+    Expected JSON structure (per student):
+    - ``ID``: numeric student identifier
+    - ``Name``: student full name
+    - ``GPA``: floating point GPA
+    - ``CreditsEarned``: integer
+    - ``IntendedGraduationTerm``: string
+    - ``Advisor``: (optional) advisor name used to look up an Advisors row
+    - ``CoursesTaken``: list of objects with ``CourseCode`` (e.g. "CSC 101") and ``Grade``
+    - ``ProgramsOfStudy``: list of program title strings
+
+    Behavior:
+    - Inserts a row into ``Students`` for each student.
+    - For each ``CoursesTaken`` entry, resolves the course via :pyfunc:`lg_agent.database_utils.get_courseID_by_code` and inserts a ``CoursesTaken`` row. If a course cannot be found, the course is skipped and a message is printed.
+    - Associates programs with the student if the program title exists in ``ProgramsOfStudy``.
 
     Args:
-        json_file (str): The name of the JSON file containing the student data. The file must be located in the jsons directory.
+        str json_file: Filename in the ``jsons`` directory to load.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -760,7 +830,11 @@ def add_students_from_json(json_file: str):
         print(f"Student '{student['Name']}' added to database from JSON file.")
 
 def reset_course_catalog():
-    """Resets the course catalog tables in the configured database."""
+    """Drop the ``Courses`` table if it exists.
+
+    Warnings: 
+        This permanently removes course catalog data.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -773,7 +847,11 @@ def reset_course_catalog():
         print("Course catalog tables reset.")
 
 def reset_programs_catalog():
-    """Resets the programs of study catalog tables in the configured database."""
+    """Drop program-of-study related tables: ``ProgramsOfStudy``, ``ProgramRequiredCourses``, and ``ProgramRequiredCourseOptions``.
+
+    Warnings: 
+        This permanently removes programs and requirement data.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -788,7 +866,11 @@ def reset_programs_catalog():
         print("Programs of study catalog tables reset.")
 
 def reset_students_and_advisors():
-    """Resets the students and advisors tables in the configured database."""
+    """Drop the ``Students`` and ``Advisors`` tables if they exist.
+
+    Warnings: 
+        This permanently removes student and advisor records.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -802,7 +884,11 @@ def reset_students_and_advisors():
         print("Students and advisors tables reset.")
 
 def reset_terms_and_courses():
-    """Resets the terms and courses offered tables in the configured database."""
+    """Drop term- and offering-related tables: ``Terms``, ``CoursesOffered``, ``Sections``, and ``MeetTimes``.
+
+    Warnings: 
+        This permanently removes term offerings and section scheduling data.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -817,7 +903,11 @@ def reset_terms_and_courses():
         conn.commit()
 
 def reset_events():
-    """Resets the events tables in the configured database."""
+    """Drop the ``Events`` and ``EventDates`` tables if they exist.
+
+    Warnings: 
+        This permanently removes event definitions and dates.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -830,7 +920,11 @@ def reset_events():
         conn.commit()
 
 def reset_users():
-    """Resets the users table in the configured database."""
+    """Drop the ``Users`` table if it exists.
+
+    Warnings:
+        This permanently removes user accounts and all related data (interests, relevant events, tracked sections, and course opening alerts) due to the ON DELETE CASCADE foreign key constraints.
+    """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
@@ -842,7 +936,10 @@ def reset_users():
         conn.commit()
 
 def reset_all():
-    """Resets all tables in the configured database."""
+    """Reset all major database groups by dropping their tables.
+
+    This convenience wrapper calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+    """
     reset_course_catalog()
     reset_programs_catalog()
     reset_terms_and_courses()
@@ -850,7 +947,6 @@ def reset_all():
     reset_users()
     print("All tables in the database have been reset.")
 
-# runs if the file is executed directly
 if __name__ == '__main__':
     setup_database()
     create_triggers()
