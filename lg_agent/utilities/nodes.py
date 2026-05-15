@@ -17,8 +17,6 @@ System prompts and loop limits for each node are defined in config.json and can 
 """
 
 import sys, os
-
-from langchain.messages import AIMessage, ToolMessage
     
 # adds utilities directory to system path if not already there
 PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -31,7 +29,7 @@ if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, ToolMessage
 from utilities.state import APlannerState, SPlannerState, DatabaseHelperState, WebSearchHelperState, InsertionHelperState
 from utilities.schemas import APlanSchema, SPlanSchema
 from utilities.tools import db_tools, web_tools, insertion_tools, alt_db_tools

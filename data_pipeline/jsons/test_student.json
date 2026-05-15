@@ -2,10 +2,11 @@
     {
         "ID": 324578,
         "Name": "John Doe",
+        "Email": "john.doe@example.com",
         "GPA": 3.16,
         "CreditsEarned": 29,
         "IntendedGraduationTerm": "Spring 2026",
-        "Advisor": "Dr. Jordan Kim",
+        "Advisor": "Bill Bebop",
         "ProgramsOfStudy": ["Computer Science Transfer"],
         "CoursesTaken": [
             {

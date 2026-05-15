@@ -36,7 +36,16 @@ if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
 import json, sqlite3
+from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
+
+load_dotenv(os.path.join(ROOT_DIR, '.env'))
+
+EMAIL_TEST_MODE = os.getenv("EMAIL_TEST_MODE", "False").lower() == "true"
+if EMAIL_TEST_MODE:
+    TEST_EMAIL_ADDRESS = os.getenv("TEST_EMAIL_ADDRESS", "error")
+    if TEST_EMAIL_ADDRESS == "error":
+        raise ValueError("EMAIL_TEST_MODE is set to True but TEST_EMAIL_ADDRESS is not set in the environment variables. Please set TEST_EMAIL_ADDRESS to a valid email address to use as the recipient for all emails in test mode.")
 
 def __connect():
     """Create and return a configured SQLite connection to the project's database.
@@ -57,7 +66,7 @@ def __connect():
 def setup_database():
     """Create the project's database schema.
 
-    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, chat logs, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
+    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
 
     The function commits the schema changes and prints a confirmation message indicating which database file was initialized.
     """
@@ -202,6 +211,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
+                Email TEXT NOT NULL,
                 ParentID INTEGER UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
@@ -213,6 +223,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Students(
                 ID INTEGER PRIMARY KEY UNIQUE,
                 Name TEXT,
+                Email TEXT NOT NULL,
                 GPA REAL,
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
@@ -256,17 +267,6 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Interests(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Interest TEXT NOT NULL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES Students(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
-        # Table for chat logs between each student and the chatbot, linked to the student via ParentID foreign key
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS ChatLogs(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                Log TEXT NOT NULL,
-                Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -326,9 +326,9 @@ def setup_database():
 
         # Commit the changes to the database
         conn.commit()
-        with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
-            db_config = json.load(f)
-        print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
+        with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
+            CONFIG = json.load(f)
+        print(f"Database '{CONFIG['database_config']['db_name']}' setup complete with required tables and schema.")
 
 def create_triggers():
     """Create database triggers used by the application.
@@ -791,6 +791,7 @@ def add_students_from_json(json_file: str):
     Expected JSON structure (per student):
     - ``ID``: numeric student identifier
     - ``Name``: student full name
+    - ``Email``: student email address
     - ``GPA``: floating point GPA
     - ``CreditsEarned``: integer
     - ``IntendedGraduationTerm``: string
@@ -818,7 +819,7 @@ def add_students_from_json(json_file: str):
 
         for student in student_data['students']:
             # Validate required student fields exist
-            required_fields = ['ID', 'Name', 'GPA', 'CreditsEarned', 'IntendedGraduationTerm']
+            required_fields = ['ID', 'Name', 'Email', 'GPA', 'CreditsEarned', 'IntendedGraduationTerm']
             missing_fields = [field for field in required_fields if field not in student]
             if missing_fields:
                 print(f"Skipping student: missing required fields {missing_fields}")
@@ -836,16 +837,23 @@ def add_students_from_json(json_file: str):
             else:
                 advisor_id = None
 
+            if EMAIL_TEST_MODE:
+                email = TEST_EMAIL_ADDRESS
+            else:
+                email = student['Email']
+            
             # add the new student to the Students table
             try:
                 cursor.execute(
                     '''
-                    INSERT INTO Students (ID, Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO Students (ID, Name, Email, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
+
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                     ''',
                     (
                         student['ID'],
                         student['Name'],
+                        email,
                         student['GPA'],
                         student['CreditsEarned'],
                         student['IntendedGraduationTerm'],
@@ -904,6 +912,7 @@ def add_advisors_from_json(json_file: str):
 
     Expected JSON structure (per advisor):
     - ``Name``: advisor full name
+    - ``Email``: advisor email address
 
     Behavior:
     - Inserts a row into ``Advisors`` for each advisor, linked to a user account in ``Users``. If an advisor with the same name already exists, it is skipped and a message is printed.
@@ -922,20 +931,33 @@ def add_advisors_from_json(json_file: str):
             advisor_data['advisors'] = json.load(f)
 
         for advisor in advisor_data['advisors']:
+            required_fields = ['Name', 'Email']
+            missing_fields = [field for field in required_fields if field not in advisor]
+            if missing_fields:
+                print(f"Skipping advisor: missing required fields {missing_fields}")
+                continue
             # check if an advisor with the same name already exists in the database
             existing_advisor = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor['Name'],)).fetchone()
             if existing_advisor:
                 print(f"Advisor '{advisor['Name']}' already exists in database. Skipping this advisor.")
                 continue
 
+            if EMAIL_TEST_MODE:
+                email = TEST_EMAIL_ADDRESS
+            else:
+                email = advisor['Email']
+
             # add the new advisor to the Advisors table
             try:
                 cursor.execute(
                     '''
-                    INSERT INTO Advisors (Name)
-                    VALUES (?)
+                    INSERT INTO Advisors (Name, Email)
+                    VALUES (?, ?)
                     ''',
-                    (advisor['Name'],)
+                    (
+                        advisor['Name'],
+                        email
+                    )
                 )
             except sqlite3.IntegrityError as e:
                 print(f"Error adding advisor '{advisor['Name']}' to database: {e}. Skipping this advisor.")
@@ -991,7 +1013,7 @@ def reset_students_and_advisors():
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Drop students and advisors tables
+        # drop students and advisors tables
         cursor.execute('DROP TABLE IF EXISTS Students')
         cursor.execute('DROP TABLE IF EXISTS Advisors')
 
