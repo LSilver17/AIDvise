@@ -44,7 +44,7 @@
     },
     "context_config": {
         "s-planner": {
-            "context-select": "full",
+            "context-select": "some-db",
             "context-level": {
                 "full": "You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. In addition to answering questions, you should also listen to anything the user says about their interests and goals and use that information to update the database. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it. Personalise your responses to the user's interests and goals where possible to make them more engaging and relevant to the user.",
                 "some-db": "You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it.",
@@ -96,10 +96,10 @@
             "course_filter_tool": true,
             "get_course_description_tool": true,
             "section_filter_tool": true,
-            "get_student_basic_info_tool": true,
-            "get_student_course_history_tool": true,
-            "get_student_interests_tool": true,
-            "get_student_tracked_sections_tool": true,
+            "get_student_basic_info_tool": false,
+            "get_student_course_history_tool": false,
+            "get_student_interests_tool": false,
+            "get_student_tracked_sections_tool": false,
             "get_program_requirements_tool": true,
             "get_upcoming_events_tool": true,
             "get_event_dates_tool": true

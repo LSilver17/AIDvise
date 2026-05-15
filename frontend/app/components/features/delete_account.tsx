@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import DefaultButton from "@/app/components/features/default_button"
 import { AlertDialog, Flex } from "@radix-ui/themes";
 import { delete_account } from "@/app/lib/account/account_db_utils"

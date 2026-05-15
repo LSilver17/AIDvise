@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
@@ -27,7 +30,7 @@ import { Flex } from "@radix-ui/themes";
 /**
  * Registration page component that defines an error state and form submission handler for
  * user-entered credentials. Form by default handles basic input validation like 
- * missing fields. After passing the initial check, validation tests are ran on the 
+ * missing fields. After passing the initial check, {@link registrationValidationTests} is ran on the 
  * input strings. If validation fails or an error is thrown during API call, the error
  * is displayed via a window popup on the front-end. If caught before submission, error
  * messages are displayed near the form field.

@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
@@ -15,7 +18,7 @@ import { useUserData } from "@/app/lib/account/user_context";
 import { UserData } from "@/app/lib/account/account_db_utils";
 
 /**
- * Grabs user account data to render dynamically as individual fields
+ * Grabs user account data with {@link useUserData} to render dynamically as individual fields
  * in account overview page.
  * @returns 
  */

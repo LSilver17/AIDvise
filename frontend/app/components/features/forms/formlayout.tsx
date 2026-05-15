@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -10,6 +13,7 @@ import { SubmitEventHandler, useState } from "react";
 import { Responsive } from "@radix-ui/themes/props";
 import FormField from "@/app/components/features/forms/formfield";
 import FormSubmit from "@/app/components/features/forms/formsubmit";
+import FormSelect from "@/app/components/features/forms/formfieldsel";
 import "@/app/globals.css"
 
 type Props = {
@@ -19,7 +23,7 @@ type Props = {
 }
 
 /**
- * Root layout for form components.
+ * Root layout for form components ({@link FormField}, {@link FormSubmit}, {@link FormSelect}).
  * @param props.onSubmit - Form submission handler function.
  */
 export default function FormRootLayout({onSubmit, justify, children} : Props) {

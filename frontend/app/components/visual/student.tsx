@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 // Lib
 import Card from "@/app/components/visual/card"
 import type { Student } from "@/app/lib/account/account_db_utils";
@@ -12,7 +15,7 @@ export type StudentProps = {
 }
 
 /**
- * Renders student card for the "Students" page in an advisor account.
+ * Renders student {@link Card} for the "Students" page in an advisor account.
  * @param props.student - Student object.
  * @returns 
  */
