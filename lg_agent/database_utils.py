@@ -482,24 +482,25 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
         student_id (int): Numeric ID from Students.ID (e.g. 12345).
 
     Returns:
-        out (dict): Profile information with keys: Name, Advisor, GPA, CreditsEarned,
+        out (dict): Profile information with keys: Name, Email, Advisor, GPA, CreditsEarned,
               ProgramsOfStudy. Returns empty dict if student not found.
               Note: Advisor is "No advisor assigned" if not set. ProgramsOfStudy is
               ["No program of study"] if student has no programs.
 
     """
-    cursor.execute("SELECT Name, AdvisorID, GPA, CreditsEarned FROM Students WHERE ID = ?", (student_id,))
+    cursor.execute("SELECT s.Name, s.Email, a.Name, s.GPA, s.CreditsEarned FROM Students as s JOIN Advisors as a ON s.AdvisorID = a.ID WHERE s.ID = ?", (student_id,))
     row = cursor.fetchone()
 
     if row is None:
         return {}
 
     name = row[0]
-    advisor = row[1]
-    gpa = row[2]
-    credits_earned = row[3]
+    email = row[1]
+    advisor = row[2]
+    gpa = row[3]
+    credits_earned = row[4]
 
-    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM ProgramsOfStudy as p JOIN StudentPrograms as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
+    cursor.execute("SELECT p.Title, p.Description, p.CreditsRequired FROM ProgramsOfStudy as p JOIN StudentProgramsOfStudy as sp ON p.ID = sp.ProgramID WHERE sp.ParentID = ?", (student_id,))
     programs_of_study = []
     for row in cursor.fetchall():
         programs_of_study.append({
@@ -516,6 +517,7 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
     
     student_info = {
         "Name": name,
+        "Email": email,
         "Advisor": advisor,
         "GPA": gpa,
         "CreditsEarned": credits_earned,
@@ -523,6 +525,22 @@ def get_student_basic_info(cursor: sqlite3.Cursor, student_id: int) -> dict:
     }
 
     return student_info
+
+def get_advisor_email(cursor: sqlite3.Cursor, advisor_name: str) -> str:
+    """Return the email address for an advisor identified by name.
+
+    Args:
+        cursor (sqlite3.Cursor): Cursor object connected to the registration database.
+        advisor_name (str): Exact name of the advisor as stored in Advisors.Name (e.g. "Dr. Smith").
+
+    Returns:
+        out (str): The advisor's email address if found (e.g. "advisor@university.edu"), or "Advisor not found" if no advisor with that name exists.
+    """
+    cursor.execute("SELECT Email FROM Advisors WHERE Name = ?", (advisor_name,))
+    result = cursor.fetchone()
+    if result is None:
+        return "Advisor not found"
+    return result[0]
 
 def get_student_course_history(cursor: sqlite3.Cursor, student_id: int) -> list:
     """Return a student's course history as a list of course entries.
@@ -608,10 +626,11 @@ def get_program_requirements_by_title(cursor: sqlite3.Cursor, program_title: str
                 ["No requirements found"] if program has no requirements.
     """
     cursor.execute("""SELECT prc.ID FROM ProgramRequiredCourses as prc JOIN ProgramsOfStudy as p ON prc.ParentID = p.ID WHERE p.Title = ?""", (program_title,))
-    if cursor.fetchone() is None:
+    requirement_rows = cursor.fetchall()
+    if not requirement_rows:
         return ["Program not found"]
     program_requirements = []
-    for row in cursor.fetchall():
+    for row in requirement_rows:
         c_options = cursor.execute("""SELECT c.Department, c.Code, c.Name FROM Courses as c JOIN ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON c.ID = prco.CourseID AND prc.ID = prco.ParentID WHERE prc.ID = ? AND prco.CourseID IS NOT NULL""", (row[0],)).fetchall()
         d_options = cursor.execute("""SELECT Elective FROM ProgramRequiredCourseOptions as prco Join ProgramRequiredCourses as prc ON prco.ParentID = prc.ID WHERE prc.ID = ? AND prco.CourseID IS NULL""", (row[0],)).fetchall()
         requirement = ""

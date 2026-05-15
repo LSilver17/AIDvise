@@ -1,11 +1,14 @@
-/*
-    Author: Sean Collins
-    Description: 
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+Description:
         Provides an expandable list component to display a dynamically rendered
         series of similar components, provided as a prop. Used for alert and student
         lists in the dashboard.
-    Copyright 2026
-*/
+=============================================================================*/
 import type { Dispatch, SetStateAction } from "react";
 import type { ComponentType } from "react";
 import { Flex } from "@radix-ui/themes"
@@ -107,8 +110,8 @@ const ExpandableContext = createContext(null as any);
 
 /**
  * Component for rendering a list of objects as an expandable list. Requires
- * ExpandableList.List and ExpandableList.Button children. Currently only
- * supports Alert and Student objects.
+ * {@link ExpandableList.List} and {@link ExpandableList.Button} children. Currently only
+ * supports {@link SingleAlert} and {@link Student} components.
  * @param props.list - List of objects to render.
  * @param props.min - Number of components to render when in unexpanded state.
  * @param props.Component - Component to be rendered, passed as a prop.

@@ -1,8 +1,10 @@
-/*
-    Author: Sean Collins
-    Description: Component for constructing the dashboard navbar.
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 // Library Imports
@@ -21,7 +23,7 @@ import type { AccountType } from "@/app/lib/account/account_type";
 
 /**
  * Component constructing the sidebar used for navigating the dashboard.
- * Account type is fetched from the user context and is used for conditional
+ * Account type is fetched from context with the {@link useUserData} hook and is used for conditional
  * rendering of navigation buttons.
  * @returns 
  */

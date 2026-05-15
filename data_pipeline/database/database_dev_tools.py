@@ -20,7 +20,8 @@ Functions:
     - ``reset_users()``: Drops the ``Users`` table (cascades to related data).
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
-Can also be executed directly to set up the database and create triggers without populating data. Use the individual functions in an interactive Python session or script to manage the database during development. Exercise caution with reset functions as they permanently delete data.
+Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
+This file can also be run as a script to execute the following sequence of operations: set up the database schema, create triggers, populate the course catalog and programs catalog from their respective JSON files, and add a new term with offerings from its JSON file.
 """
 
 import sys, os
@@ -36,7 +37,16 @@ if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
 import json, sqlite3
+from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
+
+load_dotenv(os.path.join(ROOT_DIR, '.env'))
+
+EMAIL_TEST_MODE = os.getenv("EMAIL_TEST_MODE", "False").lower() == "true"
+if EMAIL_TEST_MODE:
+    TEST_EMAIL_ADDRESS = os.getenv("TEST_EMAIL_ADDRESS", "error")
+    if TEST_EMAIL_ADDRESS == "error":
+        raise ValueError("EMAIL_TEST_MODE is set to True but TEST_EMAIL_ADDRESS is not set in the environment variables. Please set TEST_EMAIL_ADDRESS to a valid email address to use as the recipient for all emails in test mode.")
 
 def __connect():
     """Create and return a configured SQLite connection to the project's database.
@@ -57,7 +67,7 @@ def __connect():
 def setup_database():
     """Create the project's database schema.
 
-    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, chat logs, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
+    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, verification tokens, students, advisors, programs of study, program requirement tables, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
 
     The function commits the schema changes and prints a confirmation message indicating which database file was initialized.
     """
@@ -170,7 +180,16 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL,
-                AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor'))
+                AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor')),
+                VerificationToken TIMESTAMP DEFAULT NULL
+            )'''
+        )
+        # Table for verification tokens for account creation email authentication
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS VerficationToken(
+                identifier TEXT PRIMARY KEY UNIQUE,
+                token TEXT NOT NULL,
+                expires TIMESTAMP NOT NULL
             )'''
         )
 
@@ -202,6 +221,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
+                Email TEXT NOT NULL,
                 ParentID INTEGER UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
@@ -213,6 +233,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Students(
                 ID INTEGER PRIMARY KEY UNIQUE,
                 Name TEXT,
+                Email TEXT NOT NULL,
                 GPA REAL,
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
@@ -256,17 +277,6 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Interests(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Interest TEXT NOT NULL,
-                ParentID INTEGER NOT NULL,
-                FOREIGN KEY (ParentID) REFERENCES Students(ID)
-                    ON DELETE CASCADE
-            )'''
-        )
-        # Table for chat logs between each student and the chatbot, linked to the student via ParentID foreign key
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS ChatLogs(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-                Log TEXT NOT NULL,
-                Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ParentID INTEGER NOT NULL,
                 FOREIGN KEY (ParentID) REFERENCES Students(ID)
                     ON DELETE CASCADE
@@ -326,9 +336,9 @@ def setup_database():
 
         # Commit the changes to the database
         conn.commit()
-        with open(os.path.join(ROOT_DIR, "database_config.json"), 'r') as f:
-            db_config = json.load(f)
-        print(f"Database '{db_config['database']}' setup complete with required tables and schema.")
+        with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
+            CONFIG = json.load(f)
+        print(f"Database '{CONFIG['database_config']['db_name']}' setup complete with required tables and schema.")
 
 def create_triggers():
     """Create database triggers used by the application.
@@ -391,7 +401,7 @@ def create_triggers():
         # Create trigger to reset last event check field for a student when an interest is added for them
         cursor.execute(
             '''
-            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChange
+            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChangeInsert
             AFTER INSERT ON Interests
             FOR EACH ROW
             BEGIN
@@ -405,7 +415,7 @@ def create_triggers():
         # Create trigger to reset last event check field for a student when an interest is changed for them
         cursor.execute(
             '''
-            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestChange
+            CREATE TRIGGER IF NOT EXISTS ResetEventCheckOnInterestUpdate
             AFTER UPDATE ON Interests
             FOR EACH ROW
             BEGIN
@@ -441,11 +451,22 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
             course_data = {"courses": {}}
             course_data['courses'] = json.load(f)
             for course in course_data['courses']:
+                # Validate required course fields
+                required_fields = ['course_code', 'name', 'description', 'credits', 'prerequisites']
+                missing_fields = [field for field in required_fields if field not in course]
+                if missing_fields:
+                    print(f"Skipping course: missing required fields {missing_fields}")
+                    continue
+
                 # split course code into department and course number
-                department, code = str(course['course_code']).split()
+                try:
+                    department, code = str(course['course_code']).split()
+                except ValueError:
+                    print(f"Invalid course code format: {course.get('course_code')}. Skipping course.")
+                    continue
 
                 # split up semesters (e.g. F/S/SU -> F, S, SU) then convert to proper name (e.g. F -> Fall) then combine back into string to store in database
-                if course['semesters_offered']:
+                if course.get('semesters_offered'):
                     semesters = str(course['semesters_offered']).split('/')
                     semester_mapping = {
                         'F': 'Fall',
@@ -453,9 +474,13 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
                         'SU': 'Summer',
                         'IN': 'Winter'
                     }
-                    for i, semester in enumerate(semesters):
-                        semesters[i] = semester_mapping[semester]
-                    semesters_offered = '/'.join(semesters)
+                    try:
+                        for i, semester in enumerate(semesters):
+                            semesters[i] = semester_mapping.get(semester, semester)
+                        semesters_offered = '/'.join(semesters)
+                    except (ValueError, KeyError) as e:
+                        print(f"Error processing semesters for {course.get('course_code')}: {e}")
+                        semesters_offered = None
                 else:
                     semesters_offered = None
                 
@@ -467,10 +492,10 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
                     (
                         department,
                         int(code),
-                        course['name'],
-                        course['description'],
-                        course['credits'],
-                        course['prerequisites'],
+                        course.get('name'),
+                        course.get('description'),
+                        course.get('credits'),
+                        course.get('prerequisites'),
                         semesters_offered
                     )
                 )
@@ -497,16 +522,23 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
             programs_data = {"programs": {}}
             programs_data['programs'] = json.load(f)
             for program in programs_data['programs']:
+                # Validate required program fields
+                required_fields = ['name', 'description', 'total_credits', 'area_of_study', 'required_courses']
+                missing_fields = [field for field in required_fields if field not in program]
+                if missing_fields:
+                    print(f"Skipping program: missing required fields {missing_fields}")
+                    continue
+
                 cursor.execute(
                     '''
                     INSERT INTO ProgramsOfStudy (Title, Description, CreditsRequired, Type)
                     VALUES (?, ?, ?, ?)
                     ''',
                     (
-                        program['name'],
-                        program['description'], # TODO: ask noel about where he got those descriptions from
-                        program['total_credits'],
-                        program['area_of_study']
+                        program.get('name'),
+                        program.get('description'),
+                        program.get('total_credits'),
+                        program.get('area_of_study')
                     )
                 )
                 program_id = cursor.lastrowid
@@ -514,7 +546,12 @@ def populate_programs_catalog(json_file: str = "qcc_programs.json"):
                 # TODO: Ask Noel about adding the OR for course requirements with multiple options
                 previous_requirement_id = None
                 has_or = False
-                for required_course in program['required_courses']:
+                required_courses = program.get('required_courses', [])
+                if not isinstance(required_courses, list):
+                    print(f"Invalid required_courses format for program '{program.get('name')}'. Skipping requirements.")
+                    required_courses = []
+                
+                for required_course in required_courses:
                     last_has_or = has_or
 
                     # check if current course has an OR at the end of its name
@@ -600,7 +637,17 @@ def add_new_term(json_file: str = "term_data.json"):
         with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
             term_data['term'] = json.load(f)
 
+        # Validate term data structure
+        if not term_data['term'] or not isinstance(term_data['term'], list):
+            raise ValueError("Invalid term data format: term must be a non-empty list")
+        
         term = term_data['term'][0]
+        
+        # Validate required term fields
+        required_term_fields = ['Year', 'Season', 'Num', 'CoursesOffered']
+        missing_fields = [field for field in required_term_fields if field not in term]
+        if missing_fields:
+            raise ValueError(f"Missing required term fields: {missing_fields}")
 
         # add the new term to the Terms table and get its ID to use as the ParentID for the courses.
         cursor.execute(
@@ -609,15 +656,22 @@ def add_new_term(json_file: str = "term_data.json"):
             VALUES (?, ?, ?)
             ''',
             (
-                term['Year'],
-                term['Season'],
-                term['Num']
+                term.get('Year'),
+                term.get('Season'),
+                term.get('Num')
             )
         )
         term_id = cursor.lastrowid
 
         # Add the courses for the new term to the CoursesOffered table, linking them to the term via ParentID
-        for course in term['CoursesOffered']:
+        for course in term.get('CoursesOffered', []):
+            # Validate required course fields
+            required_course_fields = ['Department', 'Code', 'SectionNum', 'Instructor', 'StartDate', 'EndDate', 'Status', 'MaxSeats', 'SeatsLeft', 'Method', 'MeetTimes']
+            missing_fields = [field for field in required_course_fields if field not in course]
+            if missing_fields:
+                print(f"Skipping course: missing required fields {missing_fields}")
+                continue
+
             #check if course already exists for the term to avoid duplicates
             existing_course = cursor.execute(
                 '''
@@ -625,17 +679,17 @@ def add_new_term(json_file: str = "term_data.json"):
                 FROM CoursesOffered as co Join Courses as c ON co.CourseID = c.ID
                 WHERE c.Department = ? AND c.Code = ? AND co.ParentID = ?
                 ''',
-                (course['Department'], course['Code'], term_id)
+                (course.get('Department'), course.get('Code'), term_id)
             ).fetchone()
 
             # if the course doesn't already exist for the term, insert it into the CoursesOffered table with the appropriate ParentID linking it to the term
             if not existing_course:
                 # get course ID from Courses table to link to CoursesOffered table
-                course_code = f"{course['Department']} {course['Code']}"
+                course_code = f"{course.get('Department')} {course.get('Code')}"
                 course_id = get_courseID_by_code(cursor, course_code)
 
                 if not course_id:
-                    print(f"no course id found for course code {course_code}, skipping course offering for {course_code} in term {term['Season']} {term['Year']}")
+                    print(f"no course id found for course code {course_code}, skipping course offering for {course_code} in term {term.get('Season')} {term.get('Year')}")
                     continue
 
                 cursor.execute(
@@ -647,87 +701,97 @@ def add_new_term(json_file: str = "term_data.json"):
                 )
 
             # add the specific section of the course to the Sections table, linking it to the course via ParentID
-            cursor.execute(
-                '''
-                INSERT INTO Sections (SectionNum, Instructor, StartDate, EndDate, Status, MaxSeats, SeatsLeft, Method, Location, ParentID)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''',
-                (
-                    int(course['SectionNum']),
-                    course['Instructor'],
-                    course['StartDate'],
-                    course['EndDate'],
-                    course['Status'],
-                    course['MaxSeats'],
-                    course['SeatsLeft'],
-                    course['Method'],
-                    course['Location'],
-                    (existing_course['ID'] if existing_course else cursor.lastrowid)
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Sections (SectionNum, Instructor, StartDate, EndDate, Status, MaxSeats, SeatsLeft, Method, Location, ParentID)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ''',
+                    (
+                        int(course.get('SectionNum')),
+                        course.get('Instructor'),
+                        course.get('StartDate'),
+                        course.get('EndDate'),
+                        course.get('Status'),
+                        course.get('MaxSeats'),
+                        course.get('SeatsLeft'),
+                        course.get('Method'),
+                        course.get('Location'),
+                        (existing_course['ID'] if existing_course else cursor.lastrowid)
+                    )
                 )
-            )
+            except (ValueError, TypeError) as e:
+                print(f"Error inserting section for course {course.get('Code')}: {e}")
+                continue
 
             section_id = cursor.lastrowid
             
             # seperate days from times since the JSON format has them combined and we need to split them to fit our schema
-            if not course['MeetTimes'] == "00:00-00:00AM":
-            
-                day_initials, time_unsplit = str(course['MeetTimes']).split(maxsplit=1)
-                start_time = time_unsplit[:5]
-                start_time_am_pm = None
-                end_time_am_pm = None
-                if time_unsplit[5] == '-': # time like nn:nn-nn:nnAM/PM
-                    end_time = time_unsplit[6:11] # get end time by taking the substring after the '-' and before the AM/PM indicator
-                    end_time_am_pm = time_unsplit[11:13] # get AM/PM indicator for end time by taking the last 2 characters of the time string
-                else: # time like nn:nnAM/PM-nn:nnAM/PM
-                    start_time_am_pm = time_unsplit[5:7] # get AM/PM indicator for start time by taking the 2 characters after the start time
-                    end_time = time_unsplit[8:13] # get end time by taking the substring after the start time and its AM/PM indicator and before the end time's AM/PM indicator
-                    end_time_am_pm = time_unsplit[13:15] # get AM/PM indicator for end time by taking the last 2 characters of the time string
-
-                # convert start and end times to 24 hour format based on the AM/PM indicators
-                if start_time_am_pm == 'PM':
-                    if start_time[:2] != '12':
-                        start_time = str(int(start_time[:2]) + 12) + start_time[2:]
-                elif start_time_am_pm == 'AM':
-                    if start_time[:2] == '12':
-                        start_time = '00' + start_time[2:]
-                
-                if end_time_am_pm == 'PM':
-                    if end_time[:2] != '12':
-                        end_time = str(int(end_time[:2]) + 12) + end_time[2:]
-                elif end_time_am_pm == 'AM':
-                    if end_time[:2] == '12':
-                        end_time = '00' + end_time[2:]
-
-                # Seperate each day initiall from the string of day initials
-                day_list = list(day_initials)
-
-                # Convert day initials to full day names
-                day_mapping = {
-                    'M': 'Monday',
-                    'T': 'Tuesday',
-                    'W': 'Wednesday',
-                    'R': 'Thursday',
-                    'F': 'Friday',
-                    'S': 'Saturday'
-                }
-                
+            meet_times = course.get('MeetTimes')
+            if meet_times and not meet_times == "00:00-00:00AM":
                 try:
-                    for i, day_initial in enumerate(day_list):
-                        day_list[i] = day_mapping[day_initial]
-                except KeyError as e:
-                    print(f"Invalid day initial found: {e}")
-                    continue
+                    day_initials, time_unsplit = str(meet_times).split(maxsplit=1)
+                    start_time = time_unsplit[:5]
+                    start_time_am_pm = None
+                    end_time_am_pm = None
+                    if time_unsplit[5] == '-': # time like nn:nn-nn:nnAM/PM
+                        end_time = time_unsplit[6:11] # get end time by taking the substring after the '-' and before the AM/PM indicator
+                        end_time_am_pm = time_unsplit[11:13] # get AM/PM indicator for end time by taking the last 2 characters of the time string
+                    else: # time like nn:nnAM/PM-nn:nnAM/PM
+                        start_time_am_pm = time_unsplit[5:7] # get AM/PM indicator for start time by taking the 2 characters after the start time
+                        end_time = time_unsplit[8:13] # get end time by taking the substring after the start time and its AM/PM indicator and before the end time's AM/PM indicator
+                        end_time_am_pm = time_unsplit[13:15] # get AM/PM indicator for end time by taking the last 2 characters of the time string
 
-                # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
-                for day in day_list:
-                    cursor.execute(
-                        '''
-                        INSERT INTO MeetTimes (Day, StartTime, EndTime, ParentID)
-                        VALUES (?, ?, ?, ?)
-                        ''',
-                        (day, start_time, end_time, section_id)
+                    # convert start and end times to 24 hour format based on the AM/PM indicators
+                    if start_time_am_pm == 'PM':
+                        if start_time[:2] != '12':
+                            start_time = str(int(start_time[:2]) + 12) + start_time[2:]
+                    elif start_time_am_pm == 'AM':
+                        if start_time[:2] == '12':
+                            start_time = '00' + start_time[2:]
+                    
+                    if end_time_am_pm == 'PM':
+                        if end_time[:2] != '12':
+                            end_time = str(int(end_time[:2]) + 12) + end_time[2:]
+                    elif end_time_am_pm == 'AM':
+                        if end_time[:2] == '12':
+                            end_time = '00' + end_time[2:]
+
+                    # Seperate each day initiall from the string of day initials
+                    day_list = list(day_initials)
+
+                    # Convert day initials to full day names
+                    day_mapping = {
+                        'M': 'Monday',
+                        'T': 'Tuesday',
+                        'W': 'Wednesday',
+                        'R': 'Thursday',
+                        'F': 'Friday',
+                        'S': 'Saturday'
+                    }
+                    
+                    try:
+                        for i, day_initial in enumerate(day_list):
+                            if day_initial not in day_mapping:
+                                print(f"Invalid day initial found: {day_initial}")
+                                continue
+                            day_list[i] = day_mapping[day_initial]
+                    except (KeyError, TypeError) as e:
+                        print(f"Invalid day initial found: {e}")
+                        continue
+
+                    # for each day, insert a meet time entry into the MeetTimes table linked to the section via ParentID
+                    for day in day_list:
+                        cursor.execute(
+                            '''
+                            INSERT INTO MeetTimes (Day, StartTime, EndTime, ParentID)
+                            VALUES (?, ?, ?, ?)
+                            ''',
+                            (day, start_time, end_time, section_id)
                     )
-
+                except ValueError as e:
+                    print(f"Error processing meet times for course {course.get('Code')}: {e}")
+                    continue
         # Commit the changes to the database
         conn.commit()
 
@@ -737,6 +801,7 @@ def add_students_from_json(json_file: str):
     Expected JSON structure (per student):
     - ``ID``: numeric student identifier
     - ``Name``: student full name
+    - ``Email``: student email address
     - ``GPA``: floating point GPA
     - ``CreditsEarned``: integer
     - ``IntendedGraduationTerm``: string
@@ -763,6 +828,13 @@ def add_students_from_json(json_file: str):
             student_data['students'] = json.load(f)
 
         for student in student_data['students']:
+            # Validate required student fields exist
+            required_fields = ['ID', 'Name', 'Email', 'GPA', 'CreditsEarned', 'IntendedGraduationTerm']
+            missing_fields = [field for field in required_fields if field not in student]
+            if missing_fields:
+                print(f"Skipping student: missing required fields {missing_fields}")
+                continue
+
             # check if advisor field is present for the student
             if "Advisor" in student:
                 advisor_name = student['Advisor']
@@ -771,20 +843,27 @@ def add_students_from_json(json_file: str):
                     advisor_id = advisor_id['ID']
                 else:
                     print(f"Advisor '{advisor_name}' not found in database. Setting AdvisorID to null for student '{student['Name']}'.")
-                advisor_id = None
+                    advisor_id = None
             else:
                 advisor_id = None
 
+            if EMAIL_TEST_MODE:
+                email = TEST_EMAIL_ADDRESS
+            else:
+                email = student['Email']
+            
             # add the new student to the Students table
             try:
                 cursor.execute(
                     '''
-                    INSERT INTO Students (ID, Name, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO Students (ID, Name, Email, GPA, CreditsEarned, IntendedGraduationTerm, AdvisorID)
+
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                     ''',
                     (
                         student['ID'],
                         student['Name'],
+                        email,
                         student['GPA'],
                         student['CreditsEarned'],
                         student['IntendedGraduationTerm'],
@@ -793,25 +872,30 @@ def add_students_from_json(json_file: str):
                 )
                 student_id = cursor.lastrowid
 
-                course_history = student['CoursesTaken']
-
+                # Process courses taken if present
+                course_history = student.get('CoursesTaken', [])
                 for course in course_history:
-                    course_code = course['CourseCode']
+                    course_code = course.get('CourseCode')
+                    grade = course.get('Grade')
+                    if not course_code or not grade:
+                        print(f"Skipping course entry for student '{student['Name']}': missing CourseCode or Grade")
+                        continue
+                    
                     course_id = get_courseID_by_code(cursor, course_code)
                     if not course_id:
                         print(f"Course '{course_code}' not found in database. Skipping this course for student '{student['Name']}'.")
                         continue
-
 
                     cursor.execute(
                         '''
                         INSERT INTO CoursesTaken (CourseID, Grade, ParentID)
                         VALUES (?, ?, ?)
                         ''',
-                        (course_id, course['Grade'], student_id)
+                        (course_id, grade, student_id)
                     )
 
-                programs_of_study = student['ProgramsOfStudy']
+                # Process programs of study if present
+                programs_of_study = student.get('ProgramsOfStudy', [])
                 for program in programs_of_study:
                     program_id = cursor.execute('SELECT ID FROM ProgramsOfStudy WHERE Title = ?', (program,)).fetchone()
                     if program_id:
@@ -833,8 +917,70 @@ def add_students_from_json(json_file: str):
         conn.commit()
         print(f"Student '{student['Name']}' added to database from JSON file.")
 
+def add_advisors_from_json(json_file: str):
+    """Insert advisor accounts from a JSON file into the database.
+
+    Expected JSON structure (per advisor):
+    - ``Name``: advisor full name
+    - ``Email``: advisor email address
+
+    Behavior:
+    - Inserts a row into ``Advisors`` for each advisor, linked to a user account in ``Users``. If an advisor with the same name already exists, it is skipped and a message is printed.
+
+    Args:
+        json_file (str): Filename in the ``jsons`` directory to load.
+    """
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        advisor_data = {"advisors": []}
+
+        # Load advisor data from JSON file
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
+            advisor_data['advisors'] = json.load(f)
+
+        for advisor in advisor_data['advisors']:
+            required_fields = ['Name', 'Email']
+            missing_fields = [field for field in required_fields if field not in advisor]
+            if missing_fields:
+                print(f"Skipping advisor: missing required fields {missing_fields}")
+                continue
+            # check if an advisor with the same name already exists in the database
+            existing_advisor = cursor.execute('SELECT ID FROM Advisors WHERE Name = ?', (advisor['Name'],)).fetchone()
+            if existing_advisor:
+                print(f"Advisor '{advisor['Name']}' already exists in database. Skipping this advisor.")
+                continue
+
+            if EMAIL_TEST_MODE:
+                email = TEST_EMAIL_ADDRESS
+            else:
+                email = advisor['Email']
+
+            # add the new advisor to the Advisors table
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Advisors (Name, Email)
+                    VALUES (?, ?)
+                    ''',
+                    (
+                        advisor['Name'],
+                        email
+                    )
+                )
+            except sqlite3.IntegrityError as e:
+                print(f"Error adding advisor '{advisor['Name']}' to database: {e}. Skipping this advisor.")
+                continue
+
+        # Commit the changes to the database
+        conn.commit()
+        print(f"Advisors added to database from JSON file.")
+
 def reset_course_catalog():
     """Drop the ``Courses`` table if it exists.
+
+    This can be used in conjunction with setup_database() to update the course catalog schema or to clear out old course data before repopulating from JSON.
 
     Warnings: 
         This permanently removes course catalog data.
@@ -852,6 +998,8 @@ def reset_course_catalog():
 
 def reset_programs_catalog():
     """Drop program-of-study related tables: ``ProgramsOfStudy``, ``ProgramRequiredCourses``, and ``ProgramRequiredCourseOptions``.
+
+    This can be used in conjunction with setup_database() to update the programs catalog schema or to clear out old program and requirement data before repopulating from JSON.
 
     Warnings: 
         This permanently removes programs and requirement data.
@@ -872,6 +1020,8 @@ def reset_programs_catalog():
 def reset_students_and_advisors():
     """Drop the ``Students`` and ``Advisors`` tables if they exist.
 
+    This can be used in conjunction with setup_database() to update the student/advisor schema or to clear out old student and advisor data before repopulating from JSON.
+
     Warnings: 
         This permanently removes student and advisor records.
     """
@@ -879,7 +1029,7 @@ def reset_students_and_advisors():
         # Create a cursor object to execute SQL commands
         cursor = conn.cursor()
 
-        # Drop students and advisors tables
+        # drop students and advisors tables
         cursor.execute('DROP TABLE IF EXISTS Students')
         cursor.execute('DROP TABLE IF EXISTS Advisors')
 
@@ -889,6 +1039,8 @@ def reset_students_and_advisors():
 
 def reset_terms_and_courses():
     """Drop term- and offering-related tables: ``Terms``, ``CoursesOffered``, ``Sections``, and ``MeetTimes``.
+
+    This can be used in conjunction with setup_database() to update the term and course offering schema or to clear out old scheduling data before repopulating from JSON.
 
     Warnings: 
         This permanently removes term offerings and section scheduling data.
@@ -909,6 +1061,8 @@ def reset_terms_and_courses():
 def reset_events():
     """Drop the ``Events`` and ``EventDates`` tables if they exist.
 
+    This can be used in conjunction with setup_database() to update the events schema or to clear out old event data before repopulating.
+
     Warnings: 
         This permanently removes event definitions and dates.
     """
@@ -926,6 +1080,8 @@ def reset_events():
 def reset_users():
     """Drop the ``Users`` table if it exists.
 
+    This can be used in conjunction with setup_database() to update the user account schema or to clear out old user data before repopulating.
+
     Warnings:
         This permanently removes user accounts and all related data (interests, relevant events, tracked sections, and course opening alerts) due to the ON DELETE CASCADE foreign key constraints.
     """
@@ -942,7 +1098,11 @@ def reset_users():
 def reset_all():
     """Reset all major database groups by dropping their tables.
 
-    This convenience wrapper calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+    This is a convenience wrapper that calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+    This can be used in conjunction with setup_database() to update the entirety of the database schema and clear out all data before repopulating from JSON.
+
+    Warnings:
+        This operation effectively wipes the application's data.
     """
     reset_course_catalog()
     reset_programs_catalog()

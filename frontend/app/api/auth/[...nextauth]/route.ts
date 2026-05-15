@@ -1,17 +1,21 @@
-/*
-    Authors: Sean Collins, NextAuth
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Authors:   Sean Collins, NextAuth
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { signIn } from "next-auth/react";
 
 import { validate_credentials } from "@/app/lib/account/account_db_utils";
 
 /**
- * API endpoint for any NextAuth requests via hooks like signIn(). Currently credentials
+ * API endpoint for any NextAuth requests via hooks like {@link signIn}. Currently credentials
  * are the only supported provider. Checks provided credentials and matches them against
- * those stored in the database using functions from /app/lib/account/account_db_utils.
+ * those stored in the database with {@link validate_credentials}.
  */
 export const authOptions: NextAuthOptions = {
     providers: [

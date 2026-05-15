@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Flex } from "@radix-ui/themes";
@@ -38,7 +41,7 @@ function seenAlerts(alerts: UserAlerts): boolean  {
 }
 
 /**
- * Dynamically renders user alerts with the ExpandableList component. Alerts are categorized into Event
+ * Dynamically renders user alerts with the {@link ExpandableList} component. Alerts are categorized into Event
  * and Course alerts, marked as either Seen or Unseen. The user can mark all seen alerts as seen or
  * call the alert agent to generate new alerts based on any added interests or events.
  * @returns 

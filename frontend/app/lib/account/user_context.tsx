@@ -1,11 +1,14 @@
-/*
-    Author: Sean Collins
-    Description: 
-        Definition of UserContext, which allows for the data of an 
-        active user to be shared among the provider's child
-        components.
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+Description:
+    Definition of UserContext, which allows for the data of an 
+    active user to be shared among the provider's child
+    components.
+=============================================================================*/
 "use client"
 
 import { createContext, useContext, useState } from "react";
@@ -21,7 +24,7 @@ const UserContext = createContext(null as any);
 /**
  * A provider component for user context. The context stores user data, metadata, and account type specific data such as alerts and
  * students. 
- * @param {object} props
+ * @param {object} props.currContext - {@link StudentContext} or {@link AdvisorContext} object for initializing context variables.
  * @param {React.ReactNode} props.children - Child component to be wrapped in the provider.
  * @param {StudentContext | AdvisorContext} props.currContext - An object containing data to place inside the user context.
  */

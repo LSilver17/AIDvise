@@ -1,11 +1,14 @@
-/*
-    Author: Sean Collins
-    Co-Author: Luca Silver
-    Description: 
-        A set of utility functions and types for connecting user accounts with
-        the database.
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+Co-Author: Luca Silver
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+Description: 
+    A set of utility functions and types for connecting user accounts with
+    the database.
+=============================================================================*/
 'use server'
 
 import sqlite3 from 'sqlite3';
@@ -13,9 +16,7 @@ import { open } from 'sqlite';
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import path from "path";
-import { signOut } from "next-auth/react";
 import data from "../../../../config.json"
-import type { Database } from 'sqlite3';
 
 // User
 import type { AccountType } from '@/app/lib/account/account_type';
@@ -24,6 +25,7 @@ import { createEventAlert, createClassAlert } from '@/app/lib/alerts/alert';
 import { authSession } from "@/app/lib/account/authSession";
 import { UserField } from '@/app/lib/account/user_fields';
 import { ensureFieldFormat } from '@/app/lib/form/user_fields_format_test';
+import { UserContextProvider } from './user_context';
 
 /**
  * Returns path to database configured in database_config.json.
@@ -48,10 +50,18 @@ async function openDB(path = dbPath()) {
     return db;
 }
 
+/**
+ * Literal type for holding login results, storing credentials or error logs
+ * depending on success.
+ */
 type LoginResult = 
     | {success: true, username: string, account_type: AccountType, id: string}
     | {success: false, error:string}
 
+/**
+ * Literal type for holding login results, storing credentials or error logs
+ * depending on success.
+ */
 type CreationResult =
     | {success:true, id:string, username: string, account_type: AccountType, academic_id: string}
     | {success:false, error:string};
@@ -128,6 +138,9 @@ async function delete_invalid_entry(db: any, username: string) {
     }
 }
 
+/**
+ * Validation result for the id_validation() method.
+ */
 type ValidationResult = {valid: true, table: string} | {valid: false, err: string}
 
 /**
@@ -173,7 +186,7 @@ async function id_validation(db: any, account_type: AccountType, person_id: stri
  * @param username - Username of the new account.
  * @param password - User's password, to be salted and hashed before entry.
  * @param account_type - Type of account. Determines privileges and which table to check.
- * @param person_id - Academic ID of the person to be found in the database.
+ * @param person_id - Academic ID of the person to be found in the database (In the Students/Advisors tables).
  * @returns {Promise<CreationResult>} An object detailing the result of the creation attempt.
  * @authors Sean Collins, Luca Silver
  */
@@ -244,7 +257,7 @@ type Result = { success: true, query?:string } | { success: false, error: string
 
 /**
  * @param type - Account type (Student / Advisor)
- * @returns Name of the corresponding table name for provided account type.
+ * @returns Name of the corresponding table for provided account type.
  */
 function accountTypeToTable(type: string | undefined) {
     var tableName;
@@ -312,7 +325,7 @@ export async function update_user_entry(userData: UserData, userMetadata: UserMe
 }
 
 /**
- * Deletes the account of the user with current active session. Student/Advisor info remains in the academic database. 
+ * Deletes the account entry of the user with current active session. Student/Advisor info remains in the academic database. 
  * Make sure to clear the session after this function is called using NextAuth's signOut() hook.
  * @returns A promise with an object detailing the result.
  */
@@ -368,23 +381,53 @@ export type AdvisorData = {
     AdvisorID: UserField,
 }
 
+/**
+ * User data object for advisor/student specific data, used in context creation. Each property
+ * is stored as a UserField. Refer to {@link UserField} documentation to see how user fields 
+ * are stored.
+ * 
+ * @property Name (student)
+ * @property GPA (student)
+ * @property CreditsEarned (student)
+ * @property IntendedGraduationTerm (student)
+ * @property AdvisorID (student)
+ * @property StudentID (student)
+ * @property Name (advisor)
+ * @property AdvisorID (advisor)
+ */
 export type UserData = StudentData | AdvisorData;
 
+/**
+ * Object storing account metadata like type, username, and ID.
+ * @property AccountType: {@link AccountType}
+ * @property Username: string
+ * @property AccountID: string
+ */
 export type UserMetadata = {
     AccountType: AccountType,
     Username: string,
     AccountID: string,
 }
 
+/** Object storing seen and unseen alerts.
+ * @property UnseenAlerts: {@link Alert}[]
+ * @property SeenAlerts: {@link Alert}[]
+*/
 export type UserAlerts = {
     UnseenAlerts: Alert[],
     SeenAlerts: Alert[]
 }
 
+/**
+ * Object of user interests tracked by the agent.
+ */
 export type UserInterests = {
     Interests: string[],
 }
 
+/**
+ * Object containing information about a student under an advisor.
+ */
 export type Student = {
     ID?: string,
     Name: string | null,
@@ -393,10 +436,16 @@ export type Student = {
     IntendedGraduationTerm: string | null,
 }
 
+/**
+ * List of advisor's students.
+ */
 export type UserStudents = {
     Students: Student[],
 }
 
+/**
+ * Result object tracking success of data fetch.
+ */
 type UserDataResult = {
     data: UserData,
     success: true
@@ -405,7 +454,7 @@ type UserDataResult = {
     error: string
 }
 /**
- * Grabs user data from database for Advisor/Student.
+ * Grabs user data from database to fill out context for Advisor/Student.
  * @returns An object containing data or an error.
  */
 export async function grabUserData(): Promise<UserDataResult> {
@@ -524,25 +573,44 @@ export async function getUserObject() {
     }
 }
 
+/**
+ * Base user context for general account fields.
+ * @property userData: {@link UserData}
+ * @property userMetadata: {@link UserMetadata}
+ */
 interface Context {
     userData: UserData,
     userMetadata: UserMetadata,
 }
+/** 
+ * Extended {@link Context} for student accounts.
+ * @property userAlerts: {@link UserAlerts}
+ * @property userInterests: {@link UserInterests}
+*/
 export interface StudentContext extends Context{
     userAlerts: UserAlerts,
     userInterests: UserInterests,
 }
+/** 
+ * Extended {@link Context} for advisor accounts.
+ * @property userStudents: {@link UserStudents}
+*/
 export interface AdvisorContext extends Context{
     userStudents: UserStudents,
 }
 
+/**
+ * Storage object for database alert fetches.
+ * @property unseen: {@link Alert}[]
+ * @property seen: {@link Alert}[]
+ */
 type AlertReturn = {
     unseen: Alert[],
     seen: Alert[],
 }
 
 /**
- * Gathers values for all UserContext state variables into an object.
+ * Gathers values for all UserContext state variables into an object (refer to {@link UserContextProvider})
  * @param account_type - Student / Advisor
  * @returns Object containing UserContext data, null if account type is invalid (should not occur).
  */
@@ -630,7 +698,7 @@ export async function get_alerts(student_id: string): Promise<UserAlerts> {
 }
 
 /**
- * Sorts list of event alerts chronologically from furthest to closest
+ * Sorts list of event alerts chronologically from furthest to closest.
  * @param alerts - Unsorted list of event alerts.
  * @returns Sorted list of event alerts.
  */
@@ -649,7 +717,8 @@ function sort_newest_oldest(alerts: Alert[]): Alert[] {
 }
 
 /**
- * Returns object with sorted seen and unseen alerts for events and courses.
+ * Returns object with sorted seen and unseen alerts for events and courses. Events
+ * are sorted with {@link sort_newest_oldest}.
  * @param student_id - Academic ID of student.
  * @returns Promise for object containing sorted event and course alerts.
  */

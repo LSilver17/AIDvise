@@ -1,10 +1,10 @@
-/*
-    Author: Sean Collins
-    Description: 
-        Dynamically rendered alert component, taking
-        an alert object as theme.
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 // Components
 import { Flex } from "@radix-ui/themes";
 import Card from "@/app/components/visual/card"
@@ -24,6 +24,11 @@ type ClassProps = {
     alert: ClassAlert,
 }
 
+/**
+ * Accepts {@link EventProps} child, rendering event fields.
+ * @props alert - {@link EventProps}
+ * @returns 
+ */
 function EventAlert({alert}: EventProps) {
     return (
         <Flex justify="start" direction="column" height="100%" width="100%" gap="2">
@@ -35,6 +40,11 @@ function EventAlert({alert}: EventProps) {
     )
 }
 
+/**
+ * Accepts {@link ClassProps} child, conditionally rendering course fields.
+ * @props alert - {@link ClassProps}
+ * @returns 
+ */
 function ClassAlert({alert}: ClassProps) {
     const department = alert.department ?? "?";
     const code = alert.code ?? "?";
@@ -73,8 +83,8 @@ function ClassAlert({alert}: ClassProps) {
 }
 
 /**
- * Dynamically rendered alert component. Takes either a class or event alert
- * as prop and renders the corresponding alert card with the object's properties.
+ * Dynamically rendered alert component. Takes either an {@link ClassAlert} or {@link EventAlert}
+ * as prop and renders the corresponding alert {@link Card} with the object's properties.
  * @param props.alert - Course or event alert object. 
  * @returns 
  */

@@ -12,7 +12,7 @@ Database agent tools for student users:
 - `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
 - `get_course_description_tool`: Retrieves the description of a course based on its ID.
 - `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
-- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, advisor, GPA, total credits, and programs of study.
+- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, email, advisor, GPA, total credits, and programs of study.
 - `get_student_course_history_tool`: Retrieves the course history for the current student user, including course codes, titles, and grades.
 - `get_student_interests_tool`: Retrieves the interests for the current student user.
 - `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
@@ -31,7 +31,7 @@ Database agent tools for advisor users:
 - `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
 - `get_student_id_by_name_tool`: Retrieves a student's ID based on their name. Only works for students who have the current user as their advisor.
 - `get_advisor_students_tool`: Retrieves a list of students assigned to the advisor user, including their names and IDs.
-- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, advisor, GPA, total credits, and programs of study.
+- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, email, advisor, GPA, total credits, and programs of study.
 - `a_get_student_course_history_tool`: Retrieves the course history for a specified student who is assigned to the advisor user, including course codes, titles, and grades.
 - `a_get_student_interests_tool`: Retrieves the current interests for a specified student who is assigned to the advisor user.
 - `a_get_student_tracked_sections_tool`: Retrieves the sections that a specified student who is assigned to the advisor user is currently tracking for openings.
@@ -92,6 +92,13 @@ with open(DEPARTMENT_LIST_PATH, "r") as f:
 
 START_TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+# Helper function to ensure error_logs directory exists
+def _get_error_log_path():
+    """Ensure error_logs directory exists and return the path for error log file."""
+    error_log_dir = os.path.join(ROOT_DIR, "error_logs")
+    os.makedirs(error_log_dir, exist_ok=True)
+    return os.path.join(error_log_dir, f"error_log_{START_TIMESTAMP}.txt")
+
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
     """Return the current date and time as a formatted string.
@@ -104,7 +111,7 @@ def get_current_time_tool() -> str:
         now = datetime.now()
         return now.strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
-        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
                 f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -133,7 +140,7 @@ def get_department_list_tool() -> str:
         departments = DEPARTMENT_LIST["departments"]
         return json.dumps(departments)
     except Exception as e:
-        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
                 f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -223,7 +230,7 @@ def course_query_tool_by_code(course_code: str) -> str:
             else:
                 return f"No course found with code {course_code}."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -278,7 +285,7 @@ def course_query_tool_by_title(course_title: str) -> str:
             else:
                 return f"No course found with title {course_title}."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -366,7 +373,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             else:
                 return "No courses found matching the specified criteria."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -403,7 +410,7 @@ def get_course_description_tool(course_id: int) -> str:
             description = database_utils.get_course_description_by_id(cursor, course_id)
             return description
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -510,7 +517,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             else:
                 return "No sections found matching the specified criteria."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -538,6 +545,8 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             Format: {
                 "Name": str,
                     Format: Student's full name as stored in `Students.Name` column (e.g. "John Doe")
+                "Email": str,
+                    Format: Student's email as stored in `Students.Email` column (e.g. "john.doe@university.edu")
                 "Advisor": str,
                     Format: Student's advisor name as stored in `Students.Advisor` column (e.g. "Dr. Smith")
                 "GPA": float,
@@ -560,7 +569,7 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
             return json.dumps(student_info)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -597,7 +606,7 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
             course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
             return json.dumps(course_history)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -627,7 +636,7 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
             interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
             return json.dumps(interests)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -664,7 +673,7 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
             tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
             return json.dumps(tracked_sections)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -700,7 +709,7 @@ def get_program_requirements_tool(program_name: str) -> str:
             program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
             return json.dumps(program_requirements)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -732,7 +741,7 @@ def get_upcoming_events_tool() -> str:
             upcoming_events = database_utils.get_upcoming_events(cursor)
             return json.dumps(upcoming_events)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -772,7 +781,7 @@ def get_event_dates_tool(event_name: str) -> str:
             event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
             return json.dumps(event_dates)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -808,7 +817,7 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
         search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
         return search.invoke(query)
     except Exception as e:
-        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
                 f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -838,7 +847,7 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
     except requests.RequestException as e:
-        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
                 f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -858,7 +867,7 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
             return text[:max_chars] + "... [truncated]"
         return text
     except Exception as e:
-        ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
                 f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -890,7 +899,7 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
         try:
             return database_utils.insert_student_interests(conn, runtime.state["user_id"], [interest])
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -925,7 +934,7 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
         try:
             return database_utils.insert_student_tracked_section(conn, runtime.state["user_id"], course_code, section_id)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -965,7 +974,7 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
             else:
                 return f"No student found with name {student_name}."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             with open(ERROR_LOG_FILE_PATH, "a") as f:
                 f.write(f"[{current_timestamp}] Error occurred while getting student ID by name: {e}\n")
@@ -1003,7 +1012,7 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
             else:
                 return "No students found for the current advisor."
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -1029,6 +1038,8 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             Format: {
                 "Name": str,
                     Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
+                "Email": str,
+                    Format: Student email as stored in `Students.Email` column (e.g. "alice@university.edu")
                 "Advisor": str,
                     Format: Advisor name as stored in `Advisors.Name` column (e.g. "Dr. John Doe")
                 "GPA": float,
@@ -1059,7 +1070,7 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             student_info = database_utils.get_student_basic_info(cursor, student_id)
             return json.dumps(student_info)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -1107,7 +1118,7 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
             course_history = database_utils.get_student_course_history(cursor, student_id)
             return json.dumps(course_history)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -1148,7 +1159,7 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
             interests = database_utils.get_student_interests(cursor, student_id)
             return json.dumps(interests)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")
@@ -1196,7 +1207,7 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
             tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
             return json.dumps(tracked_sections)
         except Exception as e:
-            ERROR_LOG_FILE_PATH = os.path.join(ROOT_DIR, f"error_logs/error_log_{START_TIMESTAMP}.txt")
+            ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
                 with open(ERROR_LOG_FILE_PATH, "w") as f:
                     f.write(f"Error log for {START_TIMESTAMP}\n\n")

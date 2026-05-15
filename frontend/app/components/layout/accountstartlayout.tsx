@@ -1,9 +1,15 @@
-/*
-    Author: Sean Collins
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import Logo from "@/app/components/visual/logo"
 import NavButton from "@/app/components/navigation/navbutton"
+import FormField from "@/app/components/features/forms/formfield"
+import FormFieldSel from "@/app/components/features/forms/formfieldsel"
+import FormSubmit from "@/app/components/features/forms/formsubmit"
 import { Flex } from "@radix-ui/themes"
 
 type PropTypes = {
@@ -14,7 +20,7 @@ type PropTypes = {
 
 /**
  * Layout for account login/registration, with a button for switching between the two. 
- * The proper field should be given as the child component.
+ * The proper fields ({@link FormField}, {@link FormFieldSel}, {@link FormSubmit}) should be given as the child components.
  * @param props.href - Button hyperlink URL.
  * @param props.buttText - Inner button text.
  * @returns 
