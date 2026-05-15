@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { redirect } from "next/navigation"
@@ -35,7 +38,7 @@ export const metadata: Metadata = {
 
 /**
  * Base dashboard layout, on mount authorizing access and initializing user context if there
- * is indeed an active session. Wraps children with CopilotKit and UserContext providers.
+ * is indeed an active session. Wraps children with {@link CopilotKit} and {@link UserContextProvider}.
  * @returns 
  */
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {

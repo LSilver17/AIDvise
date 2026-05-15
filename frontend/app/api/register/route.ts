@@ -1,15 +1,18 @@
-/*
-    Author: Sean Collins
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import { NextResponse } from "next/server";
 
 // Lib
 import { create_user } from "@/app/lib/account/account_db_utils";
 
 /**
- * Request handler for user registration actions. Calls the create_user function from
- * /app/lib/account/account_db_utils and returns a NextResponse with the result of the
+ * Request handler for user registration actions. Calls {@link create_user} and returns a 
+ * {@link NextResponse} with the result of the
  * creation attempt.
  * @param req 
  * @returns 

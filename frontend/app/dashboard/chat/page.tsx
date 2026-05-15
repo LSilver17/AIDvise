@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright: 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import "@copilotkit/react-ui/styles.css";
@@ -39,7 +42,7 @@ function choose_init_message(name: string, accountType: AccountType, interests: 
 }
 
 /**
- * Displays CopilotKit's CopilotChat component with a customized user welcome message.
+ * Displays CopilotKit's {@link CopilotChat} component with a customized user welcome message.
  */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();

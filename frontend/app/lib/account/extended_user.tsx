@@ -1,9 +1,12 @@
-/*
-    Author: Sean Collins
-    Description: 
-        Expansion of NextAuth module
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+Description:
+    Expansion of NextAuth module for session tokens.
+=============================================================================*/
 import { JWT } from "next-auth/jwt"
 import NextAuth, { DefaultSession, User } from "next-auth";
 import type { AccountType } from '@/app/lib/account/account_type'

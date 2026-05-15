@@ -1,8 +1,12 @@
-/*
-  Author: CopilotKit
-  Co-author: Sean Collins
-  Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author: CopilotKit
+CoAuthor: Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ClientSession from "@/app/components/features/clientsession";
@@ -28,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root component, wrapping application in theme and session providers.
+ * Root component, wrapping application in {@link ThemeProvider} and {@link ClientSession}.
  * @param param0 
  * @returns 
  */

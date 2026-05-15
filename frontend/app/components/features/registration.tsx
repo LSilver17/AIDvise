@@ -1,7 +1,10 @@
-/*
-    Author: Sean Collins
-    Copyright 2026
-*/
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -14,7 +17,7 @@ type Props = {
 }
 
 /**
- * Component that constructs the user registration form.
+ * Component that constructs the user registration form with components ({@link Form.Root}, {@link Form.Field}, {@link Form.Submit}).
  * @param props.onSubmit - Form submission handler.
  * @returns 
  */
