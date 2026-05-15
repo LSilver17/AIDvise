@@ -1,16 +1,10 @@
 # =============================================================================
-# CSC 212 — AI Academic Advising Platform
-# Data Pipeline 
 #
-# Copyright (c) 2026 Quinsigamond Community College — CSC 212
-# All rights reserved.
+# Copyright 2026 
 #
-# This source code is part of a student research project and may not be
-# reproduced, distributed, or used without permission.
-#
-# Author:   Data Pipeline — CSC 212 AI Academic Advising Platform
+# Author:   Noel Mensah
 # GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
-# Branch:   cws
+# 
 # =============================================================================
 
 """
