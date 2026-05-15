@@ -20,7 +20,8 @@ Functions:
     - ``reset_users()``: Drops the ``Users`` table (cascades to related data).
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
-Can also be executed directly to set up the database and create triggers without populating data. Use the individual functions in an interactive Python session or script to manage the database during development. Exercise caution with reset functions as they permanently delete data.
+Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
+This file can also be run as a script to execute the following sequence of operations: set up the database schema, create triggers, populate the course catalog and programs catalog from their respective JSON files, and add a new term with offerings from its JSON file.
 """
 
 import sys, os
@@ -970,6 +971,8 @@ def add_advisors_from_json(json_file: str):
 def reset_course_catalog():
     """Drop the ``Courses`` table if it exists.
 
+    This can be used in conjunction with setup_database() to update the course catalog schema or to clear out old course data before repopulating from JSON.
+
     Warnings: 
         This permanently removes course catalog data.
     """
@@ -986,6 +989,8 @@ def reset_course_catalog():
 
 def reset_programs_catalog():
     """Drop program-of-study related tables: ``ProgramsOfStudy``, ``ProgramRequiredCourses``, and ``ProgramRequiredCourseOptions``.
+
+    This can be used in conjunction with setup_database() to update the programs catalog schema or to clear out old program and requirement data before repopulating from JSON.
 
     Warnings: 
         This permanently removes programs and requirement data.
@@ -1006,6 +1011,8 @@ def reset_programs_catalog():
 def reset_students_and_advisors():
     """Drop the ``Students`` and ``Advisors`` tables if they exist.
 
+    This can be used in conjunction with setup_database() to update the student/advisor schema or to clear out old student and advisor data before repopulating from JSON.
+
     Warnings: 
         This permanently removes student and advisor records.
     """
@@ -1023,6 +1030,8 @@ def reset_students_and_advisors():
 
 def reset_terms_and_courses():
     """Drop term- and offering-related tables: ``Terms``, ``CoursesOffered``, ``Sections``, and ``MeetTimes``.
+
+    This can be used in conjunction with setup_database() to update the term and course offering schema or to clear out old scheduling data before repopulating from JSON.
 
     Warnings: 
         This permanently removes term offerings and section scheduling data.
@@ -1043,6 +1052,8 @@ def reset_terms_and_courses():
 def reset_events():
     """Drop the ``Events`` and ``EventDates`` tables if they exist.
 
+    This can be used in conjunction with setup_database() to update the events schema or to clear out old event data before repopulating.
+
     Warnings: 
         This permanently removes event definitions and dates.
     """
@@ -1060,6 +1071,8 @@ def reset_events():
 def reset_users():
     """Drop the ``Users`` table if it exists.
 
+    This can be used in conjunction with setup_database() to update the user account schema or to clear out old user data before repopulating.
+
     Warnings:
         This permanently removes user accounts and all related data (interests, relevant events, tracked sections, and course opening alerts) due to the ON DELETE CASCADE foreign key constraints.
     """
@@ -1076,7 +1089,11 @@ def reset_users():
 def reset_all():
     """Reset all major database groups by dropping their tables.
 
-    This convenience wrapper calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+    This is a convenience wrapper that calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+    This can be used in conjunction with setup_database() to update the entirety of the database schema and clear out all data before repopulating from JSON.
+
+    Warnings:
+        This operation effectively wipes the application's data.
     """
     reset_course_catalog()
     reset_programs_catalog()
