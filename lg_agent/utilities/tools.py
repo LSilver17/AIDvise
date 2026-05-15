@@ -12,7 +12,7 @@ Database agent tools for student users:
 - `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
 - `get_course_description_tool`: Retrieves the description of a course based on its ID.
 - `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
-- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, advisor, GPA, total credits, and programs of study.
+- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, email, advisor, GPA, total credits, and programs of study.
 - `get_student_course_history_tool`: Retrieves the course history for the current student user, including course codes, titles, and grades.
 - `get_student_interests_tool`: Retrieves the interests for the current student user.
 - `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
@@ -31,7 +31,7 @@ Database agent tools for advisor users:
 - `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
 - `get_student_id_by_name_tool`: Retrieves a student's ID based on their name. Only works for students who have the current user as their advisor.
 - `get_advisor_students_tool`: Retrieves a list of students assigned to the advisor user, including their names and IDs.
-- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, advisor, GPA, total credits, and programs of study.
+- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, email, advisor, GPA, total credits, and programs of study.
 - `a_get_student_course_history_tool`: Retrieves the course history for a specified student who is assigned to the advisor user, including course codes, titles, and grades.
 - `a_get_student_interests_tool`: Retrieves the current interests for a specified student who is assigned to the advisor user.
 - `a_get_student_tracked_sections_tool`: Retrieves the sections that a specified student who is assigned to the advisor user is currently tracking for openings.
@@ -545,6 +545,8 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             Format: {
                 "Name": str,
                     Format: Student's full name as stored in `Students.Name` column (e.g. "John Doe")
+                "Email": str,
+                    Format: Student's email as stored in `Students.Email` column (e.g. "john.doe@university.edu")
                 "Advisor": str,
                     Format: Student's advisor name as stored in `Students.Advisor` column (e.g. "Dr. Smith")
                 "GPA": float,
@@ -1036,6 +1038,8 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             Format: {
                 "Name": str,
                     Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
+                "Email": str,
+                    Format: Student email as stored in `Students.Email` column (e.g. "alice@university.edu")
                 "Advisor": str,
                     Format: Advisor name as stored in `Advisors.Name` column (e.g. "Dr. John Doe")
                 "GPA": float,
