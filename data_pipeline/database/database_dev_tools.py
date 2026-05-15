@@ -67,7 +67,7 @@ def __connect():
 def setup_database():
     """Create the project's database schema.
 
-    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, students, advisors, programs of study, program requirement tables, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
+    This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, verification tokens, students, advisors, programs of study, program requirement tables, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
 
     The function commits the schema changes and prints a confirmation message indicating which database file was initialized.
     """
@@ -180,7 +180,16 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL,
-                AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor'))
+                AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor')),
+                VerificationToken TIMESTAMP DEFAULT NULL
+            )'''
+        )
+        # Table for verification tokens for account creation email authentication
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS VerficationToken(
+                identifier TEXT PRIMARY KEY UNIQUE,
+                token TEXT NOT NULL,
+                expires TIMESTAMP NOT NULL
             )'''
         )
 
