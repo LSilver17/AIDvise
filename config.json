@@ -1,6 +1,6 @@
 {
     "database_config": {
-        "db_name": "DumberDB"
+        "db_name": "AIDviseDB"
     },
     "loop_limits": {
         "s-planner": 3,

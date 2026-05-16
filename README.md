@@ -12,10 +12,10 @@
 3. Create & activate your virtual environment
     In project directory, run:
         python -m venv .venv (Ensure you are running the command on python 3.12, alternatively use py -3.12 -m venv .venv)
-    and activate with .venv\Scripts\activate
+    and activate with ".venv\Scripts\activate"
 
 4. Install python packages
-    With venv activated, run pip install -r requirements.txt
+    With venv activated, run "pip install -r requirements.txt"
 
 5. Install node packages
     Run:
@@ -30,6 +30,7 @@
 7. Set up database
     Generate the database by running the following scripts:  
     - TODO
+    Generate Prisma client files by running "npx prisma generate" in the frontend directory
 
 8. Begin hosting
     - In root directory, run:
