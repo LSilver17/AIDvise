@@ -28,9 +28,9 @@
         npx auth secret
 
 7. Set up database
-    Generate the database by running the following scripts:  
-    - TODO
-    Generate Prisma client files by running "npx prisma generate" in the frontend directory
+    Generate the database by running the following scripts in data_pipeline/database:  
+    - database_dev_tools.py
+    - add_test_students_advisors.py
 
 8. Begin hosting
     - In root directory, run:
@@ -66,12 +66,12 @@ summarize details about a student like academic information as well as their int
 
 # Database
 
-AIDvise uses a SQLite database to store user and academic information. 
+AIDvise uses a local SQLite database to store user and academic information. 
 
 ## Accounts
 
 Student and advisor accounts are created from preexisting entries in the Student and Advisor tables, the data of which persist even when an account is deleted. 
-Registration occurs on th
+Registering an account involves creation of an entry in the User database which is then connected to an student/advisor entry depending on account type and ID selected in the registration form.
 
 # Working With Agents
 
