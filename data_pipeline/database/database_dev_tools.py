@@ -180,13 +180,14 @@ def setup_database():
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL,
+                Email TEXT DEFAULT NULL UNIQUE,
                 AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor')),
-                VerificationToken TIMESTAMP DEFAULT NULL
+                emailVerified TIMESTAMP DEFAULT NULL,
             )'''
         )
         # Table for verification tokens for account creation email authentication
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS VerficationToken(
+            '''CREATE TABLE IF NOT EXISTS VerificationToken(
                 identifier TEXT PRIMARY KEY UNIQUE,
                 token TEXT NOT NULL,
                 expires TIMESTAMP NOT NULL
@@ -221,7 +222,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Advisors(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 Name TEXT,
-                Email TEXT NOT NULL,
+                Email TEXT NOT NULL UNIQUE,
                 ParentID INTEGER UNIQUE,
                 FOREIGN KEY (ParentID) REFERENCES Users(ID)
                     ON DELETE CASCADE
@@ -233,7 +234,7 @@ def setup_database():
             '''CREATE TABLE IF NOT EXISTS Students(
                 ID INTEGER PRIMARY KEY UNIQUE,
                 Name TEXT,
-                Email TEXT NOT NULL,
+                Email TEXT NOT NULL UNIQUE,
                 GPA REAL,
                 CreditsEarned INTEGER,
                 IntendedGraduationTerm TEXT,
@@ -347,7 +348,9 @@ def create_triggers():
     - ``LogSectionStatusChange``: inserts a row in ``SectionStatusChanges`` when a section's ``Status`` column changes.
     - ``ResetCheckFields``: resets a student's ``LastEventCheck`` and ``LastSectionStatusCheck`` timestamps when their ``ParentID`` becomes NULL.
     - ``DeleteStudentData``: deletes related rows (relevant events, interests, tracked sections, student alerts) when a student's ``ParentID`` is set to NULL.
-    - ``ResetEventCheckOnInterestChange`` (insert and update variants): reset a student's ``LastEventCheck`` when interests are inserted or updated.
+    - ``ResetEventCheckOnInterestChange`` (insert and update variants): reset a student's ``LastEventCheck`` when interests are inserted or updated.\
+    - ``SetStudentUserEmail``: updates a user's email to match the linked student's email when a student is linked to a user via ParentID.
+    - ``SetAdvisorUserEmail``: updates a user's email to match the linked advisor's email when an advisor is linked to a user via ParentID.
     """
     with __connect() as conn:
         # Create a cursor object to execute SQL commands
@@ -425,6 +428,37 @@ def create_triggers():
             END;
             '''
         )
+
+        # create trigger to update email field of a user entry when a student entry is linked to it via parent id, with the user email being made to match the student email
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS SetStudentUserEmail
+            AFTER UPDATE OF ParentID ON Students
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NOT NULL
+            BEGIN
+                UPDATE Users
+                SET Email = NEW.Email
+                WHERE ID = NEW.ParentID;
+            END;
+            '''
+        )
+
+        # create trigger to update email field of a user entry when a advisor entry is linked to it via parent id, with the user email being made to match the advisor email
+        cursor.execute(
+            '''
+            CREATE TRIGGER IF NOT EXISTS SetAdvisorUserEmail
+            AFTER UPDATE OF ParentID ON Advisors
+            FOR EACH ROW
+            WHEN NEW.ParentID IS NOT NULL
+            BEGIN
+                UPDATE Users
+                SET Email = NEW.Email
+                WHERE ID = NEW.ParentID;
+            END;
+            '''
+        )
+
 
         # Commit the changes to the database
         conn.commit()
