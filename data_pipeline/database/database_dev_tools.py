@@ -182,7 +182,7 @@ def setup_database():
                 Password TEXT NOT NULL,
                 Email TEXT DEFAULT NULL UNIQUE,
                 AccountType TEXT NOT NULL CHECK(AccountType IN ('Student', 'Advisor')),
-                emailVerified TIMESTAMP DEFAULT NULL,
+                emailVerified TIMESTAMP DEFAULT NULL
             )'''
         )
         # Table for verification tokens for account creation email authentication
