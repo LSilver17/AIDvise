@@ -1,5 +1,17 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+Description:
+    Runs test cases for user form submissions.
+=============================================================================*/
 import type { AccountType } from '@/app/lib/account/account_type'
 
+/**
+ * Object containing error strings for potential field input errors.
+ */
 export type ErrorTypes = {
     username?: string,
     password?: string,
@@ -9,6 +21,9 @@ export type ErrorTypes = {
     api_error?: string,
 }
 
+/**
+ * Object reporting validation status and list of errors.
+ */
 export class FormError extends Error {
     errors: ErrorTypes;
 
@@ -19,10 +34,21 @@ export class FormError extends Error {
     }
 }
 
+/**
+ * Checks whether a string is a number.
+ * @param value - Value to check.
+ * @returns String number condition.
+ */
 function isNumber(value: string): boolean {
   return !isNaN(Number(value));
 }
 
+/**
+ * Series of validation tests to verify valid registration input after initial form validation.
+ * Ensures that passwords match, fields are not overly long, usernames contain valid characters,
+ * account type is valid, and ID is a number.
+ * @returns 
+ */
 export function registrationValidationTests(username: string, password: string, conf_password: string, account_type: AccountType, id: string): FormError | null {
     let errorFlag: boolean = false;
 
@@ -94,6 +120,11 @@ export function registrationValidationTests(username: string, password: string, 
     return null;
 }
 
+/**
+ * Series of validation tests to verify valid login input after initial form validation.
+ * Ensures that fields are under maximum character count and contain valid characters.
+ * @returns 
+ */
 export function loginValidationTests(username: string, password: string): FormError | null {
     let errorFlag: boolean = false;
 
@@ -131,6 +162,12 @@ export function loginValidationTests(username: string, password: string): FormEr
     return null;
 }
 
+/**
+ * Sanitizes form field string by shortening string ensuring it is not
+ * empty.
+ * @param field - Field to be checked.
+ * @returns Sanitized string if valid, null if only contains whitespace.
+ */
 export function AccountDetailFormValidation(field : string) {
     field = field.substring(0, 32);
     if(field.replace(/\s/g, "") === "") {

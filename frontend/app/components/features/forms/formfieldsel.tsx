@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Form } from "radix-ui"; 
@@ -19,23 +26,25 @@ type SelectProps = {
     name: string;
 }
 
+/**
+ * @param props.required
+ * @param props.name
+ */
 function FieldSelect({required, name}: SelectProps) {
     return (
         <select required={required} name={name} title={name} style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}}>
             <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Student">Student</option>
             <option style={{backgroundColor:"white", borderRadius:"8px", padding:"8px", cursor:"pointer"}} value="Advisor">Advisor</option>
         </select>
-        // currently not compatible with radix elements
-        // <Select.Root size={size} required={required}>
-        //     <Select.Trigger placeholder="Account Type" style={{backgroundColor:"white"}}/>
-        //     <Select.Content>
-        //         <Select.Item value="student">Student</Select.Item>
-        //         <Select.Item value="advisor">Advisor</Select.Item>
-        //     </Select.Content>
-        // </Select.Root>
     );
 }
 
+/**
+ * Field component for dropdown selections. Currently only used for account type selection.
+ * @param props.label - Placeholder text.
+ * @param props.inputName - Input identifier.
+ * @param props.required - Determines if field is required.
+ */
 export default function FormField({inputName, message, isPassword, required, size} : FieldProps) {
     var inputType = isPassword ? "password" : "text";
     size = size ?? "3";
@@ -48,10 +57,10 @@ export default function FormField({inputName, message, isPassword, required, siz
                 </Form.Control>
                 {message ? 
                     (
-                        <Text>{message}</Text>
+                        <Text >{message}</Text>
                     ) : null
                 }
-                <Form.Message match="valueMissing">Please enter a {inputName}</Form.Message>
+                <Form.Message match="valueMissing">Please enter an {inputName}</Form.Message>
             </Flex>
         </Form.Field>
     );

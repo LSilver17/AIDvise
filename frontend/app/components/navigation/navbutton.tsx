@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Button, Flex } from "@radix-ui/themes"
@@ -15,6 +22,14 @@ type ButtonProps = {
     onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
+/**
+ * Button component based on {@link DefaultButton} that takes an href as prop
+ * to redirect user.
+ * @param props.href - URL extension of base URL used for on-click redirection.
+ * @param props.onClick - Optional custom handler function for click event.
+ * @param props.size - Size of the button.
+ * @returns 
+ */
 export default function NavButton({href, children, size, onClick,}: ButtonProps) {
     const router = useRouter();
     href = href ?? "/";
@@ -31,6 +46,5 @@ export default function NavButton({href, children, size, onClick,}: ButtonProps)
                 {children}
             </Flex>
         </DefaultButton>
-        
     );
 }

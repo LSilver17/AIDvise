@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 // Next
@@ -25,6 +32,14 @@ type AccountFieldPropTypes = {
     children?: React.ReactNode,
 }
 
+/**
+ * Renders single account field. Accepts a {@link UserField} object which defines the properties of the field,
+ * such as value, title, and editability. Editable fields can be changed by the user and are passed through
+ * {@link AccountDetailFormValidation}.
+ * @param props.field - UserField object with field data.
+ * @param props.fieldName - Name of field, used to select proper field validation function.
+ * @returns 
+ */
 export default function AccountField({field, children, fieldName}: AccountFieldPropTypes) {
     const [isEditing, setIsEditing] = useState(false);
     const {userData, userMetadata} = useUserData();
@@ -42,7 +57,6 @@ export default function AccountField({field, children, fieldName}: AccountFieldP
         const formData = new FormData(event.currentTarget);
         const newVal = formData.get(`${field.title}`) as string;
         
-        //TODO: handle db errors
         try {
             if(!newVal) {
                 throw Error("No new value")

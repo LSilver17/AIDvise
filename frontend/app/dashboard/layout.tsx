@@ -1,9 +1,17 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { redirect } from "next/navigation"
 
 // Components
 import { Flex, Box, Button, Separator } from "@radix-ui/themes";
+import { CopilotKit } from "@copilotkit/react-core";
 
 // Library
 import Sidebar from "@/app/components/navigation/aside";
@@ -28,6 +36,11 @@ export const metadata: Metadata = {
   description: "User dashboard",
 };
 
+/**
+ * Base dashboard layout, on mount authorizing access and initializing user context if there
+ * is indeed an active session. Wraps children with {@link CopilotKit} and {@link UserContextProvider}.
+ * @returns 
+ */
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {
   // session validation
   const session = await authSession();
@@ -36,23 +49,30 @@ export default async function DashboardLayout({ children, }: Readonly<{children:
   }
   
   const currContext = await get_curr_context(session.user.account_type);
-  if(!currContext) {
+  if(!currContext || !currContext.userMetadata.AccountType) {
     await signOut({callbackUrl:"/login"});
     redirect("/login");
   }
 
+  const academicID = ( "StudentID" in currContext.userData ) ? currContext.userData.StudentID.data : currContext.userData.AdvisorID.data;
+  const accountType = currContext.userMetadata.AccountType;
+
   return (
-    <Flex direction="column" height="100vh" width="100vw">
-      <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-        <UserContextProvider currContext={currContext}>
-          <Flex flexShrink="1" minHeight="0" minWidth="300px" maxWidth="300px" overflow="hidden">
-            <Sidebar/>
-          </Flex>
-          <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
-            {children}
-          </Flex>
-        </UserContextProvider>
+    <CopilotKit 
+      runtimeUrl="/api/copilotkit"
+    >
+      <Flex direction="column" height="100vh" width="100vw">
+        <Flex direction="row" align="stretch" flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
+          <UserContextProvider currContext={currContext}>
+            <Flex flexShrink="1" minHeight="0" minWidth="300px" maxWidth="300px" overflow="hidden">
+              <Sidebar/>
+            </Flex>
+            <Flex flexGrow="1" flexShrink="1" minHeight="0" minWidth="0">
+              {children}
+            </Flex>
+          </UserContextProvider>
+        </Flex>
       </Flex>
-    </Flex>
+    </CopilotKit>
   );
 }

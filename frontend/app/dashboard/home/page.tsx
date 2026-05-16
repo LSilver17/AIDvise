@@ -1,11 +1,23 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import DashboardLayout from "@/app/components/layout/dashboardpagelayout"
 import DashTitle from "@/app/components/visual/title"
-import { Em, Flex } from "@radix-ui/themes";
+import { Em, Flex, Text } from "@radix-ui/themes";
 import { UserMetadata } from "@/app/lib/account/account_db_utils";
 import { useUserData } from "@/app/lib/account/user_context";
 
+/**
+ * Default home page with a title and different welcome messages for
+ * students and advisors.
+ * @returns 
+ */
 export default function Home () {
     const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
     const message = (userMetadata.AccountType === "Student") ? 
@@ -14,10 +26,14 @@ export default function Home () {
     return(
         <DashboardLayout>
             <DashTitle size="8">
-                Welcome to <Em>advise.</Em> !
+                Welcome to <Em>Advise</Em> !
             </DashTitle>
             <Flex>
                 {message}
+            </Flex>
+            <Flex wrap="wrap" mt="8" direction="column" align="end">
+                <Em><Text color="gray">Programming done by Sean Collins,  Noel Mensah, Luca Silver</Text></Em>
+                <Em><Text color="gray">Graphics done by Nicholas Lahens</Text></Em>
             </Flex>
         </DashboardLayout>
     );

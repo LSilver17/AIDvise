@@ -1,155 +1,340 @@
+"""
+Copyright 2026 Luca Silver
+
+Core planning and helper nodes for both student and advisor chat agents.
+
+Planning Nodes:
+- `s_planner_node`: Student planner that decides which sources (database, web, insertion) are needed and what info to gather from them (or what info to insert) for the current user input.
+- `a_planner_node`: Advisor planner that decides what sources (database, web) are needed and what info to gather from them for the current user input.
+
+Helper Nodes:
+- `db_node`: Database helper that formulates and executes database queries using available tools.
+- `web_node`: Web search helper that formulates and executes web searches using available tools.
+- `insertion_node`: Insertion helper that processes student profile updates (interests, tracked sections).
+
+These nodes are integrated into LangGraph agents to provide multi-turn planning and tool execution workflows.
+System prompts and loop limits for each node are defined in config.json and can be adjusted to control agent behavior and prevent infinite loops.
+"""
+
 import sys, os
     
 # adds utilities directory to system path if not already there
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
+PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PARENT_DIR not in sys.path:
+    sys.path.append(PARENT_DIR)
 
 # adds root directory to system path if not already there
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
 
 from dotenv import load_dotenv
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolCall
-from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
-from utilities.state import AdvisorState, DatabaseHelperState, WebSearchHelperState
-from utilities.schemas import PlanSchema
-from utilities.tools import db_tools, web_tools
-from utilities.TestModel import GenericFakeChatModel
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, ToolMessage
+from langchain_core.runnables import RunnableConfig
+from copilotkit.langgraph import copilotkit_customize_config
+from utilities.state import APlannerState, SPlannerState, DatabaseHelperState, WebSearchHelperState, InsertionHelperState
+from utilities.schemas import APlanSchema, SPlanSchema
+from utilities.tools import db_tools, web_tools, insertion_tools, alt_db_tools
+from utilities.model_inits import db_llm, planning_llm, web_llm, insertion_llm
 import json
 
 load_dotenv()
 
-# TODO: add more models and add the respective api keys to .env
-with open(os.path.join(root_dir, "model_select.json"), 'r') as f:
-    model_select = json.load(f)
-    mode = model_select["mode"]
-    match model_select[mode]["planning"]:
-        case "sonnet-4-6":
-            planning_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
-        case "gpt-4o":
-            planning_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
-        case "testing":
-            planning_llm = GenericFakeChatModel(messages=iter([
-                AIMessage(content=json.dumps({
-                    "requires_database": True,
-                    "requires_web_search": True,
-                    "answer": "",
-                    "info_needed_db": "Look up the seeded CSC 212 course record, the Artificial Intelligence course record, Spring 2026 course offerings, and the CSC 212 Spring 2026 section taught by Prof. Nguyen.",
-                    "info_needed_web": "Check current web results for CSC 212 course requirements and academic planning guidance."
-                })),
-                AIMessage(content=json.dumps({
-                    "requires_database": False,
-                    "requires_web_search": False,
-                    "answer": "Using the gathered database and web information, the advisor can explain the CSC 212 course details, confirm which Spring 2026 courses are offered, identify the CSC 212 section with Prof. Nguyen, and summarize current web guidance.",
-                    "info_needed_db": "",
-                    "info_needed_web": ""
-                })),
-                AIMessage(content=json.dumps({
-                    "requires_database": False,
-                    "requires_web_search": False,
-                    "answer": "Testing fallback: the advisor has enough information to answer without more database or web lookups.",
-                    "info_needed_db": "",
-                    "info_needed_web": ""
-                }))
-            ]))
-        case default:
-            raise ValueError(f"Model {model_select[mode]["planning"]} not supported for planning node.")
-    match model_select[mode]["db"]:
-        case "sonnet-4-6":
-            db_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
-        case "gpt-4o":
-            db_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
-        case "testing":
-            db_llm = GenericFakeChatModel(messages=iter([
-                AIMessage(content="testing all db tools", tool_calls=[
-                    ToolCall(name="course_query_by_code", args={"course_code": "CSC 212"}, id="1"),
-                    ToolCall(name="course_query_by_title", args={"course_title": "Artificial Intelligence"}, id="2"),
-                    ToolCall(name="course_filter", args={"filters": {"terms": [{"year": 2026, "season": "Spring", "number": None}, {"year": 2026, "season": "Fall", "number": None}], "departments": ["CSC", "MTH"], "credits": {"condition": ">=", "credits": 3}}}, id="3"),
-                    ToolCall(name="section_filter", args={"filters": {"terms": [{"year": 2026, "season": "Spring", "number": None}], "course_codes": ["CSC 212"], "instructors": ["Prof. Nguyen"], "locations": ["Tech Building 115"]}}, id="4")
-                ]),
-                AIMessage(content="Database tools completed. CSC 212, Artificial Intelligence, Spring 2026 offerings, and the CSC 212 section information have all been retrieved successfully."),
-                AIMessage(content="Database tools fallback. No additional database work is needed for this test run.")
-            ]))
-        case default:
-            raise ValueError(f"Model {model_select[mode]["db"]} not supported for db node.")
-    match model_select[mode]["web"]:
-        case "sonnet-4-6":
-            web_llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=.2)
-        case "gpt-4o":
-            web_llm = ChatOpenAI(model="gpt-4o", temperature=.2)
-        case "testing":
-            web_llm = GenericFakeChatModel(messages=iter([
-                AIMessage(content="testing web search", tool_calls=[
-                    ToolCall(name="web_search", args={"query": "CSC 212 course requirements and academic planning guidance"}, id="1")
-                ]),
-                AIMessage(content="Web search completed. The returned results can be used to confirm current guidance for CSC 212 and related academic planning questions."),
-                AIMessage(content="Web search fallback. No additional web search is needed for this test run.")
-            ]))
-        case default:
-            raise ValueError(f"Model {model_select[mode]["web"]} not supported for web node.")
+CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
-def planning_node(state: AdvisorState) -> AdvisorState:
-    """Base node for the academic advisor, decides whether it needs to use database queries or web search. If not, it answers the question directly using the knolledge it has."""
-    
-    structured_llm = planning_llm.with_structured_output(PlanSchema)
+with open(CONFIG_PATH, "r") as f:
+    CONFIG = json.load(f)
+    CONTEXT_CONFIG = CONFIG["context_config"]
+    LOOP_CONFIG = CONFIG["loop_limits"]
 
-    system_prompt = f"You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is 3 or higher and you still don't have the information needed, provide the best answer you can with the information you have and stop. loop count = {state['loop_count']}"
+def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerState:
+    """
+    Builds the next plan for the student-facing agent.
+
+    This node collects the current conversation plus any database, web, or insertion
+    results that have already been gathered, then asks the planning model to decide
+    whether more tool use is required. The returned plan is stored in state and used
+    by the graph router to decide the next branch.
+
+    Args:
+        state (SPlannerState): Current student-agent state containing messages,
+            loop counter, prior tool results, and user metadata.
+
+    Returns:
+        SPlannerState: Updated state with a new "plan" value from the planning model.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May initialize empty db_info and web_info lists.
+    """
+
+    state["loop_count"] += 1
+    state["plan"] = None
+
+    structured_llm = planning_llm.with_structured_output(SPlanSchema)
+
+    c_level = CONTEXT_CONFIG["s-planner"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["s-planner"]["context-level"][c_level]
 
     messages = []
-     
-    messages.append(SystemMessage(content=system_prompt))
-
-    for QueryResult in state["db_info"]:
-        messages.append(SystemMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
-    for QueryResult in state["web_info"]:
-        messages.append(SystemMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
-
     messages.extend(state["messages"])
 
-    response = structured_llm.invoke(messages).model_dump()
+    if len(messages) == 1:
+        messages.append(SystemMessage(content=system_prompt + ("Loop limit = " + str(LOOP_CONFIG["s-planner"]) if CONTEXT_CONFIG["s-planner"] != "no-tools" else "")))
+
+    if "db_info" not in state:
+        state["db_info"] = []
+    else:
+        for QueryResult in state["db_info"]:
+            messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+    if "web_info" not in state:
+        state["web_info"] = []
+    else:
+        for QueryResult in state["web_info"]:
+            messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+
+    if state["insertion_result"] != "":
+        messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
+
+    if CONTEXT_CONFIG["s-planner"] != "no-tools":
+        messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
+
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    response = structured_llm.invoke(messages, config=modified_config).model_dump()
     state["plan"] = response
-    state["loop_count"] += 1
     return state
 
-def db_node(state: DatabaseHelperState):
-    """Node that runs database queries based on the information provided by the planning node."""
+def a_planner_node(state: APlannerState, config: RunnableConfig) -> APlannerState:
+    """
+    Builds the next plan for the advisor-facing agent.
 
-    llm_with_db_tools = db_llm.bind_tools(db_tools)
+    This node is the advisor counterpart to the student planner. It gathers the
+    current conversation, prior database and web results, and loop context, then
+    asks the planning model to decide whether more tool use is needed before a final
+    answer can be produced.
 
-    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use the tools at your disposal to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop. loop count = {state['loop_count']}"
+    Args:
+        state (APlannerState): Current advisor-agent state containing messages,
+            loop counter, prior tool results, and user metadata.
+
+    Returns:
+        APlannerState: Updated state with a new "plan" value from the planning model.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May initialize empty db_info and web_info lists.
+    """
+
+    state["loop_count"] += 1
     
-    # if state messages is empty add a message with the info needed, otherwise pass the messages through
-    if len(state["messages"]) == 0:
-        state["messages"].append(SystemMessage(content=system_prompt))
-        state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the database to answer the user's question: {state['info_needed']}"))
+    structured_llm = planning_llm.with_structured_output(APlanSchema)
+
+    c_level = CONTEXT_CONFIG["a-planner"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["a-planner"]["context-level"][c_level]
 
     messages = []
     messages.extend(state["messages"])
 
-    result = llm_with_db_tools.invoke(messages)
+    if len(messages) == 1:
+        messages.append(SystemMessage(content=system_prompt + ("Loop limit = " + str(LOOP_CONFIG["a-planner"]) if CONTEXT_CONFIG["a-planner"] != "no-tools" else "")))
+
+    if "db_info" not in state:
+        state["db_info"] = []
+    else:
+        for QueryResult in state["db_info"]:
+            messages.append(HumanMessage(content=f"Database Query: {QueryResult['query']}\nDatabase Result: {QueryResult['result']}"))
+    if "web_info" not in state:
+        state["web_info"] = []
+    else:
+        for QueryResult in state["web_info"]:
+            messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
+
+    if CONTEXT_CONFIG["a-planner"] != "no-tools":
+        messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
+
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    response = structured_llm.invoke(messages, config=modified_config).model_dump()
+    state["plan"] = response
+    return state
+
+def db_node(state: DatabaseHelperState, config: RunnableConfig):
+    """
+    Executes the database helper model with the appropriate tool set.
+
+    The node chooses between student and advisor database tools based on the user's 
+    account type, seeds the message list with system guidance when this is the first turn, 
+    preserves prior tool messages, and sends the curated conversation to the database LLM. 
+    The LLM may decide to call one or more database tools before producing its response.
+
+    Args:
+        state (DatabaseHelperState): Helper state containing the requested information,
+            message history, loop counter, user ID, and account type.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and task description to state messages.
+    """
 
     state["loop_count"] += 1
+
+    if state["account_type"] == "Student":
+        llm_with_db_tools = db_llm.bind_tools(db_tools)
+        c_level = CONTEXT_CONFIG["s-db"]["context-select"]
+        system_prompt = CONTEXT_CONFIG["s-db"]["context-level"][c_level]
+    else:
+        llm_with_db_tools = db_llm.bind_tools(alt_db_tools)
+        c_level = CONTEXT_CONFIG["a-db"]["context-select"]
+        system_prompt = CONTEXT_CONFIG["a-db"]["context-level"][c_level]
+    
+    # if state messages is empty add a message with the info needed, otherwise pass the messages through
+    if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["s-db"] if state["account_type"] == "Student" else LOOP_CONFIG["a-db"])))
+        state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the database to answer the user's question: {state['info_needed']}"))
+    
+    messages = []
+    messages.extend(state["messages"][:2])
+    if len(state["messages"]) > 2:
+        for message in state["messages"][2:-2]:
+            if isinstance(message, ToolMessage):
+                messages.append(message)
+            elif isinstance(message, AIMessage):
+                messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
+        messages.extend(state["messages"][-2:])
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
+
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_db_tools.invoke(messages, config=modified_config)
+
     return {"messages": [result]}
 
-def web_node(state: WebSearchHelperState):
-    """Node that performs web searches based on the information provided by the planning node."""
+def web_node(state: WebSearchHelperState, config: RunnableConfig):
+    """
+    Executes the web search helper model with the search tool set.
+
+    The node prepares the message history for the web LLM, including an initial
+    system prompt and search goal on the first pass. It preserves prior tool records
+    and sends the curated conversation to the model so it can search the web or
+    summarize the gathered results.
+
+    Args:
+        state (WebSearchHelperState): Helper state containing the requested web
+            information, message history, and loop counter.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and task description to state messages.
+    """
     
+    state["loop_count"] += 1
+
     llm_with_web_tools = web_llm.bind_tools(web_tools)
 
-    system_prompt = f"You are the assistant for a student academic advising agent. Your task is to determine how you can use web searches to get the information it needs. Only output this information and nothing else. If loop count is 3 or higher and you still don't have the information needed, output what you have and stop. loop count = {state['loop_count']}"
+    c_level = CONTEXT_CONFIG["web"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["web"]["context-level"][c_level]
 
     # if state messages is empty add a message with the info needed, otherwise pass the messages through
     if len(state["messages"]) == 0:
-        state["messages"].append(SystemMessage(content=system_prompt))
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["web"])))
         state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information is needed from the web to answer the user's question: {state['info_needed']}"))
 
     messages = []
-    messages.extend(state["messages"])
+    messages.extend(state["messages"][:2])
+    if len(state["messages"]) > 2:
+        for message in state["messages"][2:-2]:
+            if isinstance(message, ToolMessage):
+                messages.append(message)
+            elif isinstance(message, AIMessage):
+                messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
+        messages.extend(state["messages"][-2:])
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    result = llm_with_web_tools.invoke(messages)
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_web_tools.invoke(messages, config=modified_config)
+
+    return {"messages": [result]}
+
+def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> InsertionHelperState:
+    """
+    Executes the insertion helper model to persist new student information.
+
+    This node prepares a tool-enabled conversation for the insertion LLM, which is
+    used to decide whether any new student information should be written into the
+    database. On the first pass it seeds the conversation with instructions that
+    describe what should be inserted.
+
+    Args:
+        state (InsertionHelperState): Helper state containing the information to
+            insert, message history, loop counter, and user ID.
+
+    Returns:
+        dict: A partial state update containing a single AI response message under
+            the "messages" key.
+
+    Side Effects:
+        - Increments the loop counter.
+        - May append an initial system prompt and insertion request to state messages.
+    """
 
     state["loop_count"] += 1
+
+    llm_with_insertion_tools = insertion_llm.bind_tools(insertion_tools)
+
+    c_level = CONTEXT_CONFIG["insertion"]["context-select"]
+    system_prompt = CONTEXT_CONFIG["insertion"]["context-level"][c_level]
+
+    # if state messages is empty add a message with the info to be inserted, otherwise pass the messages through
+    if len(state["messages"]) == 0:
+        state["messages"].append(SystemMessage(content=system_prompt + "Loop limit = " + str(LOOP_CONFIG["insertion"])))
+        state["messages"].append(HumanMessage(content=f"The planning node has determined that the following information about the student should be added into the database if it is not already present: {state['info_to_insert']}"))
+    
+    messages = []
+    messages.extend(state["messages"][:2])
+    if len(state["messages"]) > 2:
+        for message in state["messages"][2:-2]:
+            if isinstance(message, ToolMessage):
+                messages.append(message)
+            elif isinstance(message, AIMessage):
+                messages.append(AIMessage(content="Tool record only", tool_calls=message.tool_calls))
+        messages.extend(state["messages"][-2:])
+    
+    messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
+
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_insertion_tools.invoke(messages, config=modified_config)
+
     return {"messages": [result]}

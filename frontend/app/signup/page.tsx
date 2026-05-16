@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
@@ -20,6 +27,15 @@ import { alert_popup } from "@/app/lib/alerts/alert_popup";
 import type { AccountType } from '@/app/lib/account/account_type'
 import { Flex } from "@radix-ui/themes";
 
+/**
+ * Registration page component that defines an error state and form submission handler for
+ * user-entered credentials. Form by default handles basic input validation like 
+ * missing fields. After passing the initial check, {@link registrationValidationTests} is ran on the 
+ * input strings. If validation fails or an error is thrown during API call, the error
+ * is displayed via a window popup on the front-end. If caught before submission, error
+ * messages are displayed near the form field.
+ * @returns 
+ */
 export default function SignUp () {
     const router = useRouter();
 
@@ -85,7 +101,7 @@ export default function SignUp () {
     
     return (
         <RegistrationForm justify="start" onSubmit={handler}>
-            <Flex direction="row" gap="2" height="8rem">
+            <Flex direction="row" height="9rem" mb="6" gap="2">
                 <Flex direction="column" justify="start">
                     <FormField label="Username" inputName="username" message={errors?.username}/>
                     <FormField label="Password" inputName="password" message={errors?.password} isPassword/>
@@ -97,7 +113,7 @@ export default function SignUp () {
                 </Flex>
             </Flex>
 
-            <Flex direction="row" justify="center" width="100%">
+            <Flex direction="row" justify="center" width="100%" align="end">
                 <SelectField inputName="account_type" message={errors?.account_type}/>
             </Flex>
             

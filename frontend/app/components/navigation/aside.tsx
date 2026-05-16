@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 // Library Imports
@@ -14,14 +21,20 @@ import { useUserData } from "@/app/lib/account/user_context";
 import type { UserMetadata } from "@/app/lib/account/account_db_utils";
 import type { AccountType } from "@/app/lib/account/account_type";
 
+/**
+ * Component constructing the sidebar used for navigating the dashboard.
+ * Account type is fetched from context with the {@link useUserData} hook and is used for conditional
+ * rendering of navigation buttons.
+ * @returns 
+ */
 export default function Sidebar () {
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const account_type: AccountType = userMetadata.AccountType;
     return (
-        <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="bg-orange-500">
+        <Flex direction="column" justify="start" align="stretch" p="10px" flexGrow="1" gapY="5" className="menuColor">
             {/*Logo Section*/}
             <DashTitle size="8">
-                <Em>advise.</Em>
+                <Logo/>
             </DashTitle>
             {/*Main Dashboard*/}
             <Flex direction="column" justify="start" align="stretch" gapY="5" flexGrow="1">
@@ -37,12 +50,10 @@ export default function Sidebar () {
                         <PersonIcon/>Students
                     </SidebarButton>
                 }
-                {    
-                    (account_type === "Student") ?
-                    <SidebarButton href="/dashboard/chat">
-                        <ChatBubbleIcon/>Chat
-                    </SidebarButton> : <></>
-                }
+                
+                <SidebarButton href="/dashboard/chat">
+                    <ChatBubbleIcon/>Chat
+                </SidebarButton>
                 <SidebarButton href="/dashboard/account">
                     <PersonIcon/>Account
                 </SidebarButton>

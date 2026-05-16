@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import { Flex } from "@radix-ui/themes";
@@ -25,11 +32,24 @@ const direction = "column";
 const gap="5";
 const width = "100%";
 
+function unseenAlerts(alerts: UserAlerts): boolean {
+    return !(alerts.UnseenAlerts.length === 0)
+}
+
+function seenAlerts(alerts: UserAlerts): boolean  {
+    return !(alerts.SeenAlerts.length === 0)
+}
+
+/**
+ * Dynamically renders user alerts with the {@link ExpandableList} component. Alerts are categorized into Event
+ * and Course alerts, marked as either Seen or Unseen. The user can mark all seen alerts as seen or
+ * call the alert agent to generate new alerts based on any added interests or events.
+ * @returns 
+ */
 export default function Alerts () {
     
     const { userAlerts, setUserAlerts } : { userAlerts: UserAlerts, setUserAlerts: Dispatch<SetStateAction<UserAlerts | null>>} = useUserData();
     const { userData } : {userData: StudentData} = useUserData();
-    const { userMetadata } : {userMetadata: UserMetadata} = useUserData();
     const { userInterests } : {userInterests: UserInterests} = useUserData();
 
     // setup agent
@@ -61,8 +81,6 @@ export default function Alerts () {
     }
 
     const shownAlerts = 3;
-    const num_unseen = userAlerts.UnseenAlerts.length;
-    const num_seen = userAlerts.SeenAlerts.length;
 
     return (
         <DashboardLayout>
@@ -70,12 +88,12 @@ export default function Alerts () {
                 Alerts
             </DashTitle>
             <Flex width="100%" direction="row" gap="2">
-                <Flex width="60rem" gap="4">
+                <Flex width="100%" gap="4">
                     <DefaultButton onClick={generate_alerts} >
                         Check for new alerts
                     </DefaultButton>
                     {
-                        userAlerts.UnseenAlerts.length !== 0 ? <DefaultButton onClick={mark_as_seen}>
+                        unseenAlerts(userAlerts) ? <DefaultButton onClick={mark_as_seen}>
                             Mark all as seen
                         </DefaultButton> : null
                     }
@@ -84,7 +102,7 @@ export default function Alerts () {
             {
                 (userInterests.Interests && !(userInterests.Interests.length === 0)) ? 
                 <Flex direction="column" gap="5">
-                    {(userAlerts.UnseenAlerts.length !== 0) ? <>
+                    {unseenAlerts(userAlerts) ? <>
                         <DashTitle size="7" gap="1">
                             Unseen
                         </DashTitle>
@@ -102,12 +120,12 @@ export default function Alerts () {
                         </ExpandableList>
                     </> : null}
                 <Flex height="30px"/>
-                    {(userAlerts.SeenAlerts.length !== 0) ? <>
+                    {seenAlerts(userAlerts) ? <>
                         <DashTitle size="7" gap="1">
                             Seen
                         </DashTitle>
                         <ExpandableList 
-                            list={userAlerts?.SeenAlerts}
+                            list={userAlerts.SeenAlerts}
                             min={shownAlerts} 
                             Component={SingleAlert} 
                             componentType="Alert"

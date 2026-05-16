@@ -1,3 +1,10 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 // Flex
@@ -17,13 +24,17 @@ import { useUserData } from "@/app/lib/account/user_context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+/**
+ * Uses {@link ExpandableList} component to dynamically generate a visual list of students
+ * under an advisor.
+ * @returns 
+ */
 export default function Students() {
     // Context and state
     const { userMetadata } : { userMetadata: UserMetadata} = useUserData();
     const { userStudents } : { userStudents: UserStudents} = useUserData();
     const minStudents = 3;
     
-    //TODO: redirect
     if(userMetadata.AccountType !== "Advisor") {
         const router = useRouter();
         router.push("/dashboard/home");

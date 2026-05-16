@@ -1,8 +1,15 @@
+/*=============================================================================
+CSC 212 — AI Academic Advising Platform
+Copyright (c) 2026 Quinsigamond Community College — CSC 212
+All rights reserved.
+Author:   Sean Collins
+GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
+=============================================================================*/
 "use client"
 
 import "@copilotkit/react-ui/styles.css";
 import { CopilotChat } from "@copilotkit/react-ui";
-import data from "@/mock/mock.json";
+import { Flex } from "@radix-ui/themes";
 
 // Lib
 import { useUserData } from "@/app/lib/account/user_context";
@@ -10,42 +17,61 @@ import type { UserData, UserMetadata, UserInterests, StudentData } from "@/app/l
 import type { AccountType } from "@/app/lib/account/account_type";
 
 // Hooks
-import { useEffect } from "react";
-import { useAgent } from "@copilotkit/react-core/v2";
+import { useCoAgent } from "@copilotkit/react-core";
+import { authSession } from "@/app/lib/account/authSession";
 
-function choose_init_message(name: string, interests: UserInterests): string {
-  var message_addition = "How can I help you today?";
-  if (interests.Interests.length == 0) message_addition = "Tell me about your academic and extracurricular interests.";
-  const message = `Hi, ${name}! ${message_addition}`;
-  return message;
+/**
+ * Customizes user welcome message based on account type and user data.
+ * @param name 
+ * @param accountType 
+ * @param interests 
+ * @returns 
+ */
+function choose_init_message(name: string, accountType: AccountType, interests: UserInterests | null = null): string {
+  if(accountType === "Advisor") {
+    var message_addition = "How can I help you today?";
+    const message = `Hi, ${name}! ${message_addition}`;
+    return message;
+  } else if (accountType === "Student") {
+    var message_addition = "How can I help you today?";
+    if (interests && interests.Interests.length == 0) message_addition = "Tell me about your academic and extracurricular interests.";
+    const message = `Hi, ${name}! ${message_addition}`;
+    return message;
+  }
+  return "Hello!";
 }
 
+/**
+ * Displays CopilotKit's {@link CopilotChat} component with a customized user welcome message.
+ */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();
-  const { agent } = useAgent({agentId:"default", updates:[]});
+
   const accountType: AccountType = userMetadata?.AccountType;
-  
-  // useEffect(() => {
-  //     // if student
-  //     if ( "StudentID" in userData ) {
-  //       agent.setState({...agent.state, "student_id": userData.StudentID.data});
-  //     }
-  //   }
-  // );
+
+  const {state, setState} = useCoAgent({
+    name: "default",
+    initialState: {
+      "user_id": userMetadata.AccountID,
+      "account_type": accountType,
+    }
+  })
 
   // Set name and message
   var name: string = "User";
   if(accountType) name = accountType as string;
   if(userData && userData.Name.data) name = userData.Name.data;
-  const message = choose_init_message(name, userInterests);
+  const message = choose_init_message(name, accountType, userInterests);
 
   return (
-    <CopilotChat
-      labels={{
-        title: "Academic ChatBot",
-        initial: message,
-      }}
-     className="w-full h-full"
-    />
+    <Flex width="100%" height="100%" direction="row">
+      <CopilotChat
+        labels={{
+          title:"Advise Bot",
+          initial: message,
+        }}
+        className="w-full h-full"
+      />
+    </Flex>
   );
 }
