@@ -463,7 +463,7 @@ def create_triggers():
         # Commit the changes to the database
         conn.commit()
 
-def populate_course_catalog(json_file: str = "course_catalog.json"):
+def populate_course_catalog(json_file: str = "courses_data.json"):
     """Load catalog of course from a JSON file and insert them into ``Courses``.
 
     The JSON file is expected to be located in the repository's ``jsons`` directory. Each entry should contain at minimum the fields used below: ``course_code`` (format: "DPT NUM"), ``name``, ``description``, ``credits``, ``prerequisites``, and ``semesters_offered`` (e.g. "F/S/SU").
@@ -537,7 +537,7 @@ def populate_course_catalog(json_file: str = "course_catalog.json"):
         conn.commit()
         print("Course catalog populated from JSON file.")
 
-def populate_programs_catalog(json_file: str = "qcc_programs.json"):
+def populate_programs_catalog(json_file: str = "programs_data.json"):
     """Load programs of study from JSON and populate ``ProgramsOfStudy`` and related requirement tables.
 
     The input JSON (in the ``jsons`` directory) should contain program records with fields such as ``name``, ``description``, ``total_credits``, ``area_of_study``, and ``required_courses``. Each program is inserted into ``ProgramsOfStudy`` and program requirements are split into rows in ``ProgramRequiredCourses`` and ``ProgramRequiredCourseOptions``.
@@ -829,7 +829,7 @@ def add_new_term(json_file: str = "term_data.json"):
         # Commit the changes to the database
         conn.commit()
 
-def add_students_from_json(json_file: str):
+def add_students_from_json(json_file: str = "students_data.json"):
     """Insert student accounts, course histories, and declared programs from a JSON file into the database.
 
     Expected JSON structure (per student):
@@ -951,7 +951,7 @@ def add_students_from_json(json_file: str):
         conn.commit()
         print(f"Student '{student['Name']}' added to database from JSON file.")
 
-def add_advisors_from_json(json_file: str):
+def add_advisors_from_json(json_file: str = "advisors_data.json"):
     """Insert advisor accounts from a JSON file into the database.
 
     Expected JSON structure (per advisor):
@@ -1148,6 +1148,7 @@ def reset_all():
 if __name__ == '__main__':
     setup_database()
     create_triggers()
-    populate_course_catalog("course_catalog_plus.json")
-    populate_programs_catalog("qcc_programs_plus.json")
-    add_new_term()
+    populate_course_catalog()
+    populate_programs_catalog()
+    add_advisors_from_json()
+    add_students_from_json()
