@@ -30,6 +30,8 @@ if ROOT_DIR not in sys.path:
 
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, ToolMessage
+from langchain_core.runnables import RunnableConfig
+from copilotkit.langgraph import copilotkit_customize_config
 from utilities.state import APlannerState, SPlannerState, DatabaseHelperState, WebSearchHelperState, InsertionHelperState
 from utilities.schemas import APlanSchema, SPlanSchema
 from utilities.tools import db_tools, web_tools, insertion_tools, alt_db_tools
@@ -45,7 +47,7 @@ with open(CONFIG_PATH, "r") as f:
     CONTEXT_CONFIG = CONFIG["context_config"]
     LOOP_CONFIG = CONFIG["loop_limits"]
 
-def s_planner_node(state: SPlannerState) -> SPlannerState:
+def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerState:
     """
     Builds the next plan for the student-facing agent.
 
@@ -97,11 +99,17 @@ def s_planner_node(state: SPlannerState) -> SPlannerState:
     if CONTEXT_CONFIG["s-planner"] != "no-tools":
         messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    response = structured_llm.invoke(messages).model_dump()
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    response = structured_llm.invoke(messages, config=modified_config).model_dump()
     state["plan"] = response
     return state
 
-def a_planner_node(state: APlannerState) -> APlannerState:
+def a_planner_node(state: APlannerState, config: RunnableConfig) -> APlannerState:
     """
     Builds the next plan for the advisor-facing agent.
 
@@ -149,11 +157,17 @@ def a_planner_node(state: APlannerState) -> APlannerState:
     if CONTEXT_CONFIG["a-planner"] != "no-tools":
         messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    response = structured_llm.invoke(messages).model_dump()
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    response = structured_llm.invoke(messages, config=modified_config).model_dump()
     state["plan"] = response
     return state
 
-def db_node(state: DatabaseHelperState):
+def db_node(state: DatabaseHelperState, config: RunnableConfig):
     """
     Executes the database helper model with the appropriate tool set.
 
@@ -203,11 +217,17 @@ def db_node(state: DatabaseHelperState):
     
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    result = llm_with_db_tools.invoke(messages)
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_db_tools.invoke(messages, config=modified_config)
 
     return {"messages": [result]}
 
-def web_node(state: WebSearchHelperState):
+def web_node(state: WebSearchHelperState, config: RunnableConfig):
     """
     Executes the web search helper model with the search tool set.
 
@@ -253,11 +273,17 @@ def web_node(state: WebSearchHelperState):
     
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    result = llm_with_web_tools.invoke(messages)
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_web_tools.invoke(messages, config=modified_config)
 
     return {"messages": [result]}
 
-def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
+def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> InsertionHelperState:
     """
     Executes the insertion helper model to persist new student information.
 
@@ -303,6 +329,12 @@ def insertion_node(state: InsertionHelperState) -> InsertionHelperState:
     
     messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
 
-    result = llm_with_insertion_tools.invoke(messages)
+    modified_config = copilotkit_customize_config(
+        config,
+        emit_messages=False,
+        emit_tool_calls=False 
+    )
+
+    result = llm_with_insertion_tools.invoke(messages, config=modified_config)
 
     return {"messages": [result]}
