@@ -43,3 +43,6 @@ next-env.d.ts
 
 # data
 mock/
+
+#prisma
+/prisma/src/generated/prisma

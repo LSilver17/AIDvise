@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Advisors {
+  ID       Int        @id @unique(map: "sqlite_autoindex_Advisors_1") @default(autoincrement())
+  Name     String?
+  Email    String
+  ParentID Int?       @unique(map: "sqlite_autoindex_Advisors_2")
+  Users    Users?     @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Students Students[]
+}
+
+model Courses {
+  ID                           Int                            @id @unique(map: "sqlite_autoindex_Courses_1") @default(autoincrement())
+  Department                   String
+  Code                         Int
+  Name                         String?
+  Description                  String?
+  Credits                      Int?
+  Requirements                 String?
+  SemestersOffered             String?
+  CoursesOffered               CoursesOffered[]
+  CoursesTaken                 CoursesTaken[]
+  ProgramRequiredCourseOptions ProgramRequiredCourseOptions[]
+}
+
+model CoursesOffered {
+  ID       Int        @id @unique(map: "sqlite_autoindex_CoursesOffered_1") @default(autoincrement())
+  CourseID Int
+  ParentID Int
+  Terms    Terms      @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Courses  Courses    @relation(fields: [CourseID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Sections Sections[]
+}
+
+model CoursesTaken {
+  ID       Int      @id @unique(map: "sqlite_autoindex_CoursesTaken_1") @default(autoincrement())
+  CourseID Int
+  Grade    String
+  ParentID Int
+  Students Students @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Courses  Courses  @relation(fields: [CourseID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model EventDates {
+  ID        Int                 @id @unique(map: "sqlite_autoindex_EventDates_1") @default(autoincrement())
+  Date      DateTime
+  StartTime Unsupported("time")
+  EndTime   Unsupported("time")
+  Location  String?
+  TimeAdded DateTime            @default(now())
+  ParentID  Int
+  Events    Events              @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Events {
+  ID             Int              @id @unique(map: "sqlite_autoindex_Events_1") @default(autoincrement())
+  Name           String
+  Description    String
+  EventDates     EventDates[]
+  RelevantEvents RelevantEvents[]
+}
+
+model Interests {
+  ID       Int      @id @unique(map: "sqlite_autoindex_Interests_1") @default(autoincrement())
+  Interest String
+  ParentID Int
+  Students Students @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model MeetTimes {
+  ID        Int                 @id @unique(map: "sqlite_autoindex_MeetTimes_1") @default(autoincrement())
+  Day       String
+  StartTime Unsupported("time")
+  EndTime   Unsupported("time")
+  ParentID  Int
+  Sections  Sections            @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ProgramRequiredCourseOptions {
+  ID                     Int                    @id @unique(map: "sqlite_autoindex_ProgramRequiredCourseOptions_1") @default(autoincrement())
+  CourseID               Int?
+  Elective               String?
+  ParentID               Int
+  ProgramRequiredCourses ProgramRequiredCourses @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Courses                Courses?               @relation(fields: [CourseID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ProgramRequiredCourses {
+  ID                           Int                            @id @unique(map: "sqlite_autoindex_ProgramRequiredCourses_1") @default(autoincrement())
+  ParentID                     Int
+  ProgramRequiredCourseOptions ProgramRequiredCourseOptions[]
+  ProgramsOfStudy              ProgramsOfStudy                @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ProgramsOfStudy {
+  ID                     Int                      @id @unique(map: "sqlite_autoindex_ProgramsOfStudy_1") @default(autoincrement())
+  Title                  String
+  Description            String
+  CreditsRequired        String?
+  Type                   String?
+  ProgramRequiredCourses ProgramRequiredCourses[]
+  StudentProgramsOfStudy StudentProgramsOfStudy[]
+}
+
+model RelevantEvents {
+  ID          Int      @id @unique(map: "sqlite_autoindex_RelevantEvents_1") @default(autoincrement())
+  Urgency     Int
+  AlertStatus String   @default("Unseen")
+  EventID     Int
+  ParentID    Int
+  Events      Events   @relation(fields: [EventID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Students    Students @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model SectionStatusChanges {
+  ID                          Int                           @id @unique(map: "sqlite_autoindex_SectionStatusChanges_1") @default(autoincrement())
+  SectionID                   Int
+  OldStatus                   String
+  NewStatus                   String
+  ChangeTime                  DateTime
+  Sections                    Sections                      @relation(fields: [SectionID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  StudentSectionStatusChanges StudentSectionStatusChanges[]
+}
+
+model Sections {
+  ID                   Int                    @id @unique(map: "sqlite_autoindex_Sections_1") @default(autoincrement())
+  SectionNum           Int
+  Instructor           String
+  StartDate            DateTime
+  EndDate              DateTime
+  Status               String
+  MaxSeats             Int
+  SeatsLeft            Int
+  Method               String
+  Location             String?
+  ParentID             Int
+  MeetTimes            MeetTimes[]
+  SectionStatusChanges SectionStatusChanges[]
+  CoursesOffered       CoursesOffered         @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model StudentProgramsOfStudy {
+  ID              Int             @id @unique(map: "sqlite_autoindex_StudentProgramsOfStudy_1") @default(autoincrement())
+  ProgramID       Int
+  ParentID        Int
+  Students        Students        @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  ProgramsOfStudy ProgramsOfStudy @relation(fields: [ProgramID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model StudentSectionStatusChanges {
+  ID                   Int                  @id @unique(map: "sqlite_autoindex_StudentSectionStatusChanges_1") @default(autoincrement())
+  ChangeID             Int
+  AlertStatus          String               @default("Unseen")
+  ParentID             Int
+  SectionStatusChanges SectionStatusChanges @relation(fields: [ChangeID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+  Students             Students             @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Students {
+  ID                          Int                           @id @unique(map: "sqlite_autoindex_Students_1") @default(autoincrement())
+  Name                        String?
+  Email                       String
+  GPA                         Float?
+  CreditsEarned               Int?
+  IntendedGraduationTerm      String?
+  AdvisorID                   Int?
+  LastEventCheck              DateTime                      @default(dbgenerated("'1970-01-01T00:00:00'"))
+  LastSectionStatusCheck      DateTime                      @default(dbgenerated("'1970-01-01T00:00:00'"))
+  ParentID                    Int?                          @unique(map: "sqlite_autoindex_Students_2")
+  CoursesTaken                CoursesTaken[]
+  Interests                   Interests[]
+  RelevantEvents              RelevantEvents[]
+  StudentProgramsOfStudy      StudentProgramsOfStudy[]
+  StudentSectionStatusChanges StudentSectionStatusChanges[]
+  Users                       Users?                        @relation(fields: [ParentID], references: [ID], onUpdate: NoAction)
+  Advisors                    Advisors?                     @relation(fields: [AdvisorID], references: [ID], onUpdate: NoAction)
+  TrackedSections             TrackedSections[]
+}
+
+model Terms {
+  ID             Int              @id @unique(map: "sqlite_autoindex_Terms_1") @default(autoincrement())
+  Year           Int
+  Season         String
+  Number         Int?
+  CoursesOffered CoursesOffered[]
+}
+
+model TrackedSections {
+  ID        Int      @id @default(autoincrement())
+  SectionID Int
+  ParentID  Int
+  Students  Students @relation(fields: [ParentID], references: [ID], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Users {
+  ID                Int       @id @unique(map: "sqlite_autoindex_Users_1") @default(autoincrement())
+  Username          String    @unique(map: "sqlite_autoindex_Users_2")
+  Password          String
+  AccountType       String
+  VerificationToken DateTime?
+  Advisors          Advisors?
+  Students          Students?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model VerficationToken {
+  identifier String?  @id
+  token      String
+  expires    DateTime
+
+  @@ignore
+}

@@ -9,6 +9,8 @@ import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signIn } from "next-auth/react";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/app/lib/database/prisma"
 
 import { validate_credentials } from "@/app/lib/account/account_db_utils";
 
@@ -18,6 +20,7 @@ import { validate_credentials } from "@/app/lib/account/account_db_utils";
  * those stored in the database with {@link validate_credentials}.
  */
 export const authOptions: NextAuthOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "Credentials",
