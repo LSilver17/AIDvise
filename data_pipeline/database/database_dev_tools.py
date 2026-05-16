@@ -11,6 +11,7 @@ Functions:
 - ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
 - ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
+- ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
@@ -21,7 +22,7 @@ Functions:
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
 Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
-This file can also be run as a script to execute the following sequence of operations: set up the database schema, create triggers, populate the course catalog and programs catalog from their respective JSON files, and add a new term with offerings from its JSON file.
+This file can also be run as a script to execute any of the above functions directly from the command line, with appropriate arguments for JSON file paths when needed.
 """
 
 import sys, os
@@ -36,7 +37,7 @@ JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons
 if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
-import json, sqlite3
+import json, sqlite3, argparse
 from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
 
@@ -463,7 +464,7 @@ def create_triggers():
         # Commit the changes to the database
         conn.commit()
 
-def populate_course_catalog(json_file: str = "courses_data.json"):
+def populate_course_catalog(json_file: str):
     """Load catalog of course from a JSON file and insert them into ``Courses``.
 
     The JSON file is expected to be located in the repository's ``jsons`` directory. Each entry should contain at minimum the fields used below: ``course_code`` (format: "DPT NUM"), ``name``, ``description``, ``credits``, ``prerequisites``, and ``semesters_offered`` (e.g. "F/S/SU").
@@ -537,7 +538,7 @@ def populate_course_catalog(json_file: str = "courses_data.json"):
         conn.commit()
         print("Course catalog populated from JSON file.")
 
-def populate_programs_catalog(json_file: str = "programs_data.json"):
+def populate_programs_catalog(json_file: str):
     """Load programs of study from JSON and populate ``ProgramsOfStudy`` and related requirement tables.
 
     The input JSON (in the ``jsons`` directory) should contain program records with fields such as ``name``, ``description``, ``total_credits``, ``area_of_study``, and ``required_courses``. Each program is inserted into ``ProgramsOfStudy`` and program requirements are split into rows in ``ProgramRequiredCourses`` and ``ProgramRequiredCourseOptions``.
@@ -648,7 +649,7 @@ def populate_programs_catalog(json_file: str = "programs_data.json"):
         conn.commit()
         print("Programs of study catalog populated from JSON file.")
 
-def add_new_term(json_file: str = "term_data.json"):
+def add_new_term(json_file: str):
     """Insert a new term and all of its course offerings, sections, and meet times from a JSON export.
 
     The JSON must be located in the ``jsons`` directory and contain at least one term object with the keys: ``Year``, ``Season``, ``Num`` and a ``CoursesOffered`` list. Each course offering should include fields used below such as ``Department``, ``Code``, ``SectionNum``, ``Instructor``, ``StartDate``, ``EndDate``, ``Status``, ``MaxSeats``, ``SeatsLeft``, ``Method``, ``Location`` and ``MeetTimes``.
@@ -829,7 +830,7 @@ def add_new_term(json_file: str = "term_data.json"):
         # Commit the changes to the database
         conn.commit()
 
-def add_students_from_json(json_file: str = "students_data.json"):
+def add_students_from_json(json_file: str):
     """Insert student accounts, course histories, and declared programs from a JSON file into the database.
 
     Expected JSON structure (per student):
@@ -951,7 +952,7 @@ def add_students_from_json(json_file: str = "students_data.json"):
         conn.commit()
         print(f"Student '{student['Name']}' added to database from JSON file.")
 
-def add_advisors_from_json(json_file: str = "advisors_data.json"):
+def add_advisors_from_json(json_file: str):
     """Insert advisor accounts from a JSON file into the database.
 
     Expected JSON structure (per advisor):
@@ -1145,10 +1146,89 @@ def reset_all():
     reset_users()
     print("All tables in the database have been reset.")
 
-if __name__ == '__main__':
-    setup_database()
-    create_triggers()
-    populate_course_catalog()
-    populate_programs_catalog()
-    add_advisors_from_json()
-    add_students_from_json()
+def parse_args(argv):
+    """Parse command-line arguments for database development operations.
+
+    This function defines the command-line interface for running various database setup, population, and reset operations directly from the terminal. It uses the argparse library to handle arguments that specify which operations to perform and which JSON files to use for data population.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    parser = argparse.ArgumentParser(
+        prog='Database Development Tools',
+        description='Utilities for setting up, populating, and resetting the database during development.',
+        epilog='Example usage: python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('--reset', type=str, choices=['course_catalog', 'programs_catalog', 'terms_and_courses', 'events', 'users', 'all'], help='Reset specific tables in the database. Use "all" to reset everything.')
+    parser.add_argument('--setup', action='store_true', help='Set up the database schema and triggers.')
+    parser.add_argument('--populate_courses', type=str, default='courses_data.json', help='Populate the course catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--populate_programs', type=str, default='programs_data.json', help='Populate the programs catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_students', type=str, default='students_data.json', help='Add students and their course histories from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_advisors', type=str, default='advisors_data.json', help='Add advisors from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_term', type=str, default='term_data.json', help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
+    
+    return parser.parse_args(argv)
+
+def run_operations(args):
+    """Run database operations based on parsed command-line arguments.
+
+    This function takes the parsed arguments from parse_args() and executes the corresponding database operations in the appropriate order. It checks which operations were specified (reset, setup, populate, add) and calls the relevant functions defined in this module with the provided JSON filenames.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    if args.reset:
+        if args.reset == 'course_catalog':
+            reset_course_catalog()
+        elif args.reset == 'programs_catalog':
+            reset_programs_catalog()
+        elif args.reset == 'terms_and_courses':
+            reset_terms_and_courses()
+        elif args.reset == 'events':
+            reset_events()
+        elif args.reset == 'users':
+            reset_users()
+        elif args.reset == 'all':
+            reset_all()
+    
+    if args.setup:
+        setup_database()
+    
+    if args.populate_courses:
+        populate_course_catalog(args.populate_courses)
+    
+    if args.populate_programs:
+        populate_programs_catalog(args.populate_programs)
+    
+    if args.add_students:
+        add_students_from_json(args.add_students)
+    
+    if args.add_advisors:
+        add_advisors_from_json(args.add_advisors)
+    
+    if args.add_term:
+        add_new_term(args.add_term)
+
+def main():
+    """
+    Main entry point for the database development tools script.
+
+    This function parses command-line arguments and runs the specified database operations. It allows developers to easily set up the database schema, populate it with data from JSON files, and reset tables as needed during development. The operations are executed in a logical order based on the dependencies between them (e.g., resetting tables before setting up the schema, populating courses before programs, etc.).
+
+    Example usage:
+    - To reset all tables, set up the schema, populate courses and programs, add students and advisors, and add a new term:
+        python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json
+    - To only reset the course catalog and populate it from a JSON file:
+        python database_dev_tools.py --reset course_catalog --populate_courses courses_data.json
+    - To set up the database schema without resetting or populating data:
+        python database_dev_tools.py --setup
+    - To add a new term without affecting existing data:
+        python database_dev_tools.py --add_term term_data.json
+    """
+    args = parse_args(sys.argv[1:])
+    run_operations(args)
+
+if __name__ == "__main__":
+    main()
