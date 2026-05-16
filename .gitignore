@@ -21,3 +21,4 @@ node_modules/
 
 # Error logs
 tool_error_logs/
+error_logs/
