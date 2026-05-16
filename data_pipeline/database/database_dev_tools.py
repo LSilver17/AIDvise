@@ -12,6 +12,9 @@ Functions:
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
 - ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
 - ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
+- ``parse_args(argv)``: Parses command-line arguments to specify which operations to run and which JSON files to use for population.
+- ``run_operations(args)``: Executes a sequence of operations based on parsed command-line arguments, allowing for flexible setup and population of the database.
+- ``main()``: Entry point for running the script from the command line, which parses arguments and runs the specified operations.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
@@ -22,7 +25,6 @@ Functions:
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
 Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
-This file can also be run as a script to execute any of the above functions directly from the command line, with appropriate arguments for JSON file paths when needed.
 """
 
 import sys, os
@@ -1163,11 +1165,11 @@ def parse_args(argv):
 
     parser.add_argument('--reset', type=str, choices=['course_catalog', 'programs_catalog', 'terms_and_courses', 'events', 'users', 'all'], help='Reset specific tables in the database. Use "all" to reset everything.')
     parser.add_argument('--setup', action='store_true', help='Set up the database schema and triggers.')
-    parser.add_argument('--populate_courses', type=str, default='courses_data.json', help='Populate the course catalog from a specified JSON file in the jsons directory.')
-    parser.add_argument('--populate_programs', type=str, default='programs_data.json', help='Populate the programs catalog from a specified JSON file in the jsons directory.')
-    parser.add_argument('--add_students', type=str, default='students_data.json', help='Add students and their course histories from a specified JSON file in the jsons directory.')
-    parser.add_argument('--add_advisors', type=str, default='advisors_data.json', help='Add advisors from a specified JSON file in the jsons directory.')
-    parser.add_argument('--add_term', type=str, default='term_data.json', help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
+    parser.add_argument('--populate_courses', type=str, help='Populate the course catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--populate_programs', type=str, help='Populate the programs catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_students', type=str, help='Add students and their course histories from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_advisors', type=str, help='Add advisors from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_term', type=str, help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
     
     return parser.parse_args(argv)
 
