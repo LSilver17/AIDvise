@@ -1,7 +1,10 @@
 [
-
     {
         "Name": "Bill Bebop",
         "Email": "bill.bebop@example.com"
+    },
+    {
+        "Name": "Alice Anderson",
+        "Email": "alice.anderson@example.com"
     }
 ]

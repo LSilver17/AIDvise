@@ -51,7 +51,44 @@ with open(CONFIG_PATH, "r") as f:
     CONFIG = json.load(f)
     LOOP_CONFIG = CONFIG["loop_limits"]
 
-def invoke_db_helper(state: SPlannerState):
+def _extract_plan(state: SPlannerState) -> tuple[dict, dict]:
+    """
+    Safely extracts planner output and nested content dict from state.
+
+    Some model/tooling paths may produce plan payloads where "content" is a
+    string or missing entirely. This helper normalizes both objects so routing
+    code can perform key lookups without type errors.
+    """
+    plan = state.get("plan", {})
+    if isinstance(plan, str):
+        try:
+            plan = json.loads(plan)
+        except Exception:
+            return {}, {}
+    if not isinstance(plan, dict):
+        return {}, {}
+
+    content = plan.get("content", {})
+    if isinstance(content, str):
+        try:
+            content = json.loads(content)
+        except Exception:
+            content = {}
+    if not isinstance(content, dict):
+        content = {}
+
+    return plan, content
+
+def _plan_value(state: SPlannerState, key: str, default=None):
+    """
+    Reads a planner field from either top-level plan or nested content.
+    """
+    plan, content = _extract_plan(state)
+    if key in plan:
+        return plan.get(key, default)
+    return content.get(key, default)
+
+async def invoke_db_helper(state: SPlannerState):
     """
     Invokes the student database helper graph and merges its result back into state.
 
@@ -66,18 +103,17 @@ def invoke_db_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the updated "db_info" list.
     """
-    plan = state.get("plan", {})
-    info_needed = plan.get("info_needed_db", "")
+    info_needed = _plan_value(state, "info_needed_db")
     if not info_needed:
         return {"db_info": state.get("db_info", [])}
-    
+        
     db_helper_state = {"info_needed": info_needed, "messages": [], "loop_count": 0, "user_id": state["user_id"], "account_type": "Student"}
-    result = db_graph.invoke(db_helper_state)
+    result = await db_graph.ainvoke(db_helper_state)
     db_info = state.get("db_info", [])
     db_info.append(result.get("info", {}))
     return {"db_info": db_info}
 
-def invoke_web_helper(state: SPlannerState):
+async def invoke_web_helper(state: SPlannerState):
     """
     Invokes the web helper graph and merges its result back into state.
 
@@ -92,18 +128,17 @@ def invoke_web_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the updated "web_info" list.
     """
-    plan = state.get("plan", {})
-    info_needed = plan.get("info_needed_web", "")
+    info_needed = _plan_value(state, "info_needed_web")
     if not info_needed:
         return {"web_info": state.get("web_info", [])}
     
     web_helper_state = {"info_needed": info_needed, "messages": [], "loop_count": 0}
-    result = web_graph.invoke(web_helper_state)
+    result = await web_graph.ainvoke(web_helper_state)
     web_info = state.get("web_info", [])
     web_info.append(result.get("info", {}))
     return {"web_info": web_info}
 
-def invoke_insertion_helper(state: SPlannerState):
+async def invoke_insertion_helper(state: SPlannerState):
     """
     Invokes the insertion helper graph and stores the insertion result.
 
@@ -118,13 +153,12 @@ def invoke_insertion_helper(state: SPlannerState):
     Returns:
         dict: Partial state update with the insertion_result string.
     """
-    plan = state.get("plan", {})
-    info_to_insert = plan.get("info_to_insert", "")
+    info_to_insert = _plan_value(state, "info_to_insert")
     if not info_to_insert:
-        return {"insertion_result": "No insertion requested"}
+        return {"insertion_result": "No insertion requested."}
     
     insertion_helper_state = {"info_to_insert": info_to_insert, "messages": [], "loop_count": 0, "user_id": state["user_id"]}
-    result = insertion_graph.invoke(insertion_helper_state)
+    result = await insertion_graph.ainvoke(insertion_helper_state)
     return {"insertion_result": result.get("result", "")}
 
 def route_from_planning(state: SPlannerState):
@@ -143,18 +177,29 @@ def route_from_planning(state: SPlannerState):
     Returns:
         list[Send]: One or more graph sends describing the next execution branch.
     """
+    requires_database = bool(_plan_value(state, "requires_database", False))
+    requires_web_search = bool(_plan_value(state, "requires_web_search", False))
+    requires_insertion = bool(_plan_value(state, "requires_insertion", False))
+    answer = _plan_value(state, "answer", "")
+
     if state["loop_count"] < LOOP_CONFIG["s-planner"]:
         routes = []
-        if "requires_database" in state["plan"] and state["plan"]["requires_database"]:
+        if requires_database:
             routes.append("invoke_db_helper")
-        if "requires_web_search" in state["plan"] and state["plan"]["requires_web_search"]:
+        if requires_web_search:
             routes.append("invoke_web_helper")
-        if "requires_insertion" in state["plan"] and state["plan"]["requires_insertion"]:
+        if requires_insertion:
             routes.append("invoke_insertion_helper")
         if not routes:
-            routes.append("answer_node")
+            if answer is not None and answer != "":
+                routes.append("answer_node")
+            else:
+                messages = state["messages"] + [
+                    AIMessage(content="No information was requested and no answer was provided. Re-evaluate and provide either tool requirements or a final answer.")
+                ]
+                return [Send("planning", {**state, "messages": messages})]
         return [Send(route, state) for route in routes]
-    elif "answer" in state["plan"] and state["plan"]["answer"] is not None and state["plan"]["answer"] != "":
+    elif answer is not None and answer != "":
         return [Send("answer_node", state)]
     else:
         if state["loop_count"] == LOOP_CONFIG["s-planner"]:
@@ -175,7 +220,10 @@ def answer_node(state: SPlannerState) -> SPlannerState:
     Returns:
         SPlannerState: Updated state with the final AI answer appended to messages.
     """
-    return {"messages": state["messages"] + [AIMessage(content=state["plan"]["answer"])]}
+    answer = _plan_value(state, "answer")
+    if answer is None or answer == "":
+        answer = "I couldn't produce a final answer for that request. Please rephrase your question and try again."
+    return {"messages": state["messages"] + [AIMessage(content=answer)]}
 
 graph_builder = StateGraph(SPlannerState)
 

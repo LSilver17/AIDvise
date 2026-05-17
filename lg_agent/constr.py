@@ -29,7 +29,7 @@ from langgraph.graph import StateGraph, START, END
 from lg_agent.utilities.state import RouteState
 from s_chat_graph import s_chat_graph
 from a_chat_graph import a_chat_graph
-from data_pipeline.database.database_dev_tools import __connect
+from data_pipeline.database.database_dev_tools import __connect, aconnect
 from typing import Literal
 
 # cd my-agent && .venv\Scripts\activate && npx @langchain/langgraph-cli dev --port 8123 --no-browser
@@ -60,7 +60,7 @@ def route(state: RouteState) -> Literal["invoke_s_graph", "invoke_a_graph"]:
         case _:
             raise ValueError(f"Invalid account type: {account_type}. Must be 'Student' or 'Advisor'.")
 
-def invoke_s_graph(state: RouteState) -> RouteState:
+async def invoke_s_graph(state: RouteState) -> RouteState:
     """
     Resolves the current student ID and invokes the student chat graph.
 
@@ -78,16 +78,15 @@ def invoke_s_graph(state: RouteState) -> RouteState:
     Raises:
         ValueError: If no student row exists for the provided parent user ID.
     """
-    with __connect() as conn:
-        cur = conn.cursor()
-        cur.execute("SELECT ID FROM students WHERE ParentID = ?", (state["user_id"],))
-        student_id = cur.fetchone()
+    async with aconnect() as conn:
+        cur = await conn.execute("SELECT ID FROM students WHERE ParentID = ?", (state["user_id"],))
+        student_id = await cur.fetchone()
         if student_id is None:
             raise ValueError(f"No student found for parent_id {state['user_id']}")
-        result = s_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": student_id[0], "insertion_result": ""})
+        result = await s_chat_graph.ainvoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": student_id[0], "insertion_result": ""})
     return {"messages": result["messages"]}
 
-def invoke_a_graph(state: RouteState) -> RouteState:
+async def invoke_a_graph(state: RouteState) -> RouteState:
     """
     Invokes the advisor chat graph with the current conversation state.
 
@@ -98,7 +97,7 @@ def invoke_a_graph(state: RouteState) -> RouteState:
     Returns:
         RouteState: State update containing the messages returned by the advisor graph.
     """
-    result = a_chat_graph.invoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": state["user_id"]})
+    result = await a_chat_graph.ainvoke({"messages": state["messages"], "plan": {}, "loop_count": 0, "user_id": state["user_id"]})
     return {"messages": result["messages"]}
 
 graph_builder = StateGraph(RouteState)

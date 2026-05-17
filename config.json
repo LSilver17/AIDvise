@@ -27,19 +27,33 @@
             "insertion": "free",
             "alerts": "free"
         },
-        "student_test": {
-            "planning": "student_test",
-            "db": "student_test",
-            "web": "student_test",
-            "insertion": "student_test",
-            "alerts": "student_test"
+        "student_tool_test": {
+            "planning": "s_tool_test",
+            "db": "s_tool_test",
+            "web": "tool_test",
+            "insertion": "tool_test",
+            "alerts": "test"
         },
-        "advisor_test": {
-            "planning": "advisor_test",
-            "db": "advisor_test",
-            "web": "advisor_test",
-            "insertion": "advisor_test",
-            "alerts": "advisor_test"
+        "advisor_tool_test": {
+            "planning": "a_tool_test",
+            "db": "a_tool_test",
+            "web": "tool_test",
+            "insertion": "do_nothing_test",
+            "alerts": "test"
+        },
+        "planner_loop_test": {
+            "planning": "loop_test",
+            "db": "do_nothing_test",
+            "web": "do_nothing_test",
+            "insertion": "do_nothing_test",
+            "alerts": "test"
+        },
+        "helper_loop_test": {
+            "planning": "s_tool_test",
+            "db": "loop_test",
+            "web": "loop_test",
+            "insertion": "loop_test",
+            "alerts": "test"
         }
     },
     "context_config": {
@@ -128,6 +142,10 @@
             "get_web_page_content_tool": true
         },
         "insert-tools": {
+            "course_query_tool_by_code": true,
+            "course_query_tool_by_title": true,
+            "course_filter_tool": true,
+            "section_filter_tool": true,
             "get_student_interests_tool": true, 
             "get_student_tracked_sections_tool": true,
             "insert_student_interests_tool": true,

@@ -36,6 +36,7 @@ from utilities.state import APlannerState, SPlannerState, DatabaseHelperState, W
 from utilities.schemas import APlanSchema, SPlanSchema
 from utilities.tools import db_tools, web_tools, insertion_tools, alt_db_tools
 from utilities.model_inits import db_llm, planning_llm, web_llm, insertion_llm
+from utilities.TestModel import FakeChatModel
 import json
 
 load_dotenv()
@@ -47,7 +48,7 @@ with open(CONFIG_PATH, "r") as f:
     CONTEXT_CONFIG = CONFIG["context_config"]
     LOOP_CONFIG = CONFIG["loop_limits"]
 
-def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerState:
+async def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerState:
     """
     Builds the next plan for the student-facing agent.
 
@@ -93,8 +94,9 @@ def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerStat
         for QueryResult in state["web_info"]:
             messages.append(HumanMessage(content=f"Web Search Query: {QueryResult['query']}\nWeb Search Result: {QueryResult['result']}"))
 
-    if state["insertion_result"] != "":
-        messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
+    if "insertion_result" in state:
+        if state["insertion_result"] != "":
+            messages.append(HumanMessage(content=f"Result of last insertion attempt: {state['insertion_result']}"))
 
     if CONTEXT_CONFIG["s-planner"] != "no-tools":
         messages.append(HumanMessage(content="Current loop count = " + str(state["loop_count"])))
@@ -105,11 +107,11 @@ def s_planner_node(state: SPlannerState, config: RunnableConfig) -> SPlannerStat
         emit_tool_calls=False 
     )
 
-    response = structured_llm.invoke(messages, config=modified_config).model_dump()
+    response = (await structured_llm.ainvoke(messages, config=modified_config)).model_dump()
     state["plan"] = response
     return state
 
-def a_planner_node(state: APlannerState, config: RunnableConfig) -> APlannerState:
+async def a_planner_node(state: APlannerState, config: RunnableConfig) -> APlannerState:
     """
     Builds the next plan for the advisor-facing agent.
 
@@ -163,11 +165,11 @@ def a_planner_node(state: APlannerState, config: RunnableConfig) -> APlannerStat
         emit_tool_calls=False 
     )
 
-    response = structured_llm.invoke(messages, config=modified_config).model_dump()
+    response = (await structured_llm.ainvoke(messages, config=modified_config)).model_dump()
     state["plan"] = response
     return state
 
-def db_node(state: DatabaseHelperState, config: RunnableConfig):
+async def db_node(state: DatabaseHelperState, config: RunnableConfig):
     """
     Executes the database helper model with the appropriate tool set.
 
@@ -192,11 +194,19 @@ def db_node(state: DatabaseHelperState, config: RunnableConfig):
     state["loop_count"] += 1
 
     if state["account_type"] == "Student":
-        llm_with_db_tools = db_llm.bind_tools(db_tools)
+        llm_with_db_tools = (
+            db_llm.bind_tools(db_tools, runtime_state=state)
+            if isinstance(db_llm, FakeChatModel)
+            else db_llm.bind_tools(db_tools)
+        )
         c_level = CONTEXT_CONFIG["s-db"]["context-select"]
         system_prompt = CONTEXT_CONFIG["s-db"]["context-level"][c_level]
     else:
-        llm_with_db_tools = db_llm.bind_tools(alt_db_tools)
+        llm_with_db_tools = (
+            db_llm.bind_tools(alt_db_tools, runtime_state=state)
+            if isinstance(db_llm, FakeChatModel)
+            else db_llm.bind_tools(alt_db_tools)
+        )
         c_level = CONTEXT_CONFIG["a-db"]["context-select"]
         system_prompt = CONTEXT_CONFIG["a-db"]["context-level"][c_level]
     
@@ -223,11 +233,11 @@ def db_node(state: DatabaseHelperState, config: RunnableConfig):
         emit_tool_calls=False 
     )
 
-    result = llm_with_db_tools.invoke(messages, config=modified_config)
+    result = await llm_with_db_tools.ainvoke(messages, config=modified_config)
 
     return {"messages": [result]}
 
-def web_node(state: WebSearchHelperState, config: RunnableConfig):
+async def web_node(state: WebSearchHelperState, config: RunnableConfig):
     """
     Executes the web search helper model with the search tool set.
 
@@ -251,7 +261,11 @@ def web_node(state: WebSearchHelperState, config: RunnableConfig):
     
     state["loop_count"] += 1
 
-    llm_with_web_tools = web_llm.bind_tools(web_tools)
+    llm_with_web_tools = (
+        web_llm.bind_tools(web_tools, runtime_state=state)
+        if isinstance(web_llm, FakeChatModel)
+        else web_llm.bind_tools(web_tools)
+    )
 
     c_level = CONTEXT_CONFIG["web"]["context-select"]
     system_prompt = CONTEXT_CONFIG["web"]["context-level"][c_level]
@@ -279,11 +293,11 @@ def web_node(state: WebSearchHelperState, config: RunnableConfig):
         emit_tool_calls=False 
     )
 
-    result = llm_with_web_tools.invoke(messages, config=modified_config)
+    result = await llm_with_web_tools.ainvoke(messages, config=modified_config)
 
     return {"messages": [result]}
 
-def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> InsertionHelperState:
+async def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> InsertionHelperState:
     """
     Executes the insertion helper model to persist new student information.
 
@@ -307,7 +321,11 @@ def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> Inser
 
     state["loop_count"] += 1
 
-    llm_with_insertion_tools = insertion_llm.bind_tools(insertion_tools)
+    llm_with_insertion_tools = (
+        insertion_llm.bind_tools(insertion_tools, runtime_state=state)
+        if isinstance(insertion_llm, FakeChatModel)
+        else insertion_llm.bind_tools(insertion_tools)
+    )
 
     c_level = CONTEXT_CONFIG["insertion"]["context-select"]
     system_prompt = CONTEXT_CONFIG["insertion"]["context-level"][c_level]
@@ -335,6 +353,6 @@ def insertion_node(state: InsertionHelperState, config: RunnableConfig) -> Inser
         emit_tool_calls=False 
     )
 
-    result = llm_with_insertion_tools.invoke(messages, config=modified_config)
+    result = await llm_with_insertion_tools.ainvoke(messages, config=modified_config)
 
     return {"messages": [result]}

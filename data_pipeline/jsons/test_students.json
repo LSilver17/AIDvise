@@ -42,5 +42,21 @@
                 "Grade": "A-"
             }
         ]
+    },
+    {
+        "ID": 987654,
+        "Name": "Jane Smith",
+        "Email": "jane.smith@example.com",
+        "GPA": 4.0,
+        "CreditsEarned": 3,
+        "IntendedGraduationTerm": "Fall 2028",
+        "Advisor": "Alice Anderson",
+        "ProgramsOfStudy": ["Automation Robotics Manufacturing Technology Certificate (ARMTech)"],
+        "CoursesTaken": [
+            {
+                "CourseCode": "AUT 113",
+                "Grade": "A"
+            }
+        ]
     }
 ]
