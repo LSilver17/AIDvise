@@ -42,7 +42,7 @@ function choose_init_message(name: string, accountType: AccountType, interests: 
 }
 
 /**
- * Displays CopilotKit's {@link CopilotChat} component with a customized user welcome message.
+ * Displays CopilotKit's CopilotChat{@link https://docs.copilotkit.ai/reference/v1/components/chat/CopilotChat} component with a customized user welcome message.
  */
 export default function Chat() {
   const { userData, userMetadata, userInterests } : {userData: UserData, userMetadata: UserMetadata, userInterests: UserInterests} = useUserData();

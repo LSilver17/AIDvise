@@ -5,12 +5,18 @@ This module provides development tools for managing the SQLite database used by 
 
 Functions:
 -  ``__connect()``: Internal function to establish a connection to the SQLite database with appropriate configuration.
+- ``aconnect()``: Async variant of the database connection function using aiosqlite.
 - ``setup_database()``: Creates the database schema with all required tables.
 - ``create_triggers()``: Creates database triggers for logging section status changes and resetting student check fields.
 - ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
 - ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
 - ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
+- ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
+- ``add_events_from_json(json_file)``: Loads event data from a JSON file and populates the ``Events`` and ``EventDates`` tables.
+- ``parse_args(argv)``: Parses command-line arguments to specify which operations to run and which JSON files to use for population.
+- ``run_operations(args)``: Executes a sequence of operations based on parsed command-line arguments, allowing for flexible setup and population of the database.
+- ``main()``: Entry point for running the script from the command line, which parses arguments and runs the specified operations.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
@@ -21,7 +27,6 @@ Functions:
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
 Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
-This file can also be run as a script to execute the following sequence of operations: set up the database schema, create triggers, populate the course catalog and programs catalog from their respective JSON files, and add a new term with offerings from its JSON file.
 """
 
 import sys, os
@@ -36,7 +41,8 @@ JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons
 if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
-import json, sqlite3
+import json, sqlite3, aiosqlite, argparse
+from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
 
@@ -63,6 +69,22 @@ def __connect():
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
+
+@asynccontextmanager
+async def aconnect():
+    """Async variant of __connect using aiosqlite.
+
+    Yields an `aiosqlite.Connection` with foreign keys enabled and the same
+    row_factory as the synchronous connector. Use `async with aconnect() as conn:`
+    in async contexts.
+    """
+    with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
+        CONFIG = json.load(f)
+        DB_CONFIG = CONFIG["database_config"]
+    async with aiosqlite.connect(DB_CONFIG["db_name"] + ".db") as conn:
+        await conn.execute('PRAGMA foreign_keys = ON')
+        conn.row_factory = sqlite3.Row
+        yield conn
 
 def setup_database():
     """Create the project's database schema.
@@ -881,7 +903,7 @@ def add_students_from_json(json_file: str):
                         print(f"Skipping course entry for student '{student['Name']}': missing CourseCode or Grade")
                         continue
                     
-                    course_id = get_courseID_by_code(cursor, course_code)
+                    course_id = get_courseID_by_code(conn, course_code)
                     if not course_id:
                         print(f"Course '{course_code}' not found in database. Skipping this course for student '{student['Name']}'.")
                         continue
@@ -976,6 +998,91 @@ def add_advisors_from_json(json_file: str):
         # Commit the changes to the database
         conn.commit()
         print(f"Advisors added to database from JSON file.")
+
+def add_events_from_json(json_file: str):
+    """Insert events and their dates from a JSON file into the database.
+
+    Expected JSON structure (per event):
+    - ``Title``: event title
+    - ``Description``: event description
+    - ``Dates``: list of date entries. Each entry may be either an ISO date string or an object with ``Date``, ``StartTime``, ``EndTime``, and optional ``Location``.
+
+    Behavior:
+    - Inserts a row into ``Events`` for each event and rows into ``EventDates`` for each associated date. If an event with the same title already exists, it is skipped and a message is printed.
+
+    Args:
+        json_file (str): Filename in the ``jsons`` directory to load.
+    """
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        event_data = {"events": []}
+
+        # Load event data from JSON file
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
+            event_data['events'] = json.load(f)
+
+        for event in event_data['events']:
+            required_fields = ['Title', 'Description', 'Dates']
+            missing_fields = [field for field in required_fields if field not in event]
+            if missing_fields:
+                print(f"Skipping event: missing required fields {missing_fields}")
+                continue
+
+            # check if an event with the same title already exists in the database
+            existing_event = cursor.execute('SELECT ID FROM Events WHERE Name = ?', (event['Title'],)).fetchone()
+            if existing_event:
+                print(f"Event '{event['Title']}' already exists in database. Skipping this event.")
+                continue
+
+            # add the new event to the Events table
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Events (Name, Description)
+                    VALUES (?, ?)
+                    ''',
+                    (
+                        event['Title'],
+                        event['Description']
+                    )
+                )
+                event_id = cursor.lastrowid
+
+                # add event dates to the EventDates table
+                event_dates = event.get('Dates', [])
+                for date_entry in event_dates:
+                    if isinstance(date_entry, str):
+                        event_date = date_entry
+                        start_time = '09:00'
+                        end_time = '10:00'
+                        location = None
+                    else:
+                        event_date = date_entry.get('Date')
+                        start_time = date_entry.get('StartTime')
+                        end_time = date_entry.get('EndTime')
+                        location = date_entry.get('Location')
+
+                    if not event_date or not start_time or not end_time:
+                        print(f"Skipping event date for '{event['Title']}': missing Date, StartTime, or EndTime")
+                        continue
+
+                    cursor.execute(
+                        '''
+                        INSERT INTO EventDates (Date, StartTime, EndTime, Location, ParentID)
+                        VALUES (?, ?, ?, ?, ?)
+                        ''',
+                        (event_date, start_time, end_time, location, event_id)
+                    )
+
+            except sqlite3.IntegrityError as e:
+                print(f"Error adding event '{event['Title']}' to database: {e}. Skipping this event.")
+                continue
+
+        # Commit the changes to the database
+        conn.commit()
+        print(f"Events added to database from JSON file.")
 
 def reset_course_catalog():
     """Drop the ``Courses`` table if it exists.
@@ -1111,9 +1218,95 @@ def reset_all():
     reset_users()
     print("All tables in the database have been reset.")
 
-if __name__ == '__main__':
-    setup_database()
-    create_triggers()
-    populate_course_catalog("course_catalog_plus.json")
-    populate_programs_catalog("qcc_programs_plus.json")
-    add_new_term()
+def parse_args(argv):
+    """Parse command-line arguments for database development operations.
+
+    This function defines the command-line interface for running various database setup, population, and reset operations directly from the terminal. It uses the argparse library to handle arguments that specify which operations to perform and which JSON files to use for data population.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    parser = argparse.ArgumentParser(
+        prog='Database Development Tools',
+        description='Utilities for setting up, populating, and resetting the database during development.',
+        epilog='Example usage: python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('--reset', type=str, choices=['course_catalog', 'programs_catalog', 'terms_and_courses', 'events', 'users', 'all'], help='Reset specific tables in the database. Use "all" to reset everything.')
+    parser.add_argument('--setup', action='store_true', help='Set up the database schema and triggers.')
+    parser.add_argument('--populate_courses', type=str, help='Populate the course catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--populate_programs', type=str, help='Populate the programs catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_students', type=str, help='Add students and their course histories from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_advisors', type=str, help='Add advisors from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_events', type=str, help='Add events from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_term', type=str, help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
+    
+    return parser.parse_args(argv)
+
+def run_operations(args):
+    """Run database operations based on parsed command-line arguments.
+
+    This function takes the parsed arguments from parse_args() and executes the corresponding database operations in the appropriate order. It checks which operations were specified (reset, setup, populate, add) and calls the relevant functions defined in this module with the provided JSON filenames.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    if args.reset:
+        if args.reset == 'course_catalog':
+            reset_course_catalog()
+        elif args.reset == 'programs_catalog':
+            reset_programs_catalog()
+        elif args.reset == 'terms_and_courses':
+            reset_terms_and_courses()
+        elif args.reset == 'events':
+            reset_events()
+        elif args.reset == 'users':
+            reset_users()
+        elif args.reset == 'all':
+            reset_all()
+    
+    if args.setup:
+        setup_database()
+    
+    if args.populate_courses:
+        populate_course_catalog(args.populate_courses)
+    
+    if args.populate_programs:
+        populate_programs_catalog(args.populate_programs)
+    
+    if args.add_students:
+        add_students_from_json(args.add_students)
+    
+    if args.add_advisors:
+        add_advisors_from_json(args.add_advisors)
+    
+    if args.add_events:
+        add_events_from_json(args.add_events)
+    
+    if args.add_term:
+        add_new_term(args.add_term)
+
+def main():
+    """
+    Main entry point for the database development tools script.
+
+    This function parses command-line arguments and runs the specified database operations. It allows developers to easily set up the database schema, populate it with data from JSON files, and reset tables as needed during development. The operations are executed in a logical order based on the dependencies between them (e.g., resetting tables before setting up the schema, populating courses before programs, etc.).
+
+    Example usage:
+    - To reset all tables, set up the schema, populate courses and programs, add students and advisors, and add a new term:
+        python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json
+    - To only reset the course catalog and populate it from a JSON file:
+        python database_dev_tools.py --reset course_catalog --populate_courses courses_data.json
+    - To set up the database schema without resetting or populating data:
+        python database_dev_tools.py --setup
+    - To add a new term without affecting existing data:
+        python database_dev_tools.py --add_term term_data.json
+    - To add events from a JSON file:
+        python database_dev_tools.py --add_events events_data.json
+    """
+    args = parse_args(sys.argv[1:])
+    run_operations(args)
+
+if __name__ == "__main__":
+    main()

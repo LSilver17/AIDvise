@@ -12,8 +12,9 @@ import NextAuth, { DefaultSession, User } from "next-auth";
 import type { AccountType } from '@/app/lib/account/account_type'
 
 /**
- * Expands user object to store more data in the session.
+ * Expands NextAuth user object to store more data in the session.
  */
+
 declare module "next-auth" {
     interface User {
         username: string,

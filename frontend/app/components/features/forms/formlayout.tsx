@@ -16,7 +16,7 @@ import FormSubmit from "@/app/components/features/forms/formsubmit";
 import FormSelect from "@/app/components/features/forms/formfieldsel";
 import "@/app/globals.css"
 
-type Props = {
+export type Props = {
     onSubmit: SubmitEventHandler<HTMLFormElement>;
     justify?: Responsive<"center" | "start" | "end" | "baseline" | "stretch"> | undefined,
     children: React.ReactNode;

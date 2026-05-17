@@ -13,7 +13,7 @@ import type { Responsive } from "@radix-ui/themes/props"
 import React, { SubmitEventHandler, useState } from "react";
 import "@/app/globals.css"
 
-type Props = {
+export type Props = {
     children: React.ReactNode,
     size?: Responsive<"4" | "1" | "2" | "3"> | undefined;
 }

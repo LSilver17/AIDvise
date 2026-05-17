@@ -1,0 +1,122 @@
+[
+    {
+        "Title": "AI Career Panel",
+        "Description": "A panel discussion with industry professionals working in AI and machine learning, sharing insights on career paths, skills needed, and emerging trends.",
+        "Dates": [
+            {
+                "Date": "2026-05-15",
+                "StartTime": "17:00",
+                "EndTime": "19:00",
+                "Location": "Engineering Auditorium"
+            },
+            {
+                "Date": "2026-05-22",
+                "StartTime": "17:00",
+                "EndTime": "19:00",
+                "Location": "Engineering Auditorium"
+            }
+        ]
+    },
+	{
+		"Title": "Summer STEM Open House",
+		"Description": "A campus showcase for prospective students featuring lab tours, faculty meet-and-greets, and short demonstrations from technology and engineering programs.",
+		"Dates": [
+			{
+				"Date": "2026-06-05",
+				"StartTime": "15:00",
+				"EndTime": "18:00",
+				"Location": "Main Campus Atrium"
+			},
+			{
+				"Date": "2026-06-19",
+				"StartTime": "15:00",
+				"EndTime": "18:00",
+				"Location": "Main Campus Atrium"
+			}
+		]
+	},
+	{
+		"Title": "Career Fair and Resume Clinic",
+		"Description": "Students can meet local employers, review resumes with career staff, and practice quick interview introductions.",
+		"Dates": [
+			{
+				"Date": "2026-06-12",
+				"StartTime": "10:00",
+				"EndTime": "14:00",
+				"Location": "Student Center Ballroom"
+			}
+		]
+	},
+	{
+		"Title": "Robotics Demo Night",
+		"Description": "An evening of live robotics and automation demos led by faculty and student project teams.",
+		"Dates": [
+			{
+				"Date": "2026-07-10",
+				"StartTime": "17:30",
+				"EndTime": "20:00",
+				"Location": "Engineering Lab 204"
+			}
+		]
+	},
+	{
+		"Title": "Wellness and Study Skills Workshop",
+		"Description": "A practical workshop on time management, stress reduction, and building healthy routines for the semester ahead.",
+		"Dates": [
+			{
+				"Date": "2026-08-14",
+				"StartTime": "12:00",
+				"EndTime": "13:30",
+				"Location": "Wellness Center Conference Room"
+			}
+		]
+	},
+	{
+		"Title": "Transfer Planning Night",
+		"Description": "An information session for students considering transfer pathways, dual enrollment planning, and program-to-program progression.",
+		"Dates": [
+			{
+				"Date": "2026-09-18",
+				"StartTime": "18:00",
+				"EndTime": "19:30",
+				"Location": "Academic Advising Suite"
+			}
+		]
+	},
+	{
+		"Title": "Financial Aid and Scholarship Bootcamp",
+		"Description": "A hands-on event covering FAFSA updates, scholarship search strategies, and document checklists.",
+		"Dates": [
+			{
+				"Date": "2026-10-09",
+				"StartTime": "09:30",
+				"EndTime": "12:00",
+				"Location": "Financial Aid Office"
+			}
+		]
+	},
+	{
+		"Title": "Cybersecurity and Data Privacy Seminar",
+		"Description": "A guest-led seminar on protecting personal information, spotting phishing attempts, and securing student accounts.",
+		"Dates": [
+			{
+				"Date": "2026-11-06",
+				"StartTime": "13:00",
+				"EndTime": "15:00",
+				"Location": "Library Auditorium"
+			}
+		]
+	},
+	{
+		"Title": "Winter Makers Showcase",
+		"Description": "A year-end celebration of student projects, prototype builds, and small-group demonstrations across technical programs.",
+		"Dates": [
+			{
+				"Date": "2026-12-04",
+				"StartTime": "16:00",
+				"EndTime": "19:00",
+				"Location": "Innovation Hall"
+			}
+		]
+	}
+]

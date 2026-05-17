@@ -12,7 +12,7 @@ import FormFieldSel from "@/app/components/features/forms/formfieldsel"
 import FormSubmit from "@/app/components/features/forms/formsubmit"
 import { Flex } from "@radix-ui/themes"
 
-type PropTypes = {
+export type PropTypes = {
     children: React.ReactNode;
     href?: string;
     buttText?: string;
@@ -21,6 +21,8 @@ type PropTypes = {
 /**
  * Layout for account login/registration, with a button for switching between the two. 
  * The proper fields ({@link FormField}, {@link FormFieldSel}, {@link FormSubmit}) should be given as the child components.
+ * Pass the url route with the href prop.
+ * @param children - Form field child elements.
  * @param props.href - Button hyperlink URL.
  * @param props.buttText - Inner button text.
  * @returns 

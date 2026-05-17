@@ -25,7 +25,7 @@ import { useState, cloneElement, createContext, useContext } from "react";
 import React from "react";
 import { Responsive, Union } from "@radix-ui/themes/props";
 
-type Props = {
+export type Props = {
     children: React.ReactNode,
     list: any[],
     min: number,

@@ -10,10 +10,10 @@ Description:
 "use server"
 
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/lib/auth/authOptions";
 
 /**
- * Validates the active session by passing {@link authOptions} to {@link getServerSession},
+ * Validates the active session by passing {@link authOptions} to getServerSession{@link https://next-auth.js.org/configuration/nextjs#getserversession},
  * returning a session object or null depending on result.
  * @returns Session object.
  */

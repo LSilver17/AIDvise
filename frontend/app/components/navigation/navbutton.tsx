@@ -15,7 +15,7 @@ import ThemeProvider from "@/app/components/features/themeprovider";
 import "@radix-ui/themes/styles.css";
 import DefaultButton from "@/app/components/features/default_button"
 
-type ButtonProps = {
+export type ButtonProps = {
     href?: string;
     children: React.ReactNode;
     size?: Responsive<"4" | "1" | "2" | "3"> | undefined;

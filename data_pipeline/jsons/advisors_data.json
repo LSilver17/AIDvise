@@ -1,0 +1,18 @@
+[
+    {
+        "Name": "Bill Bebop",
+        "Email": "bill.bebop@example.com"
+    },
+    {
+        "Name": "Joe Swanson",
+        "Email": "joe_swanson@example.com"
+    },
+    {
+        "Name": "Jonesey Quavious",
+        "Email": "jonesy@example.com"
+    },
+    {
+        "Name": "Alice Anderson",
+        "Email": "alice.anderson@example.com"
+    }
+]
