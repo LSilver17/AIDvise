@@ -9,12 +9,13 @@ GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
 
 import { Flex, ScrollArea } from "@radix-ui/themes"
 
-type Props = {
+export type Props = {
     children: React.ReactNode,
 }
 
 /**
  * Scrollable area layout for containing dashboard pages.
+ * @param props.children - Child elements to be held in scrollable container.
  * @returns 
  */
 export default function DashboardLayout({children}: Props) {

@@ -16,17 +16,17 @@ export type AlertProps = {
     alert: Alert,
 }
 
-type EventProps = {
+export type EventProps = {
     alert: EventAlert,
 }
 
-type ClassProps = {
+export type ClassProps = {
     alert: ClassAlert,
 }
 
 /**
  * Accepts {@link EventProps} child, rendering event fields.
- * @props alert - {@link EventProps}
+ * @props props.alert - {@link EventProps}
  * @returns 
  */
 function EventAlert({alert}: EventProps) {
@@ -42,7 +42,7 @@ function EventAlert({alert}: EventProps) {
 
 /**
  * Accepts {@link ClassProps} child, conditionally rendering course fields.
- * @props alert - {@link ClassProps}
+ * @props props.alert - {@link ClassProps}
  * @returns 
  */
 function ClassAlert({alert}: ClassProps) {

@@ -9,7 +9,7 @@ import { Text, Em } from "@radix-ui/themes"
 import type { Responsive } from "@radix-ui/themes/props";
 import advise from "@/app/components/assets/aidvise.png"
 
-type PropTypes = {
+export type PropTypes = {
     size?: Responsive<"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"> | undefined;
 }
 

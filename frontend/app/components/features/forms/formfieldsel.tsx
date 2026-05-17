@@ -12,7 +12,7 @@ import { Flex, Text, Select } from "@radix-ui/themes"
 import type { Responsive } from "@radix-ui/themes/props";
 import "@/app/globals.css"
 
-type FieldProps = {
+export type FieldProps = {
     label?: string, 
     inputName: string, 
     message?: string;
@@ -27,8 +27,8 @@ type SelectProps = {
 }
 
 /**
- * @param props.required
- * @param props.name
+ * @param required
+ * @param name
  */
 function FieldSelect({required, name}: SelectProps) {
     return (

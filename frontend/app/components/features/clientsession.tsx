@@ -9,18 +9,20 @@ GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
 
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
+import { authSession } from "@/app/lib/account/authSession";
 
-type ClientSessionProps = Readonly<{
+export type ClientSessionProps = Readonly<{
     children: React.ReactNode;
     session: Session | null;
 }>
 
 
 /**
- * Provider component for session .Session is fetched form the server 
- * and can be accessed with client-side {@link useSession} hook, although it is recommended to use
- * the {@link authSession} hook instead. Place within root component.
- * @param props.session - Session object.
+ * Provider component for session. Session is fetched from the server 
+ * and can be accessed with client-side {@link authSession} hook.
+ * Pass the session in the session prop and use this component to
+ * wrap the application in the root component.
+ * @property props.session - Session object.
  * @returns 
  */
 export default function ClientSession ({children, session}: ClientSessionProps ) {

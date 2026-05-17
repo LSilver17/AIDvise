@@ -46,3 +46,4 @@ mock/
 
 # prisma
 src/
+prisma.config.ts

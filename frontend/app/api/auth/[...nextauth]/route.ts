@@ -8,6 +8,10 @@ GitHub:   https://github.com/LSilver17/CSC212---AI-Agent
 import NextAuth from "next-auth";
 import { authOptions } from "@/app/lib/auth/authOptions";
 
+/**
+ * API endpoint for handling user authentication. See {@link authOptions} for more details.
+ */
+
 const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST, handler}
+export { handler as GET, handler as POST }

@@ -12,7 +12,7 @@ import { create_user } from "@/app/lib/account/account_db_utils";
 
 /**
  * Request handler for user registration actions. Calls {@link create_user} and returns a 
- * {@link NextResponse} with the result of the
+ * NextResponse {@link https://nextjs.org/docs/app/api-reference/functions/next-response} with the result of the
  * creation attempt.
  * @param req 
  * @returns 

@@ -54,7 +54,7 @@ async function openDB(path = dbPath()) {
  * Literal type for holding login results, storing credentials or error logs
  * depending on success.
  */
-type LoginResult = 
+export type LoginResult = 
     | {success: true, username: string, account_type: AccountType, id: string}
     | {success: false, error:string}
 
@@ -62,7 +62,7 @@ type LoginResult =
  * Literal type for holding login results, storing credentials or error logs
  * depending on success.
  */
-type CreationResult =
+export type CreationResult =
     | {success:true, id:string, username: string, account_type: AccountType, academic_id: string}
     | {success:false, error:string};
 
@@ -253,7 +253,11 @@ export async function create_user(username: string, password: string, account_ty
     }
 }
 
-type Result = { success: true, query?:string } | { success: false, error: string };
+/**
+ * Contains success status of database operations performed by database handler functions like
+ * {@link update_user_entry} and {@link delete_account}.
+ */
+export type Result = { success: true, query?:string } | { success: false, error: string };
 
 /**
  * @param type - Account type (Student / Advisor)
@@ -446,7 +450,7 @@ export type UserStudents = {
 /**
  * Result object tracking success of data fetch.
  */
-type UserDataResult = {
+export type UserDataResult = {
     data: UserData,
     success: true
 } | {
@@ -578,7 +582,7 @@ export async function getUserObject() {
  * @property userData: {@link UserData}
  * @property userMetadata: {@link UserMetadata}
  */
-interface Context {
+export interface Context {
     userData: UserData,
     userMetadata: UserMetadata,
 }

@@ -9,10 +9,12 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signIn } from "next-auth/react";
 
-import { validate_credentials } from "@/app/lib/account/account_db_utils";/**
+import { validate_credentials } from "@/app/lib/account/account_db_utils";
+/**
  * API endpoint options for any NextAuth requests. Currently credentials
  * are the only supported provider. Checks provided credentials and matches them against
- * those stored in the database with {@link validate_credentials}.
+ * those stored in the database with {@link validate_credentials}. See {@link https://next-auth.js.org/configuration/options}
+ * for details on how to implement your own providers and other authorization options.
  */
 export const authOptions: NextAuthOptions = {
     providers: [

@@ -14,7 +14,7 @@ import type { MouseEventHandler } from "react"
 import ThemeProvider from "@/app/components/features/themeprovider";
 import "@radix-ui/themes/styles.css";
 
-type ButtonProps = {
+export type ButtonProps = {
     href?: string;
     children: React.ReactNode;
     size?: Responsive<"4" | "1" | "2" | "3"> | undefined;
@@ -23,10 +23,7 @@ type ButtonProps = {
 }
 
 /**
- * Default button formatting for the frontend.
- * @param props.size - Prop determining button size.
- * @param props.onClick - Handler for button click event.
- * @param props.variant - Visual variant for button.
+ * Default button formatting for the frontend. Takes a handler function in the onClick prop.
  * @returns 
  */
 export default function AppButton({variant, size, onClick, children} : ButtonProps) {

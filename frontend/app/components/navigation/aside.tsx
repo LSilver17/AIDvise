@@ -22,7 +22,7 @@ import type { UserMetadata } from "@/app/lib/account/account_db_utils";
 import type { AccountType } from "@/app/lib/account/account_type";
 
 /**
- * Component constructing the sidebar used for navigating the dashboard.
+ * Static component constructing the sidebar used for navigating the dashboard.
  * Account type is fetched from context with the {@link useUserData} hook and is used for conditional
  * rendering of navigation buttons.
  * @returns 

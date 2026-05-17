@@ -26,7 +26,7 @@ import { useUserData } from "@/app/lib/account/user_context";
 // Hooks
 import { SubmitEventHandler, useState } from "react"
 
-type AccountFieldPropTypes = {
+export type AccountFieldPropTypes = {
     field: UserField,
     fieldName: string,
     children?: React.ReactNode,
