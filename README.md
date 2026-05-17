@@ -109,3 +109,7 @@ The *get_curr_context* function and its related helper functions in *@/app/lib/a
 ### Accessing User Context
 
 Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
+
+# Documentation Links
+
+- [Frontend Documentation](frontend/docs/index.html)
