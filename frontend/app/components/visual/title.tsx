@@ -10,7 +10,7 @@ import { Text, Flex, Separator, Em } from "@radix-ui/themes"
 import type { Responsive } from "@radix-ui/themes/props";
 import React from "react";
 
-type PropTypes = {
+export type PropTypes = {
     size?: Responsive<"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"> | undefined;
     //justify?: Responsive<"center" | "start" | "end" | "between"> | undefined;
     align?: Responsive<"center" | "start" | "end" | "baseline" | "stretch"> | undefined

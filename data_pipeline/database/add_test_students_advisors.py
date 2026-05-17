@@ -15,4 +15,4 @@ from data_pipeline.database.database_dev_tools import add_advisors_from_json, ad
 
 if __name__ == "__main__":
     add_advisors_from_json("test_advisors.json")
-    add_students_from_json("test_student.json")
+    add_students_from_json("test_students.json")

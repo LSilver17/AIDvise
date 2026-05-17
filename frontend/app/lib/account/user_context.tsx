@@ -14,7 +14,7 @@ Description:
 import { createContext, useContext, useState } from "react";
 import { type UserData, type UserMetadata, type UserAlerts, type UserStudents, type StudentContext, type AdvisorContext, type UserInterests, get_curr_context } from "@/app/lib/account/account_db_utils";
 
-type Props = {
+export type Props = {
     children: React.ReactNode,
     currContext: StudentContext | AdvisorContext,
 }
@@ -24,9 +24,9 @@ const UserContext = createContext(null as any);
 /**
  * A provider component for user context. The context stores user data, metadata, and account type specific data such as alerts and
  * students. 
- * @param {object} props.currContext - {@link StudentContext} or {@link AdvisorContext} object for initializing context variables.
- * @param {React.ReactNode} props.children - Child component to be wrapped in the provider.
- * @param {StudentContext | AdvisorContext} props.currContext - An object containing data to place inside the user context.
+ * @param {object} currContext - {@link StudentContext} or {@link AdvisorContext} object for initializing context variables.
+ * @param {React.ReactNode} children - Child component to be wrapped in the provider.
+ * @param {StudentContext | AdvisorContext} currContext - An object containing data to place inside the user context.
  */
 export function UserContextProvider({children, currContext}: Props) {
     const [userData, setUserData] = useState<UserData>(currContext.userData);
@@ -64,6 +64,7 @@ export function UserContextProvider({children, currContext}: Props) {
 
 /**
  * Hook to take state objects from user context given by the nearest provider. 
+ * Read up on React context here: {@link https://vercel.com/kb/guide/react-context-state-management-nextjs}
  * @returns Object containing the context's state variables.
  */
 export const useUserData = () => useContext(UserContext);

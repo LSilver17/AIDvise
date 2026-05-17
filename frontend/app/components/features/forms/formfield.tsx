@@ -12,7 +12,7 @@ import { Flex, Text, TextField, Grid} from "@radix-ui/themes"
 import { Responsive } from "@radix-ui/themes/props";
 import "@/app/globals.css"
 
-type Props = {
+export type Props = {
     label: string, 
     inputName: string, 
     //error message

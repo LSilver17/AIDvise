@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 
 /**
  * Base dashboard layout, on mount authorizing access and initializing user context if there
- * is indeed an active session. Wraps children with {@link CopilotKit} and {@link UserContextProvider}.
+ * is indeed an active session. Wraps children with the CopilotKit provider {@link https://docs.copilotkit.ai/reference/v2/components/CopilotKit} and {@link UserContextProvider}.
  * @returns 
  */
 export default async function DashboardLayout({ children, }: Readonly<{children: React.ReactNode;}>) {

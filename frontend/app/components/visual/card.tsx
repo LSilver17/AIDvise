@@ -11,7 +11,7 @@ import { Flex } from "@radix-ui/themes"
 // Lib
 import Title from "@/app/components/visual/title";
 
-type Props = {
+export type Props = {
     children: React.ReactNode,
     minHeight?: string,
     maxHeight?: string,

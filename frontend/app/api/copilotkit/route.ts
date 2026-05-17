@@ -31,6 +31,12 @@ const runtime = new CopilotRuntime({
   }
 });
 
+/**
+ * API endpoint handler for CopilotKit integration. A runtime object for CopilotKit 
+ * request handlers is used to allow interaction with agents
+ * defined in langgraph.json. See CopilotKit documentation for more info 
+ * {@link https://docs.copilotkit.ai/reference/v1/classes/CopilotRuntime}.
+ */
 export const POST = async (req: NextRequest) => {
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
     runtime,

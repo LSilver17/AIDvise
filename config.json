@@ -27,24 +27,38 @@
             "insertion": "free",
             "alerts": "free"
         },
-        "student_test": {
-            "planning": "student_test",
-            "db": "student_test",
-            "web": "student_test",
-            "insertion": "student_test",
-            "alerts": "student_test"
+        "student_tool_test": {
+            "planning": "s_tool_test",
+            "db": "s_tool_test",
+            "web": "tool_test",
+            "insertion": "tool_test",
+            "alerts": "test"
         },
-        "advisor_test": {
-            "planning": "advisor_test",
-            "db": "advisor_test",
-            "web": "advisor_test",
-            "insertion": "advisor_test",
-            "alerts": "advisor_test"
+        "advisor_tool_test": {
+            "planning": "a_tool_test",
+            "db": "a_tool_test",
+            "web": "tool_test",
+            "insertion": "do_nothing_test",
+            "alerts": "test"
+        },
+        "planner_loop_test": {
+            "planning": "loop_test",
+            "db": "do_nothing_test",
+            "web": "do_nothing_test",
+            "insertion": "do_nothing_test",
+            "alerts": "test"
+        },
+        "helper_loop_test": {
+            "planning": "s_tool_test",
+            "db": "loop_test",
+            "web": "loop_test",
+            "insertion": "loop_test",
+            "alerts": "test"
         }
     },
     "context_config": {
         "s-planner": {
-            "context-select": "some-db",
+            "context-select": "full",
             "context-level": {
                 "full": "You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. In addition to answering questions, you should also listen to anything the user says about their interests and goals and use that information to update the database. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it. Personalise your responses to the user's interests and goals where possible to make them more engaging and relevant to the user.",
                 "some-db": "You are an academic advisor assistant. Your task is to listen to any questions the user has about course requirements, transfer guidelines, academic strategies, etc. Respond according to the specified schema. If you can answer the user's question using informationed previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it.",
@@ -53,7 +67,7 @@
             }
         },
         "a-planner": {
-            "context-select": "some-db",
+            "context-select": "full",
             "context-level": {
                 "full": "You are the assitent to an academic advisor. Your task is to listen to the advisor's questions about student assigned to them and provide answers based on the information you have. You should also determine if you need to use database queries or web searches to get more information to answer the advisor's questions, and if so, which one would be most appropriate. If you can answer the advisor's question using information previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it. When asking for database info about a user, you should call them by their student ID rather than their name as the database is more likely to have information indexed by student ID than name, and there may be multiple students with the same name. If the advisor provides you with the student's name but you need to get information from the database, you should first use a database query tool to get the student's ID number using their name, and then use that student ID number for any subsequent database queries about that student rather than their name if you know it. If you don't then their name works too, its just less efficient." ,
                 "some-db": "You are the assitent to an academic advisor. Your task is to listen to the advisor's questions about student assigned to them and provide answers based on the information you have. You should also determine if you need to use database queries or web searches to get more information to answer the advisor's questions, and if so, which one would be most appropriate. If you can answer the advisor's question using information previously gathered, leave the appropriate fields blank, even if the answer pertains to the database or web. If loop count is equal to or higher than loop limit and you still don't have the information needed, provide the best answer you can with the information you have and stop. Prioritise database info over web info where possible as it is more reliable. If web info is used, cite a source for it.",
@@ -96,10 +110,10 @@
             "course_filter_tool": true,
             "get_course_description_tool": true,
             "section_filter_tool": true,
-            "get_student_basic_info_tool": false,
-            "get_student_course_history_tool": false,
-            "get_student_interests_tool": false,
-            "get_student_tracked_sections_tool": false,
+            "get_student_basic_info_tool": true,
+            "get_student_course_history_tool": true,
+            "get_student_interests_tool": true,
+            "get_student_tracked_sections_tool": true,
             "get_program_requirements_tool": true,
             "get_upcoming_events_tool": true,
             "get_event_dates_tool": true
@@ -128,6 +142,10 @@
             "get_web_page_content_tool": true
         },
         "insert-tools": {
+            "course_query_tool_by_code": true,
+            "course_query_tool_by_title": true,
+            "course_filter_tool": true,
+            "section_filter_tool": true,
             "get_student_interests_tool": true, 
             "get_student_tracked_sections_tool": true,
             "insert_student_interests_tool": true,

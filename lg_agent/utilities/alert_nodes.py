@@ -28,12 +28,12 @@ from langchain_anthropic import ChatAnthropic
 from utilities.schemas import RelevantEventsSchema
 from utilities.state import AlertsAgentState, AlertsAgentOutput
 from utilities.model_inits import alerts_llm
-from data_pipeline.database.database_dev_tools import __connect
+from data_pipeline.database.database_dev_tools import __connect, aconnect
 from datetime import datetime
 
 load_dotenv()
 
-def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
+async def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
     """
     Retrieves new events from the database since the last check and updates agent state.
     
@@ -59,12 +59,9 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
     Side Effects:
         - Updates the 'LastEventCheck' timestamp for the student in the database.
     """
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
+    async with aconnect() as conn:
         # Get last event check time from database
-        cursor.execute(
+        cur = await conn.execute(
             '''
             SELECT LastEventCheck
             FROM Students
@@ -72,11 +69,12 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
             ''',
             (state["student_id"],)
         )
-        last_event_check = cursor.fetchone()[0]
+        row = await cur.fetchone()
+        last_event_check = row[0] if row else '1970-01-01T00:00:00'
 
         # Update last event check time in database to now
         now = datetime.now().isoformat()
-        cursor.execute(
+        await conn.execute(
             '''
             UPDATE Students
             SET LastEventCheck = ?
@@ -84,10 +82,10 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
             ''',
             (now, state["student_id"])
         )
-        conn.commit()
+        await conn.commit()
 
         # Query for new event dates since last check
-        cursor.execute(
+        cur = await conn.execute(
             '''
             SELECT e.ID, e.Name, e.Description, ed.Date, ed.StartTime, ed.EndTime, ed.Location, ed.TimeAdded
             FROM Events e
@@ -96,7 +94,7 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
             ''',
             (last_event_check,)
         )
-        event_dates = cursor.fetchall()
+        event_dates = await cur.fetchall()
 
         if not event_dates:
             print("No new events found in database since last check.")
@@ -114,7 +112,7 @@ def get_new_events(state: AlertsAgentState) -> AlertsAgentState:
     print("Fetched new events from database:", events)
     return {"upcoming_events": events}
 
-def get_interests(state: AlertsAgentState) -> AlertsAgentState:
+async def get_interests(state: AlertsAgentState) -> AlertsAgentState:
     """
     Retrieves the student's interests from the database and updates agent state.
     
@@ -132,12 +130,8 @@ def get_interests(state: AlertsAgentState) -> AlertsAgentState:
     Raises:
         sqlite3.DatabaseError: If there's an issue connecting to or querying the database.
     """
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Query for the student's interests
-        cursor.execute(
+    async with aconnect() as conn:
+        cur = await conn.execute(
             '''
             SELECT Interest
             FROM Interests
@@ -145,14 +139,13 @@ def get_interests(state: AlertsAgentState) -> AlertsAgentState:
             ''',
             (state["student_id"],)
         )
-
-        # Fetch all results
-        interests = [row[0] for row in cursor.fetchall()]
+        rows = await cur.fetchall()
+        interests = [row[0] for row in rows]
     
     print("Fetched interests from database:", interests)
     return {"student_interests": interests}
 
-def filter_relivent_events(state: AlertsAgentState) -> AlertsAgentState:
+async def filter_relivent_events(state: AlertsAgentState) -> AlertsAgentState:
     """
     Uses LLM to filter events relevant to the student's interests and assess urgency.
     
@@ -195,12 +188,12 @@ def filter_relivent_events(state: AlertsAgentState) -> AlertsAgentState:
         interests_str += f"- {interest}\n"
 
     input = f"{system_prompt}\n\nUpcoming Events:\n{events_str}\n\nStudent Interests:\n{interests_str}"
-    response = structured_llm.invoke(input)
+    response = await structured_llm.ainvoke(input)
 
     print("LLM response:", response.model_dump() if response else "No response")
     return {"relevant_events": response.model_dump()["relivent_events"] if response else []}
 
-def insert_relevant_events(state: AlertsAgentState) -> AlertsAgentOutput:
+async def insert_relevant_events(state: AlertsAgentState) -> AlertsAgentOutput:
     """
     Persists relevant events to the database and returns the formatted output.
     
@@ -224,19 +217,15 @@ def insert_relevant_events(state: AlertsAgentState) -> AlertsAgentOutput:
         - Inserts rows into the RelevantEvents table in the database
         - Commits transaction to persist changes
     """
-    with __connect() as conn:
-        # Create a cursor object to execute SQL commands
-        cursor = conn.cursor()
-
-        # Insert relevant events into database
+    async with aconnect() as conn:
         for event in state["relevant_events"]:
-            cursor.execute(
+            await conn.execute(
                 '''
                 INSERT INTO RelevantEvents (ParentID, EventID, Urgency)
                 VALUES (?, ?, ?)
                 ''',
                 (state["student_id"], event["ID"], event["Urgency"])
             )
-        conn.commit()
+        await conn.commit()
 
     return {"relevant_events": state["relevant_events"]}
