@@ -27,15 +27,17 @@
     - Running the following command in the frontend dir. will generate a NEXTAUTH_SECRET key and place it in .env.local:
         npx auth secret
 
-7. Set up database
+7. Set up database (Skip to step 8 to use preinitialized DB)
     To set up the database and populate catalogs run the following command in root directory:
-        python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
+        - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
     To add a term and its course section offerings to the database run the following command from root directory:
-        python data_pipeline/database/database_dev_tools.py --add_term term_data.json
+        - python data_pipeline/database/database_dev_tools.py --add_term term_data.json
     To add events and their dates to the database runt the following command from root directory:
-        python data_pipeline/database/database_dev_tools.py --add_events event_data.json
+        - python data_pipeline/database/database_dev_tools.py --add_events event_data.json
 
-8. Begin hosting
+8. This repo contains a pre-initialized database called AIDviseDB.db. Accounts for students and advisors exist with ID 1,2,3 and 1,2,3,4 respectively. Use these ID in the     registration section to register and test several user accounts.
+
+9. Begin hosting
     - In root directory, run:
         npx @langchain/langgraph-cli dev --port 8123 --no-browser 
     - In frontend directory, run:
