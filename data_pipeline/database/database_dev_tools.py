@@ -11,6 +11,10 @@ Functions:
 - ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
 - ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
+- ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
+- ``parse_args(argv)``: Parses command-line arguments to specify which operations to run and which JSON files to use for population.
+- ``run_operations(args)``: Executes a sequence of operations based on parsed command-line arguments, allowing for flexible setup and population of the database.
+- ``main()``: Entry point for running the script from the command line, which parses arguments and runs the specified operations.
 - Reset functions:
     - ``reset_course_catalog()``: Drops course-related tables.
     - ``reset_programs_catalog()``: Drops program-of-study related tables.
@@ -21,7 +25,6 @@ Functions:
     - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
 
 Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
-This file can also be run as a script to execute the following sequence of operations: set up the database schema, create triggers, populate the course catalog and programs catalog from their respective JSON files, and add a new term with offerings from its JSON file.
 """
 
 import sys, os
