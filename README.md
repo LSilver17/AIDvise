@@ -112,4 +112,4 @@ Context data can be accessed from components within the UserContextProvider wrap
 
 # Documentation Links
 
-- [Frontend Documentation](https://htmlpreview.github.io/frontend/docs/index.html)
+- [Frontend Documentation](https://htmlpreview.github.io/CSC212---AI-Agent/frontend/docs/index.html)
