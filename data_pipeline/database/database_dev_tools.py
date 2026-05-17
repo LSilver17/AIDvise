@@ -1131,10 +1131,89 @@ def reset_all():
     reset_events()
     reset_users()
     print("All tables in the database have been reset.")
+def parse_args(argv):
+    """Parse command-line arguments for database development operations.
 
-if __name__ == '__main__':
-    setup_database()
-    create_triggers()
-    populate_course_catalog("course_catalog_plus.json")
-    populate_programs_catalog("qcc_programs_plus.json")
-    add_new_term()
+    This function defines the command-line interface for running various database setup, population, and reset operations directly from the terminal. It uses the argparse library to handle arguments that specify which operations to perform and which JSON files to use for data population.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    parser = argparse.ArgumentParser(
+        prog='Database Development Tools',
+        description='Utilities for setting up, populating, and resetting the database during development.',
+        epilog='Example usage: python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('--reset', type=str, choices=['course_catalog', 'programs_catalog', 'terms_and_courses', 'events', 'users', 'all'], help='Reset specific tables in the database. Use "all" to reset everything.')
+    parser.add_argument('--setup', action='store_true', help='Set up the database schema and triggers.')
+    parser.add_argument('--populate_courses', type=str, help='Populate the course catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--populate_programs', type=str, help='Populate the programs catalog from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_students', type=str, help='Add students and their course histories from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_advisors', type=str, help='Add advisors from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_term', type=str, help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
+    
+    return parser.parse_args(argv)
+
+def run_operations(args):
+    """Run database operations based on parsed command-line arguments.
+
+    This function takes the parsed arguments from parse_args() and executes the corresponding database operations in the appropriate order. It checks which operations were specified (reset, setup, populate, add) and calls the relevant functions defined in this module with the provided JSON filenames.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments with attributes corresponding to the defined options.
+    """
+    if args.reset:
+        if args.reset == 'course_catalog':
+            reset_course_catalog()
+        elif args.reset == 'programs_catalog':
+            reset_programs_catalog()
+        elif args.reset == 'terms_and_courses':
+            reset_terms_and_courses()
+        elif args.reset == 'events':
+            reset_events()
+        elif args.reset == 'users':
+            reset_users()
+        elif args.reset == 'all':
+            reset_all()
+    
+    if args.setup:
+        setup_database()
+    
+    if args.populate_courses:
+        populate_course_catalog(args.populate_courses)
+    
+    if args.populate_programs:
+        populate_programs_catalog(args.populate_programs)
+    
+    if args.add_students:
+        add_students_from_json(args.add_students)
+    
+    if args.add_advisors:
+        add_advisors_from_json(args.add_advisors)
+    
+    if args.add_term:
+        add_new_term(args.add_term)
+
+def main():
+    """
+    Main entry point for the database development tools script.
+
+    This function parses command-line arguments and runs the specified database operations. It allows developers to easily set up the database schema, populate it with data from JSON files, and reset tables as needed during development. The operations are executed in a logical order based on the dependencies between them (e.g., resetting tables before setting up the schema, populating courses before programs, etc.).
+
+    Example usage:
+    - To reset all tables, set up the schema, populate courses and programs, add students and advisors, and add a new term:
+        python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json
+    - To only reset the course catalog and populate it from a JSON file:
+        python database_dev_tools.py --reset course_catalog --populate_courses courses_data.json
+    - To set up the database schema without resetting or populating data:
+        python database_dev_tools.py --setup
+    - To add a new term without affecting existing data:
+        python database_dev_tools.py --add_term term_data.json
+    """
+    args = parse_args(sys.argv[1:])
+    run_operations(args)
+
+if __name__ == "__main__":
+    main()
