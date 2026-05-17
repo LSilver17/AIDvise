@@ -1,13 +1,22 @@
 var searchData=
 [
-  ['qualified_5ftarget_0',['qualified_target',['../classgyp_1_1generator_1_1android_1_1_android_mk_writer.html#a3ef804cd75882ac9e61219863fad76e2',1,'gyp.generator.android.AndroidMkWriter.qualified_target'],['../classgyp_1_1generator_1_1make_1_1_makefile_writer.html#acf1e8d06993a8a035799cbb9cff61309',1,'gyp.generator.make.MakefileWriter.qualified_target']]],
-  ['qualifiedtarget_1',['QualifiedTarget',['../namespacegyp_1_1common.html#ada6aa63542d1d17cfa94d8095686240c',1,'gyp::common']]],
-  ['qualifydependencies_2',['QualifyDependencies',['../namespacegyp_1_1input.html#a4078e5fba7560fb5899857c83eb1ea15',1,'gyp::input']]],
-  ['queryresult_3',['QueryResult',['../classlg__agent_1_1utilities_1_1state_1_1_query_result.html',1,'lg_agent::utilities::state']]],
-  ['quote_5freplacer_5fregex_4',['quote_replacer_regex',['../namespacegyp_1_1generator_1_1msvs.html#a525dde7d0562571b85951142a0e7afba',1,'gyp::generator::msvs']]],
-  ['quote_5freplacer_5fregex2_5',['quote_replacer_regex2',['../namespacegyp_1_1generator_1_1msvs.html#ae0bb1e1fe83a03eb950c12c1c277fae5',1,'gyp::generator::msvs']]],
-  ['quoteforrspfile_6',['QuoteForRspFile',['../namespacegyp_1_1msvs__emulation.html#a28f4e6ad7027f512650d7e03604d4364',1,'gyp::msvs_emulation']]],
-  ['quoteifnecessary_7',['QuoteIfNecessary',['../namespacegyp_1_1generator_1_1make.html#a3297aab5afbdf4c0f45905b70c0fb87a',1,'gyp::generator::make']]],
-  ['quoteshellargument_8',['QuoteShellArgument',['../namespacegyp_1_1generator_1_1ninja.html#a67a07eabf39c9961700a47972a6da363',1,'gyp::generator::ninja']]],
-  ['quotespaces_9',['QuoteSpaces',['../namespacegyp_1_1generator_1_1make.html#ab78764dc4f080847e929cea21d9995f0',1,'gyp::generator::make']]]
+  ['relevant_5fevents_0',['relevant_events',['../classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state.html#aee3f23631f72b78104643f791d927d39',1,'lg_agent.utilities.state.AlertsAgentState.relevant_events'],['../classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output.html#a57907bb409b88506c2e35547ea9d68a7',1,'lg_agent.utilities.state.AlertsAgentOutput.relevant_events']]],
+  ['relevanteventsobject_1',['RelevantEventsObject',['../classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_object.html',1,'lg_agent::utilities::schemas']]],
+  ['relevanteventsschema_2',['RelevantEventsSchema',['../classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_schema.html',1,'lg_agent::utilities::schemas']]],
+  ['relivent_5fevents_3',['relivent_events',['../classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_schema.html#a31226599edecf5a923f8bae7487dd9bd',1,'lg_agent::utilities::schemas::RelevantEventsSchema']]],
+  ['requires_5fdatabase_4',['requires_database',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#af56ae92853c6486870cacff56a971b37',1,'lg_agent.utilities.schemas.SPlanSchema.requires_database'],['../classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema.html#af56ae92853c6486870cacff56a971b37',1,'lg_agent.utilities.schemas.APlanSchema.requires_database']]],
+  ['requires_5finsertion_5',['requires_insertion',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#a526ac878901dc048834cce3696ba6e14',1,'lg_agent::utilities::schemas::SPlanSchema']]],
+  ['requires_5fweb_5fsearch_6',['requires_web_search',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#a8b61bb1ada2929341572697c85ea9320',1,'lg_agent.utilities.schemas.SPlanSchema.requires_web_search'],['../classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema.html#a8b61bb1ada2929341572697c85ea9320',1,'lg_agent.utilities.schemas.APlanSchema.requires_web_search']]],
+  ['reset_5fall_7',['reset_all',['../namespacedatabase__dev__tools.html#ac37123a981170efd4155fbcc4a1ea468',1,'database_dev_tools']]],
+  ['reset_5fcourse_5fcatalog_8',['reset_course_catalog',['../namespacedatabase__dev__tools.html#a938d2f1a7163b599987a3aee419365c7',1,'database_dev_tools']]],
+  ['reset_5fevents_9',['reset_events',['../namespacedatabase__dev__tools.html#a449e5cb665a133539a609778d6302d34',1,'database_dev_tools']]],
+  ['reset_5fprograms_5fcatalog_10',['reset_programs_catalog',['../namespacedatabase__dev__tools.html#a7f2632313dc14cbc1d77a99a64deca24',1,'database_dev_tools']]],
+  ['reset_5fstudents_5fand_5fadvisors_11',['reset_students_and_advisors',['../namespacedatabase__dev__tools.html#a56765c8d041d1af55d92f34e5459bf7a',1,'database_dev_tools']]],
+  ['reset_5fterms_5fand_5fcourses_12',['reset_terms_and_courses',['../namespacedatabase__dev__tools.html#ab7b5da03a874618477892d3b605f35d2',1,'database_dev_tools']]],
+  ['reset_5fusers_13',['reset_users',['../namespacedatabase__dev__tools.html#a49144d82cc166956ec12dc55badfdd65',1,'database_dev_tools']]],
+  ['root_5fdir_14',['ROOT_DIR',['../namespacelg__agent_1_1utilities_1_1alert__nodes.html#a53493d6dce5cb623f48c8f9e26178625',1,'lg_agent.utilities.alert_nodes.ROOT_DIR'],['../namespacelg__agent_1_1utilities_1_1model__inits.html#a6ac833aff4a16f2a1f8b15983694fac1',1,'lg_agent.utilities.model_inits.ROOT_DIR'],['../namespacelg__agent_1_1utilities_1_1nodes.html#abfec78b6a5bc13c7913a717de3291b64',1,'lg_agent.utilities.nodes.ROOT_DIR'],['../namespacelg__agent_1_1utilities_1_1schemas.html#abf9f5b6072704559641f0fe03634fb92',1,'lg_agent.utilities.schemas.ROOT_DIR'],['../namespacelg__agent_1_1utilities_1_1tools.html#a5ea5673d992bd5afd703e973a52a0f9c',1,'lg_agent.utilities.tools.ROOT_DIR'],['../namespacedatabase__dev__tools.html#a3abade31c957728775d90b132d2e9c1c',1,'database_dev_tools.ROOT_DIR']]],
+  ['route_15',['route',['../namespacelg__agent_1_1constr.html#a0c17b2e8a7e4dbbd936cbe794d58032a',1,'lg_agent::constr']]],
+  ['route_5ffrom_5fplanning_16',['route_from_planning',['../namespacelg__agent_1_1a__chat__graph.html#a4718f7f6809bd4ef0297cc636c59c017',1,'lg_agent.a_chat_graph.route_from_planning()'],['../namespacelg__agent_1_1s__chat__graph.html#a9ec4aa3d5880631a597608bceae88a01',1,'lg_agent.s_chat_graph.route_from_planning()']]],
+  ['routestate_17',['RouteState',['../classlg__agent_1_1utilities_1_1state_1_1_route_state.html',1,'lg_agent::utilities::state']]],
+  ['run_5foperations_18',['run_operations',['../namespacedatabase__dev__tools.html#a5c4caca172550dcf071f1f8bf4847c9c',1,'database_dev_tools']]]
 ];

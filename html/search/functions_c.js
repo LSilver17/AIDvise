@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['mac_5fplatforms_0',['mac_platforms',['../namespacepackaging_1_1tags.html#a7fc81a259ae5861bec4253ac0ce45762',1,'packaging::tags']]],
-  ['main_1',['main',['../namespaceconvert__to__term__structure.html#a51af30a60f9f02777c6396b8247e356f',1,'convert_to_term_structure.main()'],['../namespacedatabase__dev__tools.html#a51af30a60f9f02777c6396b8247e356f',1,'database_dev_tools.main()'],['../namespaceview__registration__db.html#a51af30a60f9f02777c6396b8247e356f',1,'view_registration_db.main()'],['../namespacerefresh__registration.html#a51af30a60f9f02777c6396b8247e356f',1,'refresh_registration.main()'],['../namespacescrape__catalog.html#a51af30a60f9f02777c6396b8247e356f',1,'scrape_catalog.main()'],['../namespacescrape__classes__page.html#a51af30a60f9f02777c6396b8247e356f',1,'scrape_classes_page.main()'],['../namespacescrape__programs.html#a51af30a60f9f02777c6396b8247e356f',1,'scrape_programs.main()'],['../namespaceextract__tfms.html#a51af30a60f9f02777c6396b8247e356f',1,'extract_tfms.main()'],['../namespaceextract__ttfs.html#a51af30a60f9f02777c6396b8247e356f',1,'extract_ttfs.main()'],['../namespacegyp.html#a827d588ffe9b7f6bc681a73193369742',1,'gyp.main()'],['../namespacegyp_1_1flock__tool.html#a827d588ffe9b7f6bc681a73193369742',1,'gyp.flock_tool.main()'],['../namespacegyp_1_1mac__tool.html#a827d588ffe9b7f6bc681a73193369742',1,'gyp.mac_tool.main()'],['../namespacegyp_1_1win__tool.html#a827d588ffe9b7f6bc681a73193369742',1,'gyp.win_tool.main()'],['../namespacetest__gyp.html#a6bad10ae3b3a5bfa2612cfdd6bf6a999',1,'test_gyp.main()']]],
-  ['major_2',['major',['../classpackaging_1_1version_1_1_version.html#a1f28a415dc1dd7c058e30497f283d05a',1,'packaging::version::Version']]],
-  ['makeguid_3',['MakeGuid',['../namespacegyp_1_1_m_s_v_s_new.html#ae1d8d2aab1c810ffa6bbdd0e1595941e',1,'gyp::MSVSNew']]],
-  ['makepathrelative_4',['MakePathRelative',['../namespacegyp_1_1input.html#a1efb8a68c1668fb34afdc24e8e3a54dd',1,'gyp::input']]],
-  ['mergeconfigwithinheritance_5',['MergeConfigWithInheritance',['../namespacegyp_1_1input.html#a74e3f91dcb1884ad444fadc265a61abb',1,'gyp::input']]],
-  ['mergedicts_6',['MergeDicts',['../namespacegyp_1_1input.html#a7607fcf1b7c2ed03c65defde7c303bc3',1,'gyp::input']]],
-  ['mergeglobalxcodesettingstospec_7',['MergeGlobalXcodeSettingsToSpec',['../namespacegyp_1_1xcode__emulation.html#a7d84bb69410b1f3a1e0e1f1efffe0566',1,'gyp::xcode_emulation']]],
-  ['mergelists_8',['MergeLists',['../namespacegyp_1_1input.html#a244af7f32a61e0ed9d57d9e1ed506e95',1,'gyp::input']]],
-  ['micro_9',['micro',['../classpackaging_1_1version_1_1_version.html#a1b7b67eb7ab3c8cf3852e78e6a206aa5',1,'packaging::version::Version']]],
-  ['minor_10',['minor',['../classpackaging_1_1version_1_1_version.html#a348925513a504351cd2e0668bcf69eac',1,'packaging::version::Version']]]
+  ['reset_5fall_0',['reset_all',['../namespacedatabase__dev__tools.html#ac37123a981170efd4155fbcc4a1ea468',1,'database_dev_tools']]],
+  ['reset_5fcourse_5fcatalog_1',['reset_course_catalog',['../namespacedatabase__dev__tools.html#a938d2f1a7163b599987a3aee419365c7',1,'database_dev_tools']]],
+  ['reset_5fevents_2',['reset_events',['../namespacedatabase__dev__tools.html#a449e5cb665a133539a609778d6302d34',1,'database_dev_tools']]],
+  ['reset_5fprograms_5fcatalog_3',['reset_programs_catalog',['../namespacedatabase__dev__tools.html#a7f2632313dc14cbc1d77a99a64deca24',1,'database_dev_tools']]],
+  ['reset_5fstudents_5fand_5fadvisors_4',['reset_students_and_advisors',['../namespacedatabase__dev__tools.html#a56765c8d041d1af55d92f34e5459bf7a',1,'database_dev_tools']]],
+  ['reset_5fterms_5fand_5fcourses_5',['reset_terms_and_courses',['../namespacedatabase__dev__tools.html#ab7b5da03a874618477892d3b605f35d2',1,'database_dev_tools']]],
+  ['reset_5fusers_6',['reset_users',['../namespacedatabase__dev__tools.html#a49144d82cc166956ec12dc55badfdd65',1,'database_dev_tools']]],
+  ['route_7',['route',['../namespacelg__agent_1_1constr.html#a0c17b2e8a7e4dbbd936cbe794d58032a',1,'lg_agent::constr']]],
+  ['route_5ffrom_5fplanning_8',['route_from_planning',['../namespacelg__agent_1_1a__chat__graph.html#a4718f7f6809bd4ef0297cc636c59c017',1,'lg_agent.a_chat_graph.route_from_planning()'],['../namespacelg__agent_1_1s__chat__graph.html#a9ec4aa3d5880631a597608bceae88a01',1,'lg_agent.s_chat_graph.route_from_planning()']]],
+  ['run_5foperations_9',['run_operations',['../namespacedatabase__dev__tools.html#a5c4caca172550dcf071f1f8bf4847c9c',1,'database_dev_tools']]]
 ];

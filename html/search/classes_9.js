@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ligkernprogram_0',['LigKernProgram',['../classparse__tfm_1_1_lig_kern_program.html',1,'parse_tfm']]],
-  ['literal_1',['Literal',['../classpackaging_1_1metadata_1_1_literal.html',1,'packaging::metadata']]]
+  ['websearchhelperoutput_0',['WebSearchHelperOutput',['../classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output.html',1,'lg_agent::utilities::state']]],
+  ['websearchhelperstate_1',['WebSearchHelperState',['../classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state.html',1,'lg_agent::utilities::state']]]
 ];

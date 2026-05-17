@@ -1,24 +1,12 @@
 var searchData=
 [
-  ['f_0',['f',['../classparse__tfm_1_1_tfm_reader.html#a132514725e63895a0017be89de050aad',1,'parse_tfm.TfmReader.f'],['../namespacescrape__registration__sections.html#a6666f091dcd95699b64d520cfa9b62d8',1,'scrape_registration_sections.f']]],
-  ['failures_1',['failures',['../classtest__gyp_1_1_runner.html#ad3da2d8203b69c32b5576b11a5c6a338',1,'test_gyp::Runner']]],
-  ['field_2',['field',['../classgyp_1_1msvs__emulation_1_1_msvs_settings_1_1___get_wrapper.html#a0d42a3d9076ceba0cb342a37238722da',1,'gyp.msvs_emulation.MsvsSettings._GetWrapper.field'],['../classpackaging_1_1metadata_1_1_invalid_metadata.html#a90e6947a373d2aab611b876c850cd277',1,'packaging.metadata.InvalidMetadata.field']]],
-  ['files_3',['files',['../classgyp_1_1generator_1_1analyzer_1_1_config.html#a0db0d35aee21a1bec86e8dc782c990ec',1,'gyp::generator::analyzer::Config']]],
-  ['files_5fdict_4',['files_dict',['../classgyp_1_1_m_s_v_s_project_1_1_writer.html#ac654a82b95ebca2d8f49241e8eb34071',1,'gyp::MSVSProject::Writer']]],
-  ['files_5fsection_5',['files_section',['../classgyp_1_1_m_s_v_s_project_1_1_writer.html#a59b775961d31a3b812355093b2bad069',1,'gyp::MSVSProject::Writer']]],
-  ['fix_5fvc_5fmacro_5fslashes_5fregex_6',['fix_vc_macro_slashes_regex',['../namespacegyp_1_1_m_s_v_s_settings.html#a6a10eb5672e6997e96a76f173659b373',1,'gyp::MSVSSettings']]],
-  ['fix_5fvc_5fmacro_5fslashes_5fregex_5flist_7',['fix_vc_macro_slashes_regex_list',['../namespacegyp_1_1_m_s_v_s_settings.html#a1b029db570089fa03d378072c23b01e4',1,'gyp::MSVSSettings']]],
-  ['fixpath_5fprefix_8',['fixpath_prefix',['../classgyp_1_1_m_s_v_s_new_1_1_m_s_v_s_project.html#a1d83143436192362781f4b1667acf1f3',1,'gyp.MSVSNew.MSVSProject.fixpath_prefix'],['../namespacegyp_1_1generator_1_1msvs.html#a1b73c12ce9635e8494c2d0de8ba06b2c',1,'gyp.generator.msvs.fixpath_prefix']]],
-  ['flags_9',['flags',['../classpackaging_1_1__elffile_1_1_e_l_f_file.html#a8cdae0b58eeaaed567b948dfb6b3b490',1,'packaging::_elffile::ELFFile']]],
-  ['flat_5fsln_10',['flat_sln',['../classgyp_1_1_m_s_v_s_version_1_1_visual_studio_version.html#a0e703c41e6f40bb7226bec700966164e',1,'gyp::MSVSVersion::VisualStudioVersion']]],
-  ['flavor_11',['flavor',['../classgyp_1_1generator_1_1make_1_1_makefile_writer.html#a48daeea89b61ef2868d3ed998a94fbfa',1,'gyp.generator.make.MakefileWriter.flavor'],['../classgyp_1_1generator_1_1ninja_1_1_ninja_writer.html#ae6b89bdffce81f058f3a73d5ff7e9c5b',1,'gyp.generator.ninja.NinjaWriter.flavor'],['../namespacegenerate__fonts.html#a830ddd40fa92f15890766853c211bb92',1,'generate_fonts.flavor']]],
-  ['fmt_5fstr_12',['fmt_str',['../classtest__gyp_1_1_runner.html#a2bcb8e03c932b9019c731288ec9752bf',1,'test_gyp::Runner']]],
-  ['font_13',['font',['../namespacegenerate__fonts.html#ad880a4b6b801be4fca630426824adecc',1,'generate_fonts']]],
-  ['font_5ffile_14',['font_file',['../namespacegenerate__fonts.html#ae1379bd9c5c9dc98163755f32ab74e06',1,'generate_fonts']]],
-  ['font_5fname_15',['font_name',['../namespacegenerate__fonts.html#af3738bb9f0b94b42eec47faa3c53f97b',1,'generate_fonts']]],
-  ['formats_16',['formats',['../classtest__gyp_1_1_runner.html#a80c1115c8cd9ad71ad283ba35e278453',1,'test_gyp::Runner']]],
-  ['found_5fdependency_5fstring_17',['found_dependency_string',['../namespacegyp_1_1generator_1_1analyzer.html#ad9b17a3ba3a42255e00d33895e322d92',1,'gyp::generator::analyzer']]],
-  ['fp_18',['fp',['../classgyp_1_1generator_1_1android_1_1_android_mk_writer.html#a797b61134908691a06ff70c9899e9a6e',1,'gyp.generator.android.AndroidMkWriter.fp'],['../classgyp_1_1generator_1_1make_1_1_makefile_writer.html#a8207bb780f81a7f6973307b1243d6eba',1,'gyp.generator.make.MakefileWriter.fp']]],
-  ['full_5fpath_5fvars_19',['FULL_PATH_VARS',['../namespacegyp_1_1generator_1_1cmake.html#a80a717ee3f2b7135d3a16a9ecb40d766',1,'gyp::generator::cmake']]],
-  ['func_20',['func',['../classgyp_1_1common_1_1memoize.html#a9a743c72470df56e04e31f5924680428',1,'gyp::common::memoize']]]
+  ['i_5ftools_0',['i_tools',['../namespacelg__agent_1_1utilities_1_1tools.html#a3a43ce259d0774b2fe10957d70eb4822',1,'lg_agent::utilities::tools']]],
+  ['id_1',['ID',['../classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_object.html#af9c83dc91c67fe71735d6ad7da9a46df',1,'lg_agent::utilities::schemas::RelevantEventsObject']]],
+  ['info_5fneeded_5fdb_2',['info_needed_db',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#ad637aed84f412bdaca81251c8ebfab2c',1,'lg_agent.utilities.schemas.SPlanSchema.info_needed_db'],['../classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema.html#ad637aed84f412bdaca81251c8ebfab2c',1,'lg_agent.utilities.schemas.APlanSchema.info_needed_db']]],
+  ['info_5fneeded_5fweb_3',['info_needed_web',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#ada3388d885aa70706a1065d3ae2a2fdd',1,'lg_agent.utilities.schemas.SPlanSchema.info_needed_web'],['../classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema.html#ada3388d885aa70706a1065d3ae2a2fdd',1,'lg_agent.utilities.schemas.APlanSchema.info_needed_web']]],
+  ['info_5fto_5finsert_4',['info_to_insert',['../classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema.html#a3bc04be31574520ae504f9c377fccbf0',1,'lg_agent::utilities::schemas::SPlanSchema']]],
+  ['insertion_5fgraph_5',['insertion_graph',['../namespacelg__agent_1_1insertion__helper__graph.html#a03b55d62731e2ce5c09e4c9757e75384',1,'lg_agent::insertion_helper_graph']]],
+  ['insertion_5fllm_6',['insertion_llm',['../namespacelg__agent_1_1utilities_1_1model__inits.html#a7f9c511718e9fcaf4955d032c849b4b5',1,'lg_agent::utilities::model_inits']]],
+  ['insertion_5ftools_7',['insertion_tools',['../namespacelg__agent_1_1utilities_1_1tools.html#a6d9bc43c175e4c824eb60fb1c6917fd9',1,'lg_agent::utilities::tools']]],
+  ['instructors_8',['instructors',['../classlg__agent_1_1utilities_1_1schemas_1_1_section_filters.html#a3f47b4bf35fb9b78c6d4b35d6e18dec2',1,'lg_agent::utilities::schemas::SectionFilters']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['joinpath_0',['JoinPath',['../namespacegyp_1_1_m_s_v_s_version.html#aa60d260b1ffc0031907d032aa9691324',1,'gyp::MSVSVersion']]]
+  ['main_0',['main',['../namespacedatabase__dev__tools.html#a51af30a60f9f02777c6396b8247e356f',1,'database_dev_tools']]]
 ];
