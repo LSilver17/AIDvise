@@ -1005,8 +1005,7 @@ def add_events_from_json(json_file: str):
     Expected JSON structure (per event):
     - ``Title``: event title
     - ``Description``: event description
-    - ``RelevantPrograms``: list of program titles relevant to the event
-    - ``Dates``: list of ISO-format date strings when the event occurs
+    - ``Dates``: list of date entries. Each entry may be either an ISO date string or an object with ``Date``, ``StartTime``, ``EndTime``, and optional ``Location``.
 
     Behavior:
     - Inserts a row into ``Events`` for each event and rows into ``EventDates`` for each associated date. If an event with the same title already exists, it is skipped and a message is printed.
@@ -1025,14 +1024,14 @@ def add_events_from_json(json_file: str):
             event_data['events'] = json.load(f)
 
         for event in event_data['events']:
-            required_fields = ['Title', 'Description', 'RelevantPrograms', 'Dates']
+            required_fields = ['Title', 'Description', 'Dates']
             missing_fields = [field for field in required_fields if field not in event]
             if missing_fields:
                 print(f"Skipping event: missing required fields {missing_fields}")
                 continue
 
             # check if an event with the same title already exists in the database
-            existing_event = cursor.execute('SELECT ID FROM Events WHERE Title = ?', (event['Title'],)).fetchone()
+            existing_event = cursor.execute('SELECT ID FROM Events WHERE Name = ?', (event['Title'],)).fetchone()
             if existing_event:
                 print(f"Event '{event['Title']}' already exists in database. Skipping this event.")
                 continue
@@ -1041,7 +1040,7 @@ def add_events_from_json(json_file: str):
             try:
                 cursor.execute(
                     '''
-                    INSERT INTO Events (Title, Description)
+                    INSERT INTO Events (Name, Description)
                     VALUES (?, ?)
                     ''',
                     (
@@ -1051,31 +1050,30 @@ def add_events_from_json(json_file: str):
                 )
                 event_id = cursor.lastrowid
 
-                # associate relevant programs with the event
-                relevant_programs = event.get('RelevantPrograms', [])
-                for program in relevant_programs:
-                    program_id = cursor.execute('SELECT ID FROM ProgramsOfStudy WHERE Title = ?', (program,)).fetchone()
-                    if program_id:
-                        program_id = program_id['ID']
-                        cursor.execute(
-                            '''
-                            INSERT INTO RelevantProgramsForEvents (ProgramID, ParentID)
-                            VALUES (?, ?)
-                            ''',
-                            (program_id, event_id)
-                        )
-                    else:
-                        print(f"Program '{program}' not found in database. Skipping association with event '{event['Title']}'.")
-                
                 # add event dates to the EventDates table
                 event_dates = event.get('Dates', [])
-                for date in event_dates:
+                for date_entry in event_dates:
+                    if isinstance(date_entry, str):
+                        event_date = date_entry
+                        start_time = '09:00'
+                        end_time = '10:00'
+                        location = None
+                    else:
+                        event_date = date_entry.get('Date')
+                        start_time = date_entry.get('StartTime')
+                        end_time = date_entry.get('EndTime')
+                        location = date_entry.get('Location')
+
+                    if not event_date or not start_time or not end_time:
+                        print(f"Skipping event date for '{event['Title']}': missing Date, StartTime, or EndTime")
+                        continue
+
                     cursor.execute(
                         '''
-                        INSERT INTO EventDates (Date, ParentID)
-                        VALUES (?, ?)
+                        INSERT INTO EventDates (Date, StartTime, EndTime, Location, ParentID)
+                        VALUES (?, ?, ?, ?, ?)
                         ''',
-                        (date, event_id)
+                        (event_date, start_time, end_time, location, event_id)
                     )
 
             except sqlite3.IntegrityError as e:
