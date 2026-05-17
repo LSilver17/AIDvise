@@ -1,0 +1,1088 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+tools Namespace Reference}
+\hypertarget{namespacelg__agent_1_1utilities_1_1tools}{}\label{namespacelg__agent_1_1utilities_1_1tools}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ab89b11cb41b8e3a4fd91ece34327d889}{\+\_\+get\+\_\+error\+\_\+log\+\_\+path}} ()
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a3a5bf91d28e1ab171cb6e79f23854822}{get\+\_\+current\+\_\+time\+\_\+tool}} ()
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a67fe325820861641a30c44d3100ff12a}{get\+\_\+department\+\_\+list\+\_\+tool}} ()
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a2992e866677eca1337a08aa74361265a}{get\+\_\+departments\+\_\+in\+\_\+category\+\_\+tool}} (str category)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a56c09b4502c3171dd1ac0fbac9176f1a}{course\+\_\+query\+\_\+tool\+\_\+by\+\_\+code}} (str course\+\_\+code)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a88c6a943e63b77f1d5ff3538727b3704}{course\+\_\+query\+\_\+tool\+\_\+by\+\_\+title}} (str course\+\_\+title)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ae61a824064d5a5ea0b2118dab3063dc7}{course\+\_\+filter\+\_\+tool}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} filters=None)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5bce0fa385fe25fd118784a1128d5921}{get\+\_\+course\+\_\+description\+\_\+tool}} (int course\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a996baa530b1c711fdd52922b934eabfe}{section\+\_\+filter\+\_\+tool}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} filters=None)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a248cd8f05e4b05d9abab717c4ae5e178}{get\+\_\+student\+\_\+basic\+\_\+info\+\_\+tool}} (Tool\+Runtime runtime)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_abb79cfcc3a26b6118e609711f00a4835}{get\+\_\+student\+\_\+course\+\_\+history\+\_\+tool}} (Tool\+Runtime runtime)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_abda72746d0dea3ec98ea4f47c8d3148e}{get\+\_\+student\+\_\+interests\+\_\+tool}} (Tool\+Runtime runtime)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a1410e94dd7264ecf68615d53ab4e6f79}{get\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool}} (Tool\+Runtime runtime)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a02e1af7d630f4b934d560868e2eeddd0}{get\+\_\+program\+\_\+requirements\+\_\+tool}} (str program\+\_\+name)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ab1725051cef130c0cfd4bc4150b9c57d}{get\+\_\+upcoming\+\_\+events\+\_\+tool}} ()
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a49772f0e45fef3c7675032713c8bda94}{get\+\_\+event\+\_\+dates\+\_\+tool}} (str event\+\_\+name)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ac7af74ce3f1441bcbe7ed1672e430f5a}{web\+\_\+search\+\_\+tool}} (str query, int max\+\_\+results=5)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a623266528643ca651a291cd834320f2a}{get\+\_\+web\+\_\+page\+\_\+content\+\_\+tool}} (str url, int max\+\_\+chars=3000)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a3e0f6a5abc24c51b67cc38c19640bc57}{insert\+\_\+student\+\_\+interests\+\_\+tool}} (Tool\+Runtime runtime, str interest)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a562fbf7c28f6da5a1f5df620ed03d72c}{insert\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool}} (Tool\+Runtime runtime, str course\+\_\+code, str section\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a991f583a9c2b21b0a19e3e8ceec3908a}{get\+\_\+student\+\_\+id\+\_\+by\+\_\+name\+\_\+tool}} (Tool\+Runtime runtime, str student\+\_\+name)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a405226944f4571054b78d83bd3c96126}{get\+\_\+advisor\+\_\+students\+\_\+tool}} (Tool\+Runtime runtime)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_aeb7c67196ee43283995dd54abbd8e645}{a\+\_\+get\+\_\+student\+\_\+basic\+\_\+info\+\_\+tool}} (Tool\+Runtime runtime, int student\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a1c7fafee83750db503afa973fb124fb3}{a\+\_\+get\+\_\+student\+\_\+course\+\_\+history\+\_\+tool}} (Tool\+Runtime runtime, int student\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a55ad22c8730e7c1a153309e5a8e128d8}{a\+\_\+get\+\_\+student\+\_\+interests\+\_\+tool}} (Tool\+Runtime runtime, int student\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_aea94d293b8d2ee4eb07a167859783339}{a\+\_\+get\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool}} (Tool\+Runtime runtime, int student\+\_\+id)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_aa10dbae2e9edf8a5d85dcc8e348f7e01}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a01edb12bea71bf0b8dfe25ccfdbe8085}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a72f113b1c1e5a4e0bb79d53d565a671c}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ac56c5defdfc26b134a336caa3008ca5b}{TOOL\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a72f113b1c1e5a4e0bb79d53d565a671c}{CONFIG}}\+["{}tool\+\_\+select"{}]\+
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a0c0419c096f9e375262282995e050aa1}{DEPARTMENT\+\_\+\+LIST\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}department\+\_\+mapping.\+json"{})
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a131755f89ee256b47ffaa2f5006817b7}{DEPARTMENT\+\_\+\+LIST}} = \{"{}departments"{}:\+ \+[$\,$]\+\}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_ac28fbb580d75f9300b37481985b1c368}{START\+\_\+\+TIMESTAMP}} = datetime.\+now().strftime("{}\%Y\%m\%d\+\_\+\%H\%M\%S"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a66a7a69794194be836561f60938d0822}{ERROR\+\_\+\+LOG\+\_\+\+DIR}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}error\+\_\+logs"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_aba84d1fd590c7c030324d422f52622da}{exist\+\_\+ok}}
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a00317b8d03c5c41fad2a3ac96c4c36ea}{d\+\_\+tools}}
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a92b684d42fafe1a026a022313e2b46d4}{db\+\_\+tools}} = \+[$\,$]\+
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a1b46d58e3476518748abd44a326b2e8e}{w\+\_\+tools}}
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a87f12ae00fa1c45e3361f1fdb267383d}{web\+\_\+tools}} = \+[$\,$]\+
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a3a43ce259d0774b2fe10957d70eb4822}{i\+\_\+tools}}
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a6d9bc43c175e4c824eb60fb1c6917fd9}{insertion\+\_\+tools}} = \+[$\,$]\+
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a2d12106d6a9bf1cead5a786113655d42}{ad\+\_\+tools}}
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a7f0bd7ed47f19bdd3888451dce50aded}{alt\+\_\+db\+\_\+tools}} = \+[$\,$]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+This file contains the tool implementations for the course-planning agent. Each tool is defined as a function decorated with `@tool` from LangChain, which specifies the tool's name, description, and return behavior.
+
+Database agent tools for student users:
+- `get_current_time_tool`: Retrieves the current date and time as a formatted string.
+- `get_department_list_tool`: Retrieves a list of all 3-letter department codes and their meanings.
+- `get_departments_in_category_tool`: Retrieves a list of what types of courses are considered a part of a specified category.
+- `course_query_tool_by_code`: Retrieves information about a specific course based on its course code.
+- `course_query_tool_by_title`: Retrieves information about a specific course based on its title.
+- `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
+- `get_course_description_tool`: Retrieves the description of a course based on its ID.
+- `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
+- `get_student_basic_info_tool`: Retrieves basic profile information for the current student user, including their name, email, advisor, GPA, total credits, and programs of study.
+- `get_student_course_history_tool`: Retrieves the course history for the current student user, including course codes, titles, and grades.
+- `get_student_interests_tool`: Retrieves the interests for the current student user.
+- `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
+- `get_program_requirements_tool`: Retrieves the course requirements for a specified program of study.
+- `get_upcoming_events_tool`: Retrieves a list of upcoming events.
+- `get_event_dates_tool`: Retrieves the dates for a specified event.
+
+Database agent tools for advisor users:
+- `get_current_time_tool`: Retrieves the current date and time as a formatted string.
+- `get_department_list_tool`: Retrieves a list of all 3-letter department codes and their meanings.
+- `get_departments_in_category_tool`: Retrieves a list of what types of courses are considered a part of a specified category.
+- `course_query_tool_by_code`: Retrieves information about a specific course based on its course code.
+- `course_query_tool_by_title`: Retrieves information about a specific course based on its title.
+- `course_filter_tool`: Retrieves a list of courses that match specified filter criteria.
+- `get_course_description_tool`: Retrieves the description of a course based on its ID.
+- `section_filter_tool`: Retrieves a list of sections that match specified filter criteria.
+- `get_student_id_by_name_tool`: Retrieves a student's ID based on their name. Only works for students who have the current user as their advisor.
+- `get_advisor_students_tool`: Retrieves a list of students assigned to the advisor user, including their names and IDs.
+- `a_get_student_basic_info_tool`: Retrieves basic profile information for a specified student who is assigned to the advisor user, including their name, email, advisor, GPA, total credits, and programs of study.
+- `a_get_student_course_history_tool`: Retrieves the course history for a specified student who is assigned to the advisor user, including course codes, titles, and grades.
+- `a_get_student_interests_tool`: Retrieves the current interests for a specified student who is assigned to the advisor user.
+- `a_get_student_tracked_sections_tool`: Retrieves the sections that a specified student who is assigned to the advisor user is currently tracking for openings.
+- `get_program_requirements_tool`: Retrieves the course requirements for a specified program of study.
+- `get_upcoming_events_tool`: Retrieves a list of upcoming events.
+- `get_event_dates_tool`: Retrieves the dates for a specified event.
+
+Insertion agent tools:
+- `get_student_interests_tool`: Retrieves the interests for the current student user.
+- `get_student_tracked_sections_tool`: Retrieves the course sections that the student user is currently tracking for openings.
+- `insert_student_interests_tool`: Inserts a new interest for the current student user.
+- `insert_student_tracked_section_tool`: Inserts a new tracked section for the current student user.
+
+Web agent tools:
+- `web_search_tool`: Performs a web search for a given query and returns a list of results with sources.
+- `fetch_web_page_content_tool`: Fetches and extracts the main textual content from a specified URL.
+
+Individual tools can be disabled using the `tool_config.json` file. If a tool is disabled, it will not be registered with the agent and cannot be called by the agent's language model. This allows for dynamic control over which tools the agent has access to without needing to modify the code.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1utilities_1_1tools_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ab89b11cb41b8e3a4fd91ece34327d889}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!\_get\_error\_log\_path@{\_get\_error\_log\_path}}
+\index{\_get\_error\_log\_path@{\_get\_error\_log\_path}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{\_get\_error\_log\_path()}{\_get\_error\_log\_path()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ab89b11cb41b8e3a4fd91ece34327d889} 
+\+\_\+get\+\_\+error\+\_\+log\+\_\+path (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Ensure error_logs directory exists and return the path for error log file.\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_aeb7c67196ee43283995dd54abbd8e645}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!a\_get\_student\_basic\_info\_tool@{a\_get\_student\_basic\_info\_tool}}
+\index{a\_get\_student\_basic\_info\_tool@{a\_get\_student\_basic\_info\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{a\_get\_student\_basic\_info\_tool()}{a\_get\_student\_basic\_info\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_aeb7c67196ee43283995dd54abbd8e645} 
+ str a\+\_\+get\+\_\+student\+\_\+basic\+\_\+info\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return basic profile information for an advisor-visible student.
+
+Performs advisor ownership checks, then wraps `database_utils.get_student_basic_info`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+    student_id (int): Student ID to retrieve:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+
+Returns:
+    out (str): JSON-encoded student profile info:
+        Format: {
+            "Name": str,
+                Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
+            "Email": str,
+                Format: Student email as stored in `Students.Email` column (e.g. "alice@university.edu")
+            "Advisor": str,
+                Format: Advisor name as stored in `Advisors.Name` column (e.g. "Dr. John Doe")
+            "GPA": float,
+                Format: GPA value as stored in `Students.GPA` column (e.g. 3.75)
+            "CreditsEarned": int,
+                Format: Total credits earned as stored in `Students.CreditsEarned` column (e.g. 90)
+            "ProgramsOfStudy": list[dict]
+                Format of list items: {
+                    "Title": str,
+                        Format: Program title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems")
+                    "Status": str
+                        Format: Status string as stored in `StudentProgramsOfStudy.Status` column (e.g. "Declared", "In Progress", "Completed")
+                }
+        }
+        Access failure format: "Student with ID {student_id} is not assigned to the current user."
+        Not-found format: "No student found with ID {student_id}"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a1c7fafee83750db503afa973fb124fb3}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!a\_get\_student\_course\_history\_tool@{a\_get\_student\_course\_history\_tool}}
+\index{a\_get\_student\_course\_history\_tool@{a\_get\_student\_course\_history\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{a\_get\_student\_course\_history\_tool()}{a\_get\_student\_course\_history\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a1c7fafee83750db503afa973fb124fb3} 
+ str a\+\_\+get\+\_\+student\+\_\+course\+\_\+history\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course history for an advisor-visible student.
+
+Performs advisor ownership checks, then wraps `database_utils.get_student_course_history`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+    student_id (int): Student ID to retrieve:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+
+Returns:
+    out (str): JSON-encoded list of course-history entries:
+        Format: List[{
+            "CourseCode": str,
+                Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` column (e.g. "Introduction to Computer Science")
+            "Grade": str
+                Format: Grade string as stored in `StudentCourseHistory.Grade` column (e.g. "A", "B+", "Pass", "Fail")
+        }]
+        Note: If no courses are found, serialized value is ["No courses taken"].
+        Access failure format: "Student with ID {student_id} is not assigned to the current user."
+        Not-found format: "No student found with ID {student_id}"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a55ad22c8730e7c1a153309e5a8e128d8}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!a\_get\_student\_interests\_tool@{a\_get\_student\_interests\_tool}}
+\index{a\_get\_student\_interests\_tool@{a\_get\_student\_interests\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{a\_get\_student\_interests\_tool()}{a\_get\_student\_interests\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a55ad22c8730e7c1a153309e5a8e128d8} 
+ str a\+\_\+get\+\_\+student\+\_\+interests\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return interests for an advisor-visible student.
+
+Performs advisor ownership checks, then wraps `database_utils.get_student_interests`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+    student_id (int): Student ID to retrieve:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+
+Returns:
+    out (str): JSON-encoded list of interests:
+        Format of list items: Interest string as stored in `Interests.Interest`.
+        Note: If no interests are found, serialized value is ["No interests specified"].
+        Access failure format: "Student with ID {student_id} is not assigned to the current user."
+        Not-found format: "No student found with ID {student_id}"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_aea94d293b8d2ee4eb07a167859783339}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!a\_get\_student\_tracked\_sections\_tool@{a\_get\_student\_tracked\_sections\_tool}}
+\index{a\_get\_student\_tracked\_sections\_tool@{a\_get\_student\_tracked\_sections\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{a\_get\_student\_tracked\_sections\_tool()}{a\_get\_student\_tracked\_sections\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_aea94d293b8d2ee4eb07a167859783339} 
+ str a\+\_\+get\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return tracked sections for an advisor-visible student.
+
+Performs advisor ownership checks, then wraps `database_utils.get_student_tracked_sections`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+    student_id (int): Student ID to retrieve:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+
+Returns:
+    out (str): JSON-encoded list of tracked sections:
+        Format: List[{
+            "CourseCode": str,
+                Format: Course code as stored in `Courses.Code` column (e.g. "CS101")
+            "SectionNumber": str,
+                Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
+            "Name": str,
+                Format: Section name as stored in `Sections.Name` column (e.g. "Introduction to Computer Science")
+        }]
+        Note: If no tracked sections are found, serialized value is ["No sections currently being tracked"].
+        Access failure format: "Student with ID {student_id} is not assigned to the current user."
+        Not-found format: "No student found with ID {student_id}"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ae61a824064d5a5ea0b2118dab3063dc7}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!course\_filter\_tool@{course\_filter\_tool}}
+\index{course\_filter\_tool@{course\_filter\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{course\_filter\_tool()}{course\_filter\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ae61a824064d5a5ea0b2118dab3063dc7} 
+ str course\+\_\+filter\+\_\+tool (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} }]{filters}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return courses that match the provided `schemas.CourseFilters`.
+
+Wraps `database_utils.get_courseIDs_by_filters` then resolves each ID with
+`database_utils.get_course_info_by_id`.
+
+Args:
+    filters (schemas.CourseFilters): Filters to apply to the course search:
+        Format: {
+            Optional[List[DBTerm]] terms,
+                DBTerm format: {
+                    "year": int,
+                        Format: 4-digit year (e.g. 2024)
+                    "season": str,
+                        Format: ["Fall", "Winter", "Spring", "Summer"]
+                    "number": Optional[int]
+                        Format: Integer term number (e.g. 1, 2, 3, etc).
+                        Note: If not provided, filter matches any term number for the given year/season.
+                }
+                Note: Uses OR logic
+            Optional[List[str]] departments,
+                Format: Department abbreviations as stored in `Courses.Department` (e.g. ["PHY", "MAT"]).
+                Note: Uses OR logic
+            Optional[List[CodeCondition]] course_levels,
+                CodeCondition format: {
+                    "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                    "code": str
+                        Format: Course number as stored in `Courses.Code` (e.g. "101", "210").
+                }
+                Note: Uses AND logic
+            Optional[List[CreditCondition]] credits,
+                CreditCondition format: {
+                    "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                    "credits": int (e.g. 3 or 4)
+                }
+                Note: Uses AND logic
+            Optional[List[str]] keywords,
+                Format: Keywords searched in `Courses.Description`.
+                Note: Uses OR logic
+            Optional[List[str]] prerequisites,
+                Format: Keywords searched in `Courses.Requirements`.
+                Note: Uses OR logic
+        }
+
+Returns:
+    out (str): JSON-encoded list of course metadata dicts:
+        Format: List[{
+            "ID": str,
+                Format: Primary key value from `Courses.ID` column (eg. "12345")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+            "Department": str,
+                Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+            "Code": str,
+                Format: Course number as stored in `Courses.Code` (e.g. "101")
+            "Credits": int,
+                Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+            "Requirements": str
+                Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
+        }]
+        Note: If no matches are found, returns "No courses found matching the specified criteria.".
+
+Raises:
+    ValueError: Propagated from underlying filter logic when an invalid operator is provided:
+        Course code error message: "Invalid course code condition: {condition}"
+        Credit error message: "Invalid credit condition: {condition}"
+
+Warnings:
+    Don't use this tool with overly broad filters (eg: all courses in a given term or all courses in a department) as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a56c09b4502c3171dd1ac0fbac9176f1a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!course\_query\_tool\_by\_code@{course\_query\_tool\_by\_code}}
+\index{course\_query\_tool\_by\_code@{course\_query\_tool\_by\_code}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{course\_query\_tool\_by\_code()}{course\_query\_tool\_by\_code()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a56c09b4502c3171dd1ac0fbac9176f1a} 
+ str course\+\_\+query\+\_\+tool\+\_\+by\+\_\+code (\begin{DoxyParamCaption}\item[{str}]{course\+\_\+code}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course metadata for a course identified by its course code.
+
+Wraps `database_utils.get_courseID_by_code` and `database_utils.get_course_info_by_id`.
+
+Args:
+    course_code (str): The course code to look up:
+        Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
+
+Returns:
+    out (str): Either a not-found message or course metadata for the matched course:
+        Format if found: {
+            "ID": str,
+                Format: Primary key value from `Courses.ID` column (eg. "12345")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+            "Department": str,
+                Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+            "Code": str,
+                Format: Course number as stored in `Courses.Code` (e.g. "101")
+            "Credits": int,
+                Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+            "Requirements": str
+                Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
+        }
+        Format if not found: "No course found with code {course_code}."
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a88c6a943e63b77f1d5ff3538727b3704}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!course\_query\_tool\_by\_title@{course\_query\_tool\_by\_title}}
+\index{course\_query\_tool\_by\_title@{course\_query\_tool\_by\_title}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{course\_query\_tool\_by\_title()}{course\_query\_tool\_by\_title()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a88c6a943e63b77f1d5ff3538727b3704} 
+ str course\+\_\+query\+\_\+tool\+\_\+by\+\_\+title (\begin{DoxyParamCaption}\item[{str}]{course\+\_\+title}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course metadata for a course identified by its title.
+
+Wraps `database_utils.get_courseID_by_title`, `database_utils.get_coops`, and
+`database_utils.get_course_info_by_id`.
+
+Args:
+    course_title (str): The course title to look up.
+        Format: Exact course title as stored in `Courses.Name` column (eg. "Introduction to Computer Science").
+
+Returns:
+    out (str): Either a not-found/clarification message or course metadata:
+        Format if found: {
+            "ID": str,
+                Format: Primary key value from `Courses.ID` column (eg. "12345")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+            "Department": str,
+                Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+            "Code": str,
+                Format: Course number as stored in `Courses.Code` (e.g. "101")
+            "Credits": int,
+                Format: Number of credits as stored in `Courses.Credits` (e.g. 3)
+            "Requirements": str
+                Format: Text string from `Courses.Requirements` column describing prerequisites/requirements.
+        }
+        Format if not found: "No course found with title {course_title}."
+
+Warnings:
+    Course-title lookup assumes titles are unique except for "Cooperative Work Experience".
+    For that title, this tool returns a clarification message containing matching course IDs and asks for a code-based query.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a405226944f4571054b78d83bd3c96126}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_advisor\_students\_tool@{get\_advisor\_students\_tool}}
+\index{get\_advisor\_students\_tool@{get\_advisor\_students\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_advisor\_students\_tool()}{get\_advisor\_students\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a405226944f4571054b78d83bd3c96126} 
+ str get\+\_\+advisor\+\_\+students\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of students assigned to the current advisor.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID.
+
+Returns:
+    out (str): JSON-encoded list of students assigned to the current advisor:
+        Format: List[{
+            "name": str,
+                Format: Student name as stored in `Students.Name` column (e.g. "Alice Smith")
+            "id": int
+                Format: Primary key value from `Students.ID` column (e.g. 12345)
+        }]
+    Note: If no students are found for the current advisor, returns a message indicating that no students were found.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a5bce0fa385fe25fd118784a1128d5921}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_course\_description\_tool@{get\_course\_description\_tool}}
+\index{get\_course\_description\_tool@{get\_course\_description\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_course\_description\_tool()}{get\_course\_description\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a5bce0fa385fe25fd118784a1128d5921} 
+ str get\+\_\+course\+\_\+description\+\_\+tool (\begin{DoxyParamCaption}\item[{int}]{course\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the textual description for a course identified by `course_id`.
+
+Wraps `database_utils.get_course_description_by_id`.
+
+Args:
+    course_id (int): The ID of the course to retrieve the description for:
+        Format: Primary key value from `Courses.ID` column (eg. "12345").
+
+Returns:
+    out (str): Course description as stored in `Courses.Description` for the matched course:
+        Format: Text string from `Courses.Description` column describing the course.
+        Note: If no course is found with that ID, returns "Course not found".
+
+Warnings:
+    Don't use this tool for more than a few courses at a time, as it can consume a lot of tokens.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a3a5bf91d28e1ab171cb6e79f23854822}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_current\_time\_tool@{get\_current\_time\_tool}}
+\index{get\_current\_time\_tool@{get\_current\_time\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_current\_time\_tool()}{get\_current\_time\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a3a5bf91d28e1ab171cb6e79f23854822} 
+ str get\+\_\+current\+\_\+time\+\_\+tool (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the current date and time as a formatted string.
+
+Returns:
+    out (str): Current date and time:
+        Format: "YYYY-MM-DD HH:MM:SS"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a67fe325820861641a30c44d3100ff12a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_department\_list\_tool@{get\_department\_list\_tool}}
+\index{get\_department\_list\_tool@{get\_department\_list\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_department\_list\_tool()}{get\_department\_list\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a67fe325820861641a30c44d3100ff12a} 
+ str get\+\_\+department\+\_\+list\+\_\+tool (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the list of 3-letter department codes.
+
+Returns:
+    out (str): JSON-encoded list of all department mappings:
+        Format: List[{
+            "Code": str, 
+                Format: 3-letter department code (e.g. "CSC", "HST", etc).
+            "Department": str
+                Format: Full department name corresponding to the code (e.g. "Computer Science", "History", etc).
+        }]
+
+Warnings:
+    This tool should only be used if you initialy fail to guess the 3-letter code for a department as it can consume a lot of tokens.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a2992e866677eca1337a08aa74361265a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_departments\_in\_category\_tool@{get\_departments\_in\_category\_tool}}
+\index{get\_departments\_in\_category\_tool@{get\_departments\_in\_category\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_departments\_in\_category\_tool()}{get\_departments\_in\_category\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a2992e866677eca1337a08aa74361265a} 
+ str get\+\_\+departments\+\_\+in\+\_\+category\+\_\+tool (\begin{DoxyParamCaption}\item[{str}]{category}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return department codes considered part of the specified elective/category.
+
+Args:
+    category (str): The category to query:
+        Format: one of ["Behavioral Science Elective" | "Humanities Elective" | "Mathematics Elective" | "Science Elective" | "Lab Science Elective" | "Social Sciences Elective" | "Liberal Arts Elective" | "General Elective" | "GenEd"]
+
+Returns:
+    out (str): Comma-separated list of department codes or a short explanatory string. The exact format varies by category.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a49772f0e45fef3c7675032713c8bda94}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_event\_dates\_tool@{get\_event\_dates\_tool}}
+\index{get\_event\_dates\_tool@{get\_event\_dates\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_event\_dates\_tool()}{get\_event\_dates\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a49772f0e45fef3c7675032713c8bda94} 
+ str get\+\_\+event\+\_\+dates\+\_\+tool (\begin{DoxyParamCaption}\item[{str}]{event\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return future dates for a specific event identified by name.
+
+Wraps `database_utils.get_event_dates_by_name`.
+
+Args:
+    event_name (str): Event name to look up:
+        Format: Exact event name as stored in `Events.Name` column (e.g. "Spring Career Fair").
+
+Returns:
+    out (str): JSON-encoded list of event date entries:
+        Format: List[{
+            "Date": str,
+                Format: Date of the event in YYYY-MM-DD format (e.g. "2024-04-15")
+            "StartTime": str,
+                Format: Start time in 24-hour format (e.g. "13:00" for 1 PM)
+            "EndTime": str,
+                Format: End time in 24-hour format (e.g. "14:15" for 2:15 PM)
+            "Location": str
+                Format: Location string as stored in `EventDates.Location` column (e.g. "Building A Room 101", "Online")
+        }]
+        Note: If no event is found with the provided name, serialized value is ["Event not found"].
+        Note: If the event exists but has no future dates, serialized value is [].
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a02e1af7d630f4b934d560868e2eeddd0}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_program\_requirements\_tool@{get\_program\_requirements\_tool}}
+\index{get\_program\_requirements\_tool@{get\_program\_requirements\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_program\_requirements\_tool()}{get\_program\_requirements\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a02e1af7d630f4b934d560868e2eeddd0} 
+ str get\+\_\+program\+\_\+requirements\+\_\+tool (\begin{DoxyParamCaption}\item[{str}]{program\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return requirement strings for a program identified by title.
+
+Wraps `database_utils.get_program_requirements_by_title`.
+
+Args:
+    program_name (str): Program title to look up:
+        Format: Exact title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems").
+
+Returns:
+    out (str): JSON-encoded list of requirement strings:
+        Format of list items: Requirement string with one or more options joined by " OR ".
+            Format for course options: "Department: {Department}, Course Number: {Code}, Title: {Name}"
+            Format for elective options: "Any {Elective} course"
+        Note: If no program is found, serialized value is ["Program not found"].
+        Note: If found but no requirements exist, serialized value is ["No requirements found"].
+
+Warnings:
+    Avoid high-volume program lookups in one call because payload size can become large. It should be used primarily for questions about course planning or if the user is curious about a specific program.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a248cd8f05e4b05d9abab717c4ae5e178}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_student\_basic\_info\_tool@{get\_student\_basic\_info\_tool}}
+\index{get\_student\_basic\_info\_tool@{get\_student\_basic\_info\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_student\_basic\_info\_tool()}{get\_student\_basic\_info\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a248cd8f05e4b05d9abab717c4ae5e178} 
+ str get\+\_\+student\+\_\+basic\+\_\+info\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return basic profile information for the current student user.
+
+Wraps `database_utils.get_student_basic_info` using `runtime.state["user_id"]`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+
+Returns:
+    out (str): JSON-encoded student profile info:
+        Format: {
+            "Name": str,
+                Format: Student's full name as stored in `Students.Name` column (e.g. "John Doe")
+            "Email": str,
+                Format: Student's email as stored in `Students.Email` column (e.g. "john.doe@university.edu")
+            "Advisor": str,
+                Format: Student's advisor name as stored in `Students.Advisor` column (e.g. "Dr. Smith")
+            "GPA": float,
+                Format: Student's current GPA as stored in `Students.GPA` column (e.g. 3.75)
+            "CreditsEarned": int,
+                Format: Total number of credits earned as stored in `Students.CreditsEarned` column (e.g. 90)
+            "ProgramsOfStudy": list[dict]
+                Format: List of dicts representing the student's programs of study.
+                Each dict format: {
+                    "Title": str,
+                        Format: Program title as stored in `ProgramsOfStudy.Title` column (e.g. "Computer Information Systems")
+                    "Status": str
+                        Format: Student's status in the program as stored in `StudentPrograms.Status` column (e.g. "Declared", "Undeclared", "Completed", etc)
+        }
+        Note: If no student is found with that ID, serialized value is {}.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_abb79cfcc3a26b6118e609711f00a4835}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_student\_course\_history\_tool@{get\_student\_course\_history\_tool}}
+\index{get\_student\_course\_history\_tool@{get\_student\_course\_history\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_student\_course\_history\_tool()}{get\_student\_course\_history\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_abb79cfcc3a26b6118e609711f00a4835} 
+ str get\+\_\+student\+\_\+course\+\_\+history\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course history for the current student user.
+
+Wraps `database_utils.get_student_course_history` using `runtime.state["user_id"]`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+
+Returns:
+    out (str): JSON-encoded list of course-history entries:
+        Format: List[{
+            "CourseCode": str,
+                Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` column (e.g. "World History Since 1500")
+            "Grade": str
+                Format: Grade earned in the course as stored in `StudentCourses.Grade` column (e.g. "A", "B+", "Satisfactory", etc)
+        }]
+        Note: If no courses are found, serialized value is ["No courses taken"].
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a991f583a9c2b21b0a19e3e8ceec3908a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_student\_id\_by\_name\_tool@{get\_student\_id\_by\_name\_tool}}
+\index{get\_student\_id\_by\_name\_tool@{get\_student\_id\_by\_name\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_student\_id\_by\_name\_tool()}{get\_student\_id\_by\_name\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a991f583a9c2b21b0a19e3e8ceec3908a} 
+ str get\+\_\+student\+\_\+id\+\_\+by\+\_\+name\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{str}]{student\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Tool for getting a student's ID based on their name.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as the advisor's parent user ID
+    student_name (str): The name of the student to look up:
+        Format: Exact name as stored in `Students.Name` column (e.g. "Alice Smith").
+
+Returns:
+    out (str): The student's ID:
+        Format: JSON-encoded dict {"Student ID": int} where the value is the primary key from `Students.ID` column (e.g. {"Student ID": 12345})
+        Note: If no student with the given name is found or if the student does not have the current user as their advisor, returns "No student found with name {student_name}."
+
+Warnings:
+    Name must be an exact match. If this fails to find the student, try using the get_advisor_students tool instead.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_abda72746d0dea3ec98ea4f47c8d3148e}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_student\_interests\_tool@{get\_student\_interests\_tool}}
+\index{get\_student\_interests\_tool@{get\_student\_interests\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_student\_interests\_tool()}{get\_student\_interests\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_abda72746d0dea3ec98ea4f47c8d3148e} 
+ str get\+\_\+student\+\_\+interests\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return interests for the current student user.
+
+Wraps `database_utils.get_student_interests` using `runtime.state["user_id"]`.
+
+Args:
+    ToolRuntime runtime: Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+
+Returns:
+    out (str): JSON-encoded list of interests:
+        Format of list items: Interest string as stored in `Interests.Interest` (e.g. "Artificial Intelligence").
+        Note: If no interests are found, serialized value is ["No interests specified"].
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a1410e94dd7264ecf68615d53ab4e6f79}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_student\_tracked\_sections\_tool@{get\_student\_tracked\_sections\_tool}}
+\index{get\_student\_tracked\_sections\_tool@{get\_student\_tracked\_sections\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_student\_tracked\_sections\_tool()}{get\_student\_tracked\_sections\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a1410e94dd7264ecf68615d53ab4e6f79} 
+ str get\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return tracked sections for the current student user.
+
+Wraps `database_utils.get_student_tracked_sections` using `runtime.state["user_id"]`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+
+Returns:
+    out (str): JSON-encoded list of tracked section entries:
+        Format: List[{
+            "CourseCode": str,
+                Format: Department and course number as stored in `Courses.Department` and `Courses.Code` columns (e.g. "HST 210")
+            "SectionNumber": str,
+                Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
+            "Name": str
+                Format: Course name as stored in `Courses.Name` column (e.g. "World History Since 1500")
+        }]
+        Note: If no tracked sections are found, serialized value is ["No sections currently being tracked"].
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ab1725051cef130c0cfd4bc4150b9c57d}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_upcoming\_events\_tool@{get\_upcoming\_events\_tool}}
+\index{get\_upcoming\_events\_tool@{get\_upcoming\_events\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_upcoming\_events\_tool()}{get\_upcoming\_events\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ab1725051cef130c0cfd4bc4150b9c57d} 
+ str get\+\_\+upcoming\+\_\+events\+\_\+tool (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return upcoming events that have at least one future date.
+
+Wraps `database_utils.get_upcoming_events`.
+
+Returns:
+    out (str): JSON-encoded list of upcoming events:
+        Format: List[{
+            "ID": str,
+                Format: Primary key value from `Events.ID` column (eg. "54321")
+            "Name": str,
+                Format: Event name as stored in `Events.Name` column (e.g. "Spring Career Fair")
+            "Description": str
+                Format: Event description as stored in `Events.Description` column (e.g. "An event where students can meet with potential employers and learn about job opportunities.")
+        }]
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a623266528643ca651a291cd834320f2a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!get\_web\_page\_content\_tool@{get\_web\_page\_content\_tool}}
+\index{get\_web\_page\_content\_tool@{get\_web\_page\_content\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{get\_web\_page\_content\_tool()}{get\_web\_page\_content\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a623266528643ca651a291cd834320f2a} 
+ str get\+\_\+web\+\_\+page\+\_\+content\+\_\+tool (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{int }]{max\+\_\+chars}{ = {\ttfamily 3000}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Fetches the content of a web page and return it as text.
+
+Args:
+    url (str): The URL of the web page to get the content from:
+        Format: Valid URL string (e.g. "https://www.example.com").
+    max_chars (int): The maximum number of characters to return:
+        Format: Positive integer (e.g. 3000).
+
+Returns:
+    out (str): A string containing the text content of the web page:
+        Format: Text content of the web page with all HTML tags removed.
+
+Warnings:
+    Use this tool sparingly as it can consume a lot of tokens, especially for if max_chars is set to a high value. Only use this tool if you are confident that the information you need is available on the page.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a3e0f6a5abc24c51b67cc38c19640bc57}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!insert\_student\_interests\_tool@{insert\_student\_interests\_tool}}
+\index{insert\_student\_interests\_tool@{insert\_student\_interests\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{insert\_student\_interests\_tool()}{insert\_student\_interests\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a3e0f6a5abc24c51b67cc38c19640bc57} 
+ str insert\+\_\+student\+\_\+interests\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{str}]{interest}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert an interest string for the current student user.
+
+Wraps `database_utils.insert_student_interests` with a single-item list input.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+    interest (str): Interest string to be inserted:
+        Format: Value to be stored in `Interests.Interest` column (e.g. "Data Science").
+
+Returns:
+    out (str): Confirmation string from insert operation:
+        Format: "{counter} new interest(s) added"
+
+Warnings:
+    Always check for close duplicates before inserting to avoid duplicate interest rows.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a562fbf7c28f6da5a1f5df620ed03d72c}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!insert\_student\_tracked\_sections\_tool@{insert\_student\_tracked\_sections\_tool}}
+\index{insert\_student\_tracked\_sections\_tool@{insert\_student\_tracked\_sections\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{insert\_student\_tracked\_sections\_tool()}{insert\_student\_tracked\_sections\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a562fbf7c28f6da5a1f5df620ed03d72c} 
+ str insert\+\_\+student\+\_\+tracked\+\_\+sections\+\_\+tool (\begin{DoxyParamCaption}\item[{Tool\+Runtime}]{runtime}{, }\item[{str}]{course\+\_\+code}{, }\item[{str}]{section\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Add a tracked section for the current student user.
+
+Wraps `database_utils.insert_student_tracked_section`.
+
+Args:
+    runtime (ToolRuntime): Runtime state for the current tool call:
+        Required key: `runtime.state["user_id"]` as a student ID.
+    course_code (str): Course code of the section to track:
+        Format: "DPT NUM" | "DPTNUM" (e.g. "CSC 101" or "CSC101").
+    section_id (str): Section number to track:
+        Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50").
+
+Returns:
+    out (str): Confirmation string indicating result of the insert operation:
+        Possible return values:
+            "Section added to tracked sections"
+            "Section not found"
+            "Section already being tracked"
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a996baa530b1c711fdd52922b934eabfe}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!section\_filter\_tool@{section\_filter\_tool}}
+\index{section\_filter\_tool@{section\_filter\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{section\_filter\_tool()}{section\_filter\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a996baa530b1c711fdd52922b934eabfe} 
+ str section\+\_\+filter\+\_\+tool (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} }]{filters}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return sections that match the provided `schemas.SectionFilters`.
+
+Wraps `database_utils.get_sectionIDs_by_filters` then resolves each ID with
+`database_utils.get_section_info_by_id`.
+
+Args:
+    filters (schemas.SectionFilters): Filters to apply to the section search:
+        Format: {
+            Optional[List[DBTerm]] terms,
+                DBTerm format: {
+                    "year": int,
+                        Format: 4-digit year (e.g. 2024)
+                    "season": str,
+                        Format: ["Fall", "Winter", "Spring", "Summer"]
+                    "number": Optional[int]
+                        Format: Integer term number (e.g. 1, 2, 3, etc).
+                        Note: If not provided, filter matches any term number for the given year/season.
+                }
+                Note: Uses OR logic
+            Optional[List[str]] course_codes,
+                Format: Course codes as stored in `Courses.Code` column (e.g. ["101", "210"]).
+                Note: Uses OR logic
+            Optional[List[str]] instructors,
+                Format: Instructor names as stored in `Sections.Instructor` column (e.g. ["Dr. Smith", "Prof. Johnson"]).
+                Note: Uses OR logic
+            Optional[List[str]] teaching_methods,
+                Format: Teaching methods as stored in `Sections.Method` column (e.g. ["In-Person", "Online", "Hybrid"]).
+                Note: Uses OR logic
+            Optional[List[EnrollmentCondition]] enrollment_capacity,
+                EnrollmentCondition format: {
+                    "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                    "capacity": int (e.g. 30 or 100)
+                }
+                Note: Uses AND logic
+            Optional[List[EnrollmentCondition]] enrollment,
+                EnrollmentCondition format: {
+                    "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
+                    "enrollment": int (e.g. 25 or 100)
+                }
+                Note: Uses AND logic
+            Optional[List[str]] locations,
+                Format: Location keywords as stored in `Sections.Location` column (e.g. ["Building A", "Online"]).
+                Note: Filter matches any section whose location contains any of the specified keywords. Uses AND logic.
+            Optional[List[DBMeetTime]] meet_times
+                DBMeetTime format: {
+                    "day": str,
+                        Format: Day of the week (e.g. "Monday", "Tuesday", etc).
+                    "start_time": str,
+                        Format: Start time in 24-hour format (e.g. "13:00" for 1 PM).
+                    "end_time": str,
+                        Format: End time in 24-hour format (e.g. "14:15" for 2:15 PM).
+                }
+                Note: Uses OR logic
+        }
+        Note: Field-level formats and operator restrictions match `database_utils.get_sectionIDs_by_filters`.
+
+Returns:
+    out (str): JSON-encoded list of section metadata dicts:
+        Format: List[{
+            "ID": str,
+                Format: Primary key value from `Sections.ID` column (eg. "67890")
+            "Department": str,
+                Format: Department abbreviation as stored in `Courses.Department` (e.g. "HST")
+            "Code": str,
+                Format: Course number as stored in `Courses.Code` (e.g. "101")
+            "Name": str,
+                Format: Course name as stored in `Courses.Name` (e.g. "Introduction to Computer Science")
+            "SectionNum": str,
+                Format: Section number as stored in `Sections.SectionNumber` column (e.g. "001")
+            "Instructor": str,
+                Format: Instructor name as stored in `Sections.Instructor` column (e.g. "Dr. Smith")
+            "Method": str,
+                Format: Teaching method as stored in `Sections.Method` column (e.g. "In-Person", "Online", "Hybrid")
+            "Location": str,
+                Format: Location string as stored in `Sections.Location` column (e.g. "Building A Room 101", "Online")
+            "MaxSeats": int,
+                Format: Maximum enrollment capacity as stored in `Sections.MaxSeats` column (e.g. 30 or 100)
+            "SeatsLeft": int
+                Format: Current available seats as stored in `Sections.SeatsLeft` column (e.g. 25 or 100)
+        }]
+        Note: If no matches are found, returns "No sections found matching the specified criteria.".
+
+Raises:
+    ValueError: Propagated from underlying filter logic when an invalid operator is provided:
+        Enrollment capacity error message: "Invalid enrollment capacity condition: {condition}"
+        Current enrollment error message: "Invalid enrollment condition: {condition}"
+
+Warnings:
+    Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ac7af74ce3f1441bcbe7ed1672e430f5a}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!web\_search\_tool@{web\_search\_tool}}
+\index{web\_search\_tool@{web\_search\_tool}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{web\_search\_tool()}{web\_search\_tool()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ac7af74ce3f1441bcbe7ed1672e430f5a} 
+ str web\+\_\+search\+\_\+tool (\begin{DoxyParamCaption}\item[{str}]{query}{, }\item[{int }]{max\+\_\+results}{ = {\ttfamily 5}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performs a web search for the given query and return a list of results.
+
+Args:
+    query (str): The search query.
+    max_results (int): The maximum number of results to return.
+
+Returns:
+    out (str): A string containing a list of search results:
+        Format: List[{
+            "Title": str,
+                Format: Title of the search result as returned by the search engine.
+            "Link": str,
+                Format: URL of the search result as returned by the search engine.
+            "Snippet": str
+                Format: A brief snippet of text from the search result as returned by the search engine.
+        }]
+
+Warnings:
+    Don't set the max_results parameter too high as it can consume a lot of tokens.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1utilities_1_1tools_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a2d12106d6a9bf1cead5a786113655d42}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!ad\_tools@{ad\_tools}}
+\index{ad\_tools@{ad\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{ad\_tools}{ad\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a2d12106d6a9bf1cead5a786113655d42} 
+list lg\+\_\+agent.\+utilities.\+tools.\+ad\+\_\+tools}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ [get\_current\_time\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_current\_time\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_department\_list\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_department\_list\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_departments\_in\_category\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_departments\_in\_category\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ course\_query\_tool\_by\_code\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_code"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ course\_query\_tool\_by\_title\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_title"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ course\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_course\_description\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_course\_description\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ section\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}section\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_student\_id\_by\_name\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_id\_by\_name\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_advisor\_students\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_advisor\_students\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ a\_get\_student\_basic\_info\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}a\_get\_student\_basic\_info\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ a\_get\_student\_course\_history\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}a\_get\_student\_course\_history\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ a\_get\_student\_interests\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}a\_get\_student\_interests\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ a\_get\_student\_tracked\_sections\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}a\_get\_student\_tracked\_sections\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_program\_requirements\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_program\_requirements\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_upcoming\_events\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_upcoming\_events\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ get\_event\_dates\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}a-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_event\_dates\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None}]}
+
+\end{DoxyCode}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a7f0bd7ed47f19bdd3888451dce50aded}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!alt\_db\_tools@{alt\_db\_tools}}
+\index{alt\_db\_tools@{alt\_db\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{alt\_db\_tools}{alt\_db\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a7f0bd7ed47f19bdd3888451dce50aded} 
+list lg\+\_\+agent.\+utilities.\+tools.\+alt\+\_\+db\+\_\+tools = \+[$\,$]\+}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a72f113b1c1e5a4e0bb79d53d565a671c}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a72f113b1c1e5a4e0bb79d53d565a671c} 
+lg\+\_\+agent.\+utilities.\+tools.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a01edb12bea71bf0b8dfe25ccfdbe8085}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a01edb12bea71bf0b8dfe25ccfdbe8085} 
+lg\+\_\+agent.\+utilities.\+tools.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a00317b8d03c5c41fad2a3ac96c4c36ea}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!d\_tools@{d\_tools}}
+\index{d\_tools@{d\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{d\_tools}{d\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a00317b8d03c5c41fad2a3ac96c4c36ea} 
+list lg\+\_\+agent.\+utilities.\+tools.\+d\+\_\+tools}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ [get\_current\_time\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_current\_time\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_department\_list\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_department\_list\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_departments\_in\_category\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_departments\_in\_category\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ course\_query\_tool\_by\_code\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_code"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ course\_query\_tool\_by\_title\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_title"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ course\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}course\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_course\_description\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_course\_description\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ section\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}section\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_basic\_info\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_basic\_info\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_course\_history\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_course\_history\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_interests\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_interests\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_tracked\_sections\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_tracked\_sections\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_program\_requirements\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_program\_requirements\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_upcoming\_events\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_upcoming\_events\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_event\_dates\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}s-\/db-\/tools"{}}][\textcolor{stringliteral}{"{}get\_event\_dates\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None}]}
+
+\end{DoxyCode}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a92b684d42fafe1a026a022313e2b46d4}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!db\_tools@{db\_tools}}
+\index{db\_tools@{db\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{db\_tools}{db\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a92b684d42fafe1a026a022313e2b46d4} 
+list lg\+\_\+agent.\+utilities.\+tools.\+db\+\_\+tools = \+[$\,$]\+}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a131755f89ee256b47ffaa2f5006817b7}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!DEPARTMENT\_LIST@{DEPARTMENT\_LIST}}
+\index{DEPARTMENT\_LIST@{DEPARTMENT\_LIST}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{DEPARTMENT\_LIST}{DEPARTMENT\_LIST}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a131755f89ee256b47ffaa2f5006817b7} 
+dict lg\+\_\+agent.\+utilities.\+tools.\+DEPARTMENT\+\_\+\+LIST = \{"{}departments"{}:\+ \+[$\,$]\+\}}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a0c0419c096f9e375262282995e050aa1}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!DEPARTMENT\_LIST\_PATH@{DEPARTMENT\_LIST\_PATH}}
+\index{DEPARTMENT\_LIST\_PATH@{DEPARTMENT\_LIST\_PATH}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{DEPARTMENT\_LIST\_PATH}{DEPARTMENT\_LIST\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a0c0419c096f9e375262282995e050aa1} 
+lg\+\_\+agent.\+utilities.\+tools.\+DEPARTMENT\+\_\+\+LIST\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}department\+\_\+mapping.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a66a7a69794194be836561f60938d0822}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!ERROR\_LOG\_DIR@{ERROR\_LOG\_DIR}}
+\index{ERROR\_LOG\_DIR@{ERROR\_LOG\_DIR}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{ERROR\_LOG\_DIR}{ERROR\_LOG\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a66a7a69794194be836561f60938d0822} 
+lg\+\_\+agent.\+utilities.\+tools.\+ERROR\+\_\+\+LOG\+\_\+\+DIR = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}{ROOT\+\_\+\+DIR}}, "{}error\+\_\+logs"{})}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_aba84d1fd590c7c030324d422f52622da}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!exist\_ok@{exist\_ok}}
+\index{exist\_ok@{exist\_ok}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{exist\_ok}{exist\_ok}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_aba84d1fd590c7c030324d422f52622da} 
+lg\+\_\+agent.\+utilities.\+tools.\+exist\+\_\+ok}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a3a43ce259d0774b2fe10957d70eb4822}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!i\_tools@{i\_tools}}
+\index{i\_tools@{i\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{i\_tools}{i\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a3a43ce259d0774b2fe10957d70eb4822} 
+list lg\+\_\+agent.\+utilities.\+tools.\+i\+\_\+tools}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ [course\_query\_tool\_by\_code\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_code"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ course\_query\_tool\_by\_title\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}course\_query\_tool\_by\_title"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ course\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}course\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ section\_filter\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}section\_filter\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_interests\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_interests\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_student\_tracked\_sections\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}get\_student\_tracked\_sections\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ insert\_student\_interests\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}insert\_student\_interests\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ insert\_student\_tracked\_sections\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}insert-\/tools"{}}][\textcolor{stringliteral}{"{}insert\_student\_tracked\_sections\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None}]}
+
+\end{DoxyCode}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a6d9bc43c175e4c824eb60fb1c6917fd9}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!insertion\_tools@{insertion\_tools}}
+\index{insertion\_tools@{insertion\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{insertion\_tools}{insertion\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a6d9bc43c175e4c824eb60fb1c6917fd9} 
+list lg\+\_\+agent.\+utilities.\+tools.\+insertion\+\_\+tools = \+[$\,$]\+}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_aa10dbae2e9edf8a5d85dcc8e348f7e01}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_aa10dbae2e9edf8a5d85dcc8e348f7e01} 
+lg\+\_\+agent.\+utilities.\+tools.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!ROOT\_DIR@{ROOT\_DIR}}
+\index{ROOT\_DIR@{ROOT\_DIR}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{ROOT\_DIR}{ROOT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a5ea5673d992bd5afd703e973a52a0f9c} 
+lg\+\_\+agent.\+utilities.\+tools.\+ROOT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ac28fbb580d75f9300b37481985b1c368}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!START\_TIMESTAMP@{START\_TIMESTAMP}}
+\index{START\_TIMESTAMP@{START\_TIMESTAMP}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{START\_TIMESTAMP}{START\_TIMESTAMP}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ac28fbb580d75f9300b37481985b1c368} 
+lg\+\_\+agent.\+utilities.\+tools.\+START\+\_\+\+TIMESTAMP = datetime.\+now().strftime("{}\%Y\%m\%d\+\_\+\%H\%M\%S"{})}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_ac56c5defdfc26b134a336caa3008ca5b}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!TOOL\_CONFIG@{TOOL\_CONFIG}}
+\index{TOOL\_CONFIG@{TOOL\_CONFIG}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{TOOL\_CONFIG}{TOOL\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_ac56c5defdfc26b134a336caa3008ca5b} 
+lg\+\_\+agent.\+utilities.\+tools.\+TOOL\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1tools_a72f113b1c1e5a4e0bb79d53d565a671c}{CONFIG}}\+["{}tool\+\_\+select"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a1b46d58e3476518748abd44a326b2e8e}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!w\_tools@{w\_tools}}
+\index{w\_tools@{w\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{w\_tools}{w\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a1b46d58e3476518748abd44a326b2e8e} 
+list lg\+\_\+agent.\+utilities.\+tools.\+w\+\_\+tools}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ [web\_search\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}web-\/tools"{}}][\textcolor{stringliteral}{"{}web\_search\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ get\_web\_page\_content\_tool\ \textcolor{keywordflow}{if}\ TOOL\_CONFIG[\textcolor{stringliteral}{"{}web-\/tools"{}}][\textcolor{stringliteral}{"{}get\_web\_page\_content\_tool"{}}]\ \textcolor{keywordflow}{else}\ \textcolor{keywordtype}{None}]}
+
+\end{DoxyCode}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1tools_a87f12ae00fa1c45e3361f1fdb267383d}\index{lg\_agent.utilities.tools@{lg\_agent.utilities.tools}!web\_tools@{web\_tools}}
+\index{web\_tools@{web\_tools}!lg\_agent.utilities.tools@{lg\_agent.utilities.tools}}
+\doxysubsubsection{\texorpdfstring{web\_tools}{web\_tools}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1tools_a87f12ae00fa1c45e3361f1fdb267383d} 
+list lg\+\_\+agent.\+utilities.\+tools.\+web\+\_\+tools = \+[$\,$]\+}
+

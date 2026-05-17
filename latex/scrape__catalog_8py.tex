@@ -1,0 +1,33 @@
+\doxysection{data\+\_\+pipeline/\+scraping/\+scrape\+\_\+catalog.py File Reference}
+\hypertarget{scrape__catalog_8py}{}\label{scrape__catalog_8py}\index{data\_pipeline/scraping/scrape\_catalog.py@{data\_pipeline/scraping/scrape\_catalog.py}}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespacescrape__catalog}{scrape\+\_\+catalog}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_a089153119c6cffeb663a6c36c6769284}{scrape\+\_\+catalog.\+clean\+\_\+text}} (text)
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_ac53366e96c2ce603afc22338ee13dcf4}{scrape\+\_\+catalog.\+fix\+\_\+apostrophes}} (text)
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_a7df59089984fbc0ddb8f7bbee4cacdae}{scrape\+\_\+catalog.\+parse\+\_\+detail\+\_\+page}} (html)
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_a8ef8fec8269073951c7dea46cd28462b}{scrape\+\_\+catalog.\+get\+\_\+search\+\_\+results}} (page, dept\+\_\+value, dept\+\_\+label)
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_a815441f11bcbf1660eed7503eadd4e8d}{scrape\+\_\+catalog.\+scrape\+\_\+catalog}} ()
+\item 
+\doxymbox{\hyperlink{namespacescrape__catalog_a51af30a60f9f02777c6396b8247e356f}{scrape\+\_\+catalog.\+main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacescrape__catalog_a6cc58e0bee1d166ca455d39110fbd65f}{scrape\+\_\+catalog.\+SEARCH\+\_\+\+URL}} = "{}https:\+/\+/\+theq.\+qcc.\+edu/\+ICS/\+Course\+\_\+\+Offerings\+\_\+and\+\_\+\+Schedule.\+jnz?portlet=Add\+Drop\+\_\+\+Courses\&screen=Advanced+Course+Search\&screen\+Type=next"{}
+\begin{DoxyCompactList}\small\item\em URL of The Q portal\textquotesingle{}s advanced course search page. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__catalog_af9e64933f8b96dece1fa45459ba0b5c6}{scrape\+\_\+catalog.\+TERM}} = "{}Spring 2026"{}
+\begin{DoxyCompactList}\small\item\em Academic term label to select from the portal dropdown. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__catalog_a3d231d848a0a05ba4208288ee816ca64}{scrape\+\_\+catalog.\+OUTPUT}} = "{}course\+\_\+catalog.\+json"{}
+\begin{DoxyCompactList}\small\item\em Output path for the scraped catalog JSON file. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{namespacescrape__catalog_a231184b8f8984002a42bb12cc8a25fdf}{scrape\+\_\+catalog.\+HEADLESS}} = True
+\begin{DoxyCompactList}\small\item\em Whether to run the browser in headless (no UI) mode. \end{DoxyCompactList}\end{DoxyCompactItemize}

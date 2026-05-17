@@ -1,0 +1,175 @@
+\doxysection{lg\+\_\+agent.\+alert\+\_\+constr Namespace Reference}
+\hypertarget{namespacelg__agent_1_1alert__constr}{}\label{namespacelg__agent_1_1alert__constr}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} \doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a097cbb3002d8cfc39cea996b703b5f7c}{state\+\_\+initializer}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_input}{Alerts\+Agent\+Input}} input)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} \doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_af38aca269235a4db1872203de24d2b0a}{checkpoint}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_ab1814499201f1e3516d5c93e914a4a84}{end\+\_\+early\+\_\+check}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} state)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output}{Alerts\+Agent\+Output}} \doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a88311074330154f57dc22280952731f8}{format\+\_\+response}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a019b431ed9339c5d9e96de64285d2e84}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a6366803168f034e116de10f63ee2c5d7}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}, input\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_input}{Alerts\+Agent\+Input}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output}{Alerts\+Agent\+Output}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a27330c1fedf27c9a9f1475240ff114be}{checkpoint}}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a761177f91c81926a2d62a6aef951afd1}{defer}}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1alert__constr_a3a57eebb8cee79ae2d25097ed8916eb1}{alert\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Constructs the alerts agent graph that filters upcoming events based on student interests.
+
+Functions:
+- `state_initializer`: Initializes alerts agent state with empty containers for events and interests.
+- `checkpoint`: Synchronization node using defer=True to wait for parallel tasks completion.
+- `end_early_check`: Conditional router that skips event filtering if no events or interests are present.
+- `format_response`: Formats the final state into the alerts agent output schema.
+
+Graph Structure:
+- START -> state_initializer
+- state_initializer -> [get_new_events | get_interests] (parallel)
+- get_new_events -> checkpoint (deferred)
+- get_interests -> checkpoint (deferred)
+- checkpoint -> [filter_relivent_events | END] (conditional - early termination if no events/interests)
+- filter_relivent_events -> insert_relevant_events
+- insert_relevant_events -> format_response
+- format_response -> END
+
+Exports:
+- `alert_graph`: Compiled LangGraph alerts agent.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1alert__constr_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1alert__constr_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1alert__constr_af38aca269235a4db1872203de24d2b0a}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!checkpoint@{checkpoint}}
+\index{checkpoint@{checkpoint}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{checkpoint()}{checkpoint()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_af38aca269235a4db1872203de24d2b0a} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} checkpoint (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Checkpoint node that ensures parallel tasks complete before proceeding.
+
+This node uses the defer=True mechanism to act as a synchronization point,
+allowing the graph to merge the parallel results from get_new_events and 
+get_interests before proceeding to the conditional routing logic.
+
+Args:
+    state (AlertsAgentState): The current state with events and interests populated.
+
+Returns:
+    AlertsAgentState: The unchanged state, passed through to the next conditional node.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1alert__constr_ab1814499201f1e3516d5c93e914a4a84}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!end\_early\_check@{end\_early\_check}}
+\index{end\_early\_check@{end\_early\_check}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{end\_early\_check()}{end\_early\_check()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_ab1814499201f1e3516d5c93e914a4a84} 
+end\+\_\+early\+\_\+check (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Conditional router that determines whether to continue processing or end early.
+
+Examines the state to decide if there's sufficient data to proceed with event
+filtering. Ends the graph early if there are no upcoming events or no student
+interests, as filtering cannot produce meaningful results without both.
+
+Args:
+    state (AlertsAgentState): The current state with populated events and interests.
+
+Returns:
+    str or END: 
+        - "filter_relivent_events": If both events and interests exist, proceed to filtering
+        - END: If either events or interests are empty, terminate the graph
+
+Note:
+    This function logs reasons for early termination to aid in debugging.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1alert__constr_a88311074330154f57dc22280952731f8}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!format\_response@{format\_response}}
+\index{format\_response@{format\_response}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{format\_response()}{format\_response()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a88311074330154f57dc22280952731f8} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output}{Alerts\+Agent\+Output}} format\+\_\+response (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Formats the final state into the agent's output schema.
+
+Extracts the relevant events from the final state and returns them in the
+format specified by AlertsAgentOutput. This serves as the final node before
+the graph completes, ensuring the output conforms to the expected interface.
+
+Args:
+    state (AlertsAgentState): The final state containing the processed relevant_events.
+
+Returns:
+    AlertsAgentOutput: Output schema dictionary with 'relevant_events' key containing
+        the list of events relevant to the student.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1alert__constr_a097cbb3002d8cfc39cea996b703b5f7c}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!state\_initializer@{state\_initializer}}
+\index{state\_initializer@{state\_initializer}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{state\_initializer()}{state\_initializer()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a097cbb3002d8cfc39cea996b703b5f7c} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}} state\+\_\+initializer (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_input}{Alerts\+Agent\+Input}}}]{input}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initializes the alerts agent state from user input.
+
+Creates the initial state dictionary for the alerts agent with empty containers
+for upcoming events, interests, and relevant events. This state will be populated
+by subsequent nodes in the graph.
+
+Args:
+    input (AlertsAgentInput): Input schema containing:
+        - 'student_id': Integer ID of the student to process alerts for
+
+Returns:
+    AlertsAgentState: Initial state dictionary with:
+        - 'student_id': The provided student ID
+        - 'upcoming_events': Empty list (will be populated by get_new_events)
+        - 'student_interests': Empty list (will be populated by get_interests)
+        - 'relevant_events': Empty list (will be populated by filter_relivent_events)
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1alert__constr_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1alert__constr_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1alert__constr_a3a57eebb8cee79ae2d25097ed8916eb1}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!alert\_graph@{alert\_graph}}
+\index{alert\_graph@{alert\_graph}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{alert\_graph}{alert\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a3a57eebb8cee79ae2d25097ed8916eb1} 
+lg\+\_\+agent.\+alert\+\_\+constr.\+alert\+\_\+graph = graph\+\_\+builder.\+compile()}
+
+\Hypertarget{namespacelg__agent_1_1alert__constr_a27330c1fedf27c9a9f1475240ff114be}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!checkpoint@{checkpoint}}
+\index{checkpoint@{checkpoint}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{checkpoint}{checkpoint}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a27330c1fedf27c9a9f1475240ff114be} 
+lg\+\_\+agent.\+alert\+\_\+constr.\+checkpoint}
+
+\Hypertarget{namespacelg__agent_1_1alert__constr_a761177f91c81926a2d62a6aef951afd1}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!defer@{defer}}
+\index{defer@{defer}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{defer}{defer}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a761177f91c81926a2d62a6aef951afd1} 
+lg\+\_\+agent.\+alert\+\_\+constr.\+defer}
+
+\Hypertarget{namespacelg__agent_1_1alert__constr_a6366803168f034e116de10f63ee2c5d7}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a6366803168f034e116de10f63ee2c5d7} 
+lg\+\_\+agent.\+alert\+\_\+constr.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}, input\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_input}{Alerts\+Agent\+Input}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output}{Alerts\+Agent\+Output}})}
+
+\Hypertarget{namespacelg__agent_1_1alert__constr_a019b431ed9339c5d9e96de64285d2e84}\index{lg\_agent.alert\_constr@{lg\_agent.alert\_constr}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.alert\_constr@{lg\_agent.alert\_constr}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1alert__constr_a019b431ed9339c5d9e96de64285d2e84} 
+lg\+\_\+agent.\+alert\+\_\+constr.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+

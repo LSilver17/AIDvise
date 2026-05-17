@@ -1,0 +1,212 @@
+\doxysection{lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph Namespace Reference}
+\hypertarget{namespacelg__agent_1_1a__chat__graph}{}\label{namespacelg__agent_1_1a__chat__graph}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+tuple\+[dict, dict]\+ \doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a8bbb45864c40c5cbb4d5c274403c7228}{\+\_\+extract\+\_\+plan}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ae074c53ddb53c9f09682a8cfb2082398}{\+\_\+plan\+\_\+value}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state, str key, default=None)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a02d5cf496005077178ba607806692653}{invoke\+\_\+db\+\_\+helper}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a18b1960af036a0b1da7d7aecd27d1bd9}{invoke\+\_\+web\+\_\+helper}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a4718f7f6809bd4ef0297cc636c59c017}{route\+\_\+from\+\_\+planning}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} \doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a5cc3d306c35c41933d3c6d84f7d16796}{answer\+\_\+node}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a1c84d14dfb0e35d3fb2386e8b12b4976}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_abe969f5464c6a201b58cfae87d242679}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a1c84d14dfb0e35d3fb2386e8b12b4976}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ad23d61618580182dbd44e6200c8b21ae}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ae62977f1a48e392d5eb06b935d733720}{LOOP\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ad23d61618580182dbd44e6200c8b21ae}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ac41330521781cf3b835d46eeb5995009}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a55c5b1a3bd2fdad6994042f33c4e29db}{a\+\_\+planner\+\_\+node}}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a32b469fa5aac6f7ebb0b742c676adba8}{defer}}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a7450017cf42d83cdce4e8af664201212}{a\+\_\+chat\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Advisor-facing chat agent that routes advisor queries through planning and helper graphs.
+
+Functions:
+- `invoke_db_helper`: Invokes the database helper graph and merges results back to planner state.
+- `invoke_web_helper`: Invokes the web search helper graph and merges results back to planner state.
+- `route_from_planning`: Routes the planner's decision to appropriate helper graphs or answer node. Enforces a maximum number of loops before forcing an answer.
+- `answer_node`: Appends the final planner response to the conversation message history.
+
+Graph Structure:
+- START -> planning
+- planning -> [invoke_db_helper | invoke_web_helper | answer_node] (conditional) (cam be parallel)
+- invoke_db_helper -> planning (feedback loop) (deferred)
+- invoke_web_helper -> planning (feedback loop) (deferred)
+- answer_node -> END
+
+Exports:
+- `a_chat_graph`: Compiled LangGraph advisor chat agent.
+
+Loop limits are defined in config.json.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1a__chat__graph_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_a8bbb45864c40c5cbb4d5c274403c7228}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!\_extract\_plan@{\_extract\_plan}}
+\index{\_extract\_plan@{\_extract\_plan}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{\_extract\_plan()}{\_extract\_plan()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a8bbb45864c40c5cbb4d5c274403c7228} 
+ tuple\+[dict, dict]\+ \+\_\+extract\+\_\+plan (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Safely extracts planner output and nested content dict from state.
+
+Some model/tooling paths may produce plan payloads where "content" is a
+string or missing entirely. This helper normalizes both objects so routing
+code can perform key lookups without type errors.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1a__chat__graph_ae074c53ddb53c9f09682a8cfb2082398}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!\_plan\_value@{\_plan\_value}}
+\index{\_plan\_value@{\_plan\_value}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{\_plan\_value()}{\_plan\_value()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_ae074c53ddb53c9f09682a8cfb2082398} 
+\+\_\+plan\+\_\+value (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{, }\item[{str}]{key}{, }\item[{}]{default}{ = {\ttfamily None}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Reads a planner field from either top-level plan or nested content.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1a__chat__graph_a5cc3d306c35c41933d3c6d84f7d16796}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!answer\_node@{answer\_node}}
+\index{answer\_node@{answer\_node}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{answer\_node()}{answer\_node()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a5cc3d306c35c41933d3c6d84f7d16796} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}} answer\+\_\+node (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Appends the final planner answer to the conversation state.
+
+Args:
+    state (APlannerState): Current planner state containing the final answer in
+        plan["answer"].
+
+Returns:
+    APlannerState: Updated state with the final AI answer appended to messages.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1a__chat__graph_a02d5cf496005077178ba607806692653}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!invoke\_db\_helper@{invoke\_db\_helper}}
+\index{invoke\_db\_helper@{invoke\_db\_helper}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{invoke\_db\_helper()}{invoke\_db\_helper()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a02d5cf496005077178ba607806692653} 
+invoke\+\_\+db\+\_\+helper (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Invokes the advisor database helper graph and merges its result back into state.
+
+The advisor planner may request database information about a student or course.
+This node forwards that request to the database helper graph, then appends the
+returned query/result pair to the accumulated db_info list.
+
+Args:
+    state (APlannerState): Current planner state containing the selected database
+        request in plan["info_needed_db"].
+
+Returns:
+    dict: Partial state update with the updated "db_info" list.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1a__chat__graph_a18b1960af036a0b1da7d7aecd27d1bd9}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!invoke\_web\_helper@{invoke\_web\_helper}}
+\index{invoke\_web\_helper@{invoke\_web\_helper}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{invoke\_web\_helper()}{invoke\_web\_helper()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a18b1960af036a0b1da7d7aecd27d1bd9} 
+invoke\+\_\+web\+\_\+helper (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Invokes the web helper graph and merges its result back into state.
+
+The advisor planner may request web information to support an answer. This node
+forwards that request to the web helper graph, then appends the returned
+query/result pair to the accumulated web_info list.
+
+Args:
+    state (APlannerState): Current planner state containing the selected web
+        request in plan["info_needed_web"].
+
+Returns:
+    dict: Partial state update with the updated "web_info" list.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1a__chat__graph_a4718f7f6809bd4ef0297cc636c59c017}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!route\_from\_planning@{route\_from\_planning}}
+\index{route\_from\_planning@{route\_from\_planning}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{route\_from\_planning()}{route\_from\_planning()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a4718f7f6809bd4ef0297cc636c59c017} 
+route\+\_\+from\+\_\+planning (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Chooses which helper graphs to run after planning.
+
+The planner can request database lookups or web lookups, or provide a final
+answer directly. This router converts the plan into one or more graph sends.
+When both database and web information are requested, they are dispatched in
+parallel. If no tools are needed, control routes directly to the answer node.
+
+Args:
+    state (APlannerState): Current planner state containing the loop counter and
+        the structured plan produced by the planning node.
+
+Returns:
+    list[Send]: One or more graph sends describing the next execution branch.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1a__chat__graph_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_a7450017cf42d83cdce4e8af664201212}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!a\_chat\_graph@{a\_chat\_graph}}
+\index{a\_chat\_graph@{a\_chat\_graph}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{a\_chat\_graph}{a\_chat\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a7450017cf42d83cdce4e8af664201212} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+a\+\_\+chat\+\_\+graph = graph\+\_\+builder.\+compile()}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_a55c5b1a3bd2fdad6994042f33c4e29db}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!a\_planner\_node@{a\_planner\_node}}
+\index{a\_planner\_node@{a\_planner\_node}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{a\_planner\_node}{a\_planner\_node}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a55c5b1a3bd2fdad6994042f33c4e29db} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+a\+\_\+planner\+\_\+node}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_ad23d61618580182dbd44e6200c8b21ae}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_ad23d61618580182dbd44e6200c8b21ae} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_abe969f5464c6a201b58cfae87d242679}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_abe969f5464c6a201b58cfae87d242679} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_a1c84d14dfb0e35d3fb2386e8b12b4976}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_a32b469fa5aac6f7ebb0b742c676adba8}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!defer@{defer}}
+\index{defer@{defer}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{defer}{defer}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a32b469fa5aac6f7ebb0b742c676adba8} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+defer}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_ac41330521781cf3b835d46eeb5995009}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_ac41330521781cf3b835d46eeb5995009} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}})}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_ae62977f1a48e392d5eb06b935d733720}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!LOOP\_CONFIG@{LOOP\_CONFIG}}
+\index{LOOP\_CONFIG@{LOOP\_CONFIG}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{LOOP\_CONFIG}{LOOP\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_ae62977f1a48e392d5eb06b935d733720} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+LOOP\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1a__chat__graph_ad23d61618580182dbd44e6200c8b21ae}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1a__chat__graph_a1c84d14dfb0e35d3fb2386e8b12b4976}\index{lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.a\_chat\_graph@{lg\_agent.a\_chat\_graph}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1a__chat__graph_a1c84d14dfb0e35d3fb2386e8b12b4976} 
+lg\+\_\+agent.\+a\+\_\+chat\+\_\+graph.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+

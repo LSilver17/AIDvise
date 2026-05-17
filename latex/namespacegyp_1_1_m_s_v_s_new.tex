@@ -1,0 +1,79 @@
+\doxysection{gyp.\+MSVSNew Namespace Reference}
+\hypertarget{namespacegyp_1_1_m_s_v_s_new}{}\label{namespacegyp_1_1_m_s_v_s_new}\index{gyp.MSVSNew@{gyp.MSVSNew}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classgyp_1_1_m_s_v_s_new_1_1_m_s_v_s_solution_entry}{MSVSSolution\+Entry}}
+\item 
+class \doxymbox{\hyperlink{classgyp_1_1_m_s_v_s_new_1_1_m_s_v_s_folder}{MSVSFolder}}
+\item 
+class \doxymbox{\hyperlink{classgyp_1_1_m_s_v_s_new_1_1_m_s_v_s_project}{MSVSProject}}
+\item 
+class \doxymbox{\hyperlink{classgyp_1_1_m_s_v_s_new_1_1_m_s_v_s_solution}{MSVSSolution}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacegyp_1_1_m_s_v_s_new_ae86a80648a9f4291ae7a86c0e8088866}{cmp}} (x, y)
+\item 
+\doxymbox{\hyperlink{namespacegyp_1_1_m_s_v_s_new_ae1d8d2aab1c810ffa6bbdd0e1595941e}{Make\+Guid}} (name, seed="{}msvs\+\_\+new"{})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+dict \doxymbox{\hyperlink{namespacegyp_1_1_m_s_v_s_new_ae2a49b8b5fcdaf53521cd33e162525b6}{ENTRY\+\_\+\+TYPE\+\_\+\+GUIDS}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}New implementation of Visual Studio project generation.\end{DoxyVerb}
+ 
+
+\label{namespacegyp_1_1_m_s_v_s_new_doc-func-members}
+\Hypertarget{namespacegyp_1_1_m_s_v_s_new_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacegyp_1_1_m_s_v_s_new_ae86a80648a9f4291ae7a86c0e8088866}\index{gyp.MSVSNew@{gyp.MSVSNew}!cmp@{cmp}}
+\index{cmp@{cmp}!gyp.MSVSNew@{gyp.MSVSNew}}
+\doxysubsubsection{\texorpdfstring{cmp()}{cmp()}}
+{\footnotesize\ttfamily \label{namespacegyp_1_1_m_s_v_s_new_ae86a80648a9f4291ae7a86c0e8088866} 
+cmp (\begin{DoxyParamCaption}\item[{}]{x}{, }\item[{}]{y}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacegyp_1_1_m_s_v_s_new_ae1d8d2aab1c810ffa6bbdd0e1595941e}\index{gyp.MSVSNew@{gyp.MSVSNew}!MakeGuid@{MakeGuid}}
+\index{MakeGuid@{MakeGuid}!gyp.MSVSNew@{gyp.MSVSNew}}
+\doxysubsubsection{\texorpdfstring{MakeGuid()}{MakeGuid()}}
+{\footnotesize\ttfamily \label{namespacegyp_1_1_m_s_v_s_new_ae1d8d2aab1c810ffa6bbdd0e1595941e} 
+Make\+Guid (\begin{DoxyParamCaption}\item[{}]{name}{, }\item[{}]{seed}{ = {\ttfamily "{}msvs\+\_\+new"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns a GUID for the specified target name.
+
+Args:
+  name: Target name.
+  seed: Seed for SHA-256 hash.
+Returns:
+  A GUID-line string calculated from the name and seed.
+
+This generates something which looks like a GUID, but depends only on the
+name and seed.  This means the same name/seed will always generate the same
+GUID, so that projects and solutions which refer to each other can explicitly
+determine the GUID to refer to explicitly.  It also means that the GUID will
+not change when the project for a target is rebuilt.
+\end{DoxyVerb}
+ 
+
+\label{namespacegyp_1_1_m_s_v_s_new_doc-var-members}
+\Hypertarget{namespacegyp_1_1_m_s_v_s_new_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacegyp_1_1_m_s_v_s_new_ae2a49b8b5fcdaf53521cd33e162525b6}\index{gyp.MSVSNew@{gyp.MSVSNew}!ENTRY\_TYPE\_GUIDS@{ENTRY\_TYPE\_GUIDS}}
+\index{ENTRY\_TYPE\_GUIDS@{ENTRY\_TYPE\_GUIDS}!gyp.MSVSNew@{gyp.MSVSNew}}
+\doxysubsubsection{\texorpdfstring{ENTRY\_TYPE\_GUIDS}{ENTRY\_TYPE\_GUIDS}}
+{\footnotesize\ttfamily \label{namespacegyp_1_1_m_s_v_s_new_ae2a49b8b5fcdaf53521cd33e162525b6} 
+dict gyp.\+MSVSNew.\+ENTRY\+\_\+\+TYPE\+\_\+\+GUIDS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{stringliteral}{"{}project"{}}:\ \textcolor{stringliteral}{"{}\{8BC9CEB8-\/8B4A-\/11D0-\/8D11-\/00A0C91BC942\}"{}},}
+\DoxyCodeLine{\ \ \ \ \textcolor{stringliteral}{"{}folder"{}}:\ \textcolor{stringliteral}{"{}\{2150E333-\/8FDC-\/42A3-\/9474-\/1A3956D46DE8\}"{}},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}

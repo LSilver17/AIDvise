@@ -1,0 +1,982 @@
+\doxysection{lg\+\_\+agent.\+database\+\_\+utils Namespace Reference}
+\hypertarget{namespacelg__agent_1_1database__utils}{}\label{namespacelg__agent_1_1database__utils}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acbed5434b24b543858cc9c5430919091}{get\+\_\+course\+ID\+\_\+by\+\_\+code}} (sqlite3.\+Connection conn, str course\+\_\+code)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acedd539b57331d0f9992c5fa9424f444}{get\+\_\+course\+ID\+\_\+by\+\_\+title}} (sqlite3.\+Connection conn, str course\+\_\+title)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ac12d60eb233d56aae0f8c18d32aea41e}{get\+\_\+coops}} (sqlite3.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acb171edb317bd74633c44dd49df008b7}{get\+\_\+course\+IDs\+\_\+by\+\_\+filters}} (sqlite3.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a00610cb72f8235afd89d2efbe4ac67aa}{get\+\_\+course\+\_\+info\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str course\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a25086956427b91e859547771443b7d80}{get\+\_\+course\+\_\+description\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a1f08e533cf3317e88ac0305c9725753e}{get\+\_\+section\+IDs\+\_\+by\+\_\+filters}} (sqlite3.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6fa9c4acf34344a06f31b1df5a90f1e5}{get\+\_\+section\+\_\+info\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str section\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a011461459d7d4a369a29f7f94e4cf1d9}{get\+\_\+upcoming\+\_\+events}} (sqlite3.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a065b3cf46aeef9545cea92d12bea3ce1}{get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name}} (sqlite3.\+Connection conn, str event\+\_\+name)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ab3d607f4cabe28d49a73d2fae482a6c3}{get\+\_\+student\+\_\+basic\+\_\+info}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_adf33dbd7d2286e85e8492cff5cbbb4aa}{get\+\_\+advisor\+\_\+email}} (sqlite3.\+Connection conn, str advisor\+\_\+name)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8d1d6038bd4a990bf2a8000b8adad6e4}{get\+\_\+student\+\_\+course\+\_\+history}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a16c6b46dc62e27256fb60aedee3c212c}{get\+\_\+student\+\_\+interests}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a9953e6ecc838771117690d854d1bc193}{get\+\_\+student\+\_\+tracked\+\_\+sections}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a0d55e833cec5ab4915ee82c5d4c14afd}{get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title}} (sqlite3.\+Connection conn, str program\+\_\+title)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6bc8b5be5404a78a331bb597891ee602}{insert\+\_\+student\+\_\+interests}} (sqlite3.\+Connection conn, int student\+\_\+id, list\+[str]\+ interest)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_af2345d11737fbf21c99572bfe5fef6d6}{insert\+\_\+student\+\_\+tracked\+\_\+section}} (sqlite3.\+Connection conn, int student\+\_\+id, str course\+\_\+code, str section\+\_\+number)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a9046b4140d8350dbc814416a728b2a1f}{get\+\_\+data\+\_\+with\+\_\+hierarchy}} (sqlite3.\+Connection conn, str table, int target\+ID)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a4b144379f0f985aa77ae41b3ca340e21}{\+\_\+format\+\_\+hierarchy\+\_\+node}} (dict node, int depth=0)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ad373f2872b1466c3f0c7ca1e9a0598d8}{hierarchy\+\_\+data\+\_\+to\+\_\+string}} (dict hierarchy\+\_\+data)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aad919c77734610236cc39640c9493935}{get\+\_\+data\+\_\+with\+\_\+hierarchy\+\_\+string}} (sqlite3.\+Connection conn, str table, str target\+ID)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ac5313d3554336cef4a0966db0fed1fb1}{get\+\_\+ids\+\_\+by\+\_\+field\+\_\+value}} (sqlite3.\+Connection conn, str table, str field, str value)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8542da106d3b0e9367f33b7954e72305}{get\+\_\+ids\+\_\+by\+\_\+parent}} (sqlite3.\+Connection conn, str table, str target\+ID)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8891cbf6c61066d427ea7aa524378cdd}{get\+\_\+students\+\_\+by\+\_\+advisor}} (sqlite3.\+Connection conn, str advisor\+ID)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6842903b3d2853adba32c2c7b44e36b7}{async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+code}} (aiosqlite.\+Connection conn, str course\+\_\+code)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_abf65c2f2b40a539879abbcb158207ef5}{async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+title}} (aiosqlite.\+Connection conn, str course\+\_\+title)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ae5c33621d24d3a3d3f77560355dbe954}{async\+\_\+get\+\_\+course\+\_\+info\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a2a1957febb0f864fce7ec30a7664692b}{async\+\_\+get\+\_\+coops}} (aiosqlite.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_afcc52cdc6d302d1cbde010e4b5ea4aa3}{async\+\_\+get\+\_\+course\+IDs\+\_\+by\+\_\+filters}} (aiosqlite.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} filters)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a0472e9f877a7c173fad80372046d9703}{async\+\_\+get\+\_\+course\+\_\+description\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_abed474454d01d72665d59917cec92896}{async\+\_\+get\+\_\+section\+IDs\+\_\+by\+\_\+filters}} (aiosqlite.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6c233ebcc12bdc41262c9298dfa70229}{async\+\_\+get\+\_\+section\+\_\+info\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str section\+\_\+id)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a4c5038d339489d18ab44ecdce9b29ae1}{async\+\_\+get\+\_\+upcoming\+\_\+events}} (aiosqlite.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a67697460779047ebfd1e5947d2f67d50}{async\+\_\+get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name}} (aiosqlite.\+Connection conn, str event\+\_\+name)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a75e47e61d76b6b18c8dd9c77ba8aeb70}{async\+\_\+get\+\_\+student\+\_\+basic\+\_\+info}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ada641d47084da01188f4a6b40e86e7f8}{async\+\_\+get\+\_\+student\+\_\+course\+\_\+history}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ad6f5e339990c62d25cd0c728697891b6}{async\+\_\+get\+\_\+student\+\_\+interests}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a875e38c16b5f53b1ee345710098fba29}{async\+\_\+get\+\_\+student\+\_\+tracked\+\_\+sections}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aabd260ae8206a1deaa2313ffd1fe3211}{async\+\_\+get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title}} (aiosqlite.\+Connection conn, str program\+\_\+title)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aceed724d63558db35ae7ef1fe4ce6f2d}{async\+\_\+insert\+\_\+student\+\_\+interests}} (aiosqlite.\+Connection conn, int student\+\_\+id, list\+[str]\+ interest)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a7bdbaf23ac5545452f3a67c14cb6d490}{async\+\_\+insert\+\_\+student\+\_\+tracked\+\_\+section}} (aiosqlite.\+Connection conn, int student\+\_\+id, str course\+\_\+code, str section\+\_\+number)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aaad069dfd97bf79a0100dfe4fd0d8307}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Contains various utility functions for interacting with the registration database.
+
+Functions:
+- `get_courseID_by_code`: Return the database course ID matching a course code.
+- `get_courseID_by_title`: Return the database course ID for a given course title.
+- `get_coops`: Return a list of course IDs for all 'Cooperative Work Experience' entries.
+- `get_courseIDs_by_filters`: Return a list of course IDs that match the provided CourseFilters.
+- `get_course_info_by_id`: Return course metadata for a given course ID.
+- `get_course_description_by_id`: Return the textual description for a course identified by `course_id`.
+- `get_sectionIDs_by_filters`: Return a list of section IDs that match the provided SectionFilters.
+- `get_section_info_by_id`: Return section-level metadata for the provided section ID.
+- `get_upcoming_events`: Return a list of upcoming events with their dates.
+- `get_event_dates_by_name`: Return the dates for a specified event.
+- `get_student_basic_info`: Return basic profile information for a given student ID, including their name, advisor, GPA, total credits, and programs of study.
+- `get_student_course_history`: Return the course history for a given student ID, including course codes, titles, and grades.
+- `get_student_interests`: Return a list of interests for a given student ID.
+- `get_student_tracked_sections`: Return a list of section IDs that the student is currently tracking for openings.
+- `get_program_requirements_by_title`: Return a list of course IDs that are requirements for a given program of study.
+- `insert_student_interest`: Insert a new interest for a student.
+- `insert_student_tracked_section`: Insert a new section to track for openings for a student.
+- `get_data_with_hierarchy`: Return data from a specified table along with related data from parent and child tables to provide context for database entries.
+- `_format_hierarchy_node`: Helper function to recursively format a hierarchy node and its children into a nested dictionary structure.
+- `hierarchy_data_to_string`: Convert the nested dictionary structure returned by `get_data_with_hierarchy` into a readable string format for easier interpretation of hierarchical relationships in the database.
+- `get_data_with_hierarchy_string`: Wrapper function that combines `get_data_with_hierarchy` and `hierarchy_data_to_string` to directly return the hierarchical data as a formatted string.
+- `get_ids_by_field_value`: Return a list of IDs from a specified table where a given field matches a specified value.
+- `get_ids_by_parent`: Return a list of IDs from a specified table where the ParentID matches a specified value.
+- `get_students_by_advisor`: Return a list of student IDs for students who have a specified advisor.
+Async Variants:
+- `async_get_courseID_by_code`: Async variant of `get_courseID_by_code`.
+- `async_get_courseID_by_title`: Async variant of `get_courseID_by_title`.
+- `async_get_coops`: Async variant of `get_coops`.
+- `async_get_courseIDs_by_filters`: Async variant of `get_courseIDs_by_filters`.
+- `async_get_course_info_by_id`: Async variant of `get_course_info_by_id`.
+- `async_get_course_description_by_id`: Async variant of `get_course_description_by_id`.
+- `async_get_sectionIDs_by_filters`: Async variant of `get_sectionIDs_by_filters`.
+- `async_get_section_info_by_id`: Async variant of `get_section_info_by_id`.
+- `async_get_upcoming_events`: Async variant of `get_upcoming_events`.
+- `async_get_event_dates_by_name`: Async variant of `get_event_dates_by_name`.
+- `async_get_student_basic_info`: Async variant of `get_student_basic_info`.
+- `async_get_student_course_history`: Async variant of `get_student_course_history`.
+- `async_get_student_interests`: Async variant of `get_student_interests`.
+- `async_get_student_tracked_sections`: Async variant of `get_student_tracked_sections`.
+- `async_get_program_requirements_by_title`: Async variant of `get_program_requirements_by_title`.
+- `async_insert_student_interest`: Async variant of `insert_student_interest`.
+- `async_insert_student_tracked_section`: Async variant of `insert_student_tracked_section`.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1database__utils_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1database__utils_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1database__utils_a4b144379f0f985aa77ae41b3ca340e21}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!\_format\_hierarchy\_node@{\_format\_hierarchy\_node}}
+\index{\_format\_hierarchy\_node@{\_format\_hierarchy\_node}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{\_format\_hierarchy\_node()}{\_format\_hierarchy\_node()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a4b144379f0f985aa77ae41b3ca340e21} 
+ str \+\_\+format\+\_\+hierarchy\+\_\+node (\begin{DoxyParamCaption}\item[{dict}]{node}{, }\item[{int }]{depth}{ = {\ttfamily 0}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Format a hierarchical node (from get_data_with_hierarchy) into a readable string.
+
+This helper is used by `hierarchy_data_to_string` to pretty-print the nested
+structure produced by `get_data_with_hierarchy`.
+
+Args:
+    node (dict): A dict representing a node in the hierarchy, with keys "entry" and "content".
+    depth (int): Current depth in the hierarchy, used for indentation.
+
+Returns:
+    out (str): A formatted multi-line string representing the node and its children in a readable way.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a2a1957febb0f864fce7ec30a7664692b}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_coops@{async\_get\_coops}}
+\index{async\_get\_coops@{async\_get\_coops}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_coops()}{async\_get\_coops()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a2a1957febb0f864fce7ec30a7664692b} 
+ list async\+\_\+get\+\_\+coops (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of course IDs for all 'Cooperative Work Experience' entries (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+
+Returns:
+    out (list[str]): List of course IDs (from `Courses.ID`) for all courses with the name "Cooperative Work Experience":
+        Format of list items: Primary key values from `Courses.ID` column corresponding to rows where `Courses.Name` is "Cooperative Work Experience" (eg. ["12345", "67890"]).
+        Note: If no courses are found with that name, returns an empty list.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a0472e9f877a7c173fad80372046d9703}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_course\_description\_by\_id@{async\_get\_course\_description\_by\_id}}
+\index{async\_get\_course\_description\_by\_id@{async\_get\_course\_description\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_course\_description\_by\_id()}{async\_get\_course\_description\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a0472e9f877a7c173fad80372046d9703} 
+ str async\+\_\+get\+\_\+course\+\_\+description\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the textual description for a course identified by `course_id` (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    course_id (str): Primary key value from Courses.ID (e.g. "12345").
+
+Returns:
+    out (str): Course description from Courses.Description column if found,
+        "Course not found" if no course matches the ID.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ae5c33621d24d3a3d3f77560355dbe954}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_course\_info\_by\_id@{async\_get\_course\_info\_by\_id}}
+\index{async\_get\_course\_info\_by\_id@{async\_get\_course\_info\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_course\_info\_by\_id()}{async\_get\_course\_info\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ae5c33621d24d3a3d3f77560355dbe954} 
+ dict async\+\_\+get\+\_\+course\+\_\+info\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course metadata for a given course ID (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    course_id (str): Primary key value from Courses.ID (e.g. "12345").
+
+Returns:
+    out (dict): Mapping of column names to values for the matched course with keys:
+          ID, Name, Department, Code, Credits, Requirements.
+          Returns empty dict if no course found with that ID.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a6842903b3d2853adba32c2c7b44e36b7}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_courseID\_by\_code@{async\_get\_courseID\_by\_code}}
+\index{async\_get\_courseID\_by\_code@{async\_get\_courseID\_by\_code}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_courseID\_by\_code()}{async\_get\_courseID\_by\_code()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a6842903b3d2853adba32c2c7b44e36b7} 
+ str async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+code (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+code}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the database course ID matching a course code (async).
+
+Accepts course codes in either spaced format ("DPT NUM") or compact format ("DPTNUM").
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    course_code (str): Course code to look up:
+        Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
+
+Returns:
+    out (str): The matching course ID as stored in the `Courses` table:
+        Format if found: Primary key value from `Courses.ID` column corresponding to the provided course code. (eg. "12345")
+        Note: If no course is found with that code, returns ``None``.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_abf65c2f2b40a539879abbcb158207ef5}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_courseID\_by\_title@{async\_get\_courseID\_by\_title}}
+\index{async\_get\_courseID\_by\_title@{async\_get\_courseID\_by\_title}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_courseID\_by\_title()}{async\_get\_courseID\_by\_title()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_abf65c2f2b40a539879abbcb158207ef5} 
+ str async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+title (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+title}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the database course ID for a given course title (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    course_title (str): Course title to look up:
+        Format: Exact course title as stored in the `Courses.Name` column (eg. "Introduction to Computer Science").
+
+Returns:
+    out (str): The matching course ID:
+        Format if found: Primary key value from `Courses.ID` column corresponding to the provided course title. (eg. "12345")
+        Note: If no course is found with that title, returns ``None``.
+
+Warnings: This is designed for a database with unique course titles (with the exception of "Cooperative Work Experience"). If you plan to use this for a database that may have multiple courses with the same title, consider implementing an alternative lookup method.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_afcc52cdc6d302d1cbde010e4b5ea4aa3}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_courseIDs\_by\_filters@{async\_get\_courseIDs\_by\_filters}}
+\index{async\_get\_courseIDs\_by\_filters@{async\_get\_courseIDs\_by\_filters}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_courseIDs\_by\_filters()}{async\_get\_courseIDs\_by\_filters()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_afcc52cdc6d302d1cbde010e4b5ea4aa3} 
+ list async\+\_\+get\+\_\+course\+IDs\+\_\+by\+\_\+filters (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}}}]{filters}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of course IDs that match the provided CourseFilters (async).
+
+Builds a parameterized SQL query from schemas.CourseFilters and returns matching
+CoursesOffered.ID values.
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    filters (schemas.CourseFilters): CourseFilters with optional fields:
+        - terms: List of DBTerm (year, season, optional number). Uses OR logic.
+        - departments: List of dept abbreviations (e.g. ["PHY", "MAT"]). Uses OR.
+        - course_codes: List of CodeCondition (condition, code). Uses AND.
+        - credits: List of CreditCondition (condition, credits). Uses AND.
+        - keywords: Search terms for Courses.Description. Uses OR.
+        - prerequisites: Search terms for Courses.Requirements. Uses OR.
+
+Returns:
+    out (list[str]): Primary key values from CoursesOffered.ID matching filters
+               (e.g. ["12345", "67890"]). Empty list if no matches.
+               Returns ["No filters specified"] if filters is None.
+
+Raises:
+    ValueError: Invalid comparison operator in filters.
+                "Invalid course code condition: {condition}" or
+                "Invalid credit condition: {condition}".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a67697460779047ebfd1e5947d2f67d50}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_event\_dates\_by\_name@{async\_get\_event\_dates\_by\_name}}
+\index{async\_get\_event\_dates\_by\_name@{async\_get\_event\_dates\_by\_name}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_event\_dates\_by\_name()}{async\_get\_event\_dates\_by\_name()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a67697460779047ebfd1e5947d2f67d50} 
+ list async\+\_\+get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{event\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return all future EventDates for an event identified by its name (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    event_name (str): Exact event name as stored in Events.Name (e.g. "Spring Career Fair").
+
+Returns:
+    list[dict]: List of dicts with keys "Date", "StartTime", "EndTime", "Location"
+                for future dates of the event. Returns ["Event not found"] if no event
+                with that name exists, or empty list if event has no future dates.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_aabd260ae8206a1deaa2313ffd1fe3211}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_program\_requirements\_by\_title@{async\_get\_program\_requirements\_by\_title}}
+\index{async\_get\_program\_requirements\_by\_title@{async\_get\_program\_requirements\_by\_title}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_program\_requirements\_by\_title()}{async\_get\_program\_requirements\_by\_title()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_aabd260ae8206a1deaa2313ffd1fe3211} 
+ list async\+\_\+get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{program\+\_\+title}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return program requirement strings for a program identified by its Title (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    program_title (str): Exact program title from ProgramsOfStudy.Title
+                         (e.g. "Computer Information Systems").
+
+Returns:
+    out (list[str]): Requirement strings for the program: 
+        Format for options:
+            "Department: {Dept}, Course Number: {Code}, Title: {Name}"
+            "Any {Elective} course"
+            Multiple options separated by " OR ".
+            Returns ["Program not found"] if no program exists, or
+            ["No requirements found"] if program has no requirements.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a6c233ebcc12bdc41262c9298dfa70229}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_section\_info\_by\_id@{async\_get\_section\_info\_by\_id}}
+\index{async\_get\_section\_info\_by\_id@{async\_get\_section\_info\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_section\_info\_by\_id()}{async\_get\_section\_info\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a6c233ebcc12bdc41262c9298dfa70229} 
+ dict async\+\_\+get\+\_\+section\+\_\+info\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{str}]{section\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return section-level metadata for the provided section ID (async).
+
+Get section metadata combined from Sections, CoursesOffered, and Courses tables.
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    section_id (str): Primary key value from Sections.ID (e.g. "12345").
+
+Returns:
+    out (dict): Mapping of column names to values with keys: ID, Department, Code, Name,
+          SectionNum, Instructor, Method, Location, MaxSeats, SeatsLeft.
+          Returns empty dict if section not found.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_abed474454d01d72665d59917cec92896}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_sectionIDs\_by\_filters@{async\_get\_sectionIDs\_by\_filters}}
+\index{async\_get\_sectionIDs\_by\_filters@{async\_get\_sectionIDs\_by\_filters}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_sectionIDs\_by\_filters()}{async\_get\_sectionIDs\_by\_filters()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_abed474454d01d72665d59917cec92896} 
+ list async\+\_\+get\+\_\+section\+IDs\+\_\+by\+\_\+filters (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}}}]{filters}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of section IDs that match the provided SectionFilters (async).
+
+Builds a parameterized SQL query from schemas.SectionFilters and returns matching
+Sections.ID values.
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    filters (schemas.SectionFilters): SectionFilters with optional fields:
+        - terms: List of DBTerm (year, season, optional number). Uses OR.
+        - course_codes: Spaced or compact format (e.g. ["CSC 101", "MAT125"]). OR.
+        - instructors: List of names from Sections.Instructor. Uses OR.
+        - teaching_methods: List of methods (e.g. ["In-Person", "Online"]). OR.
+        - enrollment_capacity: List of EnrollmentCondition for MaxSeats. AND.
+        - enrollment: List of EnrollmentCondition for SeatsLeft. AND.
+        - locations: List of location keywords from Sections.Location. AND.
+        - meet_times: List of DBMeetTime (day, start_time, end_time). OR.
+
+Returns:
+    out (list[str]): Primary key values from Sections.ID matching filters
+               (e.g. ["12345", "67890"]). Empty list if no matches.
+               Returns ["No filters specified"] if filters is None.
+
+Raises:
+    ValueError: Invalid comparison operator in capacity/enrollment filters.
+                "Invalid enrollment capacity condition: {condition}" or
+                "Invalid enrollment condition: {condition}".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a75e47e61d76b6b18c8dd9c77ba8aeb70}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_student\_basic\_info@{async\_get\_student\_basic\_info}}
+\index{async\_get\_student\_basic\_info@{async\_get\_student\_basic\_info}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_student\_basic\_info()}{async\_get\_student\_basic\_info()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a75e47e61d76b6b18c8dd9c77ba8aeb70} 
+ dict async\+\_\+get\+\_\+student\+\_\+basic\+\_\+info (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return basic profile information for a student (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (dict): Profile information with keys: Name, Email, Advisor, GPA, CreditsEarned,
+          ProgramsOfStudy. Returns empty dict if student not found.
+          Note: Advisor is "No advisor assigned" if not set. ProgramsOfStudy is
+          ["No program of study"] if student has no programs.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ada641d47084da01188f4a6b40e86e7f8}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_student\_course\_history@{async\_get\_student\_course\_history}}
+\index{async\_get\_student\_course\_history@{async\_get\_student\_course\_history}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_student\_course\_history()}{async\_get\_student\_course\_history()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ada641d47084da01188f4a6b40e86e7f8} 
+ list async\+\_\+get\+\_\+student\+\_\+course\+\_\+history (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a student's course history as a list of course entries (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[dict]): List of dicts with keys "CourseCode", "Name", "Grade" for each course.
+                Returns ["No courses taken"] if student has no course history.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ad6f5e339990c62d25cd0c728697891b6}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_student\_interests@{async\_get\_student\_interests}}
+\index{async\_get\_student\_interests@{async\_get\_student\_interests}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_student\_interests()}{async\_get\_student\_interests()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ad6f5e339990c62d25cd0c728697891b6} 
+ list async\+\_\+get\+\_\+student\+\_\+interests (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of interests for the given student (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[str]): Interests from Interests.Interest for the student.
+               Returns ["No interests specified"] if student has no interests.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a875e38c16b5f53b1ee345710098fba29}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_student\_tracked\_sections@{async\_get\_student\_tracked\_sections}}
+\index{async\_get\_student\_tracked\_sections@{async\_get\_student\_tracked\_sections}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_student\_tracked\_sections()}{async\_get\_student\_tracked\_sections()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a875e38c16b5f53b1ee345710098fba29} 
+ list async\+\_\+get\+\_\+student\+\_\+tracked\+\_\+sections (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the list of sections a student is currently tracking (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[dict]): List of tracked sections with keys "CourseCode", "SectionNumber", "Name".
+                Returns ["No sections currently being tracked"] if student tracks no sections.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a4c5038d339489d18ab44ecdce9b29ae1}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_get\_upcoming\_events@{async\_get\_upcoming\_events}}
+\index{async\_get\_upcoming\_events@{async\_get\_upcoming\_events}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_get\_upcoming\_events()}{async\_get\_upcoming\_events()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a4c5038d339489d18ab44ecdce9b29ae1} 
+async\+\_\+get\+\_\+upcoming\+\_\+events (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of upcoming events that have at least one future EventDates row (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+
+Returns:
+    out (list[dict]): List of dicts with keys "ID", "Name", "Description" for each
+                upcoming event. Returns empty list if no upcoming events found.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_aceed724d63558db35ae7ef1fe4ce6f2d}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_insert\_student\_interests@{async\_insert\_student\_interests}}
+\index{async\_insert\_student\_interests@{async\_insert\_student\_interests}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_insert\_student\_interests()}{async\_insert\_student\_interests()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_aceed724d63558db35ae7ef1fe4ce6f2d} 
+ str async\+\_\+insert\+\_\+student\+\_\+interests (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{, }\item[{list\+[str]\+}]{interest}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert one or more interest strings for a student (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): Student's numeric ID from Students.ID (e.g. 12345).
+    interest (list[str]): List of interest strings (e.g. ["Data Science", "Machine Learning"]).
+
+Returns:
+    out (str): Confirmation string "{counter} new interest(s) added".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a7bdbaf23ac5545452f3a67c14cb6d490}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!async\_insert\_student\_tracked\_section@{async\_insert\_student\_tracked\_section}}
+\index{async\_insert\_student\_tracked\_section@{async\_insert\_student\_tracked\_section}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{async\_insert\_student\_tracked\_section()}{async\_insert\_student\_tracked\_section()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a7bdbaf23ac5545452f3a67c14cb6d490} 
+ str async\+\_\+insert\+\_\+student\+\_\+tracked\+\_\+section (\begin{DoxyParamCaption}\item[{aiosqlite.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{, }\item[{str}]{course\+\_\+code}{, }\item[{str}]{section\+\_\+number}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Add a tracked section for the student specified (async).
+
+Args:
+    conn (aiosqlite.Connection): Async connection to the registration database.
+    student_id (int): The student's numeric ID:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+    course_code (str): The course code of the section to be tracked:
+        Format: Course code in either spaced or compact format (e.g. "CSC 101" or "CSC101").
+    section_number (str): The section number of the section to be tracked:
+        Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50", etc).
+
+Returns:
+    out (str): Confirmation string indicating the result of the operation:
+        Possible return values:
+            "Section added to tracked sections" - if the section was successfully added to the student's tracked sections.
+            "Section not found" - if no section matches the provided course code and section number.
+            "Section already being tracked" - if the student is already tracking a section with the same course code and section number.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_adf33dbd7d2286e85e8492cff5cbbb4aa}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_advisor\_email@{get\_advisor\_email}}
+\index{get\_advisor\_email@{get\_advisor\_email}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_advisor\_email()}{get\_advisor\_email()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_adf33dbd7d2286e85e8492cff5cbbb4aa} 
+ str get\+\_\+advisor\+\_\+email (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{advisor\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the email address for an advisor identified by name.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    advisor_name (str): Exact name of the advisor as stored in Advisors.Name (e.g. "Dr. Smith").
+
+Returns:
+    out (str): The advisor's email address if found (e.g. "advisor@university.edu"), or "Advisor not found" if no advisor with that name exists.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ac12d60eb233d56aae0f8c18d32aea41e}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_coops@{get\_coops}}
+\index{get\_coops@{get\_coops}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_coops()}{get\_coops()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ac12d60eb233d56aae0f8c18d32aea41e} 
+ list get\+\_\+coops (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of course IDs for all 'Cooperative Work Experience' entries.
+
+Args:
+    cursor (sqlite3.Cursor): cursor object connected to the registration database.
+
+Returns:
+    out (list[str]): List of course IDs (from `Courses.ID`) for all courses with the name "Cooperative Work Experience":
+        Format of list items: Primary key values from `Courses.ID` column corresponding to rows where `Courses.Name` is "Cooperative Work Experience" (eg. ["12345", "67890"]).
+        Note: If no courses are found with that name, returns an empty list.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a25086956427b91e859547771443b7d80}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_course\_description\_by\_id@{get\_course\_description\_by\_id}}
+\index{get\_course\_description\_by\_id@{get\_course\_description\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_course\_description\_by\_id()}{get\_course\_description\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a25086956427b91e859547771443b7d80} 
+ str get\+\_\+course\+\_\+description\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the textual description for a course identified by `course_id`.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    course_id (str): Primary key value from Courses.ID (e.g. "12345").
+
+Returns:
+    out (str): Course description from Courses.Description column if found,
+        "Course not found" if no course matches the ID.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a00610cb72f8235afd89d2efbe4ac67aa}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_course\_info\_by\_id@{get\_course\_info\_by\_id}}
+\index{get\_course\_info\_by\_id@{get\_course\_info\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_course\_info\_by\_id()}{get\_course\_info\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a00610cb72f8235afd89d2efbe4ac67aa} 
+ dict get\+\_\+course\+\_\+info\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return course metadata for a given course ID.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    course_id (str): Primary key value from Courses.ID (e.g. "12345").
+
+Returns:
+    out (dict): Mapping of column names to values for the matched course with keys:
+          ID, Name, Department, Code, Credits, Requirements.
+          Returns empty dict if no course found with that ID.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_acbed5434b24b543858cc9c5430919091}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_courseID\_by\_code@{get\_courseID\_by\_code}}
+\index{get\_courseID\_by\_code@{get\_courseID\_by\_code}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_courseID\_by\_code()}{get\_courseID\_by\_code()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_acbed5434b24b543858cc9c5430919091} 
+ str get\+\_\+course\+ID\+\_\+by\+\_\+code (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+code}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the database course ID matching a course code.
+
+Accepts course codes in either spaced format ("DPT NUM") or compact format ("DPTNUM").
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    course_code (str): Course code to look up:
+        Format: "DPT NUM" | "DPTNUM" (eg. "MAT 101" or "MAT101").
+
+Returns:
+    out (str): The matching course ID as stored in the `Courses` table:
+        Format if found: Primary key value from `Courses.ID` column corresponding to the provided course code. (eg. "12345")
+        Note: If no course is found with that code, returns ``None``.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_acedd539b57331d0f9992c5fa9424f444}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_courseID\_by\_title@{get\_courseID\_by\_title}}
+\index{get\_courseID\_by\_title@{get\_courseID\_by\_title}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_courseID\_by\_title()}{get\_courseID\_by\_title()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_acedd539b57331d0f9992c5fa9424f444} 
+ str get\+\_\+course\+ID\+\_\+by\+\_\+title (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{course\+\_\+title}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the database course ID for a given course title.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    course_title (str): Course title to look up:
+        Format: Exact course title as stored in the `Courses.Name` column (eg. "Introduction to Computer Science").
+
+Returns:
+    out (str): The matching course ID:
+        Format if found: Primary key value from `Courses.ID` column corresponding to the provided course title. (eg. "12345")
+        Note: If no course is found with that title, returns ``None``.
+
+Warnings: This is designed for a database with unique course titles (with the exception of "Cooperative Work Experience"). If you plan to use this for a database that may have multiple courses with the same title, consider implementing an alternative lookup method.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_acb171edb317bd74633c44dd49df008b7}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_courseIDs\_by\_filters@{get\_courseIDs\_by\_filters}}
+\index{get\_courseIDs\_by\_filters@{get\_courseIDs\_by\_filters}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_courseIDs\_by\_filters()}{get\_courseIDs\_by\_filters()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_acb171edb317bd74633c44dd49df008b7} 
+ list get\+\_\+course\+IDs\+\_\+by\+\_\+filters (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}}}]{filters}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of course IDs that match the provided CourseFilters.
+
+Builds a parameterized SQL query from schemas.CourseFilters and returns matching
+CoursesOffered.ID values.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    filters (schemas.CourseFilters): CourseFilters with optional fields:
+        - terms: List of DBTerm (year, season, optional number). Uses OR logic.
+        - departments: List of dept abbreviations (e.g. ["PHY", "MAT"]). Uses OR.
+        - course_codes: List of CodeCondition (condition, code). Uses AND.
+        - credits: List of CreditCondition (condition, credits). Uses AND.
+        - keywords: Search terms for Courses.Description. Uses OR.
+        - prerequisites: Search terms for Courses.Requirements. Uses OR.
+
+Returns:
+    out (list[str]): Primary key values from CoursesOffered.ID matching filters
+               (e.g. ["12345", "67890"]). Empty list if no matches.
+               Returns ["No filters specified"] if filters is None.
+
+Raises:
+    ValueError: Invalid comparison operator in filters.
+                "Invalid course code condition: {condition}" or
+                "Invalid credit condition: {condition}".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a9046b4140d8350dbc814416a728b2a1f}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_data\_with\_hierarchy@{get\_data\_with\_hierarchy}}
+\index{get\_data\_with\_hierarchy@{get\_data\_with\_hierarchy}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_data\_with\_hierarchy()}{get\_data\_with\_hierarchy()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a9046b4140d8350dbc814416a728b2a1f} 
+ dict get\+\_\+data\+\_\+with\+\_\+hierarchy (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{table}{, }\item[{int}]{target\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Recursively gather an entry and all related rows that reference it.
+
+Starting from the provided table and targetID, this function fetches the row's
+non-ID fields and then discovers tables that declare a FOREIGN KEY referencing
+the target table. For each related table, it recurses and includes that data
+under the parent entry.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    table (str): The name of the table to start from (e.g. "Courses", "Students", etc).
+    targetID (int): The ID of the row in the specified table to retrieve (e.g. 12345).
+
+Returns:
+    out (dict): A nested dictionary representing the target entry and all related entries that reference it, structured to indicate the relationships between the data:
+        Format: {
+            "entry": str,
+                Format: A string combining the table name and target ID (e.g. "Courses: 12345").
+            "content": dict,
+                Format: A dictionary containing the fields and values of the target entry, as well as nested dictionaries for any related entries that reference it.
+                The keys for the fields of the target entry are the column names from the table (excluding "ID" and "ParentID"), and the values are the corresponding field values from the database.
+                For each related table that references the target entry, there is a key in the content dict with the name of that related table, and its value is a list of dicts representing each entry in that related table that references the target entry. Each of those dicts has the same structure as described here, allowing for recursive nesting to represent multiple levels of relationships.
+        }
+
+Warnings:
+    This can produce very large results for highly-referenced tables (catalogs).
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_aad919c77734610236cc39640c9493935}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_data\_with\_hierarchy\_string@{get\_data\_with\_hierarchy\_string}}
+\index{get\_data\_with\_hierarchy\_string@{get\_data\_with\_hierarchy\_string}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_data\_with\_hierarchy\_string()}{get\_data\_with\_hierarchy\_string()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_aad919c77734610236cc39640c9493935} 
+ str get\+\_\+data\+\_\+with\+\_\+hierarchy\+\_\+string (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{table}{, }\item[{str}]{target\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper that returns the hierarchical data for a target as a formatted string.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    table (str): The name of the table to start from (e.g. "Courses", "Students", etc).
+    targetID (int): The ID of the row in the specified table to retrieve (e.g. 12345).
+
+Returns:
+    out (str): A formatted multi-line string representing the target entry and all related entries that reference it, structured to indicate the relationships between the data:
+        Format: {
+            "entry": str,
+                Format: A string combining the table name and target ID (e.g. "Courses: 12345").
+            "content": dict,
+                Format: A dictionary containing the fields and values of the target entry, as well as nested dictionaries for any related entries that reference it.
+                The keys for the fields of the target entry are the column names from the table (excluding "ID" and "ParentID"), and the values are the corresponding field values from the database.
+                For each related table that references the target entry, there is a key in the content dict with the name of that related table, and its value is a list of dicts representing each entry in that related table that references the target entry. Each of those dicts has the same structure as described here, allowing for recursive nesting to represent multiple levels of relationships.
+            }
+
+Warnings:
+    This can produce very large results for highly-referenced tables (catalogs).
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a065b3cf46aeef9545cea92d12bea3ce1}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_event\_dates\_by\_name@{get\_event\_dates\_by\_name}}
+\index{get\_event\_dates\_by\_name@{get\_event\_dates\_by\_name}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_event\_dates\_by\_name()}{get\_event\_dates\_by\_name()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a065b3cf46aeef9545cea92d12bea3ce1} 
+ list get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{event\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return all future EventDates for an event identified by its name.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    event_name (str): Exact event name as stored in Events.Name (e.g. "Spring Career Fair").
+
+Returns:
+    list[dict]: List of dicts with keys "Date", "StartTime", "EndTime", "Location"
+                for future dates of the event. Returns ["Event not found"] if no event
+                with that name exists, or empty list if event has no future dates.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ac5313d3554336cef4a0966db0fed1fb1}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_ids\_by\_field\_value@{get\_ids\_by\_field\_value}}
+\index{get\_ids\_by\_field\_value@{get\_ids\_by\_field\_value}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_ids\_by\_field\_value()}{get\_ids\_by\_field\_value()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ac5313d3554336cef4a0966db0fed1fb1} 
+ list get\+\_\+ids\+\_\+by\+\_\+field\+\_\+value (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{table}{, }\item[{str}]{field}{, }\item[{str}]{value}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of IDs in `table` where `field` equals `value`.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    table (str): The name of the table to query (e.g. "Courses", "Students", etc).
+    field (str): The name of the field/column to filter by (e.g. "Department", "AdvisorID", etc).
+    value (str): The value to match in the specified field (e.g. "CSC", "Dr. Smith", etc).
+
+Returns:
+    out (list[str]): List of IDs (as strings) from the specified table where the specified field matches the provided value:
+        Format of list items: Primary key values from the `ID` column of the specified table that match the condition (e.g. ["12345", "67890", etc]).
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a8542da106d3b0e9367f33b7954e72305}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_ids\_by\_parent@{get\_ids\_by\_parent}}
+\index{get\_ids\_by\_parent@{get\_ids\_by\_parent}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_ids\_by\_parent()}{get\_ids\_by\_parent()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a8542da106d3b0e9367f33b7954e72305} 
+ list get\+\_\+ids\+\_\+by\+\_\+parent (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{table}{, }\item[{str}]{target\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return IDs from `table` whose `ParentID` equals `targetID`.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    table (str): The name of the table to query (e.g. "Courses", "Students", etc).
+    targetID (str): The value to match in the `ParentID` field (e.g. "12345", "67890", etc).
+
+Returns:
+    out (list[str]): List of IDs (as strings) from the specified table where `ParentID` matches the provided targetID:
+        Format of list items: Primary key values from the `ID` column of the specified table that match the condition (e.g. ["12345", "67890", etc]).
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a0d55e833cec5ab4915ee82c5d4c14afd}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_program\_requirements\_by\_title@{get\_program\_requirements\_by\_title}}
+\index{get\_program\_requirements\_by\_title@{get\_program\_requirements\_by\_title}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_program\_requirements\_by\_title()}{get\_program\_requirements\_by\_title()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a0d55e833cec5ab4915ee82c5d4c14afd} 
+ list get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{program\+\_\+title}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return program requirement strings for a program identified by its Title.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    program_title (str): Exact program title from ProgramsOfStudy.Title
+                         (e.g. "Computer Information Systems").
+
+Returns:
+    out (list[str]): Requirement strings for the program: 
+        Format for options:
+            "Department: {Dept}, Course Number: {Code}, Title: {Name}"
+            "Any {Elective} course"
+            Multiple options separated by " OR ".
+            Returns ["Program not found"] if no program exists, or
+            ["No requirements found"] if program has no requirements.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a6fa9c4acf34344a06f31b1df5a90f1e5}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_section\_info\_by\_id@{get\_section\_info\_by\_id}}
+\index{get\_section\_info\_by\_id@{get\_section\_info\_by\_id}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_section\_info\_by\_id()}{get\_section\_info\_by\_id()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a6fa9c4acf34344a06f31b1df5a90f1e5} 
+ dict get\+\_\+section\+\_\+info\+\_\+by\+\_\+id (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{section\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return section-level metadata for the provided section ID.
+
+Get section metadata combined from Sections, CoursesOffered, and Courses tables.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    section_id (str): Primary key value from Sections.ID (e.g. "12345").
+
+Returns:
+    out (dict): Mapping of column names to values with keys: ID, Department, Code, Name,
+          SectionNum, Instructor, Method, Location, MaxSeats, SeatsLeft.
+          Returns empty dict if section not found.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a1f08e533cf3317e88ac0305c9725753e}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_sectionIDs\_by\_filters@{get\_sectionIDs\_by\_filters}}
+\index{get\_sectionIDs\_by\_filters@{get\_sectionIDs\_by\_filters}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_sectionIDs\_by\_filters()}{get\_sectionIDs\_by\_filters()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a1f08e533cf3317e88ac0305c9725753e} 
+ list get\+\_\+section\+IDs\+\_\+by\+\_\+filters (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}}}]{filters}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of section IDs that match the provided SectionFilters.
+
+Builds a parameterized SQL query from schemas.SectionFilters and returns matching
+Sections.ID values.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    filters (schemas.SectionFilters): SectionFilters with optional fields:
+        - terms: List of DBTerm (year, season, optional number). Uses OR.
+        - course_codes: Spaced or compact format (e.g. ["CSC 101", "MAT125"]). OR.
+        - instructors: List of names from Sections.Instructor. Uses OR.
+        - teaching_methods: List of methods (e.g. ["In-Person", "Online"]). OR.
+        - enrollment_capacity: List of EnrollmentCondition for MaxSeats. AND.
+        - enrollment: List of EnrollmentCondition for SeatsLeft. AND.
+        - locations: List of location strings from Sections.Location. OR.
+        - meet_times: List of DBMeetTime (day, start_time, end_time). OR.
+
+Returns:
+    out (list[str]): Primary key values from Sections.ID matching filters
+               (e.g. ["12345", "67890"]). Empty list if no matches.
+               Returns ["No filters specified"] if filters is None.
+
+Raises:
+    ValueError: Invalid comparison operator in capacity/enrollment filters.
+                "Invalid enrollment capacity condition: {condition}" or
+                "Invalid enrollment condition: {condition}".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ab3d607f4cabe28d49a73d2fae482a6c3}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_student\_basic\_info@{get\_student\_basic\_info}}
+\index{get\_student\_basic\_info@{get\_student\_basic\_info}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_student\_basic\_info()}{get\_student\_basic\_info()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ab3d607f4cabe28d49a73d2fae482a6c3} 
+ dict get\+\_\+student\+\_\+basic\+\_\+info (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return basic profile information for a student.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (dict): Profile information with keys: Name, Email, Advisor, GPA, CreditsEarned,
+          ProgramsOfStudy. Returns empty dict if student not found.
+          Note: Advisor is "No advisor assigned" if not set. ProgramsOfStudy is
+          ["No program of study"] if student has no programs.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a8d1d6038bd4a990bf2a8000b8adad6e4}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_student\_course\_history@{get\_student\_course\_history}}
+\index{get\_student\_course\_history@{get\_student\_course\_history}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_student\_course\_history()}{get\_student\_course\_history()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a8d1d6038bd4a990bf2a8000b8adad6e4} 
+ list get\+\_\+student\+\_\+course\+\_\+history (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a student's course history as a list of course entries.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[dict]): List of dicts with keys "CourseCode", "Name", "Grade" for each course.
+                Returns ["No courses taken"] if student has no course history.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a16c6b46dc62e27256fb60aedee3c212c}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_student\_interests@{get\_student\_interests}}
+\index{get\_student\_interests@{get\_student\_interests}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_student\_interests()}{get\_student\_interests()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a16c6b46dc62e27256fb60aedee3c212c} 
+ list get\+\_\+student\+\_\+interests (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of interests for the given student.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[str]): Interests from Interests.Interest for the student.
+               Returns ["No interests specified"] if student has no interests.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a9953e6ecc838771117690d854d1bc193}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_student\_tracked\_sections@{get\_student\_tracked\_sections}}
+\index{get\_student\_tracked\_sections@{get\_student\_tracked\_sections}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_student\_tracked\_sections()}{get\_student\_tracked\_sections()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a9953e6ecc838771117690d854d1bc193} 
+ list get\+\_\+student\+\_\+tracked\+\_\+sections (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the list of sections a student is currently tracking.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): Numeric ID from Students.ID (e.g. 12345).
+
+Returns:
+    out (list[dict]): List of tracked sections with keys "CourseCode", "SectionNumber", "Name".
+                Returns ["No sections currently being tracked"] if student tracks no sections.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a8891cbf6c61066d427ea7aa524378cdd}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_students\_by\_advisor@{get\_students\_by\_advisor}}
+\index{get\_students\_by\_advisor@{get\_students\_by\_advisor}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_students\_by\_advisor()}{get\_students\_by\_advisor()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a8891cbf6c61066d427ea7aa524378cdd} 
+ list get\+\_\+students\+\_\+by\+\_\+advisor (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{str}]{advisor\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of student IDs advised by the given advisor.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    advisorID (str): Advisor identifier used in `Students.AdvisorID`.
+
+Returns:
+    out (list[str]): List of student IDs (as strings) advised by the given advisor:
+        Format of list items: Primary key values from the `ID` column of the `Students` table where `AdvisorID` matches the provided advisorID (e.g. ["12345", "67890", etc]).
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a011461459d7d4a369a29f7f94e4cf1d9}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!get\_upcoming\_events@{get\_upcoming\_events}}
+\index{get\_upcoming\_events@{get\_upcoming\_events}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{get\_upcoming\_events()}{get\_upcoming\_events()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a011461459d7d4a369a29f7f94e4cf1d9} 
+ list get\+\_\+upcoming\+\_\+events (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of upcoming events that have at least one future EventDates row.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+
+Returns:
+    out (list[dict]): List of dicts with keys "ID", "Name", "Description" for each
+                upcoming event. Returns empty list if no upcoming events found.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_ad373f2872b1466c3f0c7ca1e9a0598d8}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!hierarchy\_data\_to\_string@{hierarchy\_data\_to\_string}}
+\index{hierarchy\_data\_to\_string@{hierarchy\_data\_to\_string}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{hierarchy\_data\_to\_string()}{hierarchy\_data\_to\_string()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_ad373f2872b1466c3f0c7ca1e9a0598d8} 
+ str hierarchy\+\_\+data\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{dict}]{hierarchy\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Convert a hierarchy data dict into a readable multi-line string.
+
+Args:
+    hierarchy_data (dict): A dict representing hierarchical data as produced by `get_data_with_hierarchy`.
+
+Returns:
+    out (str): A formatted multi-line string representing the hierarchy in a readable way.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_a6bc8b5be5404a78a331bb597891ee602}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!insert\_student\_interests@{insert\_student\_interests}}
+\index{insert\_student\_interests@{insert\_student\_interests}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{insert\_student\_interests()}{insert\_student\_interests()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_a6bc8b5be5404a78a331bb597891ee602} 
+ str insert\+\_\+student\+\_\+interests (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{, }\item[{list\+[str]\+}]{interest}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert one or more interest strings for a student.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): Student's numeric ID from Students.ID (e.g. 12345).
+    interest (list[str]): List of interest strings (e.g. ["Data Science", "Machine Learning"]).
+
+Returns:
+    out (str): Confirmation string "{counter} new interest(s) added".
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1database__utils_af2345d11737fbf21c99572bfe5fef6d6}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!insert\_student\_tracked\_section@{insert\_student\_tracked\_section}}
+\index{insert\_student\_tracked\_section@{insert\_student\_tracked\_section}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{insert\_student\_tracked\_section()}{insert\_student\_tracked\_section()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_af2345d11737fbf21c99572bfe5fef6d6} 
+ str insert\+\_\+student\+\_\+tracked\+\_\+section (\begin{DoxyParamCaption}\item[{sqlite3.\+Connection}]{conn}{, }\item[{int}]{student\+\_\+id}{, }\item[{str}]{course\+\_\+code}{, }\item[{str}]{section\+\_\+number}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Add a tracked section for the student specified.
+
+Args:
+    conn (sqlite3.Connection): Connection object connected to the registration database.
+    student_id (int): The student's numeric ID:
+        Format: Primary key value from `Students.ID` column (e.g. 12345).
+    course_code (str): The course code of the section to be tracked:
+        Format: Course code in either spaced or compact format (e.g. "CSC 101" or "CSC101").
+    section_number (str): The section number of the section to be tracked:
+        Format: Section number as stored in `Sections.SectionNum` (e.g. "1", "b1", "50", etc).
+
+Returns:
+    out (str): Confirmation string indicating the result of the operation:
+        Possible return values:
+            "Section added to tracked sections" - if the section was successfully added to the student's tracked sections.
+            "Section not found" - if no section matches the provided course code and section number.
+            "Section already being tracked" - if the student is already tracking a section with the same course code and section number.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1database__utils_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1database__utils_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1database__utils_aaad069dfd97bf79a0100dfe4fd0d8307}\index{lg\_agent.database\_utils@{lg\_agent.database\_utils}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.database\_utils@{lg\_agent.database\_utils}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1database__utils_aaad069dfd97bf79a0100dfe4fd0d8307} 
+lg\+\_\+agent.\+database\+\_\+utils.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+

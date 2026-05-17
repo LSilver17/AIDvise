@@ -1,0 +1,201 @@
+\doxysection{scrape\+\_\+classes\+\_\+page Namespace Reference}
+\hypertarget{namespacescrape__classes__page}{}\label{namespacescrape__classes__page}\index{scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacescrape__classes__page_a089153119c6cffeb663a6c36c6769284}{clean\+\_\+text}} (text)
+\item 
+\doxymbox{\hyperlink{namespacescrape__classes__page_a5b54d52364ffa43d2d0492efd1de2a52}{fetch\+\_\+course\+\_\+detail}} (url)
+\item 
+\doxymbox{\hyperlink{namespacescrape__classes__page_a347dfeec7034b0ede12198c307f18957}{scrape\+\_\+classes}} ()
+\item 
+\doxymbox{\hyperlink{namespacescrape__classes__page_a51af30a60f9f02777c6396b8247e356f}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacescrape__classes__page_aecd90801882f270591734c2c686e92ea}{BASE\+\_\+\+URL}} = "{}https:\+/\+/\+www.\+qcc.\+edu"{}
+\begin{DoxyCompactList}\small\item\em Base URL for constructing absolute links from relative hrefs. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__classes__page_acd5496417dd37eee2065f337d9acf225}{CLASSES\+\_\+\+URL}} = "{}https:\+/\+/\+www.\+qcc.\+edu/\+classes"{}
+\begin{DoxyCompactList}\small\item\em URL of the QCC public classes listing page. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__classes__page_a0b448b929c0d644c2b88df415de7c85e}{OUTPUT}} = "{}qcc\+\_\+classes.\+json"{}
+\begin{DoxyCompactList}\small\item\em Output path for the scraped JSON file. \end{DoxyCompactList}\item 
+dict \doxymbox{\hyperlink{namespacescrape__classes__page_a1d9bd265862ec5f7e6c7846ef0e15ade}{HEADERS}}
+\begin{DoxyCompactList}\small\item\em HTTP headers to send with each request to mimic a browser. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@file scrape_classes_page.py
+@brief Scrapes the public QCC website for the full credit course listing with details.
+
+@details
+This module scrapes https://www.qcc.edu/classes for the complete list of QCC
+credit courses, then visits each course's individual detail page to extract:
+    - Description
+    - Credits
+    - Prerequisites
+    - Semesters offered
+
+Unlike scrape_catalog.py which uses Playwright to access The Q portal,
+this scraper uses the Requests library and BeautifulSoup since the public
+QCC website renders content statically (no JavaScript required).
+
+Field extraction uses a line-scanning approach rather than CSS selectors,
+because QCC's public pages present labeled fields as plain text rather than
+structured HTML elements with identifying CSS classes.
+
+@date 2026
+
+@par Input
+    https://www.qcc.edu/classes — public QCC course listing page
+
+@par Output
+    qcc_classes.json — list of course dictionaries with full detail fields
+
+@par Dependencies
+    - requests
+    - beautifulsoup4
+    - json (stdlib)
+    - re (stdlib)
+    - time (stdlib)
+
+@par Usage
+    python scrape_classes_page.py
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__classes__page_doc-func-members}
+\Hypertarget{namespacescrape__classes__page_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacescrape__classes__page_a089153119c6cffeb663a6c36c6769284}\index{scrape\_classes\_page@{scrape\_classes\_page}!clean\_text@{clean\_text}}
+\index{clean\_text@{clean\_text}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{clean\_text()}{clean\_text()}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a089153119c6cffeb663a6c36c6769284} 
+clean\+\_\+text (\begin{DoxyParamCaption}\item[{}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Removes excess whitespace from a string.
+
+@param text The raw string to clean.
+@return A normalized single-line string with no extra whitespace.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__classes__page_a5b54d52364ffa43d2d0492efd1de2a52}\index{scrape\_classes\_page@{scrape\_classes\_page}!fetch\_course\_detail@{fetch\_course\_detail}}
+\index{fetch\_course\_detail@{fetch\_course\_detail}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{fetch\_course\_detail()}{fetch\_course\_detail()}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a5b54d52364ffa43d2d0492efd1de2a52} 
+fetch\+\_\+course\+\_\+detail (\begin{DoxyParamCaption}\item[{}]{url}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Fetches and extracts detail fields from a QCC course detail page.
+
+@details
+Sends an HTTP GET request to the course detail URL and parses the response
+using BeautifulSoup. Since QCC's course pages present fields as labeled
+plain text rather than structured HTML elements, this function splits the
+page's main content area into clean lines and scans for labeled field patterns.
+
+Extraction rules:
+- Credits: finds a line matching "Credits" then reads the numeric value on the next line
+- Semesters Offered: finds a line matching "Semester(s) Offered" then reads the next line
+- Prerequisites: finds a line matching "Prerequisites?" then reads the next line
+- Description: selects the longest text block over 80 characters that does not
+  match navigation or label patterns
+
+A 0.3 second delay is applied between requests in scrape_classes() to avoid
+overloading QCC's server.
+
+@param url The full URL of the course detail page (e.g. https://www.qcc.edu/courses/financial-accounting-i).
+@return A dictionary with keys:
+        - "description" (str or None)
+        - "prerequisites" (str or None)
+        - "credits" (str or None)
+        - "semesters_offered" (str or None)
+
+@note Returns a dictionary with all None values if the request fails or
+      the page structure does not match expected patterns.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__classes__page_a51af30a60f9f02777c6396b8247e356f}\index{scrape\_classes\_page@{scrape\_classes\_page}!main@{main}}
+\index{main@{main}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a51af30a60f9f02777c6396b8247e356f} 
+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Entry point — runs the classes scraper and saves results to JSON.
+
+@details
+Calls scrape_classes() to collect all course data, writes the results
+to qcc_classes.json, and prints a summary including total courses scraped,
+credits populated count, semesters offered populated count, and elapsed time.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__classes__page_a347dfeec7034b0ede12198c307f18957}\index{scrape\_classes\_page@{scrape\_classes\_page}!scrape\_classes@{scrape\_classes}}
+\index{scrape\_classes@{scrape\_classes}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{scrape\_classes()}{scrape\_classes()}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a347dfeec7034b0ede12198c307f18957} 
+scrape\+\_\+classes (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Scrapes the QCC classes listing page and fetches details for each course.
+
+@details
+Sends a GET request to CLASSES_URL and parses the response to build an
+initial list of courses with their codes, names, and URLs. Then iterates
+through each course, calls fetch_course_detail() to populate the detail
+fields, and applies a 0.3 second polite delay between requests.
+
+The classes listing page uses <h2> tags for department headings and <tr>
+table rows for individual course entries. The course code is in the first
+cell and the course name link is in the second cell.
+
+@return A list of course dictionaries with fields:
+        course_code, department, name, url, description,
+        prerequisites, credits, semesters_offered, scraped_at.
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__classes__page_doc-var-members}
+\Hypertarget{namespacescrape__classes__page_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacescrape__classes__page_aecd90801882f270591734c2c686e92ea}\index{scrape\_classes\_page@{scrape\_classes\_page}!BASE\_URL@{BASE\_URL}}
+\index{BASE\_URL@{BASE\_URL}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{BASE\_URL}{BASE\_URL}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_aecd90801882f270591734c2c686e92ea} 
+str scrape\+\_\+classes\+\_\+page.\+BASE\+\_\+\+URL = "{}https:\+/\+/\+www.\+qcc.\+edu"{}}
+
+
+
+Base URL for constructing absolute links from relative hrefs. 
+
+\Hypertarget{namespacescrape__classes__page_acd5496417dd37eee2065f337d9acf225}\index{scrape\_classes\_page@{scrape\_classes\_page}!CLASSES\_URL@{CLASSES\_URL}}
+\index{CLASSES\_URL@{CLASSES\_URL}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{CLASSES\_URL}{CLASSES\_URL}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_acd5496417dd37eee2065f337d9acf225} 
+str scrape\+\_\+classes\+\_\+page.\+CLASSES\+\_\+\+URL = "{}https:\+/\+/\+www.\+qcc.\+edu/\+classes"{}}
+
+
+
+URL of the QCC public classes listing page. 
+
+\Hypertarget{namespacescrape__classes__page_a1d9bd265862ec5f7e6c7846ef0e15ade}\index{scrape\_classes\_page@{scrape\_classes\_page}!HEADERS@{HEADERS}}
+\index{HEADERS@{HEADERS}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{HEADERS}{HEADERS}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a1d9bd265862ec5f7e6c7846ef0e15ade} 
+dict scrape\+\_\+classes\+\_\+page.\+HEADERS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{stringliteral}{"{}User-\/Agent"{}}:\ \textcolor{stringliteral}{"{}Mozilla/5.0\ (Windows\ NT\ 10.0;\ Win64;\ x64)\ AppleWebKit/537.36"{}}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+HTTP headers to send with each request to mimic a browser. 
+
+\Hypertarget{namespacescrape__classes__page_a0b448b929c0d644c2b88df415de7c85e}\index{scrape\_classes\_page@{scrape\_classes\_page}!OUTPUT@{OUTPUT}}
+\index{OUTPUT@{OUTPUT}!scrape\_classes\_page@{scrape\_classes\_page}}
+\doxysubsubsection{\texorpdfstring{OUTPUT}{OUTPUT}}
+{\footnotesize\ttfamily \label{namespacescrape__classes__page_a0b448b929c0d644c2b88df415de7c85e} 
+str scrape\+\_\+classes\+\_\+page.\+OUTPUT = "{}qcc\+\_\+classes.\+json"{}}
+
+
+
+Output path for the scraped JSON file. 
+

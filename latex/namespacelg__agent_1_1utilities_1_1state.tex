@@ -1,0 +1,71 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+state Namespace Reference}
+\hypertarget{namespacelg__agent_1_1utilities_1_1state}{}\label{namespacelg__agent_1_1utilities_1_1state}\index{lg\_agent.utilities.state@{lg\_agent.utilities.state}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_query_result}{Query\+Result}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_s_planner_state}{SPlanner\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_a_planner_state}{APlanner\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_output}{Database\+Helper\+Output}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output}{Web\+Search\+Helper\+Output}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_output}{Insertion\+Helper\+Output}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_input}{Alerts\+Agent\+Input}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_state}{Alerts\+Agent\+State}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_alerts_agent_output}{Alerts\+Agent\+Output}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1state_a57a926aefe65bd9d5f5ec14bad6a04a0}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Defines TypedDict schemas for state management across the advisor and alerts LangGraph agents.
+
+Planner Agent State Classes:
+- `QueryResult`: Container for database/web query strings and their results.
+- `RouteState`: Root routing state containing user ID, account type, and messages.
+- `SPlannerState`: State for student planning node, tracking database/web info and loop iterations.
+- `APlannerState`: State for advisor planning node, similar to student but without insertion field.
+- `DatabaseHelperState`: State for database query helper subgraph.
+- `DatabaseHelperOutput`: Output schema for database helper results.
+- `WebSearchHelperState`: State for web search helper subgraph.
+- `WebSearchHelperOutput`: Output schema for web search helper results.
+- `InsertionHelperState`: State for student insertion helper subgraph.
+- `InsertionHelperOutput`: Output schema for insertion helper results.
+
+Alerts Agent State Classes:
+- `AlertsAgentInput`: Input schema containing the student ID to process.
+- `AlertsAgentState`: State containing upcoming events, interests, and relevant filtered events.
+- `AlertsAgentOutput`: Output schema containing the final list of relevant events.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1utilities_1_1state_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1state_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1state_a57a926aefe65bd9d5f5ec14bad6a04a0}\index{lg\_agent.utilities.state@{lg\_agent.utilities.state}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.utilities.state@{lg\_agent.utilities.state}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1state_a57a926aefe65bd9d5f5ec14bad6a04a0} 
+lg\+\_\+agent.\+utilities.\+state.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+

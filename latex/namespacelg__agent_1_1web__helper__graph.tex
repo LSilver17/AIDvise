@@ -1,0 +1,141 @@
+\doxysection{lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph Namespace Reference}
+\hypertarget{namespacelg__agent_1_1web__helper__graph}{}\label{namespacelg__agent_1_1web__helper__graph}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output}{Web\+Search\+Helper\+Output}} \doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_acc6dbe93b0eae93e192cd63420bef7da}{format\+\_\+web\+\_\+output}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_aec84b1b7ae5309e55f8cc7dde4ac91d0}{tool\+\_\+route}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a6626ec21b234e063ce1c9da90b0b38b1}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a76c3960ea1a04dca8e934d8a9f058f5d}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a6626ec21b234e063ce1c9da90b0b38b1}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a2f6e2eb7e1332154bb36bd4e98892745}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a1b36b496830201f89ff8e188e5fec88b}{LOOP\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a2f6e2eb7e1332154bb36bd4e98892745}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a2513830cfffb8d29a58b437f31f26cf1}{tool\+\_\+node}} = Tool\+Node(web\+\_\+tools)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a95eb6b273d9654c7ffcc6ccbda4857d9}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output}{Web\+Search\+Helper\+Output}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a7ea550a0136efbc71ef20053cdb90052}{web\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Web search helper subgraph that executes web searches for the planning agents.
+
+Functions:
+- `format_web_output`: Normalizes web search helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes web helper loop based on tool calls and loop count.
+
+Graph Structure:
+- START -> web_node
+- web_node -> [tool_node | format_web_output] (conditional routing based on tool_route)
+- tool_node -> web_node (feedback loop)
+- format_web_output -> END
+
+Exports:
+- `web_graph`: Compiled LangGraph web search helper subgraph.
+
+Loop limits are defined in config.json.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1web__helper__graph_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_acc6dbe93b0eae93e192cd63420bef7da}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!format\_web\_output@{format\_web\_output}}
+\index{format\_web\_output@{format\_web\_output}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{format\_web\_output()}{format\_web\_output()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_acc6dbe93b0eae93e192cd63420bef7da} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output}{Web\+Search\+Helper\+Output}} format\+\_\+web\+\_\+output (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normalizes the web helper response into the helper output schema.
+
+If the last message is a tool message (meaning the web search helper passed its 
+loop limit without providing a final answer), the full message history is serialized 
+into a single string so the planner can inspect the tool trail. Otherwise, the final 
+AI message content is returned directly as the web result.
+
+Args:
+    state (WebSearchHelperState): Helper state containing the search request
+        context and the message history produced by the web helper loop.
+
+Returns:
+    WebSearchHelperOutput: Output object containing the original query and the
+        formatted web result string.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1web__helper__graph_aec84b1b7ae5309e55f8cc7dde4ac91d0}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!tool\_route@{tool\_route}}
+\index{tool\_route@{tool\_route}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_route()}{tool\_route()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_aec84b1b7ae5309e55f8cc7dde4ac91d0} 
+tool\+\_\+route (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Routes the web helper loop based on tool usage and loop count.
+
+The web helper is allowed a limited number of iterations. If the latest AI
+message includes tool calls, the graph routes to the tool node. Otherwise it
+formats the output. If the loop limit is reached, the function enforces a final
+response path and includes a fallback message when necessary.
+
+Args:
+    state (WebSearchHelperState): Current helper state including messages,
+        loop counter, and requested web information.
+
+Returns:
+    str: The next node name to execute.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1web__helper__graph_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a2f6e2eb7e1332154bb36bd4e98892745}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a2f6e2eb7e1332154bb36bd4e98892745} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a76c3960ea1a04dca8e934d8a9f058f5d}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a76c3960ea1a04dca8e934d8a9f058f5d} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a6626ec21b234e063ce1c9da90b0b38b1}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a95eb6b273d9654c7ffcc6ccbda4857d9}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a95eb6b273d9654c7ffcc6ccbda4857d9} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_state}{Web\+Search\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_web_search_helper_output}{Web\+Search\+Helper\+Output}})}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a1b36b496830201f89ff8e188e5fec88b}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!LOOP\_CONFIG@{LOOP\_CONFIG}}
+\index{LOOP\_CONFIG@{LOOP\_CONFIG}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{LOOP\_CONFIG}{LOOP\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a1b36b496830201f89ff8e188e5fec88b} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+LOOP\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1web__helper__graph_a2f6e2eb7e1332154bb36bd4e98892745}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a6626ec21b234e063ce1c9da90b0b38b1}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a6626ec21b234e063ce1c9da90b0b38b1} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a2513830cfffb8d29a58b437f31f26cf1}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!tool\_node@{tool\_node}}
+\index{tool\_node@{tool\_node}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_node}{tool\_node}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a2513830cfffb8d29a58b437f31f26cf1} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+tool\+\_\+node = Tool\+Node(web\+\_\+tools)}
+
+\Hypertarget{namespacelg__agent_1_1web__helper__graph_a7ea550a0136efbc71ef20053cdb90052}\index{lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}!web\_graph@{web\_graph}}
+\index{web\_graph@{web\_graph}!lg\_agent.web\_helper\_graph@{lg\_agent.web\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{web\_graph}{web\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1web__helper__graph_a7ea550a0136efbc71ef20053cdb90052} 
+lg\+\_\+agent.\+web\+\_\+helper\+\_\+graph.\+web\+\_\+graph = graph\+\_\+builder.\+compile()}
+

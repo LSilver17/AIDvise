@@ -1,0 +1,130 @@
+\doxysection{generate\+\_\+fonts Namespace Reference}
+\hypertarget{namespacegenerate__fonts}{}\label{namespacegenerate__fonts}\index{generate\_fonts@{generate\_fonts}}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_aecd397639ff47c58c1da41db1fc4f7f4}{USE\+\_\+\+ZOPFLI}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}{font\+\_\+file}} = sys.\+argv\+[1]\+
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_af3738bb9f0b94b42eec47faa3c53f97b}{font\+\_\+name}} = os.\+path.\+splitext(os.\+path.\+basename(\doxymbox{\hyperlink{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}{font\+\_\+file}}))\+[0]\+
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_ad880a4b6b801be4fca630426824adecc}{font}} = TTFont(\doxymbox{\hyperlink{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}{font\+\_\+file}}, recalc\+BBoxes=False, recalc\+Timestamp=False)
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a05dca1a57082cf7622a570efffb6c222}{created}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_af89a0b6ff4857e68e1bf1c2d83efd7ef}{modified}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a396372fda515b97d06e30a437550bcf2}{names}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a694db49a773717d0dec75298c899c995}{tables}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}} = \doxymbox{\hyperlink{namespacegenerate__fonts_ad880a4b6b801be4fca630426824adecc}{font}}\+[\textquotesingle{}glyf\textquotesingle{}]\+
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a59267dfbd6b49fc32aa61e0235d96804}{ascent}} = int(max(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+.y\+Max for c in font.\+get\+Glyph\+Order() if hasattr(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+, "{}y\+Max"{})))
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_ad0580818527aa2026e3b31a2efae24a5}{descent}} = -\/int(min(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+.y\+Min for c in font.\+get\+Glyph\+Order() if hasattr(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+, "{}y\+Min"{})))
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a9287e6b58eb69f48bba148a293f03dae}{us\+Win\+Ascent}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a9bdaaa0c5e2116666a860aa962bd10d1}{us\+Win\+Descent}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a95bc083d81f9507ecc18b881a0e096a1}{reorder\+Tables}}
+\item 
+\doxymbox{\hyperlink{namespacegenerate__fonts_a830ddd40fa92f15890766853c211bb92}{flavor}}
+\end{DoxyCompactItemize}
+
+
+\label{namespacegenerate__fonts_doc-var-members}
+\Hypertarget{namespacegenerate__fonts_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacegenerate__fonts_a59267dfbd6b49fc32aa61e0235d96804}\index{generate\_fonts@{generate\_fonts}!ascent@{ascent}}
+\index{ascent@{ascent}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{ascent}{ascent}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a59267dfbd6b49fc32aa61e0235d96804} 
+generate\+\_\+fonts.\+ascent = int(max(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+.y\+Max for c in font.\+get\+Glyph\+Order() if hasattr(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+, "{}y\+Max"{})))}
+
+\Hypertarget{namespacegenerate__fonts_a05dca1a57082cf7622a570efffb6c222}\index{generate\_fonts@{generate\_fonts}!created@{created}}
+\index{created@{created}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{created}{created}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a05dca1a57082cf7622a570efffb6c222} 
+generate\+\_\+fonts.\+created}
+
+\Hypertarget{namespacegenerate__fonts_ad0580818527aa2026e3b31a2efae24a5}\index{generate\_fonts@{generate\_fonts}!descent@{descent}}
+\index{descent@{descent}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{descent}{descent}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_ad0580818527aa2026e3b31a2efae24a5} 
+generate\+\_\+fonts.\+descent = -\/int(min(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+.y\+Min for c in font.\+get\+Glyph\+Order() if hasattr(\doxymbox{\hyperlink{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}{glyf}}\+[c]\+, "{}y\+Min"{})))}
+
+\Hypertarget{namespacegenerate__fonts_a830ddd40fa92f15890766853c211bb92}\index{generate\_fonts@{generate\_fonts}!flavor@{flavor}}
+\index{flavor@{flavor}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{flavor}{flavor}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a830ddd40fa92f15890766853c211bb92} 
+generate\+\_\+fonts.\+flavor}
+
+\Hypertarget{namespacegenerate__fonts_ad880a4b6b801be4fca630426824adecc}\index{generate\_fonts@{generate\_fonts}!font@{font}}
+\index{font@{font}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{font}{font}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_ad880a4b6b801be4fca630426824adecc} 
+generate\+\_\+fonts.\+font = TTFont(\doxymbox{\hyperlink{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}{font\+\_\+file}}, recalc\+BBoxes=False, recalc\+Timestamp=False)}
+
+\Hypertarget{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}\index{generate\_fonts@{generate\_fonts}!font\_file@{font\_file}}
+\index{font\_file@{font\_file}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{font\_file}{font\_file}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06} 
+generate\+\_\+fonts.\+font\+\_\+file = sys.\+argv\+[1]\+}
+
+\Hypertarget{namespacegenerate__fonts_af3738bb9f0b94b42eec47faa3c53f97b}\index{generate\_fonts@{generate\_fonts}!font\_name@{font\_name}}
+\index{font\_name@{font\_name}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{font\_name}{font\_name}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_af3738bb9f0b94b42eec47faa3c53f97b} 
+generate\+\_\+fonts.\+font\+\_\+name = os.\+path.\+splitext(os.\+path.\+basename(\doxymbox{\hyperlink{namespacegenerate__fonts_ae1379bd9c5c9dc98163755f32ab74e06}{font\+\_\+file}}))\+[0]\+}
+
+\Hypertarget{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9}\index{generate\_fonts@{generate\_fonts}!glyf@{glyf}}
+\index{glyf@{glyf}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{glyf}{glyf}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a5b2aa1477582067ae43a7ed46fbafab9} 
+generate\+\_\+fonts.\+glyf = \doxymbox{\hyperlink{namespacegenerate__fonts_ad880a4b6b801be4fca630426824adecc}{font}}\+[\textquotesingle{}glyf\textquotesingle{}]\+}
+
+\Hypertarget{namespacegenerate__fonts_af89a0b6ff4857e68e1bf1c2d83efd7ef}\index{generate\_fonts@{generate\_fonts}!modified@{modified}}
+\index{modified@{modified}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{modified}{modified}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_af89a0b6ff4857e68e1bf1c2d83efd7ef} 
+generate\+\_\+fonts.\+modified}
+
+\Hypertarget{namespacegenerate__fonts_a396372fda515b97d06e30a437550bcf2}\index{generate\_fonts@{generate\_fonts}!names@{names}}
+\index{names@{names}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{names}{names}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a396372fda515b97d06e30a437550bcf2} 
+generate\+\_\+fonts.\+names}
+
+\Hypertarget{namespacegenerate__fonts_a95bc083d81f9507ecc18b881a0e096a1}\index{generate\_fonts@{generate\_fonts}!reorderTables@{reorderTables}}
+\index{reorderTables@{reorderTables}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{reorderTables}{reorderTables}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a95bc083d81f9507ecc18b881a0e096a1} 
+generate\+\_\+fonts.\+reorder\+Tables}
+
+\Hypertarget{namespacegenerate__fonts_a694db49a773717d0dec75298c899c995}\index{generate\_fonts@{generate\_fonts}!tables@{tables}}
+\index{tables@{tables}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{tables}{tables}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a694db49a773717d0dec75298c899c995} 
+generate\+\_\+fonts.\+tables}
+
+\Hypertarget{namespacegenerate__fonts_aecd397639ff47c58c1da41db1fc4f7f4}\index{generate\_fonts@{generate\_fonts}!USE\_ZOPFLI@{USE\_ZOPFLI}}
+\index{USE\_ZOPFLI@{USE\_ZOPFLI}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{USE\_ZOPFLI}{USE\_ZOPFLI}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_aecd397639ff47c58c1da41db1fc4f7f4} 
+generate\+\_\+fonts.\+USE\+\_\+\+ZOPFLI}
+
+\Hypertarget{namespacegenerate__fonts_a9287e6b58eb69f48bba148a293f03dae}\index{generate\_fonts@{generate\_fonts}!usWinAscent@{usWinAscent}}
+\index{usWinAscent@{usWinAscent}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{usWinAscent}{usWinAscent}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a9287e6b58eb69f48bba148a293f03dae} 
+generate\+\_\+fonts.\+us\+Win\+Ascent}
+
+\Hypertarget{namespacegenerate__fonts_a9bdaaa0c5e2116666a860aa962bd10d1}\index{generate\_fonts@{generate\_fonts}!usWinDescent@{usWinDescent}}
+\index{usWinDescent@{usWinDescent}!generate\_fonts@{generate\_fonts}}
+\doxysubsubsection{\texorpdfstring{usWinDescent}{usWinDescent}}
+{\footnotesize\ttfamily \label{namespacegenerate__fonts_a9bdaaa0c5e2116666a860aa962bd10d1} 
+generate\+\_\+fonts.\+us\+Win\+Descent}
+

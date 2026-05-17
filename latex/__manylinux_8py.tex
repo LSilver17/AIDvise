@@ -1,0 +1,52 @@
+\doxysection{frontend/\+node\+\_\+modules/\+node-\/gyp/\+gyp/\+pylib/\+packaging/\+\+\_\+manylinux.py File Reference}
+\hypertarget{__manylinux_8py}{}\label{__manylinux_8py}\index{frontend/node\_modules/node-\/gyp/gyp/pylib/packaging/\_manylinux.py@{frontend/node\_modules/node-\/gyp/gyp/pylib/packaging/\_manylinux.py}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1__manylinux_1_1___g_lib_c_version}{packaging.\+\_\+manylinux.\+\_\+\+GLib\+CVersion}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespacepackaging}{packaging}}
+\item 
+namespace \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux}{packaging.\+\_\+manylinux}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Generator\+[Optional\+[\doxymbox{\hyperlink{classpackaging_1_1__elffile_1_1_e_l_f_file}{ELFFile}}]\+, None, None]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a83e1e137f111e2fda43631f3c76d1b0d}{packaging.\+\_\+manylinux.\+\_\+parse\+\_\+elf}} (str path)
+\item 
+bool \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a0621b2fe15f4a257cced686522cb60a9}{packaging.\+\_\+manylinux.\+\_\+is\+\_\+linux\+\_\+armhf}} (str executable)
+\item 
+bool \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a6e2f47f3b79c5e2c7b2389b649d91e25}{packaging.\+\_\+manylinux.\+\_\+is\+\_\+linux\+\_\+i686}} (str executable)
+\item 
+bool \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a1c849313b2b6285761a1a84b0ceb6044}{packaging.\+\_\+manylinux.\+\_\+have\+\_\+compatible\+\_\+abi}} (str executable, Sequence\+[str]\+ archs)
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_af71c45c336bf059035591fd1affda13c}{packaging.\+\_\+manylinux.\+\_\+glibc\+\_\+version\+\_\+string\+\_\+confstr}} ()
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a1eb71a6dd8a38d04a1b22f846beaa503}{packaging.\+\_\+manylinux.\+\_\+glibc\+\_\+version\+\_\+string\+\_\+ctypes}} ()
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a444c3783199444c999f6ed406c83b030}{packaging.\+\_\+manylinux.\+\_\+glibc\+\_\+version\+\_\+string}} ()
+\item 
+Tuple\+[int, int]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a96f53fc8de1b56a4026dfdc8d1be617e}{packaging.\+\_\+manylinux.\+\_\+parse\+\_\+glibc\+\_\+version}} (str version\+\_\+str)
+\item 
+Tuple\+[int, int]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_ab5a925aeb7526c1da928fed3333499e5}{packaging.\+\_\+manylinux.\+\_\+get\+\_\+glibc\+\_\+version}} ()
+\item 
+bool \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_ac877b7e5b23bf1ff5ec353877a630cb5}{packaging.\+\_\+manylinux.\+\_\+is\+\_\+compatible}} (str arch, \doxymbox{\hyperlink{classpackaging_1_1__manylinux_1_1___g_lib_c_version}{\+\_\+\+GLib\+CVersion}} version)
+\item 
+Iterator\+[str]\+ \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_aa7fcda322b80b982a4b1973928517950}{packaging.\+\_\+manylinux.\+platform\+\_\+tags}} (Sequence\+[str]\+ archs)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_ae551602e8a8e5b0a6667928aa0273c10}{packaging.\+\_\+manylinux.\+EF\+\_\+\+ARM\+\_\+\+ABIMASK}} = 0x\+FF000000
+\item 
+int \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a2fc6db26db889c84d5a59f82cda39c26}{packaging.\+\_\+manylinux.\+EF\+\_\+\+ARM\+\_\+\+ABI\+\_\+\+VER5}} = 0x05000000
+\item 
+int \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a339324c19ba5eb6cdc7183c857588ce8}{packaging.\+\_\+manylinux.\+EF\+\_\+\+ARM\+\_\+\+ABI\+\_\+\+FLOAT\+\_\+\+HARD}} = 0x00000400
+\item 
+Dict \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a43cd3f64f478d42d45bd13eae2b353f2}{packaging.\+\_\+manylinux.\+\_\+\+LAST\+\_\+\+GLIBC\+\_\+\+MINOR}} = collections.\+defaultdict(lambda:\+ 50)
+\item 
+dict \doxymbox{\hyperlink{namespacepackaging_1_1__manylinux_a776ec4b693cce6e2d059b82f5edca961}{packaging.\+\_\+manylinux.\+\_\+\+LEGACY\+\_\+\+MANYLINUX\+\_\+\+MAP}}
+\end{DoxyCompactItemize}

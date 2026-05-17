@@ -1,0 +1,165 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model Class Reference}
+\hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model}{}\label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+Inheritance diagram for lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab06fc30a73ee039e7a852fcbefee04f9}{bind\+\_\+tools}} (self, tools, \texorpdfstring{$\ast$}{*}, tool\+\_\+choice=None, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ae8a52b9177279fdbfb5960bb5c8d665f}{with\+\_\+structured\+\_\+output}} (self, schema, include\+\_\+raw=False, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Chat\+Result \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3130410bb03064aeca3a30a4ed850881}{\+\_\+generate}} (self, List\+[Base\+Message]\+ messages, List\+[str]\+\texorpdfstring{$\vert$}{|}None stop=None, Any\texorpdfstring{$\vert$}{|}None run\+\_\+manager=None, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}Any kwargs)
+\item 
+Base\+Tool\texorpdfstring{$\vert$}{|}Callable\+[..., Any]\+\texorpdfstring{$\vert$}{|}None \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab9c69d4f1b6a2eb438156e0ce6175448}{\+\_\+get\+\_\+bound\+\_\+tool}} (self, str tool\+\_\+name)
+\item 
+Tool\+Runtime \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab0455b41d3ce833531959e7c3cce9d98}{\+\_\+build\+\_\+tool\+\_\+runtime}} (self, str\texorpdfstring{$\vert$}{|}None tool\+\_\+call\+\_\+id)
+\item 
+Dict\+[str, Any]\+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_aa05a058883578f7e94e17dcfdbc9673a}{\+\_\+inject\+\_\+runtime\+\_\+if\+\_\+needed}} (self, Base\+Tool\texorpdfstring{$\vert$}{|}Callable\+[..., Any]\+ tool, Dict\+[str, Any]\+ tool\+\_\+args, str\texorpdfstring{$\vert$}{|}None tool\+\_\+call\+\_\+id)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3442a7f797504f9da0a4e07907cf27cb}{\+\_\+invoke\+\_\+bound\+\_\+tool}} (self, Base\+Tool\texorpdfstring{$\vert$}{|}Callable\+[..., Any]\+ tool, Dict\+[str, Any]\+ tool\+\_\+call)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3e8f197612650e3c874d43c72f260571}{\+\_\+ainvoke\+\_\+bound\+\_\+tool}} (self, Base\+Tool\texorpdfstring{$\vert$}{|}Callable\+[..., Any]\+ tool, Dict\+[str, Any]\+ tool\+\_\+call)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3c49a0b1e7e6bf8700f14019d668035a}{\+\_\+bound\+\_\+tools}} = Private\+Attr(default=None)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a8d0589444fb0c678fa643b31521eaf09}{\+\_\+bound\+\_\+tool\+\_\+choice}} = Private\+Attr(default=None)
+\item 
+Dict \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a9738eaa82253fa0710f996fc758eb56b}{\+\_\+bound\+\_\+tool\+\_\+kwargs}} = Private\+Attr(default\+\_\+factory=dict)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3a5b28148c35db7c4b893a948ea35c4d}{\+\_\+runtime\+\_\+state}} = Private\+Attr(default=None)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab41cdd615f5862e8f05f49cec6973ccb}{\+\_\+runtime\+\_\+context}} = Private\+Attr(default=None)
+\item 
+Any \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_af823d9068bb665a2350763f29aa72e68}{\+\_\+runtime\+\_\+store}} = Private\+Attr(default=None)
+\item 
+Dict \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab6eab5d528351fe1f5f13da2a73bf7aa}{\+\_\+runtime\+\_\+config}} = Private\+Attr(default\+\_\+factory=dict)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}A testing fake chat model that emits `AIMessage.tool_calls`.
+
+Use `bind_tools(tools, tool_choice=..., runtime_state=..., runtime_context=..., runtime_store=..., runtime_config=...)`
+to attach tool implementations and runtime artifacts for testing. The model
+preserves `tool_calls` on generated messages and provides helpers to
+synchronously or asynchronously invoke bound tools in tests. It intentionally
+avoids automatically executing runtime-dependent tools; execution should be
+performed by the test harness or runtime orchestration to ensure proper
+injection of runtime context.
+\end{DoxyVerb}
+ 
+
+\label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_doc-func-members}
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3e8f197612650e3c874d43c72f260571}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_ainvoke\_bound\_tool@{\_ainvoke\_bound\_tool}}
+\index{\_ainvoke\_bound\_tool@{\_ainvoke\_bound\_tool}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_ainvoke\_bound\_tool()}{\_ainvoke\_bound\_tool()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3e8f197612650e3c874d43c72f260571} 
+ Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+ainvoke\+\_\+bound\+\_\+tool (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Base\+Tool \texorpdfstring{$\vert$}{|} Callable\+[..., Any]\+}]{tool}{, }\item[{Dict\+[str, Any]\+}]{tool\+\_\+call}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab0455b41d3ce833531959e7c3cce9d98}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_build\_tool\_runtime@{\_build\_tool\_runtime}}
+\index{\_build\_tool\_runtime@{\_build\_tool\_runtime}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_build\_tool\_runtime()}{\_build\_tool\_runtime()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab0455b41d3ce833531959e7c3cce9d98} 
+ Tool\+Runtime lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+build\+\_\+tool\+\_\+runtime (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str \texorpdfstring{$\vert$}{|} None}]{tool\+\_\+call\+\_\+id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3130410bb03064aeca3a30a4ed850881}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_generate@{\_generate}}
+\index{\_generate@{\_generate}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_generate()}{\_generate()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3130410bb03064aeca3a30a4ed850881} 
+ Chat\+Result lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+generate (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{List\+[Base\+Message]\+}]{messages}{, }\item[{List\+[str]\+ \texorpdfstring{$\vert$}{|} None }]{stop}{ = {\ttfamily None}, }\item[{Any \texorpdfstring{$\vert$}{|} None }]{run\+\_\+manager}{ = {\ttfamily None}, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}Any}]{kwargs}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab9c69d4f1b6a2eb438156e0ce6175448}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_get\_bound\_tool@{\_get\_bound\_tool}}
+\index{\_get\_bound\_tool@{\_get\_bound\_tool}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_get\_bound\_tool()}{\_get\_bound\_tool()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab9c69d4f1b6a2eb438156e0ce6175448} 
+ Base\+Tool \texorpdfstring{$\vert$}{|} Callable\+[..., Any]\+ \texorpdfstring{$\vert$}{|} None lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+get\+\_\+bound\+\_\+tool (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{tool\+\_\+name}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_aa05a058883578f7e94e17dcfdbc9673a}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_inject\_runtime\_if\_needed@{\_inject\_runtime\_if\_needed}}
+\index{\_inject\_runtime\_if\_needed@{\_inject\_runtime\_if\_needed}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_inject\_runtime\_if\_needed()}{\_inject\_runtime\_if\_needed()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_aa05a058883578f7e94e17dcfdbc9673a} 
+ Dict\+[str, Any]\+ lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+inject\+\_\+runtime\+\_\+if\+\_\+needed (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Base\+Tool \texorpdfstring{$\vert$}{|} Callable\+[..., Any]\+}]{tool}{, }\item[{Dict\+[str, Any]\+}]{tool\+\_\+args}{, }\item[{str \texorpdfstring{$\vert$}{|} None}]{tool\+\_\+call\+\_\+id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3442a7f797504f9da0a4e07907cf27cb}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_invoke\_bound\_tool@{\_invoke\_bound\_tool}}
+\index{\_invoke\_bound\_tool@{\_invoke\_bound\_tool}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_invoke\_bound\_tool()}{\_invoke\_bound\_tool()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3442a7f797504f9da0a4e07907cf27cb} 
+ Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+invoke\+\_\+bound\+\_\+tool (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Base\+Tool \texorpdfstring{$\vert$}{|} Callable\+[..., Any]\+}]{tool}{, }\item[{Dict\+[str, Any]\+}]{tool\+\_\+call}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab06fc30a73ee039e7a852fcbefee04f9}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!bind\_tools@{bind\_tools}}
+\index{bind\_tools@{bind\_tools}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{bind\_tools()}{bind\_tools()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab06fc30a73ee039e7a852fcbefee04f9} 
+lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+bind\+\_\+tools (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{tools}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{}]{tool\+\_\+choice}{ = {\ttfamily None}, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ae8a52b9177279fdbfb5960bb5c8d665f}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!with\_structured\_output@{with\_structured\_output}}
+\index{with\_structured\_output@{with\_structured\_output}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{with\_structured\_output()}{with\_structured\_output()}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ae8a52b9177279fdbfb5960bb5c8d665f} 
+lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+with\+\_\+structured\+\_\+output (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{schema}{, }\item[{}]{include\+\_\+raw}{ = {\ttfamily False}, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+
+
+\label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_doc-variable-members}
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a8d0589444fb0c678fa643b31521eaf09}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_bound\_tool\_choice@{\_bound\_tool\_choice}}
+\index{\_bound\_tool\_choice@{\_bound\_tool\_choice}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_bound\_tool\_choice}{\_bound\_tool\_choice}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a8d0589444fb0c678fa643b31521eaf09} 
+Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+bound\+\_\+tool\+\_\+choice = Private\+Attr(default=None)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a9738eaa82253fa0710f996fc758eb56b}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_bound\_tool\_kwargs@{\_bound\_tool\_kwargs}}
+\index{\_bound\_tool\_kwargs@{\_bound\_tool\_kwargs}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_bound\_tool\_kwargs}{\_bound\_tool\_kwargs}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a9738eaa82253fa0710f996fc758eb56b} 
+Dict lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+bound\+\_\+tool\+\_\+kwargs = Private\+Attr(default\+\_\+factory=dict)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3c49a0b1e7e6bf8700f14019d668035a}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_bound\_tools@{\_bound\_tools}}
+\index{\_bound\_tools@{\_bound\_tools}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_bound\_tools}{\_bound\_tools}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3c49a0b1e7e6bf8700f14019d668035a} 
+Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+bound\+\_\+tools = Private\+Attr(default=None)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab6eab5d528351fe1f5f13da2a73bf7aa}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_runtime\_config@{\_runtime\_config}}
+\index{\_runtime\_config@{\_runtime\_config}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_runtime\_config}{\_runtime\_config}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab6eab5d528351fe1f5f13da2a73bf7aa} 
+Dict lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+runtime\+\_\+config = Private\+Attr(default\+\_\+factory=dict)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab41cdd615f5862e8f05f49cec6973ccb}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_runtime\_context@{\_runtime\_context}}
+\index{\_runtime\_context@{\_runtime\_context}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_runtime\_context}{\_runtime\_context}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_ab41cdd615f5862e8f05f49cec6973ccb} 
+Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+runtime\+\_\+context = Private\+Attr(default=None)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3a5b28148c35db7c4b893a948ea35c4d}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_runtime\_state@{\_runtime\_state}}
+\index{\_runtime\_state@{\_runtime\_state}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_runtime\_state}{\_runtime\_state}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_a3a5b28148c35db7c4b893a948ea35c4d} 
+Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+runtime\+\_\+state = Private\+Attr(default=None)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_af823d9068bb665a2350763f29aa72e68}\index{lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}!\_runtime\_store@{\_runtime\_store}}
+\index{\_runtime\_store@{\_runtime\_store}!lg\_agent.utilities.TestModel.FakeChatModel@{lg\_agent.utilities.TestModel.FakeChatModel}}
+\doxysubsubsection{\texorpdfstring{\_runtime\_store}{\_runtime\_store}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model_af823d9068bb665a2350763f29aa72e68} 
+Any lg\+\_\+agent.\+utilities.\+Test\+Model.\+Fake\+Chat\+Model.\+\_\+runtime\+\_\+store = Private\+Attr(default=None)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+lg\+\_\+agent/\+utilities/\+\doxymbox{\hyperlink{_test_model_8py}{Test\+Model.\+py}}\end{DoxyCompactItemize}

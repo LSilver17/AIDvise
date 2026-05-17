@@ -1,0 +1,155 @@
+\doxysection{packaging.\+metadata.\+Raw\+Metadata Class Reference}
+\hypertarget{classpackaging_1_1metadata_1_1_raw_metadata}{}\label{classpackaging_1_1metadata_1_1_raw_metadata}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+Inheritance diagram for packaging.\+metadata.\+Raw\+Metadata:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.761006cm]{classpackaging_1_1metadata_1_1_raw_metadata}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_ae51158d3aa79a1159d92ba42419d02e4}{platforms}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a566cb1e8d07d98f136495b323d7f983d}{keywords}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_afe10e6314804a93971b8102be1e64bca}{supported\+\_\+platforms}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a34f7597b9b23ae427748da88a4081b4e}{classifiers}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a3818a7299d01ddbb94b1224c35cacb76}{requires}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a9bbc1339b8ac6315fa9aafe5f91d1f43}{provides}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a09bca2d3ccc28433175e1836b224c062}{obsoletes}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a98eefa060d8b5495479db5da2d09ac26}{requires\+\_\+dist}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_ae7cd4cdbf1b9566be6676521ebd8e277}{provides\+\_\+dist}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a224ab9eefca16bca24fbbafedfcc3ec5}{obsoletes\+\_\+dist}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a3ac8931debe7060d83563bfc995e91d5}{requires\+\_\+external}} \+[str]\+
+\item 
+Dict \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_ae30675adf1228b412f1e4ce5c9a738ee}{project\+\_\+urls}} \+[str, str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a9cacbee9cabe69fc922e093b18ad4434}{provides\+\_\+extra}} \+[str]\+
+\item 
+List \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_raw_metadata_a3b42d6177ee26b72559c01a97330ed84}{dynamic}} \+[str]\+
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_typed_dict}{packaging.\+metadata.\+Typed\+Dict}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classpackaging_1_1metadata_1_1_typed_dict_a3c41777568f14a64744966d9863f2703}{\+\_\+\+\_\+init\+\_\+subclass\+\_\+\+\_\+}} (\texorpdfstring{$\ast$}{*}\+\_\+args, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\+\_\+kwargs)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}A dictionary of raw core metadata.
+
+Each field in core metadata maps to a key of this dictionary (when data is
+provided). The key is lower-case and underscores are used instead of dashes
+compared to the equivalent core metadata field. Any core metadata field that
+can be specified multiple times or can hold multiple values in a single
+field have a key with a plural name. See :class:`Metadata` whose attributes
+match the keys of this dictionary.
+
+Core metadata fields that can be specified multiple times are stored as a
+list or dict depending on which is appropriate for the field. Any fields
+which hold multiple values in a single field are stored as a list.
+\end{DoxyVerb}
+ 
+
+\label{classpackaging_1_1metadata_1_1_raw_metadata_doc-variable-members}
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a34f7597b9b23ae427748da88a4081b4e}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!classifiers@{classifiers}}
+\index{classifiers@{classifiers}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{classifiers}{classifiers}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a34f7597b9b23ae427748da88a4081b4e} 
+List packaging.\+metadata.\+Raw\+Metadata.\+classifiers \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a3b42d6177ee26b72559c01a97330ed84}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!dynamic@{dynamic}}
+\index{dynamic@{dynamic}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{dynamic}{dynamic}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a3b42d6177ee26b72559c01a97330ed84} 
+List packaging.\+metadata.\+Raw\+Metadata.\+dynamic \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a566cb1e8d07d98f136495b323d7f983d}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!keywords@{keywords}}
+\index{keywords@{keywords}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{keywords}{keywords}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a566cb1e8d07d98f136495b323d7f983d} 
+List packaging.\+metadata.\+Raw\+Metadata.\+keywords \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a09bca2d3ccc28433175e1836b224c062}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!obsoletes@{obsoletes}}
+\index{obsoletes@{obsoletes}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{obsoletes}{obsoletes}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a09bca2d3ccc28433175e1836b224c062} 
+List packaging.\+metadata.\+Raw\+Metadata.\+obsoletes \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a224ab9eefca16bca24fbbafedfcc3ec5}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!obsoletes\_dist@{obsoletes\_dist}}
+\index{obsoletes\_dist@{obsoletes\_dist}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{obsoletes\_dist}{obsoletes\_dist}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a224ab9eefca16bca24fbbafedfcc3ec5} 
+List packaging.\+metadata.\+Raw\+Metadata.\+obsoletes\+\_\+dist \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_ae51158d3aa79a1159d92ba42419d02e4}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!platforms@{platforms}}
+\index{platforms@{platforms}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{platforms}{platforms}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_ae51158d3aa79a1159d92ba42419d02e4} 
+List packaging.\+metadata.\+Raw\+Metadata.\+platforms \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_ae30675adf1228b412f1e4ce5c9a738ee}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!project\_urls@{project\_urls}}
+\index{project\_urls@{project\_urls}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{project\_urls}{project\_urls}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_ae30675adf1228b412f1e4ce5c9a738ee} 
+Dict packaging.\+metadata.\+Raw\+Metadata.\+project\+\_\+urls \+[str, str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a9bbc1339b8ac6315fa9aafe5f91d1f43}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!provides@{provides}}
+\index{provides@{provides}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{provides}{provides}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a9bbc1339b8ac6315fa9aafe5f91d1f43} 
+List packaging.\+metadata.\+Raw\+Metadata.\+provides \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_ae7cd4cdbf1b9566be6676521ebd8e277}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!provides\_dist@{provides\_dist}}
+\index{provides\_dist@{provides\_dist}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{provides\_dist}{provides\_dist}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_ae7cd4cdbf1b9566be6676521ebd8e277} 
+List packaging.\+metadata.\+Raw\+Metadata.\+provides\+\_\+dist \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a9cacbee9cabe69fc922e093b18ad4434}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!provides\_extra@{provides\_extra}}
+\index{provides\_extra@{provides\_extra}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{provides\_extra}{provides\_extra}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a9cacbee9cabe69fc922e093b18ad4434} 
+List packaging.\+metadata.\+Raw\+Metadata.\+provides\+\_\+extra \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a3818a7299d01ddbb94b1224c35cacb76}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!requires@{requires}}
+\index{requires@{requires}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{requires}{requires}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a3818a7299d01ddbb94b1224c35cacb76} 
+List packaging.\+metadata.\+Raw\+Metadata.\+requires \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a98eefa060d8b5495479db5da2d09ac26}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!requires\_dist@{requires\_dist}}
+\index{requires\_dist@{requires\_dist}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{requires\_dist}{requires\_dist}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a98eefa060d8b5495479db5da2d09ac26} 
+List packaging.\+metadata.\+Raw\+Metadata.\+requires\+\_\+dist \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_a3ac8931debe7060d83563bfc995e91d5}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!requires\_external@{requires\_external}}
+\index{requires\_external@{requires\_external}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{requires\_external}{requires\_external}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_a3ac8931debe7060d83563bfc995e91d5} 
+List packaging.\+metadata.\+Raw\+Metadata.\+requires\+\_\+external \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classpackaging_1_1metadata_1_1_raw_metadata_afe10e6314804a93971b8102be1e64bca}\index{packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}!supported\_platforms@{supported\_platforms}}
+\index{supported\_platforms@{supported\_platforms}!packaging.metadata.RawMetadata@{packaging.metadata.RawMetadata}}
+\doxysubsubsection{\texorpdfstring{supported\_platforms}{supported\_platforms}}
+{\footnotesize\ttfamily \label{classpackaging_1_1metadata_1_1_raw_metadata_afe10e6314804a93971b8102be1e64bca} 
+List packaging.\+metadata.\+Raw\+Metadata.\+supported\+\_\+platforms \+[str]\+\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+frontend/\+node\+\_\+modules/\+node-\/gyp/\+gyp/\+pylib/\+packaging/\+\doxymbox{\hyperlink{metadata_8py}{metadata.\+py}}\end{DoxyCompactItemize}

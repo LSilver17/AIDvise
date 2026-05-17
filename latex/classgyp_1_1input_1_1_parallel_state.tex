@@ -1,0 +1,110 @@
+\doxysection{gyp.\+input.\+Parallel\+State Class Reference}
+\hypertarget{classgyp_1_1input_1_1_parallel_state}{}\label{classgyp_1_1input_1_1_parallel_state}\index{gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_a34cb52cefa2a6bad2ea2e64c4f86ec2e}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self)
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_a1030258ac6b51ff3c17cb8638a4ac8c8}{Load\+Target\+Build\+File\+Callback}} (self, result)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_a7a8019c4f1836a410ec5a570ff92a78e}{pool}} = None
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_aa7189e8a7adb5f3fffb824dab27c9e14}{condition}} = None
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_afe454567a50e0d00af42ae34011d7568}{data}} = None
+\item 
+int \doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_aba6ed917b0f7de47b836f1553614520e}{pending}} = 0
+\item 
+\doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_aaf9847c7d4177b8a981e9bad3f601f9f}{scheduled}} = set()
+\item 
+list \doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_a3f8297d79a7865c3e5f78048d83c919d}{dependencies}} = \+[$\,$]\+
+\item 
+bool \doxymbox{\hyperlink{classgyp_1_1input_1_1_parallel_state_aea3a9a48b1b86f4bc65c14bfe34d1fff}{error}} = False
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Class to keep track of state when processing input files in parallel.
+
+If build files are loaded in parallel, use this to keep track of
+state during farming out and processing parallel jobs. It's stored
+in a global so that the callback function can have access to it.
+\end{DoxyVerb}
+ 
+
+\label{classgyp_1_1input_1_1_parallel_state_doc-constructors}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_a34cb52cefa2a6bad2ea2e64c4f86ec2e}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_a34cb52cefa2a6bad2ea2e64c4f86ec2e} 
+gyp.\+input.\+Parallel\+State.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+\label{classgyp_1_1input_1_1_parallel_state_doc-func-members}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_a1030258ac6b51ff3c17cb8638a4ac8c8}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!LoadTargetBuildFileCallback@{LoadTargetBuildFileCallback}}
+\index{LoadTargetBuildFileCallback@{LoadTargetBuildFileCallback}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{LoadTargetBuildFileCallback()}{LoadTargetBuildFileCallback()}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_a1030258ac6b51ff3c17cb8638a4ac8c8} 
+gyp.\+input.\+Parallel\+State.\+Load\+Target\+Build\+File\+Callback (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{result}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Handle the results of running LoadTargetBuildFile in another process.\end{DoxyVerb}
+ 
+
+\label{classgyp_1_1input_1_1_parallel_state_doc-variable-members}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_aa7189e8a7adb5f3fffb824dab27c9e14}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!condition@{condition}}
+\index{condition@{condition}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{condition}{condition}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_aa7189e8a7adb5f3fffb824dab27c9e14} 
+gyp.\+input.\+Parallel\+State.\+condition = None}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_afe454567a50e0d00af42ae34011d7568}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!data@{data}}
+\index{data@{data}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{data}{data}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_afe454567a50e0d00af42ae34011d7568} 
+gyp.\+input.\+Parallel\+State.\+data = None}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_a3f8297d79a7865c3e5f78048d83c919d}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!dependencies@{dependencies}}
+\index{dependencies@{dependencies}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{dependencies}{dependencies}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_a3f8297d79a7865c3e5f78048d83c919d} 
+list gyp.\+input.\+Parallel\+State.\+dependencies = \+[$\,$]\+}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_aea3a9a48b1b86f4bc65c14bfe34d1fff}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!error@{error}}
+\index{error@{error}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{error}{error}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_aea3a9a48b1b86f4bc65c14bfe34d1fff} 
+bool gyp.\+input.\+Parallel\+State.\+error = False}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_aba6ed917b0f7de47b836f1553614520e}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!pending@{pending}}
+\index{pending@{pending}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{pending}{pending}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_aba6ed917b0f7de47b836f1553614520e} 
+int gyp.\+input.\+Parallel\+State.\+pending = 0}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_a7a8019c4f1836a410ec5a570ff92a78e}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!pool@{pool}}
+\index{pool@{pool}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{pool}{pool}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_a7a8019c4f1836a410ec5a570ff92a78e} 
+gyp.\+input.\+Parallel\+State.\+pool = None}
+
+\Hypertarget{classgyp_1_1input_1_1_parallel_state_aaf9847c7d4177b8a981e9bad3f601f9f}\index{gyp.input.ParallelState@{gyp.input.ParallelState}!scheduled@{scheduled}}
+\index{scheduled@{scheduled}!gyp.input.ParallelState@{gyp.input.ParallelState}}
+\doxysubsubsection{\texorpdfstring{scheduled}{scheduled}}
+{\footnotesize\ttfamily \label{classgyp_1_1input_1_1_parallel_state_aaf9847c7d4177b8a981e9bad3f601f9f} 
+gyp.\+input.\+Parallel\+State.\+scheduled = set()}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+frontend/\+node\+\_\+modules/\+node-\/gyp/\+gyp/\+pylib/\+gyp/\+\doxymbox{\hyperlink{input_8py}{input.\+py}}\end{DoxyCompactItemize}

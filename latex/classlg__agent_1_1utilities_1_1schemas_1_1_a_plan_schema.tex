@@ -1,0 +1,61 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+schemas.\+APlan\+Schema Class Reference}
+\hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema}{}\label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+Inheritance diagram for lg\+\_\+agent.\+utilities.\+schemas.\+APlan\+Schema:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.138211cm]{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_af56ae92853c6486870cacff56a971b37}{requires\+\_\+database}} = Field(description="{}Indicates if a more database queries are required to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. The database contains information about the courses offered at the student\textquotesingle{}s college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests."{})
+\item 
+bool \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_a8b61bb1ada2929341572697c85ea9320}{requires\+\_\+web\+\_\+search}} = Field(description="{}Indicates if a web search is required to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If information is needed from both the database and the web, both fields should be set to true."{})
+\item 
+str \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} = Field(default="{}"{}, description="{}The answer to the user\textquotesingle{}s question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise."{})
+\item 
+str \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ad637aed84f412bdaca81251c8ebfab2c}{info\+\_\+needed\+\_\+db}} = Field(default=None, description="{}If the advisor cannot \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question directly, this field should specify what information from the database is needed to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If no info is needed leave this field blank."{})
+\item 
+str \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ada3388d885aa70706a1065d3ae2a2fdd}{info\+\_\+needed\+\_\+web}} = Field(default=None, description="{}If the advisor cannot \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question directly, this field should specify what information from the web is needed to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If no info is needed leave this field blank."{})
+\end{DoxyCompactItemize}
+
+
+\label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_doc-variable-members}
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}!answer@{answer}}
+\index{answer@{answer}!lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+\doxysubsubsection{\texorpdfstring{answer}{answer}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559} 
+str answer = Field(default="{}"{}, description="{}The answer to the user\textquotesingle{}s question, if it can be provided without additional information. Should be left blank if either of the first two fields are true. Keep responses clear and concise."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ad637aed84f412bdaca81251c8ebfab2c}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}!info\_needed\_db@{info\_needed\_db}}
+\index{info\_needed\_db@{info\_needed\_db}!lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+\doxysubsubsection{\texorpdfstring{info\_needed\_db}{info\_needed\_db}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ad637aed84f412bdaca81251c8ebfab2c} 
+str info\+\_\+needed\+\_\+db = Field(default=None, description="{}If the advisor cannot \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question directly, this field should specify what information from the database is needed to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If no info is needed leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ada3388d885aa70706a1065d3ae2a2fdd}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}!info\_needed\_web@{info\_needed\_web}}
+\index{info\_needed\_web@{info\_needed\_web}!lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+\doxysubsubsection{\texorpdfstring{info\_needed\_web}{info\_needed\_web}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_ada3388d885aa70706a1065d3ae2a2fdd} 
+str info\+\_\+needed\+\_\+web = Field(default=None, description="{}If the advisor cannot \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question directly, this field should specify what information from the web is needed to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If no info is needed leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_af56ae92853c6486870cacff56a971b37}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}!requires\_database@{requires\_database}}
+\index{requires\_database@{requires\_database}!lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+\doxysubsubsection{\texorpdfstring{requires\_database}{requires\_database}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_af56ae92853c6486870cacff56a971b37} 
+bool requires\+\_\+database = Field(description="{}Indicates if a more database queries are required to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. The database contains information about the courses offered at the student\textquotesingle{}s college, including course requirements, sections, and meet times. It also has information about the student, including their academic history and their interests."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_a8b61bb1ada2929341572697c85ea9320}\index{lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}!requires\_web\_search@{requires\_web\_search}}
+\index{requires\_web\_search@{requires\_web\_search}!lg\_agent.utilities.schemas.APlanSchema@{lg\_agent.utilities.schemas.APlanSchema}}
+\doxysubsubsection{\texorpdfstring{requires\_web\_search}{requires\_web\_search}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_a8b61bb1ada2929341572697c85ea9320} 
+bool requires\+\_\+web\+\_\+search = Field(description="{}Indicates if a web search is required to \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema_aa19dd3c83e1153d63d8dff2893ede559}{answer}} the question. If information is needed from both the database and the web, both fields should be set to true."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+lg\+\_\+agent/\+utilities/\+\doxymbox{\hyperlink{schemas_8py}{schemas.\+py}}\end{DoxyCompactItemize}

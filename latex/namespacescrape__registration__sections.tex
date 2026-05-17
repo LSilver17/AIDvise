@@ -1,0 +1,237 @@
+\doxysection{scrape\+\_\+registration\+\_\+sections Namespace Reference}
+\hypertarget{namespacescrape__registration__sections}{}\label{namespacescrape__registration__sections}\index{scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacescrape__registration__sections_a07c06f4dd2597ec25d509b0616f6c386}{clean\+\_\+text}} (str text)
+\item 
+dict \doxymbox{\hyperlink{namespacescrape__registration__sections_a4f22c86acde840aede0110a621305b4d}{parse\+\_\+seats}} (str seats\+\_\+str)
+\item 
+dict \doxymbox{\hyperlink{namespacescrape__registration__sections_a6587920ea331f5cdd55d09b68f6c0f0d}{parse\+\_\+details}} (str details\+\_\+str)
+\item 
+dict \doxymbox{\hyperlink{namespacescrape__registration__sections_a5d16a2c7b2213d0623d26a8cdaafcabd}{parse\+\_\+course\+\_\+code}} (str code)
+\item 
+list \doxymbox{\hyperlink{namespacescrape__registration__sections_a4a8cc93890553b2211d8c95e45ce6996}{parse\+\_\+registration\+\_\+html}} (str file\+\_\+path)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacescrape__registration__sections_ad17a3f787d9c068f69688fd7784a7bf7}{HTML\+\_\+\+FILE}} = "{}saved\+\_\+pages/\+registration\+\_\+page.\+html"{}
+\begin{DoxyCompactList}\small\item\em Path to the locally saved HTML registration page. \end{DoxyCompactList}\item 
+list \doxymbox{\hyperlink{namespacescrape__registration__sections_a6b04bb1a7b7b4d3316f5dc5a2f6d61e3}{data}} = \doxymbox{\hyperlink{namespacescrape__registration__sections_a4a8cc93890553b2211d8c95e45ce6996}{parse\+\_\+registration\+\_\+html}}(\doxymbox{\hyperlink{namespacescrape__registration__sections_ad17a3f787d9c068f69688fd7784a7bf7}{HTML\+\_\+\+FILE}})
+\item 
+\doxymbox{\hyperlink{namespacescrape__registration__sections_a1b37024296e06788be1ece37095347d3}{encoding}}
+\item 
+\doxymbox{\hyperlink{namespacescrape__registration__sections_a6666f091dcd95699b64d520cfa9b62d8}{f}}
+\item 
+\doxymbox{\hyperlink{namespacescrape__registration__sections_a7ded2321325e51bf2bd64658175dd7bb}{indent}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@file scrape_registration_sections.py
+@brief Parses a locally saved HTML file of QCC's registration page into structured JSON.
+
+@details
+This module reads a saved HTML snapshot of The Q portal's course registration
+page and extracts all course section data into a list of structured dictionaries.
+The parsed data is saved to registration_sections.json.
+
+This script does not perform live web requests — it parses a pre-saved HTML file.
+For live scraping with automatic refresh, see refresh_registration.py.
+
+@date 2026
+
+@par Input
+    saved_pages/registration_page.html — saved HTML snapshot of The Q portal
+
+@par Output
+    registration_sections.json — list of course section dictionaries
+
+@par Dependencies
+    - beautifulsoup4
+    - json (stdlib)
+    - re (stdlib)
+    - datetime (stdlib)
+
+@par Usage
+    python scrape_registration_sections.py
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__registration__sections_doc-func-members}
+\Hypertarget{namespacescrape__registration__sections_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacescrape__registration__sections_a07c06f4dd2597ec25d509b0616f6c386}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!clean\_text@{clean\_text}}
+\index{clean\_text@{clean\_text}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{clean\_text()}{clean\_text()}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a07c06f4dd2597ec25d509b0616f6c386} 
+ str clean\+\_\+text (\begin{DoxyParamCaption}\item[{str}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Removes excess whitespace from a string.
+
+@details
+Splits the input string on any whitespace, then rejoins with single spaces
+and strips leading/trailing whitespace. Handles newlines, tabs, and
+multiple consecutive spaces.
+
+@param text The raw string to clean.
+@return A normalized single-line string with no extra whitespace.
+
+@par Example
+@code
+clean_text("  ACC   101  ") -> "ACC 101"
+@endcode
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__registration__sections_a5d16a2c7b2213d0623d26a8cdaafcabd}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!parse\_course\_code@{parse\_course\_code}}
+\index{parse\_course\_code@{parse\_course\_code}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{parse\_course\_code()}{parse\_course\_code()}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a5d16a2c7b2213d0623d26a8cdaafcabd} 
+ dict parse\+\_\+course\+\_\+code (\begin{DoxyParamCaption}\item[{str}]{code}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Splits a full course code string into department, number, and section.
+
+@details
+QCC course codes follow the format "DEPT NUM-SECTION" (e.g. "ACC 101-01").
+This function extracts each component using a regex match.
+
+@param code The full course code string (e.g. "ACC 101-01").
+@return A dictionary with keys:
+        - "department" (str or None): e.g. "ACC"
+        - "number" (str or None): e.g. "101"
+        - "section" (str or None): e.g. "01"
+
+@par Example
+@code
+parse_course_code("ACC 101-01") -> {"department": "ACC", "number": "101", "section": "01"}
+parse_course_code("invalid")    -> {"department": None, "number": None, "section": None}
+@endcode
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__registration__sections_a6587920ea331f5cdd55d09b68f6c0f0d}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!parse\_details@{parse\_details}}
+\index{parse\_details@{parse\_details}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{parse\_details()}{parse\_details()}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a6587920ea331f5cdd55d09b68f6c0f0d} 
+ dict parse\+\_\+details (\begin{DoxyParamCaption}\item[{str}]{details\+\_\+str}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Parses the details column into instructor, schedule, location, and method.
+
+@details
+The details column in The Q portal combines multiple fields into a single
+slash-delimited string with semicolons for sub-fields. The expected format is:
+    "Instructor Name / Days Time; Location / Method"
+
+Parsing rules:
+- Part 0 (before first /): instructor name
+- Part 1 (between first and second /): days/time before semicolon, location after semicolon
+- Part 2 (after second /): delivery method (e.g. "Lecture", "Online")
+
+@param details_str The raw details string from the registration table.
+@return A dictionary with keys:
+        - "instructor" (str or None)
+        - "days_time" (str or None): e.g. "MW 08:00-09:15AM"
+        - "location" (str or None): e.g. "MAIN Campus, Surprenant Hall, 312"
+        - "method" (str or None): e.g. "Lecture"
+
+@par Example
+@code
+parse_details("De Silva, Damindi / MW 08:00-09:15AM; MAIN Campus, Room 312 / Lecture")
+# -> {"instructor": "De Silva, Damindi", "days_time": "MW 08:00-09:15AM",
+#     "location": "MAIN Campus, Room 312", "method": "Lecture"}
+@endcode
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__registration__sections_a4a8cc93890553b2211d8c95e45ce6996}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!parse\_registration\_html@{parse\_registration\_html}}
+\index{parse\_registration\_html@{parse\_registration\_html}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{parse\_registration\_html()}{parse\_registration\_html()}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a4a8cc93890553b2211d8c95e45ce6996} 
+ list parse\+\_\+registration\+\_\+html (\begin{DoxyParamCaption}\item[{str}]{file\+\_\+path}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Parses a saved HTML registration page and returns a list of course section dicts.
+
+@details
+Reads the HTML file at the given path, finds all table rows, and extracts
+course section data from rows that contain a valid course code (matching
+the pattern "DEPT NUM-SECTION"). Skips header rows and empty rows.
+
+The column layout detected from The Q portal is:
+- [idx+0] course_code   e.g. "ACC 101-01"
+- [idx+1] name          e.g. "Financial Accounting I"
+- [idx+2] req           (empty, skipped)
+- [idx+3] note          (empty, skipped)
+- [idx+4] seats         e.g. "1 ∕ 24"
+- [idx+5] status        e.g. "Reopened"
+- [idx+6] details       e.g. "Instructor / Days;Location / Method"
+- [idx+7] credits       e.g. "3.00"
+- [idx+8] begin_date    e.g. "01/26/2026"
+- [idx+9] end_date      e.g. "05/19/2026"
+
+@param file_path Path to the locally saved HTML file.
+@return A list of dictionaries, each representing one course section with keys:
+        course_code, department, course_number, section, name, status,
+        seats_open, seats_total, credits, instructor, days_time, location,
+        method, begin_date, end_date, scraped_at.
+
+@throws FileNotFoundError if the HTML file does not exist at the given path.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__registration__sections_a4f22c86acde840aede0110a621305b4d}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!parse\_seats@{parse\_seats}}
+\index{parse\_seats@{parse\_seats}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{parse\_seats()}{parse\_seats()}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a4f22c86acde840aede0110a621305b4d} 
+ dict parse\+\_\+seats (\begin{DoxyParamCaption}\item[{str}]{seats\+\_\+str}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Parses a seats string into open and total seat counts.
+
+@details
+The Q portal displays seat availability in the format "1 / 24" or "1 ∕ 24"
+(using either a standard slash or a Unicode division slash). This function
+extracts both numbers using a regex pattern that handles both slash variants.
+
+@param seats_str The raw seats string from the registration table (e.g. "1 / 24").
+@return A dictionary with keys:
+        - "open" (int or None): number of open seats
+        - "total" (int or None): total seats in the section
+
+@par Example
+@code
+parse_seats("1 ∕ 24") -> {"open": 1, "total": 24}
+parse_seats("")        -> {"open": None, "total": None}
+@endcode
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__registration__sections_doc-var-members}
+\Hypertarget{namespacescrape__registration__sections_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacescrape__registration__sections_a6b04bb1a7b7b4d3316f5dc5a2f6d61e3}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!data@{data}}
+\index{data@{data}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{data}{data}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a6b04bb1a7b7b4d3316f5dc5a2f6d61e3} 
+scrape\+\_\+registration\+\_\+sections.\+data = \doxymbox{\hyperlink{namespacescrape__registration__sections_a4a8cc93890553b2211d8c95e45ce6996}{parse\+\_\+registration\+\_\+html}}(\doxymbox{\hyperlink{namespacescrape__registration__sections_ad17a3f787d9c068f69688fd7784a7bf7}{HTML\+\_\+\+FILE}})}
+
+\Hypertarget{namespacescrape__registration__sections_a1b37024296e06788be1ece37095347d3}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!encoding@{encoding}}
+\index{encoding@{encoding}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{encoding}{encoding}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a1b37024296e06788be1ece37095347d3} 
+scrape\+\_\+registration\+\_\+sections.\+encoding}
+
+\Hypertarget{namespacescrape__registration__sections_a6666f091dcd95699b64d520cfa9b62d8}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!f@{f}}
+\index{f@{f}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{f}{f}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a6666f091dcd95699b64d520cfa9b62d8} 
+scrape\+\_\+registration\+\_\+sections.\+f}
+
+\Hypertarget{namespacescrape__registration__sections_ad17a3f787d9c068f69688fd7784a7bf7}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!HTML\_FILE@{HTML\_FILE}}
+\index{HTML\_FILE@{HTML\_FILE}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{HTML\_FILE}{HTML\_FILE}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_ad17a3f787d9c068f69688fd7784a7bf7} 
+str scrape\+\_\+registration\+\_\+sections.\+HTML\+\_\+\+FILE = "{}saved\+\_\+pages/\+registration\+\_\+page.\+html"{}}
+
+
+
+Path to the locally saved HTML registration page. 
+
+\Hypertarget{namespacescrape__registration__sections_a7ded2321325e51bf2bd64658175dd7bb}\index{scrape\_registration\_sections@{scrape\_registration\_sections}!indent@{indent}}
+\index{indent@{indent}!scrape\_registration\_sections@{scrape\_registration\_sections}}
+\doxysubsubsection{\texorpdfstring{indent}{indent}}
+{\footnotesize\ttfamily \label{namespacescrape__registration__sections_a7ded2321325e51bf2bd64658175dd7bb} 
+scrape\+\_\+registration\+\_\+sections.\+indent}
+

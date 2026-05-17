@@ -1,0 +1,140 @@
+\doxysection{lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph Namespace Reference}
+\hypertarget{namespacelg__agent_1_1insertion__helper__graph}{}\label{namespacelg__agent_1_1insertion__helper__graph}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_output}{Insertion\+Helper\+Output}} \doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a544a1f0f7133ad447817a3e25156bd85}{format\+\_\+insertion\+\_\+output}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a18a4778a6f8fc305b32e5b04f890f09b}{tool\+\_\+route}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a10c76f30f62801809743820d2ace8915}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_ab935235dd9ba6dcce4041337dfe8e014}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a10c76f30f62801809743820d2ace8915}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a5fefc94d3a0509ad8349f07e4d304c6e}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a41234d7175236a92e902f09add4a6c64}{LOOP\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a5fefc94d3a0509ad8349f07e4d304c6e}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a034f7fbec6201eaaf2f904c0a30a1994}{tool\+\_\+node}} = Tool\+Node(insertion\+\_\+tools)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_ae3d0d487f47d365f3e0a03ac9b69103e}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_output}{Insertion\+Helper\+Output}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a03b55d62731e2ce5c09e4c9757e75384}{insertion\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Insertion helper subgraph that processes student profile updates (interests and tracked sections).
+
+Functions:
+- `format_insertion_output`: Normalizes insertion helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes insertion helper loop based on tool calls and loop count.
+
+Graph Structure:
+- START -> insertion_node
+- insertion_node -> [tool_node | format_insertion_output] (conditional routing based on tool_route)
+- tool_node -> insertion_node (feedback loop)
+- format_insertion_output -> END
+
+Exports:
+- `insertion_graph`: Compiled LangGraph insertion helper subgraph.
+
+Loop limits are defined in config.json.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1insertion__helper__graph_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a544a1f0f7133ad447817a3e25156bd85}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!format\_insertion\_output@{format\_insertion\_output}}
+\index{format\_insertion\_output@{format\_insertion\_output}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{format\_insertion\_output()}{format\_insertion\_output()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a544a1f0f7133ad447817a3e25156bd85} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_output}{Insertion\+Helper\+Output}} format\+\_\+insertion\+\_\+output (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normalizes the insertion helper response into the helper output schema.
+
+If the last message is a tool message (meaning the insertion helper passed its 
+loop limit without providing a final answer), the full message history is serialized so
+the planner can inspect the tool trail. Otherwise, the final AI message content
+is returned directly as the insertion result.
+
+Args:
+    state (InsertionHelperState): Helper state containing the insertion request
+        context and the message history produced by the insertion loop.
+
+Returns:
+    InsertionHelperOutput: Output object containing the formatted insertion result.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a18a4778a6f8fc305b32e5b04f890f09b}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!tool\_route@{tool\_route}}
+\index{tool\_route@{tool\_route}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_route()}{tool\_route()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a18a4778a6f8fc305b32e5b04f890f09b} 
+tool\+\_\+route (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Routes the insertion helper loop based on tool usage and loop count.
+
+The insertion helper is allowed a limited number of iterations. If the latest
+AI message includes tool calls, the graph routes to the tool node. Otherwise it
+formats the output. If the loop limit is reached, the function enforces a final
+response path and includes a fallback message when necessary.
+
+Args:
+    state (InsertionHelperState): Current helper state including messages,
+        loop counter, and requested insertion content.
+
+Returns:
+    str: The next node name to execute.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1insertion__helper__graph_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a5fefc94d3a0509ad8349f07e4d304c6e}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a5fefc94d3a0509ad8349f07e4d304c6e} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_ab935235dd9ba6dcce4041337dfe8e014}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_ab935235dd9ba6dcce4041337dfe8e014} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a10c76f30f62801809743820d2ace8915}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_ae3d0d487f47d365f3e0a03ac9b69103e}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_ae3d0d487f47d365f3e0a03ac9b69103e} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_state}{Insertion\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_insertion_helper_output}{Insertion\+Helper\+Output}})}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a03b55d62731e2ce5c09e4c9757e75384}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!insertion\_graph@{insertion\_graph}}
+\index{insertion\_graph@{insertion\_graph}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{insertion\_graph}{insertion\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a03b55d62731e2ce5c09e4c9757e75384} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+insertion\+\_\+graph = graph\+\_\+builder.\+compile()}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a41234d7175236a92e902f09add4a6c64}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!LOOP\_CONFIG@{LOOP\_CONFIG}}
+\index{LOOP\_CONFIG@{LOOP\_CONFIG}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{LOOP\_CONFIG}{LOOP\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a41234d7175236a92e902f09add4a6c64} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+LOOP\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1insertion__helper__graph_a5fefc94d3a0509ad8349f07e4d304c6e}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a10c76f30f62801809743820d2ace8915}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a10c76f30f62801809743820d2ace8915} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacelg__agent_1_1insertion__helper__graph_a034f7fbec6201eaaf2f904c0a30a1994}\index{lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}!tool\_node@{tool\_node}}
+\index{tool\_node@{tool\_node}!lg\_agent.insertion\_helper\_graph@{lg\_agent.insertion\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_node}{tool\_node}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1insertion__helper__graph_a034f7fbec6201eaaf2f904c0a30a1994} 
+lg\+\_\+agent.\+insertion\+\_\+helper\+\_\+graph.\+tool\+\_\+node = Tool\+Node(insertion\+\_\+tools)}
+

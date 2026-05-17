@@ -1,0 +1,236 @@
+\doxysection{scrape\+\_\+programs Namespace Reference}
+\hypertarget{namespacescrape__programs}{}\label{namespacescrape__programs}\index{scrape\_programs@{scrape\_programs}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacescrape__programs_a089153119c6cffeb663a6c36c6769284}{clean\+\_\+text}} (text)
+\item 
+\doxymbox{\hyperlink{namespacescrape__programs_a1718f11bcc677fbc8fb151feecb9acd3}{area\+\_\+from\+\_\+url}} (url)
+\item 
+\doxymbox{\hyperlink{namespacescrape__programs_afb7c96c1f4776c6c1e016f185ae7508a}{fetch\+\_\+program\+\_\+detail}} (url)
+\item 
+\doxymbox{\hyperlink{namespacescrape__programs_a8966921014ede0b1457d7ce8e47ae901}{scrape\+\_\+programs}} ()
+\item 
+\doxymbox{\hyperlink{namespacescrape__programs_a51af30a60f9f02777c6396b8247e356f}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacescrape__programs_ad16152458b9010be35576ba8a1409e5d}{BASE\+\_\+\+URL}} = "{}https:\+/\+/\+www.\+qcc.\+edu"{}
+\begin{DoxyCompactList}\small\item\em Base URL for constructing absolute links from relative hrefs. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__programs_a8c1d5eb62ab13c8dab139e86e5118251}{PROGRAMS\+\_\+\+URL}} = "{}https:\+/\+/\+www.\+qcc.\+edu/\+programs"{}
+\begin{DoxyCompactList}\small\item\em URL of the QCC public programs listing page. \end{DoxyCompactList}\item 
+str \doxymbox{\hyperlink{namespacescrape__programs_a133b264d6613b758b9b1361367257d1f}{OUTPUT}} = "{}qcc\+\_\+programs.\+json"{}
+\begin{DoxyCompactList}\small\item\em Output path for the scraped JSON file. \end{DoxyCompactList}\item 
+dict \doxymbox{\hyperlink{namespacescrape__programs_a9ed6b022646509ae610dd42ca61344a7}{HEADERS}}
+\begin{DoxyCompactList}\small\item\em HTTP headers to send with each request to mimic a browser. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@file scrape_programs.py
+@brief Scrapes the public QCC website for all programs of study with full details.
+
+@details
+This module scrapes https://www.qcc.edu/programs for the complete list of QCC
+academic programs and certificates, then visits each program's detail page to extract:
+    - Program description
+    - Total credits required
+    - Area of study (derived from the URL path)
+    - List of required course codes
+
+Like scrape_classes_page.py, this scraper uses Requests and BeautifulSoup
+since the public QCC website renders content statically. Area of study is
+derived from the URL path rather than page headings, which proved unreliable.
+Description extraction scans all content elements for the first substantial
+paragraph containing program-related keywords, since QCC wraps descriptions
+in nested div elements rather than placing them as direct siblings of headings.
+
+@date 2026
+
+@par Input
+    https://www.qcc.edu/programs — public QCC programs listing page
+
+@par Output
+    qcc_programs.json — list of program dictionaries with full detail fields
+
+@par Dependencies
+    - requests
+    - beautifulsoup4
+    - json (stdlib)
+    - re (stdlib)
+    - time (stdlib)
+
+@par Usage
+    python scrape_programs.py
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__programs_doc-func-members}
+\Hypertarget{namespacescrape__programs_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacescrape__programs_a1718f11bcc677fbc8fb151feecb9acd3}\index{scrape\_programs@{scrape\_programs}!area\_from\_url@{area\_from\_url}}
+\index{area\_from\_url@{area\_from\_url}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{area\_from\_url()}{area\_from\_url()}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a1718f11bcc677fbc8fb151feecb9acd3} 
+area\+\_\+from\+\_\+url (\begin{DoxyParamCaption}\item[{}]{url}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Derives the area of study from the program's URL path segment.
+
+@details
+QCC program URLs follow the pattern:
+    https://www.qcc.edu/[area-slug]/[program-slug]
+
+This function extracts the area slug from the first path segment after
+the domain and converts it to title case (e.g. "applied-technologies"
+becomes "Applied Technologies").
+
+This approach is more reliable than parsing <h2> tags from the programs
+listing page, which did not consistently match program entries.
+
+@param url The full URL of the program detail page.
+@return The area of study as a title-cased string, or None if the URL
+        does not contain a recognizable path segment.
+
+@par Example
+@code
+area_from_url("https://www.qcc.edu/applied-technologies/some-program")
+# -> "Applied Technologies"
+@endcode
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__programs_a089153119c6cffeb663a6c36c6769284}\index{scrape\_programs@{scrape\_programs}!clean\_text@{clean\_text}}
+\index{clean\_text@{clean\_text}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{clean\_text()}{clean\_text()}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a089153119c6cffeb663a6c36c6769284} 
+clean\+\_\+text (\begin{DoxyParamCaption}\item[{}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Removes excess whitespace from a string.
+
+@param text The raw string to clean.
+@return A normalized single-line string with no extra whitespace.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__programs_afb7c96c1f4776c6c1e016f185ae7508a}\index{scrape\_programs@{scrape\_programs}!fetch\_program\_detail@{fetch\_program\_detail}}
+\index{fetch\_program\_detail@{fetch\_program\_detail}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{fetch\_program\_detail()}{fetch\_program\_detail()}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_afb7c96c1f4776c6c1e016f185ae7508a} 
+fetch\+\_\+program\+\_\+detail (\begin{DoxyParamCaption}\item[{}]{url}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Fetches and extracts detail fields from a QCC program detail page.
+
+@details
+Sends an HTTP GET request to the program detail URL and parses the response.
+Extracts three categories of information:
+
+Description:
+    Scans all <p> and <div> elements in the main content area for the first
+    block exceeding 80 characters that contains program-related keywords
+    (program, students, learn, career, degree, skills, course, prepares,
+    provides, designed, pathway). Blocks matching navigation or boilerplate
+    patterns are skipped. This approach handles QCC's nested div structure
+    where the description is not a direct sibling of the <h1> heading.
+
+Total Credits:
+    Searches all curriculum tables for a row containing "Total Credits Required"
+    and reads the numeric value from the last cell of that row.
+
+Required Courses:
+    Collects all course codes matching the pattern "[A-Z]{2,4} [0-9]{3}" from
+    all curriculum table cells, preserving order and deduplicating.
+
+@param url The full URL of the program detail page.
+@return A dictionary with keys:
+        - "description" (str or None)
+        - "total_credits" (int or None)
+        - "required_courses" (list of str)
+
+@note Returns a dictionary with None/empty values if the request fails
+      or the page structure does not match expected patterns.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__programs_a51af30a60f9f02777c6396b8247e356f}\index{scrape\_programs@{scrape\_programs}!main@{main}}
+\index{main@{main}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a51af30a60f9f02777c6396b8247e356f} 
+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Entry point — runs the programs scraper and saves results to JSON.
+
+@details
+Calls scrape_programs() to collect all program data, writes the results
+to qcc_programs.json, and prints a summary including total programs scraped,
+descriptions populated, total credits populated, area of study populated,
+and elapsed time.
+\end{DoxyVerb}
+ \Hypertarget{namespacescrape__programs_a8966921014ede0b1457d7ce8e47ae901}\index{scrape\_programs@{scrape\_programs}!scrape\_programs@{scrape\_programs}}
+\index{scrape\_programs@{scrape\_programs}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{scrape\_programs()}{scrape\_programs()}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a8966921014ede0b1457d7ce8e47ae901} 
+scrape\+\_\+programs (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Scrapes the QCC programs listing page and fetches details for each program.
+
+@details
+Sends a GET request to PROGRAMS_URL and parses the response to build an
+initial list of programs with their names, degree types, and URLs. Area of
+study is derived immediately from the URL via area_from_url(). Then iterates
+through each program, calls fetch_program_detail() to populate description,
+total_credits, and required_courses, and applies a 0.3 second polite delay
+between requests.
+
+The programs listing page uses <tr> table rows for individual program entries.
+The program name link is in the first cell and degree type is in the second cell.
+
+@return A list of program dictionaries with fields:
+        name, area_of_study, degree_type, url, description,
+        total_credits, required_courses, scraped_at.
+\end{DoxyVerb}
+ 
+
+\label{namespacescrape__programs_doc-var-members}
+\Hypertarget{namespacescrape__programs_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacescrape__programs_ad16152458b9010be35576ba8a1409e5d}\index{scrape\_programs@{scrape\_programs}!BASE\_URL@{BASE\_URL}}
+\index{BASE\_URL@{BASE\_URL}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{BASE\_URL}{BASE\_URL}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_ad16152458b9010be35576ba8a1409e5d} 
+str scrape\+\_\+programs.\+BASE\+\_\+\+URL = "{}https:\+/\+/\+www.\+qcc.\+edu"{}}
+
+
+
+Base URL for constructing absolute links from relative hrefs. 
+
+\Hypertarget{namespacescrape__programs_a9ed6b022646509ae610dd42ca61344a7}\index{scrape\_programs@{scrape\_programs}!HEADERS@{HEADERS}}
+\index{HEADERS@{HEADERS}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{HEADERS}{HEADERS}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a9ed6b022646509ae610dd42ca61344a7} 
+dict scrape\+\_\+programs.\+HEADERS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{stringliteral}{"{}User-\/Agent"{}}:\ \textcolor{stringliteral}{"{}Mozilla/5.0\ (Windows\ NT\ 10.0;\ Win64;\ x64)\ AppleWebKit/537.36"{}}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+HTTP headers to send with each request to mimic a browser. 
+
+\Hypertarget{namespacescrape__programs_a133b264d6613b758b9b1361367257d1f}\index{scrape\_programs@{scrape\_programs}!OUTPUT@{OUTPUT}}
+\index{OUTPUT@{OUTPUT}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{OUTPUT}{OUTPUT}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a133b264d6613b758b9b1361367257d1f} 
+str scrape\+\_\+programs.\+OUTPUT = "{}qcc\+\_\+programs.\+json"{}}
+
+
+
+Output path for the scraped JSON file. 
+
+\Hypertarget{namespacescrape__programs_a8c1d5eb62ab13c8dab139e86e5118251}\index{scrape\_programs@{scrape\_programs}!PROGRAMS\_URL@{PROGRAMS\_URL}}
+\index{PROGRAMS\_URL@{PROGRAMS\_URL}!scrape\_programs@{scrape\_programs}}
+\doxysubsubsection{\texorpdfstring{PROGRAMS\_URL}{PROGRAMS\_URL}}
+{\footnotesize\ttfamily \label{namespacescrape__programs_a8c1d5eb62ab13c8dab139e86e5118251} 
+str scrape\+\_\+programs.\+PROGRAMS\+\_\+\+URL = "{}https:\+/\+/\+www.\+qcc.\+edu/\+programs"{}}
+
+
+
+URL of the QCC public programs listing page. 
+

@@ -1,0 +1,50 @@
+\doxysection{frontend/\+node\+\_\+modules/\+node-\/gyp/\+gyp/\+pylib/\+packaging/\+version.py File Reference}
+\hypertarget{version_8py}{}\label{version_8py}\index{frontend/node\_modules/node-\/gyp/gyp/pylib/packaging/version.py@{frontend/node\_modules/node-\/gyp/gyp/pylib/packaging/version.py}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1___version}{packaging.\+version.\+\_\+\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1_invalid_version}{packaging.\+version.\+Invalid\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1___base_version}{packaging.\+version.\+\_\+\+Base\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1_version}{packaging.\+version.\+Version}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespacepackaging}{packaging}}
+\item 
+namespace \doxymbox{\hyperlink{namespacepackaging_1_1version}{packaging.\+version}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+"{}Version"{} \doxymbox{\hyperlink{namespacepackaging_1_1version_aa9101321f5a2a03f984422057ff3cf83}{packaging.\+version.\+parse}} (str version)
+\item 
+Optional\+[Tuple\+[str, int]\+]\+ \doxymbox{\hyperlink{namespacepackaging_1_1version_ae20e866a665757d347d65db925df0ae2}{packaging.\+version.\+\_\+parse\+\_\+letter\+\_\+version}} (Optional\+[str]\+ letter, Union\+[str, bytes, Supports\+Int, None]\+ number)
+\item 
+Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+ \doxymbox{\hyperlink{namespacepackaging_1_1version_a87af37eaf75ea5176cfb143bab0ac7b8}{packaging.\+version.\+\_\+parse\+\_\+local\+\_\+version}} (Optional\+[str]\+ local)
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}} \doxymbox{\hyperlink{namespacepackaging_1_1version_a5cf74dff10373f188a12039ab2b84c61}{packaging.\+version.\+\_\+cmpkey}} (int epoch, Tuple\+[int,...]\+ release, Optional\+[Tuple\+[str, int]\+]\+ pre, Optional\+[Tuple\+[str, int]\+]\+ post, Optional\+[Tuple\+[str, int]\+]\+ dev, Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+ local)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{packaging.\+version.\+Local\+Type}} = Tuple\+[Union\+[int, str]\+, ...]\+
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a1c2d3dff14f0bb209b72919ef253b6de}{packaging.\+version.\+Cmp\+Pre\+Post\+Dev\+Type}} = Union\+[\doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_infinity_type}{Infinity\+Type}}, \doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_negative_infinity_type}{Negative\+Infinity\+Type}}, Tuple\+[str, int]\+]\+
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4d92bd60742003ea74b6b2b0f476d1f0}{packaging.\+version.\+Cmp\+Local\+Type}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{packaging.\+version.\+Cmp\+Key}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_aff5e63c809528c0f25bbbe137bb12267}{packaging.\+version.\+Version\+Comparison\+Method}} = Callable\+[\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}, \doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}]\+, bool]\+
+\item 
+str \doxymbox{\hyperlink{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}{packaging.\+version.\+\_\+\+VERSION\+\_\+\+PATTERN}}
+\item 
+str \doxymbox{\hyperlink{namespacepackaging_1_1version_ad9843e0578b91b45f5efd627a5dd0642}{packaging.\+version.\+VERSION\+\_\+\+PATTERN}} = \doxymbox{\hyperlink{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}{\+\_\+\+VERSION\+\_\+\+PATTERN}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a04e7bb6da9584ee57bd7e4e751202f73}{packaging.\+version.\+\_\+local\+\_\+version\+\_\+separators}} = re.\+compile(r"{}\+[\textbackslash{}.\+\_\+-\/]\+"{})
+\end{DoxyCompactItemize}

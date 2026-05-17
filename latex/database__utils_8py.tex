@@ -1,0 +1,101 @@
+\doxysection{lg\+\_\+agent/\+database\+\_\+utils.py File Reference}
+\hypertarget{database__utils_8py}{}\label{database__utils_8py}\index{lg\_agent/database\_utils.py@{lg\_agent/database\_utils.py}}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespacelg__agent}{lg\+\_\+agent}}
+\item 
+namespace \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils}{lg\+\_\+agent.\+database\+\_\+utils}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acbed5434b24b543858cc9c5430919091}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+course\+ID\+\_\+by\+\_\+code}} (sqlite3.\+Connection conn, str course\+\_\+code)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acedd539b57331d0f9992c5fa9424f444}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+course\+ID\+\_\+by\+\_\+title}} (sqlite3.\+Connection conn, str course\+\_\+title)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ac12d60eb233d56aae0f8c18d32aea41e}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+coops}} (sqlite3.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_acb171edb317bd74633c44dd49df008b7}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+course\+IDs\+\_\+by\+\_\+filters}} (sqlite3.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a00610cb72f8235afd89d2efbe4ac67aa}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+course\+\_\+info\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str course\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a25086956427b91e859547771443b7d80}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+course\+\_\+description\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a1f08e533cf3317e88ac0305c9725753e}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+section\+IDs\+\_\+by\+\_\+filters}} (sqlite3.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6fa9c4acf34344a06f31b1df5a90f1e5}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+section\+\_\+info\+\_\+by\+\_\+id}} (sqlite3.\+Connection conn, str section\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a011461459d7d4a369a29f7f94e4cf1d9}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+upcoming\+\_\+events}} (sqlite3.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a065b3cf46aeef9545cea92d12bea3ce1}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name}} (sqlite3.\+Connection conn, str event\+\_\+name)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ab3d607f4cabe28d49a73d2fae482a6c3}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+student\+\_\+basic\+\_\+info}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_adf33dbd7d2286e85e8492cff5cbbb4aa}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+advisor\+\_\+email}} (sqlite3.\+Connection conn, str advisor\+\_\+name)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8d1d6038bd4a990bf2a8000b8adad6e4}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+student\+\_\+course\+\_\+history}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a16c6b46dc62e27256fb60aedee3c212c}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+student\+\_\+interests}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a9953e6ecc838771117690d854d1bc193}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+student\+\_\+tracked\+\_\+sections}} (sqlite3.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a0d55e833cec5ab4915ee82c5d4c14afd}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title}} (sqlite3.\+Connection conn, str program\+\_\+title)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6bc8b5be5404a78a331bb597891ee602}{lg\+\_\+agent.\+database\+\_\+utils.\+insert\+\_\+student\+\_\+interests}} (sqlite3.\+Connection conn, int student\+\_\+id, list\+[str]\+ interest)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_af2345d11737fbf21c99572bfe5fef6d6}{lg\+\_\+agent.\+database\+\_\+utils.\+insert\+\_\+student\+\_\+tracked\+\_\+section}} (sqlite3.\+Connection conn, int student\+\_\+id, str course\+\_\+code, str section\+\_\+number)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a9046b4140d8350dbc814416a728b2a1f}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+data\+\_\+with\+\_\+hierarchy}} (sqlite3.\+Connection conn, str table, int target\+ID)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a4b144379f0f985aa77ae41b3ca340e21}{lg\+\_\+agent.\+database\+\_\+utils.\+\_\+format\+\_\+hierarchy\+\_\+node}} (dict node, int depth=0)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ad373f2872b1466c3f0c7ca1e9a0598d8}{lg\+\_\+agent.\+database\+\_\+utils.\+hierarchy\+\_\+data\+\_\+to\+\_\+string}} (dict hierarchy\+\_\+data)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aad919c77734610236cc39640c9493935}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+data\+\_\+with\+\_\+hierarchy\+\_\+string}} (sqlite3.\+Connection conn, str table, str target\+ID)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ac5313d3554336cef4a0966db0fed1fb1}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+ids\+\_\+by\+\_\+field\+\_\+value}} (sqlite3.\+Connection conn, str table, str field, str value)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8542da106d3b0e9367f33b7954e72305}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+ids\+\_\+by\+\_\+parent}} (sqlite3.\+Connection conn, str table, str target\+ID)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a8891cbf6c61066d427ea7aa524378cdd}{lg\+\_\+agent.\+database\+\_\+utils.\+get\+\_\+students\+\_\+by\+\_\+advisor}} (sqlite3.\+Connection conn, str advisor\+ID)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6842903b3d2853adba32c2c7b44e36b7}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+code}} (aiosqlite.\+Connection conn, str course\+\_\+code)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_abf65c2f2b40a539879abbcb158207ef5}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+course\+ID\+\_\+by\+\_\+title}} (aiosqlite.\+Connection conn, str course\+\_\+title)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ae5c33621d24d3a3d3f77560355dbe954}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+course\+\_\+info\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a2a1957febb0f864fce7ec30a7664692b}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+coops}} (aiosqlite.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_afcc52cdc6d302d1cbde010e4b5ea4aa3}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+course\+IDs\+\_\+by\+\_\+filters}} (aiosqlite.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{schemas.\+Course\+Filters}} filters)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a0472e9f877a7c173fad80372046d9703}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+course\+\_\+description\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str course\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_abed474454d01d72665d59917cec92896}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+section\+IDs\+\_\+by\+\_\+filters}} (aiosqlite.\+Connection conn, \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{schemas.\+Section\+Filters}} filters)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a6c233ebcc12bdc41262c9298dfa70229}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+section\+\_\+info\+\_\+by\+\_\+id}} (aiosqlite.\+Connection conn, str section\+\_\+id)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a4c5038d339489d18ab44ecdce9b29ae1}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+upcoming\+\_\+events}} (aiosqlite.\+Connection conn)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a67697460779047ebfd1e5947d2f67d50}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+event\+\_\+dates\+\_\+by\+\_\+name}} (aiosqlite.\+Connection conn, str event\+\_\+name)
+\item 
+dict \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a75e47e61d76b6b18c8dd9c77ba8aeb70}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+student\+\_\+basic\+\_\+info}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ada641d47084da01188f4a6b40e86e7f8}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+student\+\_\+course\+\_\+history}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_ad6f5e339990c62d25cd0c728697891b6}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+student\+\_\+interests}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a875e38c16b5f53b1ee345710098fba29}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+student\+\_\+tracked\+\_\+sections}} (aiosqlite.\+Connection conn, int student\+\_\+id)
+\item 
+list \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aabd260ae8206a1deaa2313ffd1fe3211}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+get\+\_\+program\+\_\+requirements\+\_\+by\+\_\+title}} (aiosqlite.\+Connection conn, str program\+\_\+title)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aceed724d63558db35ae7ef1fe4ce6f2d}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+insert\+\_\+student\+\_\+interests}} (aiosqlite.\+Connection conn, int student\+\_\+id, list\+[str]\+ interest)
+\item 
+str \doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_a7bdbaf23ac5545452f3a67c14cb6d490}{lg\+\_\+agent.\+database\+\_\+utils.\+async\+\_\+insert\+\_\+student\+\_\+tracked\+\_\+section}} (aiosqlite.\+Connection conn, int student\+\_\+id, str course\+\_\+code, str section\+\_\+number)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1database__utils_aaad069dfd97bf79a0100dfe4fd0d8307}{lg\+\_\+agent.\+database\+\_\+utils.\+PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\end{DoxyCompactItemize}

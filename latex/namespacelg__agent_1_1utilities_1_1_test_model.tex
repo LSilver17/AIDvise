@@ -1,0 +1,19 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+Test\+Model Namespace Reference}
+\hypertarget{namespacelg__agent_1_1utilities_1_1_test_model}{}\label{namespacelg__agent_1_1utilities_1_1_test_model}\index{lg\_agent.utilities.TestModel@{lg\_agent.utilities.TestModel}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1_test_model_1_1_fake_chat_model}{Fake\+Chat\+Model}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Utilities for testing: a FakeChatModel that extends GenericFakeChatModel.
+This fake model can be scripted to emit messages and tool_calls, and it
+provides a `bind_tools` helper to attach tools and runtime state for tests.
+Important: the fake model emits tool_calls but does not automatically execute
+tools that require a `ToolRuntime` — execution is left to the orchestrator.
+\end{DoxyVerb}
+ 

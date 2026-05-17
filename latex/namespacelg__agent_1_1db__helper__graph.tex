@@ -1,0 +1,151 @@
+\doxysection{lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph Namespace Reference}
+\hypertarget{namespacelg__agent_1_1db__helper__graph}{}\label{namespacelg__agent_1_1db__helper__graph}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_output}{Database\+Helper\+Output}} \doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a237bb674413f471535e99778eef337bd}{format\+\_\+db\+\_\+output}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}} state)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_ad7507495ac16057ff4bc4121900dae7f}{tool\+\_\+route}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a5670f326fb0f6bf5af77097c0366fee0}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_afd6a8aa9fc15dd345acf97c849907cf7}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a5670f326fb0f6bf5af77097c0366fee0}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_ad89a99f84fbe36877ca485e7cd8453be}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_ab2552c883f52639639fe42bc830d027f}{LOOP\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_ad89a99f84fbe36877ca485e7cd8453be}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a96ea5afc982c546571d8ef44a3a43bee}{tool\+\_\+node}} = Tool\+Node(db\+\_\+tools)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a9b80ef1d989184275c7d09079d79f5a6}{alt\+\_\+tool\+\_\+node}} = Tool\+Node(alt\+\_\+db\+\_\+tools)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a9558f4d2a1370944dd74ee5d1b2f06b7}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_output}{Database\+Helper\+Output}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_af354dccd65e86b1a047b206dddfb36f8}{db\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Database helper subgraph that executes database queries for the planning agents.
+
+Functions:
+- `format_db_output`: Normalizes database helper response into standardized helper output schema.
+- `tool_route`: Conditionally routes database helper loop based on tool calls and loop count.
+
+Graph Structure:
+- START -> db_node
+- db_node -> [tool_node | alt_tool_node | format_db_output] (conditional routing based on tool_route)
+- tool_node -> db_node (feedback loop)
+- alt_tool_node -> db_node (feedback loop)
+- format_db_output -> END
+
+Exports:
+- `db_graph`: Compiled LangGraph database helper subgraph.
+
+Supports both standard (student) and alternate (advisor) tool sets.
+Loop limits are defined in config.json.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1db__helper__graph_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_a237bb674413f471535e99778eef337bd}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!format\_db\_output@{format\_db\_output}}
+\index{format\_db\_output@{format\_db\_output}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{format\_db\_output()}{format\_db\_output()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_a237bb674413f471535e99778eef337bd} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_output}{Database\+Helper\+Output}} format\+\_\+db\+\_\+output (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normalizes the database helper response into the helper output schema.
+
+If the last message is a tool message (meaning the database helper passed its 
+loop limit without providing a final answer), the full message history is serialized
+into a single string so the planner can inspect the tool trail. Otherwise, the
+final AI message content is returned directly as the query result.
+
+Args:
+    state (DatabaseHelperState): Helper state containing the request context and
+        the message history produced by the database helper loop.
+
+Returns:
+    DatabaseHelperOutput: Output object containing the original query and the
+        formatted database result string.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1db__helper__graph_ad7507495ac16057ff4bc4121900dae7f}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!tool\_route@{tool\_route}}
+\index{tool\_route@{tool\_route}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_route()}{tool\_route()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_ad7507495ac16057ff4bc4121900dae7f} 
+tool\+\_\+route (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Routes the database helper loop based on tool usage and loop count.
+
+The database helper is allowed a limited number of iterations. If the latest AI
+message includes tool calls, the graph routes to the appropriate tool node.
+Otherwise it formats the output. If the loop limit is reached, the function
+enforces a final response path and includes a fallback message when necessary.
+
+Args:
+    state (DatabaseHelperState): Current helper state including messages,
+        account type, loop counter, and requested information.
+
+Returns:
+    str: The next node name to execute.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1db__helper__graph_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_a9b80ef1d989184275c7d09079d79f5a6}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!alt\_tool\_node@{alt\_tool\_node}}
+\index{alt\_tool\_node@{alt\_tool\_node}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{alt\_tool\_node}{alt\_tool\_node}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_a9b80ef1d989184275c7d09079d79f5a6} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+alt\+\_\+tool\+\_\+node = Tool\+Node(alt\+\_\+db\+\_\+tools)}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_ad89a99f84fbe36877ca485e7cd8453be}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_ad89a99f84fbe36877ca485e7cd8453be} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_afd6a8aa9fc15dd345acf97c849907cf7}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_afd6a8aa9fc15dd345acf97c849907cf7} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_a5670f326fb0f6bf5af77097c0366fee0}{PARENT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_af354dccd65e86b1a047b206dddfb36f8}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!db\_graph@{db\_graph}}
+\index{db\_graph@{db\_graph}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{db\_graph}{db\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_af354dccd65e86b1a047b206dddfb36f8} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+db\+\_\+graph = graph\+\_\+builder.\+compile()}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_a9558f4d2a1370944dd74ee5d1b2f06b7}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_a9558f4d2a1370944dd74ee5d1b2f06b7} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_state}{Database\+Helper\+State}}, output\+\_\+schema=\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_database_helper_output}{Database\+Helper\+Output}})}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_ab2552c883f52639639fe42bc830d027f}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!LOOP\_CONFIG@{LOOP\_CONFIG}}
+\index{LOOP\_CONFIG@{LOOP\_CONFIG}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{LOOP\_CONFIG}{LOOP\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_ab2552c883f52639639fe42bc830d027f} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+LOOP\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1db__helper__graph_ad89a99f84fbe36877ca485e7cd8453be}{CONFIG}}\+["{}loop\+\_\+limits"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_a5670f326fb0f6bf5af77097c0366fee0}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_a5670f326fb0f6bf5af77097c0366fee0} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacelg__agent_1_1db__helper__graph_a96ea5afc982c546571d8ef44a3a43bee}\index{lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}!tool\_node@{tool\_node}}
+\index{tool\_node@{tool\_node}!lg\_agent.db\_helper\_graph@{lg\_agent.db\_helper\_graph}}
+\doxysubsubsection{\texorpdfstring{tool\_node}{tool\_node}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1db__helper__graph_a96ea5afc982c546571d8ef44a3a43bee} 
+lg\+\_\+agent.\+db\+\_\+helper\+\_\+graph.\+tool\+\_\+node = Tool\+Node(db\+\_\+tools)}
+

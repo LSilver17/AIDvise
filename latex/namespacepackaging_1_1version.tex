@@ -1,0 +1,196 @@
+\doxysection{packaging.\+version Namespace Reference}
+\hypertarget{namespacepackaging_1_1version}{}\label{namespacepackaging_1_1version}\index{packaging.version@{packaging.version}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1___version}{\+\_\+\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1_invalid_version}{Invalid\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1___base_version}{\+\_\+\+Base\+Version}}
+\item 
+class \doxymbox{\hyperlink{classpackaging_1_1version_1_1_version}{Version}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+"{}Version"{} \doxymbox{\hyperlink{namespacepackaging_1_1version_aa9101321f5a2a03f984422057ff3cf83}{parse}} (str version)
+\item 
+Optional\+[Tuple\+[str, int]\+]\+ \doxymbox{\hyperlink{namespacepackaging_1_1version_ae20e866a665757d347d65db925df0ae2}{\+\_\+parse\+\_\+letter\+\_\+version}} (Optional\+[str]\+ letter, Union\+[str, bytes, Supports\+Int, None]\+ number)
+\item 
+Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+ \doxymbox{\hyperlink{namespacepackaging_1_1version_a87af37eaf75ea5176cfb143bab0ac7b8}{\+\_\+parse\+\_\+local\+\_\+version}} (Optional\+[str]\+ local)
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}} \doxymbox{\hyperlink{namespacepackaging_1_1version_a5cf74dff10373f188a12039ab2b84c61}{\+\_\+cmpkey}} (int epoch, Tuple\+[int,...]\+ release, Optional\+[Tuple\+[str, int]\+]\+ pre, Optional\+[Tuple\+[str, int]\+]\+ post, Optional\+[Tuple\+[str, int]\+]\+ dev, Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+ local)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}} = Tuple\+[Union\+[int, str]\+, ...]\+
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a1c2d3dff14f0bb209b72919ef253b6de}{Cmp\+Pre\+Post\+Dev\+Type}} = Union\+[\doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_infinity_type}{Infinity\+Type}}, \doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_negative_infinity_type}{Negative\+Infinity\+Type}}, Tuple\+[str, int]\+]\+
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4d92bd60742003ea74b6b2b0f476d1f0}{Cmp\+Local\+Type}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_aff5e63c809528c0f25bbbe137bb12267}{Version\+Comparison\+Method}} = Callable\+[\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}, \doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}]\+, bool]\+
+\item 
+str \doxymbox{\hyperlink{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}{\+\_\+\+VERSION\+\_\+\+PATTERN}}
+\item 
+str \doxymbox{\hyperlink{namespacepackaging_1_1version_ad9843e0578b91b45f5efd627a5dd0642}{VERSION\+\_\+\+PATTERN}} = \doxymbox{\hyperlink{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}{\+\_\+\+VERSION\+\_\+\+PATTERN}}
+\item 
+\doxymbox{\hyperlink{namespacepackaging_1_1version_a04e7bb6da9584ee57bd7e4e751202f73}{\+\_\+local\+\_\+version\+\_\+separators}} = re.\+compile(r"{}\+[\textbackslash{}.\+\_\+-\/]\+"{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}.. testsetup::
+
+    from packaging.version import parse, Version
+\end{DoxyVerb}
+ 
+
+\label{namespacepackaging_1_1version_doc-func-members}
+\Hypertarget{namespacepackaging_1_1version_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacepackaging_1_1version_a5cf74dff10373f188a12039ab2b84c61}\index{packaging.version@{packaging.version}!\_cmpkey@{\_cmpkey}}
+\index{\_cmpkey@{\_cmpkey}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{\_cmpkey()}{\_cmpkey()}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a5cf74dff10373f188a12039ab2b84c61} 
+ \doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}} \+\_\+cmpkey (\begin{DoxyParamCaption}\item[{int}]{epoch}{, }\item[{Tuple\+[int, ...]\+}]{release}{, }\item[{Optional\+[Tuple\+[str, int]\+]\+}]{pre}{, }\item[{Optional\+[Tuple\+[str, int]\+]\+}]{post}{, }\item[{Optional\+[Tuple\+[str, int]\+]\+}]{dev}{, }\item[{Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+}]{local}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{namespacepackaging_1_1version_ae20e866a665757d347d65db925df0ae2}\index{packaging.version@{packaging.version}!\_parse\_letter\_version@{\_parse\_letter\_version}}
+\index{\_parse\_letter\_version@{\_parse\_letter\_version}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{\_parse\_letter\_version()}{\_parse\_letter\_version()}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_ae20e866a665757d347d65db925df0ae2} 
+ Optional\+[Tuple\+[str, int]\+]\+ \+\_\+parse\+\_\+letter\+\_\+version (\begin{DoxyParamCaption}\item[{Optional\+[str]\+}]{letter}{, }\item[{Union\+[str, bytes, Supports\+Int, None]\+ }]{number}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{namespacepackaging_1_1version_a87af37eaf75ea5176cfb143bab0ac7b8}\index{packaging.version@{packaging.version}!\_parse\_local\_version@{\_parse\_local\_version}}
+\index{\_parse\_local\_version@{\_parse\_local\_version}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{\_parse\_local\_version()}{\_parse\_local\_version()}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a87af37eaf75ea5176cfb143bab0ac7b8} 
+ Optional\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}{Local\+Type}}]\+ \+\_\+parse\+\_\+local\+\_\+version (\begin{DoxyParamCaption}\item[{Optional\+[str]\+}]{local}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Takes a string like abc.1.twelve and turns it into ("abc", 1, "twelve").
+\end{DoxyVerb}
+ \Hypertarget{namespacepackaging_1_1version_aa9101321f5a2a03f984422057ff3cf83}\index{packaging.version@{packaging.version}!parse@{parse}}
+\index{parse@{parse}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{parse()}{parse()}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_aa9101321f5a2a03f984422057ff3cf83} 
+ "{}Version"{} parse (\begin{DoxyParamCaption}\item[{str}]{version}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Parse the given version string.
+
+>>> parse('1.0.dev1')
+<Version('1.0.dev1')>
+
+:param version: The version string to parse.
+:raises InvalidVersion: When the version string is not a valid version.
+\end{DoxyVerb}
+ 
+
+\label{namespacepackaging_1_1version_doc-var-members}
+\Hypertarget{namespacepackaging_1_1version_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacepackaging_1_1version_a04e7bb6da9584ee57bd7e4e751202f73}\index{packaging.version@{packaging.version}!\_local\_version\_separators@{\_local\_version\_separators}}
+\index{\_local\_version\_separators@{\_local\_version\_separators}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{\_local\_version\_separators}{\_local\_version\_separators}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a04e7bb6da9584ee57bd7e4e751202f73} 
+packaging.\+version.\+\_\+local\+\_\+version\+\_\+separators = re.\+compile(r"{}\+[\textbackslash{}.\+\_\+-\/]\+"{})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}\index{packaging.version@{packaging.version}!\_VERSION\_PATTERN@{\_VERSION\_PATTERN}}
+\index{\_VERSION\_PATTERN@{\_VERSION\_PATTERN}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{\_VERSION\_PATTERN}{\_VERSION\_PATTERN}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb} 
+str packaging.\+version.\+\_\+\+VERSION\+\_\+\+PATTERN\hspace{0.3cm}{\ttfamily [protected]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ \textcolor{stringliteral}{r"{}"{}"{}}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ v?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ (?:}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ (?:(?P<epoch>[0-\/9]+)!)?\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ epoch}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ (?P<release>[0-\/9]+(?:\(\backslash\).[0-\/9]+)*)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ release\ segment}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ (?P<pre>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ pre-\/release}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?P<pre\_l>alpha|a|beta|b|preview|pre|c|rc)}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?P<pre\_n>[0-\/9]+)?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ )?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ (?P<post>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ post\ release}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?:-\/(?P<post\_n1>[0-\/9]+))}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ |}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?:}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (?P<post\_l>post|rev|r)}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (?P<post\_n2>[0-\/9]+)?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ )}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ )?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ (?P<dev>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ dev\ release}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?P<dev\_l>dev)}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ [-\/\_\(\backslash\).]?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ (?P<dev\_n>[0-\/9]+)?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ \ \ \ \ )?}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ )}}
+\DoxyCodeLine{\textcolor{stringliteral}{\ \ \ \ (?:\(\backslash\)+(?P<local>[a-\/z0-\/9]+(?:[-\/\_\(\backslash\).][a-\/z0-\/9]+)*))?\ \ \ \ \ \ \ \#\ local\ version}}
+\DoxyCodeLine{\textcolor{stringliteral}{"{}"{}"{}}}
+
+\end{DoxyCode}
+\Hypertarget{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}\index{packaging.version@{packaging.version}!CmpKey@{CmpKey}}
+\index{CmpKey@{CmpKey}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{CmpKey}{CmpKey}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8} 
+packaging.\+version.\+Cmp\+Key}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ Tuple[}
+\DoxyCodeLine{\ \ \ \ int,}
+\DoxyCodeLine{\ \ \ \ Tuple[int,\ ...],}
+\DoxyCodeLine{\ \ \ \ CmpPrePostDevType,}
+\DoxyCodeLine{\ \ \ \ CmpPrePostDevType,}
+\DoxyCodeLine{\ \ \ \ CmpPrePostDevType,}
+\DoxyCodeLine{\ \ \ \ CmpLocalType,}
+\DoxyCodeLine{]}
+
+\end{DoxyCode}
+\Hypertarget{namespacepackaging_1_1version_a4d92bd60742003ea74b6b2b0f476d1f0}\index{packaging.version@{packaging.version}!CmpLocalType@{CmpLocalType}}
+\index{CmpLocalType@{CmpLocalType}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{CmpLocalType}{CmpLocalType}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a4d92bd60742003ea74b6b2b0f476d1f0} 
+packaging.\+version.\+Cmp\+Local\+Type}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ Union[}
+\DoxyCodeLine{\ \ \ \ NegativeInfinityType,}
+\DoxyCodeLine{\ \ \ \ Tuple[Union[Tuple[int,\ str],\ Tuple[NegativeInfinityType,\ Union[int,\ str]]],\ ...],}
+\DoxyCodeLine{]}
+
+\end{DoxyCode}
+\Hypertarget{namespacepackaging_1_1version_a1c2d3dff14f0bb209b72919ef253b6de}\index{packaging.version@{packaging.version}!CmpPrePostDevType@{CmpPrePostDevType}}
+\index{CmpPrePostDevType@{CmpPrePostDevType}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{CmpPrePostDevType}{CmpPrePostDevType}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_a1c2d3dff14f0bb209b72919ef253b6de} 
+packaging.\+version.\+Cmp\+Pre\+Post\+Dev\+Type = Union\+[\doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_infinity_type}{Infinity\+Type}}, \doxymbox{\hyperlink{classpackaging_1_1__structures_1_1_negative_infinity_type}{Negative\+Infinity\+Type}}, Tuple\+[str, int]\+]\+}
+
+\Hypertarget{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044}\index{packaging.version@{packaging.version}!LocalType@{LocalType}}
+\index{LocalType@{LocalType}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{LocalType}{LocalType}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_ae1b80d82b89c1615b5f05dff62310044} 
+packaging.\+version.\+Local\+Type = Tuple\+[Union\+[int, str]\+, ...]\+}
+
+\Hypertarget{namespacepackaging_1_1version_ad9843e0578b91b45f5efd627a5dd0642}\index{packaging.version@{packaging.version}!VERSION\_PATTERN@{VERSION\_PATTERN}}
+\index{VERSION\_PATTERN@{VERSION\_PATTERN}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{VERSION\_PATTERN}{VERSION\_PATTERN}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_ad9843e0578b91b45f5efd627a5dd0642} 
+str packaging.\+version.\+VERSION\+\_\+\+PATTERN = \doxymbox{\hyperlink{namespacepackaging_1_1version_a21ac77014ad8280c91d97099b9954ccb}{\+\_\+\+VERSION\+\_\+\+PATTERN}}}
+
+\Hypertarget{namespacepackaging_1_1version_aff5e63c809528c0f25bbbe137bb12267}\index{packaging.version@{packaging.version}!VersionComparisonMethod@{VersionComparisonMethod}}
+\index{VersionComparisonMethod@{VersionComparisonMethod}!packaging.version@{packaging.version}}
+\doxysubsubsection{\texorpdfstring{VersionComparisonMethod}{VersionComparisonMethod}}
+{\footnotesize\ttfamily \label{namespacepackaging_1_1version_aff5e63c809528c0f25bbbe137bb12267} 
+packaging.\+version.\+Version\+Comparison\+Method = Callable\+[\+[\doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}, \doxymbox{\hyperlink{namespacepackaging_1_1version_a4abc1bc02fa33bee706e0447bc71dae8}{Cmp\+Key}}]\+, bool]\+}
+

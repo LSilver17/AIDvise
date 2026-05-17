@@ -1,0 +1,69 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters Class Reference}
+\hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{}\label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+Inheritance diagram for lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a847b7ad66d96ecee1d8f0f02c14e1752}{terms}} = Field(default=\+[$\,$]\+, description="{}List of terms to filter courses by. Each term should be specified as a year, season, and, if applicable, number (2023, \textquotesingle{}Fall\textquotesingle{}, None; 2023, \textquotesingle{}Summer\textquotesingle{}, 1, etc). If no term filter is needed, leave this field blank."{})
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d00c043caf4451757d8c0c4be9f9c14}{departments}} = Field(default=\+[$\,$]\+, description="{}List of departments to filter courses by (e.\+g. \+[\textquotesingle{}CSCI\textquotesingle{}, \textquotesingle{}MATH\textquotesingle{}]\+). If no department filter is needed, leave this field blank."{})
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ad09e88dcbe8607ffb6aa66f4e7fdc334}{course\+\_\+levels}} = Field(default=\+[$\,$]\+, description="{}List of course level conditions to filter courses by. Each condition should specify a comparison condition and a course level to compare against (e.\+g. \+[\{\textquotesingle{}condition\textquotesingle{}:\+ \textquotesingle{}$>$=\textquotesingle{}, \textquotesingle{}level\textquotesingle{}:\+ \textquotesingle{}100\textquotesingle{}\}]\+ to filter for courses with a level greater than or equal to 100). If no course level filter is needed, leave this field blank."{})
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a7d7af55dfc57591cbc60699348901d48}{credits}} = Field(default=\+[$\,$]\+, description="{}Filter courses by number of credits. If no credit filter is needed, leave this field blank."{})
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d094a02e70d52ab5c9e99fc0181096e}{keywords}} = Field(default=\+[$\,$]\+, description="{}List of keywords to search for in course descriptions. If no keyword filter is needed, leave this field blank."{})
+\item 
+list \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ae5deeff93fa1241782adf14232845147}{prerequisites}} = Field(default=\+[$\,$]\+, description="{}List of \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d094a02e70d52ab5c9e99fc0181096e}{keywords}} to search for in course prerequisites. If searching for a course use its code rather than its title. If no prerequisite filter is needed, leave this field blank."{})
+\end{DoxyCompactItemize}
+
+
+\label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_doc-variable-members}
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ad09e88dcbe8607ffb6aa66f4e7fdc334}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!course\_levels@{course\_levels}}
+\index{course\_levels@{course\_levels}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{course\_levels}{course\_levels}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ad09e88dcbe8607ffb6aa66f4e7fdc334} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+course\+\_\+levels = Field(default=\+[$\,$]\+, description="{}List of course level conditions to filter courses by. Each condition should specify a comparison condition and a course level to compare against (e.\+g. \+[\{\textquotesingle{}condition\textquotesingle{}:\+ \textquotesingle{}$>$=\textquotesingle{}, \textquotesingle{}level\textquotesingle{}:\+ \textquotesingle{}100\textquotesingle{}\}]\+ to filter for courses with a level greater than or equal to 100). If no course level filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a7d7af55dfc57591cbc60699348901d48}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!credits@{credits}}
+\index{credits@{credits}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{credits}{credits}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a7d7af55dfc57591cbc60699348901d48} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+credits = Field(default=\+[$\,$]\+, description="{}Filter courses by number of credits. If no credit filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d00c043caf4451757d8c0c4be9f9c14}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!departments@{departments}}
+\index{departments@{departments}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{departments}{departments}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d00c043caf4451757d8c0c4be9f9c14} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+departments = Field(default=\+[$\,$]\+, description="{}List of departments to filter courses by (e.\+g. \+[\textquotesingle{}CSCI\textquotesingle{}, \textquotesingle{}MATH\textquotesingle{}]\+). If no department filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d094a02e70d52ab5c9e99fc0181096e}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!keywords@{keywords}}
+\index{keywords@{keywords}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{keywords}{keywords}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d094a02e70d52ab5c9e99fc0181096e} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+keywords = Field(default=\+[$\,$]\+, description="{}List of keywords to search for in course descriptions. If no keyword filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ae5deeff93fa1241782adf14232845147}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!prerequisites@{prerequisites}}
+\index{prerequisites@{prerequisites}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{prerequisites}{prerequisites}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_ae5deeff93fa1241782adf14232845147} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+prerequisites = Field(default=\+[$\,$]\+, description="{}List of \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a1d094a02e70d52ab5c9e99fc0181096e}{keywords}} to search for in course prerequisites. If searching for a course use its code rather than its title. If no prerequisite filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a847b7ad66d96ecee1d8f0f02c14e1752}\index{lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}!terms@{terms}}
+\index{terms@{terms}!lg\_agent.utilities.schemas.CourseFilters@{lg\_agent.utilities.schemas.CourseFilters}}
+\doxysubsubsection{\texorpdfstring{terms}{terms}}
+{\footnotesize\ttfamily \label{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters_a847b7ad66d96ecee1d8f0f02c14e1752} 
+list lg\+\_\+agent.\+utilities.\+schemas.\+Course\+Filters.\+terms = Field(default=\+[$\,$]\+, description="{}List of terms to filter courses by. Each term should be specified as a year, season, and, if applicable, number (2023, \textquotesingle{}Fall\textquotesingle{}, None; 2023, \textquotesingle{}Summer\textquotesingle{}, 1, etc). If no term filter is needed, leave this field blank."{})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+lg\+\_\+agent/\+utilities/\+\doxymbox{\hyperlink{schemas_8py}{schemas.\+py}}\end{DoxyCompactItemize}

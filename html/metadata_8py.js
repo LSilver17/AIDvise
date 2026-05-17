@@ -1,0 +1,25 @@
+var metadata_8py =
+[
+    [ "packaging.metadata.Literal", "classpackaging_1_1metadata_1_1_literal.html", "classpackaging_1_1metadata_1_1_literal" ],
+    [ "packaging.metadata.TypedDict", "classpackaging_1_1metadata_1_1_typed_dict.html", "classpackaging_1_1metadata_1_1_typed_dict" ],
+    [ "packaging.metadata.ExceptionGroup", "classpackaging_1_1metadata_1_1_exception_group.html", "classpackaging_1_1metadata_1_1_exception_group" ],
+    [ "packaging.metadata.InvalidMetadata", "classpackaging_1_1metadata_1_1_invalid_metadata.html", "classpackaging_1_1metadata_1_1_invalid_metadata" ],
+    [ "packaging.metadata.RawMetadata", "classpackaging_1_1metadata_1_1_raw_metadata.html", null ],
+    [ "packaging.metadata._Validator", "classpackaging_1_1metadata_1_1___validator.html", "classpackaging_1_1metadata_1_1___validator" ],
+    [ "packaging.metadata.Metadata", "classpackaging_1_1metadata_1_1_metadata.html", "classpackaging_1_1metadata_1_1_metadata" ],
+    [ "packaging.metadata._get_payload", "namespacepackaging_1_1metadata.html#a5f7f2c888afa35538d0255fb8945c9e4", null ],
+    [ "packaging.metadata._parse_keywords", "namespacepackaging_1_1metadata.html#a164a2b9a67ff39b0e3f99685129f8fbd", null ],
+    [ "packaging.metadata._parse_project_urls", "namespacepackaging_1_1metadata.html#a01bfa822a9b59e6bd0efd992120269ae", null ],
+    [ "packaging.metadata.parse_email", "namespacepackaging_1_1metadata.html#a9d39efaad26175a784bbc34c22eeb192", null ],
+    [ "packaging.metadata._DICT_FIELDS", "namespacepackaging_1_1metadata.html#ad40e5036ab4dc4cb27e1c2325d47987a", null ],
+    [ "packaging.metadata._EMAIL_TO_RAW_MAPPING", "namespacepackaging_1_1metadata.html#a19742d8e646a516b32e558f87416c186", null ],
+    [ "packaging.metadata._LIST_FIELDS", "namespacepackaging_1_1metadata.html#a4e02b9c6d000040ba6e191c171e4f7ba", null ],
+    [ "packaging.metadata._MetadataVersion", "namespacepackaging_1_1metadata.html#a41a1881078f60c4b265eb645ee15f9e2", null ],
+    [ "packaging.metadata._NOT_FOUND", "namespacepackaging_1_1metadata.html#a058322e6e4ada3dce9437e0c72dad8d0", null ],
+    [ "packaging.metadata._RAW_TO_EMAIL_MAPPING", "namespacepackaging_1_1metadata.html#a53c23182945e2b7cbfe4b3fef7a5b720", null ],
+    [ "packaging.metadata._REQUIRED_ATTRS", "namespacepackaging_1_1metadata.html#afefab2210d207195b47aa7d2a3fe6161", null ],
+    [ "packaging.metadata._STRING_FIELDS", "namespacepackaging_1_1metadata.html#a59e8def4c91a63dba6482b506769dc0b", null ],
+    [ "packaging.metadata._VALID_METADATA_VERSIONS", "namespacepackaging_1_1metadata.html#a5f2c48c17dcabe288e09806ead7ad05d", null ],
+    [ "packaging.metadata.ExceptionGroup", "namespacepackaging_1_1metadata.html#a0ae1b8891ada952d9d1b9752553bca03", null ],
+    [ "packaging.metadata.T", "namespacepackaging_1_1metadata.html#a2bf6495e48092fff09448cd00be34730", null ]
+];

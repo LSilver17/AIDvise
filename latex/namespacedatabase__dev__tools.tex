@@ -1,0 +1,414 @@
+\doxysection{database\+\_\+dev\+\_\+tools Namespace Reference}
+\hypertarget{namespacedatabase__dev__tools}{}\label{namespacedatabase__dev__tools}\index{database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a271f55d427992107a34a4d8a357aa0ee}{aconnect}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a54f5d09f36cdfc849b9337eb0f57bbed}{setup\+\_\+database}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a25e21c8fcb25cc61f2d050f6e3fd5444}{create\+\_\+triggers}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a3ee2886134f154222e2c55570d99a854}{populate\+\_\+course\+\_\+catalog}} (str json\+\_\+file="{}course\+\_\+catalog.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a6e68b89dbac79b223a9ee6683ae080a6}{populate\+\_\+programs\+\_\+catalog}} (str json\+\_\+file="{}qcc\+\_\+programs.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a438de12c3e7bf60fbd0699be406cc7f7}{add\+\_\+new\+\_\+term}} (str json\+\_\+file="{}term\+\_\+data.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a4b0cce97601be09e794794f3e9e176b7}{add\+\_\+students\+\_\+from\+\_\+json}} (str json\+\_\+file)
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a8ae5fab7cbf6fe7ca088c7e4e830dc53}{add\+\_\+advisors\+\_\+from\+\_\+json}} (str json\+\_\+file)
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a8744eeeb45ff0ee81ca7416ffd49c7ff}{add\+\_\+events\+\_\+from\+\_\+json}} (str json\+\_\+file)
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a938d2f1a7163b599987a3aee419365c7}{reset\+\_\+course\+\_\+catalog}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a7f2632313dc14cbc1d77a99a64deca24}{reset\+\_\+programs\+\_\+catalog}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a56765c8d041d1af55d92f34e5459bf7a}{reset\+\_\+students\+\_\+and\+\_\+advisors}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_ab7b5da03a874618477892d3b605f35d2}{reset\+\_\+terms\+\_\+and\+\_\+courses}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a449e5cb665a133539a609778d6302d34}{reset\+\_\+events}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a49144d82cc166956ec12dc55badfdd65}{reset\+\_\+users}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_ac37123a981170efd4155fbcc4a1ea468}{reset\+\_\+all}} ()
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a95ee7815cd63c429e3d29ed5308c18bc}{parse\+\_\+args}} (argv)
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a5c4caca172550dcf071f1f8bf4847c9c}{run\+\_\+operations}} (args)
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a51af30a60f9f02777c6396b8247e356f}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a3abade31c957728775d90b132d2e9c1c}{ROOT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_a39eb64d0201a7ae4b8b54f334b391236}{JSONS\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}jsons\textquotesingle{}))
+\item 
+str \doxymbox{\hyperlink{namespacedatabase__dev__tools_a9b418402c187a1cc1b69fbfc24d566dd}{EMAIL\+\_\+\+TEST\+\_\+\+MODE}} = "{}true"{}
+\item 
+\doxymbox{\hyperlink{namespacedatabase__dev__tools_af11331aa418c9ab6a8f0afb50e01a433}{TEST\+\_\+\+EMAIL\+\_\+\+ADDRESS}} = os.\+getenv("{}TEST\+\_\+\+EMAIL\+\_\+\+ADDRESS"{}, "{}error"{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+This module provides development tools for managing the SQLite database used by the advising application. It includes functions to set up the database schema, create necessary triggers, populate tables from JSON files, and reset specific groups of tables during development.
+
+Functions:
+-  ``__connect()``: Internal function to establish a connection to the SQLite database with appropriate configuration.
+- ``aconnect()``: Async variant of the database connection function using aiosqlite.
+- ``setup_database()``: Creates the database schema with all required tables.
+- ``create_triggers()``: Creates database triggers for logging section status changes and resetting student check fields.
+- ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
+- ``populate_programs_catalog(json_file)``: Loads program of study data from a JSON file and populates the ``ProgramsOfStudy`` and related requirement tables.
+- ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
+- ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
+- ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
+- ``add_events_from_json(json_file)``: Loads event data from a JSON file and populates the ``Events`` and ``EventDates`` tables.
+- ``parse_args(argv)``: Parses command-line arguments to specify which operations to run and which JSON files to use for population.
+- ``run_operations(args)``: Executes a sequence of operations based on parsed command-line arguments, allowing for flexible setup and population of the database.
+- ``main()``: Entry point for running the script from the command line, which parses arguments and runs the specified operations.
+- Reset functions:
+    - ``reset_course_catalog()``: Drops course-related tables.
+    - ``reset_programs_catalog()``: Drops program-of-study related tables.
+    - ``reset_students_and_advisors()``: Drops the ``Students`` and ``Advisors`` tables.
+    - ``reset_terms_and_courses()``: Drops term- and offering-related tables.
+    - ``reset_events()``: Drops event-related tables.
+    - ``reset_users()``: Drops the ``Users`` table (cascades to related data).
+    - ``reset_all()``: Calls all reset functions in sequence to wipe the database.
+
+Reset functions can be used in conjunction with ``setup_database()`` to update the schema and clear out old data before repopulating from JSON. Exercise caution when using reset functions as they permanently delete data.
+\end{DoxyVerb}
+ 
+
+\label{namespacedatabase__dev__tools_doc-func-members}
+\Hypertarget{namespacedatabase__dev__tools_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacedatabase__dev__tools_a271f55d427992107a34a4d8a357aa0ee}\index{database\_dev\_tools@{database\_dev\_tools}!aconnect@{aconnect}}
+\index{aconnect@{aconnect}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{aconnect()}{aconnect()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a271f55d427992107a34a4d8a357aa0ee} 
+aconnect (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Async variant of __connect using aiosqlite.
+
+Yields an `aiosqlite.Connection` with foreign keys enabled and the same
+row_factory as the synchronous connector. Use `async with aconnect() as conn:`
+in async contexts.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a8ae5fab7cbf6fe7ca088c7e4e830dc53}\index{database\_dev\_tools@{database\_dev\_tools}!add\_advisors\_from\_json@{add\_advisors\_from\_json}}
+\index{add\_advisors\_from\_json@{add\_advisors\_from\_json}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{add\_advisors\_from\_json()}{add\_advisors\_from\_json()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a8ae5fab7cbf6fe7ca088c7e4e830dc53} 
+add\+\_\+advisors\+\_\+from\+\_\+json (\begin{DoxyParamCaption}\item[{str}]{json\+\_\+file}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert advisor accounts from a JSON file into the database.
+
+Expected JSON structure (per advisor):
+- ``Name``: advisor full name
+- ``Email``: advisor email address
+
+Behavior:
+- Inserts a row into ``Advisors`` for each advisor, linked to a user account in ``Users``. If an advisor with the same name already exists, it is skipped and a message is printed.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a8744eeeb45ff0ee81ca7416ffd49c7ff}\index{database\_dev\_tools@{database\_dev\_tools}!add\_events\_from\_json@{add\_events\_from\_json}}
+\index{add\_events\_from\_json@{add\_events\_from\_json}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{add\_events\_from\_json()}{add\_events\_from\_json()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a8744eeeb45ff0ee81ca7416ffd49c7ff} 
+add\+\_\+events\+\_\+from\+\_\+json (\begin{DoxyParamCaption}\item[{str}]{json\+\_\+file}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert events and their dates from a JSON file into the database.
+
+Expected JSON structure (per event):
+- ``Title``: event title
+- ``Description``: event description
+- ``Dates``: list of date entries. Each entry may be either an ISO date string or an object with ``Date``, ``StartTime``, ``EndTime``, and optional ``Location``.
+
+Behavior:
+- Inserts a row into ``Events`` for each event and rows into ``EventDates`` for each associated date. If an event with the same title already exists, it is skipped and a message is printed.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a438de12c3e7bf60fbd0699be406cc7f7}\index{database\_dev\_tools@{database\_dev\_tools}!add\_new\_term@{add\_new\_term}}
+\index{add\_new\_term@{add\_new\_term}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{add\_new\_term()}{add\_new\_term()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a438de12c3e7bf60fbd0699be406cc7f7} 
+add\+\_\+new\+\_\+term (\begin{DoxyParamCaption}\item[{str }]{json\+\_\+file}{ = {\ttfamily "{}term\+\_\+data.json"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert a new term and all of its course offerings, sections, and meet times from a JSON export.
+
+The JSON must be located in the ``jsons`` directory and contain at least one term object with the keys: ``Year``, ``Season``, ``Num`` and a ``CoursesOffered`` list. Each course offering should include fields used below such as ``Department``, ``Code``, ``SectionNum``, ``Instructor``, ``StartDate``, ``EndDate``, ``Status``, ``MaxSeats``, ``SeatsLeft``, ``Method``, ``Location`` and ``MeetTimes``.
+
+Behavior:
+- Inserts a row into ``Terms`` and uses the inserted term ID as the ``ParentID`` for ``CoursesOffered`` rows.
+- Skips course offerings when the base course cannot be found in ``Courses`` (logs a message and continues).
+- Parses the ``MeetTimes`` string to split day initials and start/end times, converts AM/PM times to 24-hour format, and inserts one ``MeetTimes`` row per day.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``term_data.json``.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a4b0cce97601be09e794794f3e9e176b7}\index{database\_dev\_tools@{database\_dev\_tools}!add\_students\_from\_json@{add\_students\_from\_json}}
+\index{add\_students\_from\_json@{add\_students\_from\_json}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{add\_students\_from\_json()}{add\_students\_from\_json()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a4b0cce97601be09e794794f3e9e176b7} 
+add\+\_\+students\+\_\+from\+\_\+json (\begin{DoxyParamCaption}\item[{str}]{json\+\_\+file}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert student accounts, course histories, and declared programs from a JSON file into the database.
+
+Expected JSON structure (per student):
+- ``ID``: numeric student identifier
+- ``Name``: student full name
+- ``Email``: student email address
+- ``GPA``: floating point GPA
+- ``CreditsEarned``: integer
+- ``IntendedGraduationTerm``: string
+- ``Advisor``: (optional) advisor name used to look up an Advisors row
+- ``CoursesTaken``: list of objects with ``CourseCode`` (e.g. "CSC 101") and ``Grade``
+- ``ProgramsOfStudy``: list of program title strings
+
+Behavior:
+- Inserts a row into ``Students`` for each student.
+- For each ``CoursesTaken`` entry, resolves the course via :pyfunc:`lg_agent.database_utils.get_courseID_by_code` and inserts a ``CoursesTaken`` row. If a course cannot be found, the course is skipped and a message is printed.
+- Associates programs with the student if the program title exists in ``ProgramsOfStudy``.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a25e21c8fcb25cc61f2d050f6e3fd5444}\index{database\_dev\_tools@{database\_dev\_tools}!create\_triggers@{create\_triggers}}
+\index{create\_triggers@{create\_triggers}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{create\_triggers()}{create\_triggers()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a25e21c8fcb25cc61f2d050f6e3fd5444} 
+create\+\_\+triggers (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Create database triggers used by the application.
+
+The following triggers are created (if they do not already exist):
+- ``LogSectionStatusChange``: inserts a row in ``SectionStatusChanges`` when a section's ``Status`` column changes.
+- ``ResetCheckFields``: resets a student's ``LastEventCheck`` and ``LastSectionStatusCheck`` timestamps when their ``ParentID`` becomes NULL.
+- ``DeleteStudentData``: deletes related rows (relevant events, interests, tracked sections, student alerts) when a student's ``ParentID`` is set to NULL.
+- ``ResetEventCheckOnInterestChange`` (insert and update variants): reset a student's ``LastEventCheck`` when interests are inserted or updated.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a51af30a60f9f02777c6396b8247e356f}\index{database\_dev\_tools@{database\_dev\_tools}!main@{main}}
+\index{main@{main}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a51af30a60f9f02777c6396b8247e356f} 
+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Main entry point for the database development tools script.
+
+This function parses command-line arguments and runs the specified database operations. It allows developers to easily set up the database schema, populate it with data from JSON files, and reset tables as needed during development. The operations are executed in a logical order based on the dependencies between them (e.g., resetting tables before setting up the schema, populating courses before programs, etc.).
+
+Example usage:
+- To reset all tables, set up the schema, populate courses and programs, add students and advisors, and add a new term:
+    python database_dev_tools.py --reset all --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json
+- To only reset the course catalog and populate it from a JSON file:
+    python database_dev_tools.py --reset course_catalog --populate_courses courses_data.json
+- To set up the database schema without resetting or populating data:
+    python database_dev_tools.py --setup
+- To add a new term without affecting existing data:
+    python database_dev_tools.py --add_term term_data.json
+- To add events from a JSON file:
+    python database_dev_tools.py --add_events events_data.json
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a95ee7815cd63c429e3d29ed5308c18bc}\index{database\_dev\_tools@{database\_dev\_tools}!parse\_args@{parse\_args}}
+\index{parse\_args@{parse\_args}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{parse\_args()}{parse\_args()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a95ee7815cd63c429e3d29ed5308c18bc} 
+parse\+\_\+args (\begin{DoxyParamCaption}\item[{}]{argv}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Parse command-line arguments for database development operations.
+
+This function defines the command-line interface for running various database setup, population, and reset operations directly from the terminal. It uses the argparse library to handle arguments that specify which operations to perform and which JSON files to use for data population.
+
+Returns:
+    argparse.Namespace: Parsed command-line arguments with attributes corresponding to the defined options.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a3ee2886134f154222e2c55570d99a854}\index{database\_dev\_tools@{database\_dev\_tools}!populate\_course\_catalog@{populate\_course\_catalog}}
+\index{populate\_course\_catalog@{populate\_course\_catalog}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{populate\_course\_catalog()}{populate\_course\_catalog()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a3ee2886134f154222e2c55570d99a854} 
+populate\+\_\+course\+\_\+catalog (\begin{DoxyParamCaption}\item[{str }]{json\+\_\+file}{ = {\ttfamily "{}course\+\_\+catalog.json"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load catalog of course from a JSON file and insert them into ``Courses``.
+
+The JSON file is expected to be located in the repository's ``jsons`` directory. Each entry should contain at minimum the fields used below: ``course_code`` (format: "DPT NUM"), ``name``, ``description``, ``credits``, ``prerequisites``, and ``semesters_offered`` (e.g. "F/S/SU").
+
+The function converts ``course_code`` into the ``Department`` and numeric ``Code`` columns, maps semester initials to full names (F -> Fall, S -> Spring, SU -> Summer, IN -> Winter), and inserts a row into the ``Courses`` table for each course. Operation is committed at the end.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``course_catalog.json``.
+
+Notes:
+    If ``semesters_offered`` is empty/falsey in the input, ``SemestersOffered`` is stored as ``NULL`` in the database.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a6e68b89dbac79b223a9ee6683ae080a6}\index{database\_dev\_tools@{database\_dev\_tools}!populate\_programs\_catalog@{populate\_programs\_catalog}}
+\index{populate\_programs\_catalog@{populate\_programs\_catalog}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{populate\_programs\_catalog()}{populate\_programs\_catalog()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a6e68b89dbac79b223a9ee6683ae080a6} 
+populate\+\_\+programs\+\_\+catalog (\begin{DoxyParamCaption}\item[{str }]{json\+\_\+file}{ = {\ttfamily "{}qcc\+\_\+programs.json"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load programs of study from JSON and populate ``ProgramsOfStudy`` and related requirement tables.
+
+The input JSON (in the ``jsons`` directory) should contain program records with fields such as ``name``, ``description``, ``total_credits``, ``area_of_study``, and ``required_courses``. Each program is inserted into ``ProgramsOfStudy`` and program requirements are split into rows in ``ProgramRequiredCourses`` and ``ProgramRequiredCourseOptions``.
+
+Args:
+    json_file (str): Filename in the ``jsons`` directory to load. Defaults to ``qcc_programs.json``.
+
+Notes:
+    If a required course string ends with ``" OR"``, it is treated as an alternative to the previous requirement and inserted into the ``ProgramRequiredCourseOptions`` table.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_ac37123a981170efd4155fbcc4a1ea468}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_all@{reset\_all}}
+\index{reset\_all@{reset\_all}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_all()}{reset\_all()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_ac37123a981170efd4155fbcc4a1ea468} 
+reset\+\_\+all (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reset all major database groups by dropping their tables.
+
+This is a convenience wrapper that calls the individual reset functions in the following order: course catalog, programs catalog, terms and courses, events, and users. Use with extreme caution — this operation effectively wipes the application's data.
+This can be used in conjunction with setup_database() to update the entirety of the database schema and clear out all data before repopulating from JSON.
+
+Warnings:
+    This operation effectively wipes the application's data.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a938d2f1a7163b599987a3aee419365c7}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_course\_catalog@{reset\_course\_catalog}}
+\index{reset\_course\_catalog@{reset\_course\_catalog}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_course\_catalog()}{reset\_course\_catalog()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a938d2f1a7163b599987a3aee419365c7} 
+reset\+\_\+course\+\_\+catalog (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop the ``Courses`` table if it exists.
+
+This can be used in conjunction with setup_database() to update the course catalog schema or to clear out old course data before repopulating from JSON.
+
+Warnings: 
+    This permanently removes course catalog data.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a449e5cb665a133539a609778d6302d34}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_events@{reset\_events}}
+\index{reset\_events@{reset\_events}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_events()}{reset\_events()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a449e5cb665a133539a609778d6302d34} 
+reset\+\_\+events (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop the ``Events`` and ``EventDates`` tables if they exist.
+
+This can be used in conjunction with setup_database() to update the events schema or to clear out old event data before repopulating.
+
+Warnings: 
+    This permanently removes event definitions and dates.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a7f2632313dc14cbc1d77a99a64deca24}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_programs\_catalog@{reset\_programs\_catalog}}
+\index{reset\_programs\_catalog@{reset\_programs\_catalog}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_programs\_catalog()}{reset\_programs\_catalog()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a7f2632313dc14cbc1d77a99a64deca24} 
+reset\+\_\+programs\+\_\+catalog (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop program-of-study related tables: ``ProgramsOfStudy``, ``ProgramRequiredCourses``, and ``ProgramRequiredCourseOptions``.
+
+This can be used in conjunction with setup_database() to update the programs catalog schema or to clear out old program and requirement data before repopulating from JSON.
+
+Warnings: 
+    This permanently removes programs and requirement data.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a56765c8d041d1af55d92f34e5459bf7a}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_students\_and\_advisors@{reset\_students\_and\_advisors}}
+\index{reset\_students\_and\_advisors@{reset\_students\_and\_advisors}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_students\_and\_advisors()}{reset\_students\_and\_advisors()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a56765c8d041d1af55d92f34e5459bf7a} 
+reset\+\_\+students\+\_\+and\+\_\+advisors (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop the ``Students`` and ``Advisors`` tables if they exist.
+
+This can be used in conjunction with setup_database() to update the student/advisor schema or to clear out old student and advisor data before repopulating from JSON.
+
+Warnings: 
+    This permanently removes student and advisor records.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_ab7b5da03a874618477892d3b605f35d2}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_terms\_and\_courses@{reset\_terms\_and\_courses}}
+\index{reset\_terms\_and\_courses@{reset\_terms\_and\_courses}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_terms\_and\_courses()}{reset\_terms\_and\_courses()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_ab7b5da03a874618477892d3b605f35d2} 
+reset\+\_\+terms\+\_\+and\+\_\+courses (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop term- and offering-related tables: ``Terms``, ``CoursesOffered``, ``Sections``, and ``MeetTimes``.
+
+This can be used in conjunction with setup_database() to update the term and course offering schema or to clear out old scheduling data before repopulating from JSON.
+
+Warnings: 
+    This permanently removes term offerings and section scheduling data.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a49144d82cc166956ec12dc55badfdd65}\index{database\_dev\_tools@{database\_dev\_tools}!reset\_users@{reset\_users}}
+\index{reset\_users@{reset\_users}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{reset\_users()}{reset\_users()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a49144d82cc166956ec12dc55badfdd65} 
+reset\+\_\+users (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop the ``Users`` table if it exists.
+
+This can be used in conjunction with setup_database() to update the user account schema or to clear out old user data before repopulating.
+
+Warnings:
+    This permanently removes user accounts and all related data (interests, relevant events, tracked sections, and course opening alerts) due to the ON DELETE CASCADE foreign key constraints.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a5c4caca172550dcf071f1f8bf4847c9c}\index{database\_dev\_tools@{database\_dev\_tools}!run\_operations@{run\_operations}}
+\index{run\_operations@{run\_operations}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{run\_operations()}{run\_operations()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a5c4caca172550dcf071f1f8bf4847c9c} 
+run\+\_\+operations (\begin{DoxyParamCaption}\item[{}]{args}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Run database operations based on parsed command-line arguments.
+
+This function takes the parsed arguments from parse_args() and executes the corresponding database operations in the appropriate order. It checks which operations were specified (reset, setup, populate, add) and calls the relevant functions defined in this module with the provided JSON filenames.
+
+Args:
+    args (argparse.Namespace): Parsed command-line arguments with attributes corresponding to the defined options.
+\end{DoxyVerb}
+ \Hypertarget{namespacedatabase__dev__tools_a54f5d09f36cdfc849b9337eb0f57bbed}\index{database\_dev\_tools@{database\_dev\_tools}!setup\_database@{setup\_database}}
+\index{setup\_database@{setup\_database}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{setup\_database()}{setup\_database()}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a54f5d09f36cdfc849b9337eb0f57bbed} 
+setup\+\_\+database (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Create the project's database schema.
+
+This function opens a connection using :pyfunc:`__connect` and creates all of the tables used by the project (courses, terms, sections, meet times, users, verification tokens, students, advisors, programs of study, program requirement tables, events and related tables). Each CREATE TABLE uses ``IF NOT EXISTS`` so the operation is idempotent.
+
+The function commits the schema changes and prints a confirmation message indicating which database file was initialized.
+\end{DoxyVerb}
+ 
+
+\label{namespacedatabase__dev__tools_doc-var-members}
+\Hypertarget{namespacedatabase__dev__tools_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacedatabase__dev__tools_a9b418402c187a1cc1b69fbfc24d566dd}\index{database\_dev\_tools@{database\_dev\_tools}!EMAIL\_TEST\_MODE@{EMAIL\_TEST\_MODE}}
+\index{EMAIL\_TEST\_MODE@{EMAIL\_TEST\_MODE}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{EMAIL\_TEST\_MODE}{EMAIL\_TEST\_MODE}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a9b418402c187a1cc1b69fbfc24d566dd} 
+str database\+\_\+dev\+\_\+tools.\+EMAIL\+\_\+\+TEST\+\_\+\+MODE = "{}true"{}}
+
+\Hypertarget{namespacedatabase__dev__tools_a39eb64d0201a7ae4b8b54f334b391236}\index{database\_dev\_tools@{database\_dev\_tools}!JSONS\_DIR@{JSONS\_DIR}}
+\index{JSONS\_DIR@{JSONS\_DIR}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{JSONS\_DIR}{JSONS\_DIR}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a39eb64d0201a7ae4b8b54f334b391236} 
+database\+\_\+dev\+\_\+tools.\+JSONS\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}jsons\textquotesingle{}))}
+
+\Hypertarget{namespacedatabase__dev__tools_a3abade31c957728775d90b132d2e9c1c}\index{database\_dev\_tools@{database\_dev\_tools}!ROOT\_DIR@{ROOT\_DIR}}
+\index{ROOT\_DIR@{ROOT\_DIR}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{ROOT\_DIR}{ROOT\_DIR}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_a3abade31c957728775d90b132d2e9c1c} 
+database\+\_\+dev\+\_\+tools.\+ROOT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))}
+
+\Hypertarget{namespacedatabase__dev__tools_af11331aa418c9ab6a8f0afb50e01a433}\index{database\_dev\_tools@{database\_dev\_tools}!TEST\_EMAIL\_ADDRESS@{TEST\_EMAIL\_ADDRESS}}
+\index{TEST\_EMAIL\_ADDRESS@{TEST\_EMAIL\_ADDRESS}!database\_dev\_tools@{database\_dev\_tools}}
+\doxysubsubsection{\texorpdfstring{TEST\_EMAIL\_ADDRESS}{TEST\_EMAIL\_ADDRESS}}
+{\footnotesize\ttfamily \label{namespacedatabase__dev__tools_af11331aa418c9ab6a8f0afb50e01a433} 
+database\+\_\+dev\+\_\+tools.\+TEST\+\_\+\+EMAIL\+\_\+\+ADDRESS = os.\+getenv("{}TEST\+\_\+\+EMAIL\+\_\+\+ADDRESS"{}, "{}error"{})}
+

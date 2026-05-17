@@ -1,0 +1,93 @@
+\doxysection{lg\+\_\+agent.\+utilities.\+schemas Namespace Reference}
+\hypertarget{namespacelg__agent_1_1utilities_1_1schemas}{}\label{namespacelg__agent_1_1utilities_1_1schemas}\index{lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_s_plan_schema}{SPlan\+Schema}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_a_plan_schema}{APlan\+Schema}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_d_b_term}{DBTerm}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_d_b_meet_time}{DBMeet\+Time}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_credit_condition}{Credit\+Condition}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_enrollment_condition}{Enrollment\+Condition}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_code_condition}{Code\+Condition}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_course_filters}{Course\+Filters}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_section_filters}{Section\+Filters}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_object}{Relevant\+Events\+Object}}
+\item 
+class \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1schemas_1_1_relevant_events_schema}{Relevant\+Events\+Schema}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_abf9f5b6072704559641f0fe03634fb92}{ROOT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_a45ea028d9c1483b4fd632b047f2cc458}{CONFIG\+\_\+\+PATH}} = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_abf9f5b6072704559641f0fe03634fb92}{ROOT\+\_\+\+DIR}}, "{}config.\+json"{})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_a53f13fb00ef6def90d4a5b0bf17de02b}{CONFIG}} = json.\+load(f)
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_a40c0345a18edf6edd398b4f55d0ba2a1}{CONTEXT\+\_\+\+CONFIG}} = \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_a53f13fb00ef6def90d4a5b0bf17de02b}{CONFIG}}\+["{}context\+\_\+config"{}]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Provides pydantic schemas for the advisor graph and alerts graph.
+
+Plan Schemas:
+- SPlanSchema: Schema for the advisor planning node used by student users. Determines whether database queries, web searches, or database insertions are needed to answer a student's question, and specifies what information is needed from each source if applicable. The schema structure varies based on the context selection in context_config.json, with different fields included for 'full', 'some-db', 'no-db', and 'no-tools' modes.
+- APlanSchema: Schema for the advisor planning node used by advisor users. Similar to SPlanSchema but does not include the database insertion field. The structure also varies based on context selection in context_config.json.
+
+Filter Schemas:
+- DBTerm: Represents an academic term (year, season, and optional number for split sessions). Used for filtering courses and sections by term.
+- DBMeetTime: Represents the meeting times for course sections (days of the week and start/end times). Used for filtering sections by schedule.
+- CreditCondition: Represents a filter condition for course credits, allowing comparison operators (e.g., '=', '>=', etc.) to specify credit requirements in course filters.
+- EnrollmentCondition: Represents a filter condition for section enrollment, allowing comparison operators to specify enrollment thresholds in section filters.
+- CodeCondition: Represents a filter condition for course codes, allowing comparison operators to specify course number requirements in course filters.
+- CourseFilters: Comprehensive filter schema for querying courses from the database, including filters for term, department, course code, credits, keywords, and prerequisites.
+- SectionFilters: Comprehensive filter schema for querying course sections from the database, including filters for term, course code, instructor, teaching method, enrollment capacity, current enrollment, location, and meeting times.
+
+Alert Schemas:
+- RelevantEventsObject: Represents an individual event with its ID and urgency level.
+- RelevantEventsSchema: Schema for returning a list of relevant events with their urgency levels.
+
+Single line comments are used in place of docstrings to save on tokens, but detailed descriptions are provided in the field definitions for clarity on the purpose and usage of each field within the schemas.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1utilities_1_1schemas_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1schemas_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1utilities_1_1schemas_a53f13fb00ef6def90d4a5b0bf17de02b}\index{lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}!CONFIG@{CONFIG}}
+\index{CONFIG@{CONFIG}!lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}}
+\doxysubsubsection{\texorpdfstring{CONFIG}{CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1schemas_a53f13fb00ef6def90d4a5b0bf17de02b} 
+lg\+\_\+agent.\+utilities.\+schemas.\+CONFIG = json.\+load(f)}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1schemas_a45ea028d9c1483b4fd632b047f2cc458}\index{lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}!CONFIG\_PATH@{CONFIG\_PATH}}
+\index{CONFIG\_PATH@{CONFIG\_PATH}!lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_PATH}{CONFIG\_PATH}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1schemas_a45ea028d9c1483b4fd632b047f2cc458} 
+lg\+\_\+agent.\+utilities.\+schemas.\+CONFIG\+\_\+\+PATH = os.\+path.\+join(\doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_abf9f5b6072704559641f0fe03634fb92}{ROOT\+\_\+\+DIR}}, "{}config.\+json"{})}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1schemas_a40c0345a18edf6edd398b4f55d0ba2a1}\index{lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}!CONTEXT\_CONFIG@{CONTEXT\_CONFIG}}
+\index{CONTEXT\_CONFIG@{CONTEXT\_CONFIG}!lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}}
+\doxysubsubsection{\texorpdfstring{CONTEXT\_CONFIG}{CONTEXT\_CONFIG}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1schemas_a40c0345a18edf6edd398b4f55d0ba2a1} 
+lg\+\_\+agent.\+utilities.\+schemas.\+CONTEXT\+\_\+\+CONFIG = \doxymbox{\hyperlink{namespacelg__agent_1_1utilities_1_1schemas_a53f13fb00ef6def90d4a5b0bf17de02b}{CONFIG}}\+["{}context\+\_\+config"{}]\+}
+
+\Hypertarget{namespacelg__agent_1_1utilities_1_1schemas_abf9f5b6072704559641f0fe03634fb92}\index{lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}!ROOT\_DIR@{ROOT\_DIR}}
+\index{ROOT\_DIR@{ROOT\_DIR}!lg\_agent.utilities.schemas@{lg\_agent.utilities.schemas}}
+\doxysubsubsection{\texorpdfstring{ROOT\_DIR}{ROOT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1utilities_1_1schemas_abf9f5b6072704559641f0fe03634fb92} 
+lg\+\_\+agent.\+utilities.\+schemas.\+ROOT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}, \textquotesingle{}..\textquotesingle{}))}
+

@@ -1,0 +1,124 @@
+\doxysection{lg\+\_\+agent.\+constr Namespace Reference}
+\hypertarget{namespacelg__agent_1_1constr}{}\label{namespacelg__agent_1_1constr}\index{lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Literal\+["{}invoke\+\_\+s\+\_\+graph"{}, "{}invoke\+\_\+a\+\_\+graph"{}]\+ \doxymbox{\hyperlink{namespacelg__agent_1_1constr_a0c17b2e8a7e4dbbd936cbe794d58032a}{route}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} state)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} \doxymbox{\hyperlink{namespacelg__agent_1_1constr_af1e7ee837b72dbd8d4ce5389e4d404b5}{invoke\+\_\+s\+\_\+graph}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} state)
+\item 
+\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} \doxymbox{\hyperlink{namespacelg__agent_1_1constr_a397976da4d12db98a4d46f5ce88184e3}{invoke\+\_\+a\+\_\+graph}} (\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} state)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1constr_acc170906831369cb07767e6a877e25b1}{PARENT\+\_\+\+DIR}} = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1constr_abeb295ce25f594a20f8be1f589c8fa4a}{graph\+\_\+builder}} = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}})
+\item 
+\doxymbox{\hyperlink{namespacelg__agent_1_1constr_ac8b7c3a45b9734c40260bd8de52801af}{chat\+\_\+graph}} = graph\+\_\+builder.\+compile()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Copyright 2026 Luca Silver
+
+Root routing agent that directs requests to either student or advisor chat graphs based on account type.
+
+Functions:
+- `route`: Conditional router that directs to student or advisor graph based on account_type.
+- `invoke_s_graph`: Looks up student ID from parent user ID and invokes the student chat graph.
+- `invoke_a_graph`: Invokes the advisor chat graph with the current conversation state.
+
+Graph Structure:
+- START -> [invoke_s_graph | invoke_a_graph] (conditional routing based on account type)
+- invoke_s_graph -> END
+- invoke_a_graph -> END
+
+Exports:
+- `chat_graph`: Compiled LangGraph root routing agent.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1constr_doc-func-members}
+\Hypertarget{namespacelg__agent_1_1constr_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacelg__agent_1_1constr_a397976da4d12db98a4d46f5ce88184e3}\index{lg\_agent.constr@{lg\_agent.constr}!invoke\_a\_graph@{invoke\_a\_graph}}
+\index{invoke\_a\_graph@{invoke\_a\_graph}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{invoke\_a\_graph()}{invoke\_a\_graph()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_a397976da4d12db98a4d46f5ce88184e3} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} invoke\+\_\+a\+\_\+graph (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Invokes the advisor chat graph with the current conversation state.
+
+Args:
+    state (RouteState): Routing state containing the current messages, user ID,
+        and account type.
+
+Returns:
+    RouteState: State update containing the messages returned by the advisor graph.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1constr_af1e7ee837b72dbd8d4ce5389e4d404b5}\index{lg\_agent.constr@{lg\_agent.constr}!invoke\_s\_graph@{invoke\_s\_graph}}
+\index{invoke\_s\_graph@{invoke\_s\_graph}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{invoke\_s\_graph()}{invoke\_s\_graph()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_af1e7ee837b72dbd8d4ce5389e4d404b5} 
+ \doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}} invoke\+\_\+s\+\_\+graph (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Resolves the current student ID and invokes the student chat graph.
+
+The route state contains the user ID. This node looks up the corresponding student ID, 
+then seeds the student chat graph with the message history and the student-specific 
+identifiers needed downstream.
+
+Args:
+    state (RouteState): Routing state containing the current messages, user ID,
+        and account type.
+
+Returns:
+    RouteState: State update containing the messages returned by the student graph.
+
+Raises:
+    ValueError: If no student row exists for the provided parent user ID.
+\end{DoxyVerb}
+ \Hypertarget{namespacelg__agent_1_1constr_a0c17b2e8a7e4dbbd936cbe794d58032a}\index{lg\_agent.constr@{lg\_agent.constr}!route@{route}}
+\index{route@{route}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{route()}{route()}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_a0c17b2e8a7e4dbbd936cbe794d58032a} 
+ Literal\+["{}invoke\+\_\+s\+\_\+graph"{}, "{}invoke\+\_\+a\+\_\+graph"{}]\+ route (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}}}]{state}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Chooses the main chat graph based on the user's account type.
+
+Student users are routed to the student chat graph, while advisor users are
+routed to the advisor chat graph.
+
+Args:
+    state (RouteState): Routing state containing the authenticated user ID,
+        account type, and current messages.
+
+Returns:
+    Literal["invoke_s_graph", "invoke_a_graph"]: The next node name for the
+        state graph.
+\end{DoxyVerb}
+ 
+
+\label{namespacelg__agent_1_1constr_doc-var-members}
+\Hypertarget{namespacelg__agent_1_1constr_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacelg__agent_1_1constr_ac8b7c3a45b9734c40260bd8de52801af}\index{lg\_agent.constr@{lg\_agent.constr}!chat\_graph@{chat\_graph}}
+\index{chat\_graph@{chat\_graph}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{chat\_graph}{chat\_graph}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_ac8b7c3a45b9734c40260bd8de52801af} 
+lg\+\_\+agent.\+constr.\+chat\+\_\+graph = graph\+\_\+builder.\+compile()}
+
+\Hypertarget{namespacelg__agent_1_1constr_abeb295ce25f594a20f8be1f589c8fa4a}\index{lg\_agent.constr@{lg\_agent.constr}!graph\_builder@{graph\_builder}}
+\index{graph\_builder@{graph\_builder}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{graph\_builder}{graph\_builder}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_abeb295ce25f594a20f8be1f589c8fa4a} 
+lg\+\_\+agent.\+constr.\+graph\+\_\+builder = State\+Graph(\doxymbox{\hyperlink{classlg__agent_1_1utilities_1_1state_1_1_route_state}{Route\+State}})}
+
+\Hypertarget{namespacelg__agent_1_1constr_acc170906831369cb07767e6a877e25b1}\index{lg\_agent.constr@{lg\_agent.constr}!PARENT\_DIR@{PARENT\_DIR}}
+\index{PARENT\_DIR@{PARENT\_DIR}!lg\_agent.constr@{lg\_agent.constr}}
+\doxysubsubsection{\texorpdfstring{PARENT\_DIR}{PARENT\_DIR}}
+{\footnotesize\ttfamily \label{namespacelg__agent_1_1constr_acc170906831369cb07767e6a877e25b1} 
+lg\+\_\+agent.\+constr.\+PARENT\+\_\+\+DIR = os.\+path.\+abspath(os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{}))}
+

@@ -1,0 +1,74 @@
+\doxysection{gyp.\+generator.\+cmake.\+CMake\+Namer Class Reference}
+\hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer}{}\label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer}\index{gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_a9604710153af24a49404fd54fb386d56}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, target\+\_\+list)
+\item 
+\doxymbox{\hyperlink{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ae959d947bc1c2fbbc2b4198f0a44839f}{Create\+CMake\+Target\+Name}} (self, qualified\+\_\+target)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ace13f16f15ace18cb9045e00f3b15f31}{cmake\+\_\+target\+\_\+base\+\_\+names\+\_\+conflicting}} = set()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Converts Gyp target names into CMake target names.
+
+CMake requires that target names be globally unique. One way to ensure
+this is to fully qualify the names of the targets. Unfortunately, this
+ends up with all targets looking like "chrome_chrome_gyp_chrome" instead
+of just "chrome". If this generator were only interested in building, it
+would be possible to fully qualify all target names, then create
+unqualified target names which depend on all qualified targets which
+should have had that name. This is more or less what the 'make' generator
+does with aliases. However, one goal of this generator is to create CMake
+files for use with IDEs, and fully qualified names are not as user
+friendly.
+
+Since target name collision is rare, we do the above only when required.
+
+Toolset variants are always qualified from the base, as this is required for
+building. However, it also makes sense for an IDE, as it is possible for
+defines to be different.
+\end{DoxyVerb}
+ 
+
+\label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-constructors}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_a9604710153af24a49404fd54fb386d56}\index{gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_a9604710153af24a49404fd54fb386d56} 
+gyp.\+generator.\+cmake.\+CMake\+Namer.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{target\+\_\+list}{}\end{DoxyParamCaption})}
+
+
+
+\label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-func-members}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ae959d947bc1c2fbbc2b4198f0a44839f}\index{gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}!CreateCMakeTargetName@{CreateCMakeTargetName}}
+\index{CreateCMakeTargetName@{CreateCMakeTargetName}!gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}}
+\doxysubsubsection{\texorpdfstring{CreateCMakeTargetName()}{CreateCMakeTargetName()}}
+{\footnotesize\ttfamily \label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ae959d947bc1c2fbbc2b4198f0a44839f} 
+gyp.\+generator.\+cmake.\+CMake\+Namer.\+Create\+CMake\+Target\+Name (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{qualified\+\_\+target}{}\end{DoxyParamCaption})}
+
+
+
+\label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-variable-members}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ace13f16f15ace18cb9045e00f3b15f31}\index{gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}!cmake\_target\_base\_names\_conflicting@{cmake\_target\_base\_names\_conflicting}}
+\index{cmake\_target\_base\_names\_conflicting@{cmake\_target\_base\_names\_conflicting}!gyp.generator.cmake.CMakeNamer@{gyp.generator.cmake.CMakeNamer}}
+\doxysubsubsection{\texorpdfstring{cmake\_target\_base\_names\_conflicting}{cmake\_target\_base\_names\_conflicting}}
+{\footnotesize\ttfamily \label{classgyp_1_1generator_1_1cmake_1_1_c_make_namer_ace13f16f15ace18cb9045e00f3b15f31} 
+gyp.\+generator.\+cmake.\+CMake\+Namer.\+cmake\+\_\+target\+\_\+base\+\_\+names\+\_\+conflicting = set()}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+frontend/\+node\+\_\+modules/\+node-\/gyp/\+gyp/\+pylib/\+gyp/\+generator/\+\doxymbox{\hyperlink{cmake_8py}{cmake.\+py}}\end{DoxyCompactItemize}
