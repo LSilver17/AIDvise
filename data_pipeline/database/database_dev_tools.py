@@ -13,6 +13,7 @@ Functions:
 - ``add_new_term(json_file)``: Inserts a new term and its course offerings, sections, and meet times from a JSON file.
 - ``add_students_from_json(json_file)``: Loads student data from a JSON file and populates the ``Students`` table and courses taken table.
 - ``add_advisors_from_json(json_file)``: Loads advisor data from a JSON file and populates the ``Advisors`` table.
+- ``add_events_from_json(json_file)``: Loads event data from a JSON file and populates the ``Events`` and ``EventDates`` tables.
 - ``parse_args(argv)``: Parses command-line arguments to specify which operations to run and which JSON files to use for population.
 - ``run_operations(args)``: Executes a sequence of operations based on parsed command-line arguments, allowing for flexible setup and population of the database.
 - ``main()``: Entry point for running the script from the command line, which parses arguments and runs the specified operations.
@@ -998,6 +999,93 @@ def add_advisors_from_json(json_file: str):
         conn.commit()
         print(f"Advisors added to database from JSON file.")
 
+def add_events_from_json(json_file: str):
+    """Insert events and their dates from a JSON file into the database.
+
+    Expected JSON structure (per event):
+    - ``Title``: event title
+    - ``Description``: event description
+    - ``RelevantPrograms``: list of program titles relevant to the event
+    - ``Dates``: list of ISO-format date strings when the event occurs
+
+    Behavior:
+    - Inserts a row into ``Events`` for each event and rows into ``EventDates`` for each associated date. If an event with the same title already exists, it is skipped and a message is printed.
+
+    Args:
+        json_file (str): Filename in the ``jsons`` directory to load.
+    """
+    with __connect() as conn:
+        # Create a cursor object to execute SQL commands
+        cursor = conn.cursor()
+
+        event_data = {"events": []}
+
+        # Load event data from JSON file
+        with open(os.path.join(JSONS_DIR, json_file), 'r') as f:
+            event_data['events'] = json.load(f)
+
+        for event in event_data['events']:
+            required_fields = ['Title', 'Description', 'RelevantPrograms', 'Dates']
+            missing_fields = [field for field in required_fields if field not in event]
+            if missing_fields:
+                print(f"Skipping event: missing required fields {missing_fields}")
+                continue
+
+            # check if an event with the same title already exists in the database
+            existing_event = cursor.execute('SELECT ID FROM Events WHERE Title = ?', (event['Title'],)).fetchone()
+            if existing_event:
+                print(f"Event '{event['Title']}' already exists in database. Skipping this event.")
+                continue
+
+            # add the new event to the Events table
+            try:
+                cursor.execute(
+                    '''
+                    INSERT INTO Events (Title, Description)
+                    VALUES (?, ?)
+                    ''',
+                    (
+                        event['Title'],
+                        event['Description']
+                    )
+                )
+                event_id = cursor.lastrowid
+
+                # associate relevant programs with the event
+                relevant_programs = event.get('RelevantPrograms', [])
+                for program in relevant_programs:
+                    program_id = cursor.execute('SELECT ID FROM ProgramsOfStudy WHERE Title = ?', (program,)).fetchone()
+                    if program_id:
+                        program_id = program_id['ID']
+                        cursor.execute(
+                            '''
+                            INSERT INTO RelevantProgramsForEvents (ProgramID, ParentID)
+                            VALUES (?, ?)
+                            ''',
+                            (program_id, event_id)
+                        )
+                    else:
+                        print(f"Program '{program}' not found in database. Skipping association with event '{event['Title']}'.")
+                
+                # add event dates to the EventDates table
+                event_dates = event.get('Dates', [])
+                for date in event_dates:
+                    cursor.execute(
+                        '''
+                        INSERT INTO EventDates (Date, ParentID)
+                        VALUES (?, ?)
+                        ''',
+                        (date, event_id)
+                    )
+
+            except sqlite3.IntegrityError as e:
+                print(f"Error adding event '{event['Title']}' to database: {e}. Skipping this event.")
+                continue
+
+        # Commit the changes to the database
+        conn.commit()
+        print(f"Events added to database from JSON file.")
+
 def reset_course_catalog():
     """Drop the ``Courses`` table if it exists.
 
@@ -1131,6 +1219,7 @@ def reset_all():
     reset_events()
     reset_users()
     print("All tables in the database have been reset.")
+
 def parse_args(argv):
     """Parse command-line arguments for database development operations.
 
@@ -1152,6 +1241,7 @@ def parse_args(argv):
     parser.add_argument('--populate_programs', type=str, help='Populate the programs catalog from a specified JSON file in the jsons directory.')
     parser.add_argument('--add_students', type=str, help='Add students and their course histories from a specified JSON file in the jsons directory.')
     parser.add_argument('--add_advisors', type=str, help='Add advisors from a specified JSON file in the jsons directory.')
+    parser.add_argument('--add_events', type=str, help='Add events from a specified JSON file in the jsons directory.')
     parser.add_argument('--add_term', type=str, help='Add a new term and its course offerings from a specified JSON file in the jsons directory.')
     
     return parser.parse_args(argv)
@@ -1193,6 +1283,9 @@ def run_operations(args):
     if args.add_advisors:
         add_advisors_from_json(args.add_advisors)
     
+    if args.add_events:
+        add_events_from_json(args.add_events)
+    
     if args.add_term:
         add_new_term(args.add_term)
 
@@ -1211,6 +1304,8 @@ def main():
         python database_dev_tools.py --setup
     - To add a new term without affecting existing data:
         python database_dev_tools.py --add_term term_data.json
+    - To add events from a JSON file:
+        python database_dev_tools.py --add_events events_data.json
     """
     args = parse_args(sys.argv[1:])
     run_operations(args)
