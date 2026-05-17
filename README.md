@@ -28,9 +28,10 @@
         npx auth secret
 
 7. Set up database
-    Generate the database by running the following scripts in data_pipeline/database:  
-    - database_dev_tools.py
-    - add_test_students_advisors.py
+    To set up the database and populate catalogs run the following command in root directory:
+        python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
+    To add a term and its course section offerings to the database run the following command from root directory:
+        python data_pipeline/database/database_dev_tools.py --add_term term_data.json
 
 8. Begin hosting
     - In root directory, run:

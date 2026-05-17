@@ -40,7 +40,7 @@ JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons
 if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
-import json, sqlite3, aiosqlite
+import json, sqlite3, aiosqlite, argparse
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
