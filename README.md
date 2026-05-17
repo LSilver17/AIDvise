@@ -32,6 +32,8 @@
         python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
     To add a term and its course section offerings to the database run the following command from root directory:
         python data_pipeline/database/database_dev_tools.py --add_term term_data.json
+    To add events and their dates to the database runt the following command from root directory:
+        python data_pipeline/database/database_dev_tools.py --add_events event_data.json
 
 8. Begin hosting
     - In root directory, run:
@@ -82,11 +84,11 @@ Graphs are compiled and exported within constr.py files, located in *./lg_agent*
 
 ## Chat Graph
 
-WIP
+The chatbot routes between two versions based on the user's account types. For students it has access to 3 sub-agents - one for getting info from the database, one for getting info from the web, and one for adding info about the user's interests and course sections they would like to track to the database. For advisors the insertion sub-agent is not needed. For student accounts restrictions are put in place to prevent the database helper from accessing information about other students. For advisors it is instead allowed to access information about any student assigned to them, though not students assigned to other advisors. Each agents can be configered with loop limits (via the config.json file) that restrict the number of times they can run per call. config.json also allows for easily switching between several test modes and AI models. To add additional models the model_inits.py file can be modified with additional cases.
 
 ## Alert Graph
 
-WIP
+The alert graph is used for event filtering to determine what upcoming events are relivent to a user. It first gather info about upcoming events and user interests from the database, then uses an AI node to perfrom the filtering, and finally updates the database to reflect the result. This is the used by the frontend for alert generation. Like with the chatbot system, the config.json file allows for easy swithcing between AI models for the event filtering node.
 
 # Frontend Components
 
