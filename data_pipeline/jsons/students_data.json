@@ -1,6 +1,6 @@
 [
     {
-        "ID": 324578,
+        "ID": 1,
         "Name": "John Doe",
         "Email": "john.doe@example.com",
         "GPA": 3.16,
@@ -44,18 +44,42 @@
         ]
     },
     {
-        "ID": 987654,
-        "Name": "Jane Smith",
-        "Email": "jane.smith@example.com",
-        "GPA": 4.0,
+        "ID": 2,
+        "Name": "Bill Billiam",
+        "Email": "billiam@example.com",
+        "GPA": 3.5,
         "CreditsEarned": 3,
         "IntendedGraduationTerm": "Fall 2028",
-        "Advisor": "Alice Anderson",
+        "Advisor": "Bill Bebop",
         "ProgramsOfStudy": ["Automation Robotics Manufacturing Technology Certificate (ARMTech)"],
         "CoursesTaken": [
             {
                 "CourseCode": "AUT 113",
                 "Grade": "A"
+            }
+        ]
+    },
+    {
+        "ID": 3,
+        "Name": "Baruch Spinoza",
+        "Email": "spinoza@example.com",
+        "GPA": 4.0,
+        "CreditsEarned": 11,
+        "IntendedGraduationTerm": "Fall 2028",
+        "Advisor": "Bill Bebop",
+        "ProgramsOfStudy": ["Liberal Arts"],
+        "CoursesTaken": [
+            {
+                "CourseCode": "ENG 101",
+                "Grade": "B+"
+            },
+            {
+                "CourseCode": "MAT 233",
+                "Grade": "C"
+            },
+            {
+                "CourseCode": "BIO 101",
+                "Grade": "B"
             }
         ]
     }
