@@ -5,6 +5,7 @@ This module provides development tools for managing the SQLite database used by 
 
 Functions:
 -  ``__connect()``: Internal function to establish a connection to the SQLite database with appropriate configuration.
+- ``aconnect()``: Async variant of the database connection function using aiosqlite.
 - ``setup_database()``: Creates the database schema with all required tables.
 - ``create_triggers()``: Creates database triggers for logging section status changes and resetting student check fields.
 - ``populate_course_catalog(json_file)``: Loads course data from a JSON file and populates the ``Courses`` table.
@@ -36,7 +37,8 @@ JSONS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'jsons
 if JSONS_DIR not in sys.path:
     sys.path.append(JSONS_DIR)
 
-import json, sqlite3
+import json, sqlite3, aiosqlite
+from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from lg_agent.database_utils import get_courseID_by_code
 
@@ -63,6 +65,22 @@ def __connect():
     conn.execute('PRAGMA foreign_keys = ON')
     conn.row_factory = sqlite3.Row
     return conn
+
+@asynccontextmanager
+async def aconnect():
+    """Async variant of __connect using aiosqlite.
+
+    Yields an `aiosqlite.Connection` with foreign keys enabled and the same
+    row_factory as the synchronous connector. Use `async with aconnect() as conn:`
+    in async contexts.
+    """
+    with open(os.path.join(ROOT_DIR, "config.json"), 'r') as f:
+        CONFIG = json.load(f)
+        DB_CONFIG = CONFIG["database_config"]
+    async with aiosqlite.connect(DB_CONFIG["db_name"] + ".db") as conn:
+        await conn.execute('PRAGMA foreign_keys = ON')
+        conn.row_factory = sqlite3.Row
+        yield conn
 
 def setup_database():
     """Create the project's database schema.
@@ -881,7 +899,7 @@ def add_students_from_json(json_file: str):
                         print(f"Skipping course entry for student '{student['Name']}': missing CourseCode or Grade")
                         continue
                     
-                    course_id = get_courseID_by_code(cursor, course_code)
+                    course_id = get_courseID_by_code(conn, course_code)
                     if not course_id:
                         print(f"Course '{course_code}' not found in database. Skipping this course for student '{student['Name']}'.")
                         continue

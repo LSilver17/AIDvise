@@ -67,15 +67,13 @@ if PARENT_DIR not in sys.path:
 from langchain_core.tools import tool
 from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
-from data_pipeline.database.database_dev_tools import __connect
+from data_pipeline.database.database_dev_tools import aconnect
 from langchain.tools import ToolRuntime
 from datetime import datetime
 from bs4 import BeautifulSoup
 from pydantic_core import ValidationError
 import utilities.schemas as schemas
-import database_utils
-import requests
-import json
+import database_utils, json, aiohttp, asyncio
 
 CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
@@ -91,13 +89,13 @@ with open(DEPARTMENT_LIST_PATH, "r") as f:
     DEPARTMENT_LIST["departments"] = json.load(f)
 
 START_TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+ERROR_LOG_DIR = os.path.join(ROOT_DIR, "error_logs")
+os.makedirs(ERROR_LOG_DIR, exist_ok=True)
 
 # Helper function to ensure error_logs directory exists
 def _get_error_log_path():
     """Ensure error_logs directory exists and return the path for error log file."""
-    error_log_dir = os.path.join(ROOT_DIR, "error_logs")
-    os.makedirs(error_log_dir, exist_ok=True)
-    return os.path.join(error_log_dir, f"error_log_{START_TIMESTAMP}.txt")
+    return os.path.join(ERROR_LOG_DIR, f"error_log_{START_TIMESTAMP}.txt")
 
 @tool("get_current_time", description="Tool for getting the current date and time. The output is a string containing the current date and time.", return_direct=True)
 def get_current_time_tool() -> str:
@@ -193,7 +191,7 @@ def get_departments_in_category_tool(category: str) -> str:
             return f"Invalid category {category}. Check spelling and capitalization."
 
 @tool("course_query_by_code", description="Tool for getting information about a specific course from the database. The input is the course code (e.g. \"CSCI 101\") and the output is a string containing the relevant information about the course, including department, course number, title, description, prerequisites, and credits.", return_direct=True)
-def course_query_tool_by_code(course_code: str) -> str:
+async def course_query_tool_by_code(course_code: str) -> str:
     """Return course metadata for a course identified by its course code.
 
     Wraps `database_utils.get_courseID_by_code` and `database_utils.get_course_info_by_id`.
@@ -220,12 +218,11 @@ def course_query_tool_by_code(course_code: str) -> str:
             }
             Format if not found: "No course found with code {course_code}."
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            course_id = database_utils.get_courseID_by_code(cursor, course_code)
+            course_id = await database_utils.async_get_courseID_by_code(conn, course_code)
             if course_id:
-                course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                course_info = await database_utils.async_get_course_info_by_id(conn, course_id)
                 return course_info
             else:
                 return f"No course found with code {course_code}."
@@ -240,7 +237,7 @@ def course_query_tool_by_code(course_code: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_query_by_title", description="Like the course_query_by_code tool, but searches by title instead of code.", return_direct=True)
-def course_query_tool_by_title(course_title: str) -> str:
+async def course_query_tool_by_title(course_title: str) -> str:
     """Return course metadata for a course identified by its title.
 
     Wraps `database_utils.get_courseID_by_title`, `database_utils.get_coops`, and
@@ -272,15 +269,14 @@ def course_query_tool_by_title(course_title: str) -> str:
         Course-title lookup assumes titles are unique except for "Cooperative Work Experience".
         For that title, this tool returns a clarification message containing matching course IDs and asks for a code-based query.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
             if course_title == "Coperative Work Experience":
-                coops = database_utils.get_coops(cursor)
+                coops = await database_utils.async_get_coops(conn)
                 return f"There are multiple courses with the title 'Cooperative Work Experience'. Here is a list of them: {', '.join(coops)}. Please try agein using the course code to specify which one you want information about."
-            course_id = database_utils.get_courseID_by_title(cursor, course_title)
+            course_id = await database_utils.async_get_courseID_by_title(conn, course_title)
             if course_id:
-                course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                course_info = await database_utils.async_get_course_info_by_id(conn, course_id)
                 return course_info
             else:
                 return f"No course found with title {course_title}."
@@ -295,7 +291,7 @@ def course_query_tool_by_title(course_title: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("course_filter", description="Tool for filtering courses based on certain criteria. The input is a set of filters and the output is a string containing a list of all the courses that match the specified criteria and relevant information about them. Don't use this tool with overly broad filters as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
-def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
+async def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     """Return courses that match the provided `schemas.CourseFilters`.
 
     Wraps `database_utils.get_courseIDs_by_filters` then resolves each ID with
@@ -314,23 +310,29 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
                             Format: Integer term number (e.g. 1, 2, 3, etc).
                             Note: If not provided, filter matches any term number for the given year/season.
                     }
+                    Note: Uses OR logic
                 Optional[List[str]] departments,
                     Format: Department abbreviations as stored in `Courses.Department` (e.g. ["PHY", "MAT"]).
-                Optional[List[CodeCondition]] course_codes,
+                    Note: Uses OR logic
+                Optional[List[CodeCondition]] course_levels,
                     CodeCondition format: {
                         "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
                         "code": str
                             Format: Course number as stored in `Courses.Code` (e.g. "101", "210").
                     }
+                    Note: Uses AND logic
                 Optional[List[CreditCondition]] credits,
                     CreditCondition format: {
                         "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
                         "credits": int (e.g. 3 or 4)
                     }
+                    Note: Uses AND logic
                 Optional[List[str]] keywords,
                     Format: Keywords searched in `Courses.Description`.
+                    Note: Uses OR logic
                 Optional[List[str]] prerequisites,
                     Format: Keywords searched in `Courses.Requirements`.
+                    Note: Uses OR logic
             }
 
     Returns:
@@ -359,14 +361,13 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
     Warnings:
         Don't use this tool with overly broad filters (eg: all courses in a given term or all courses in a department) as it can return a lot of courses and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            course_ids = database_utils.get_courseIDs_by_filters(cursor, filters)
+            course_ids = await database_utils.async_get_courseIDs_by_filters(conn, filters)
             if course_ids:
                 courses_info = []
                 for course_id in course_ids:
-                    course_info = database_utils.get_course_info_by_id(cursor, course_id)
+                    course_info = await database_utils.async_get_course_info_by_id(conn, course_id)
                     courses_info.append(course_info)
                 info_str = json.dumps(courses_info)
                 return "\n\n"+info_str
@@ -387,7 +388,7 @@ def course_filter_tool(filters: schemas.CourseFilters = None) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_course_description", description="Tool for getting the description of a course based on its ID. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
-def get_course_description_tool(course_id: int) -> str:
+async def get_course_description_tool(course_id: int) -> str:
     """Return the textual description for a course identified by `course_id`.
 
     Wraps `database_utils.get_course_description_by_id`.
@@ -404,10 +405,9 @@ def get_course_description_tool(course_id: int) -> str:
     Warnings:
         Don't use this tool for more than a few courses at a time, as it can consume a lot of tokens.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            description = database_utils.get_course_description_by_id(cursor, course_id)
+            description = await database_utils.async_get_course_description_by_id(conn, course_id)
             return description
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -420,7 +420,7 @@ def get_course_description_tool(course_id: int) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("section_filter", description="Tool for filtering sections based on certain criteria. The input is a set of filters and the output is a string containing the relevant information about the filtered sections. Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.", return_direct=True)
-def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
+async def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
     """Return sections that match the provided `schemas.SectionFilters`.
 
     Wraps `database_utils.get_sectionIDs_by_filters` then resolves each ID with
@@ -439,24 +439,31 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
                             Format: Integer term number (e.g. 1, 2, 3, etc).
                             Note: If not provided, filter matches any term number for the given year/season.
                     }
+                    Note: Uses OR logic
                 Optional[List[str]] course_codes,
                     Format: Course codes as stored in `Courses.Code` column (e.g. ["101", "210"]).
+                    Note: Uses OR logic
                 Optional[List[str]] instructors,
                     Format: Instructor names as stored in `Sections.Instructor` column (e.g. ["Dr. Smith", "Prof. Johnson"]).
+                    Note: Uses OR logic
                 Optional[List[str]] teaching_methods,
                     Format: Teaching methods as stored in `Sections.Method` column (e.g. ["In-Person", "Online", "Hybrid"]).
+                    Note: Uses OR logic
                 Optional[List[EnrollmentCondition]] enrollment_capacity,
                     EnrollmentCondition format: {
                         "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
                         "capacity": int (e.g. 30 or 100)
                     }
+                    Note: Uses AND logic
                 Optional[List[EnrollmentCondition]] enrollment,
                     EnrollmentCondition format: {
                         "condition": str ["=" | ">" | "<" | ">=" | "<=" | "!="],
                         "enrollment": int (e.g. 25 or 100)
                     }
+                    Note: Uses AND logic
                 Optional[List[str]] locations,
-                    Format: Location strings as stored in `Sections.Location` column (e.g. ["Building A Room 101", "Online"]).
+                    Format: Location keywords as stored in `Sections.Location` column (e.g. ["Building A", "Online"]).
+                    Note: Filter matches any section whose location contains any of the specified keywords. Uses AND logic.
                 Optional[List[DBMeetTime]] meet_times
                     DBMeetTime format: {
                         "day": str,
@@ -466,6 +473,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
                         "end_time": str,
                             Format: End time in 24-hour format (e.g. "14:15" for 2:15 PM).
                     }
+                    Note: Uses OR logic
             }
             Note: Field-level formats and operator restrictions match `database_utils.get_sectionIDs_by_filters`.
 
@@ -503,14 +511,13 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
     Warnings:
         Don't use this tool with overly broad filters (eg: all sections in a given term or all sections taught by a certain instructor) as it can return a lot of sections and consume a lot of tokens. Always wait until you have narrowed down the filters as much as possible before using this tool.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            section_ids = database_utils.get_sectionIDs_by_filters(cursor, filters)
+            section_ids = await database_utils.async_get_sectionIDs_by_filters(conn, filters)
             if section_ids:
                 sections_info = []
                 for section_id in section_ids:
-                    section_info = database_utils.get_section_info_by_id(cursor, section_id)
+                    section_info = await database_utils.async_get_section_info_by_id(conn, section_id)
                     sections_info.append(section_info)
                 info_str = json.dumps(sections_info)
                 return "\n\n"+info_str
@@ -531,7 +538,7 @@ def section_filter_tool(filters: schemas.SectionFilters = None) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, Advisor, GPA, total credits, and programs of study. The output is a string containing the relevant information.", return_direct=True)
-def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
+async def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
     """Return basic profile information for the current student user.
 
     Wraps `database_utils.get_student_basic_info` using `runtime.state["user_id"]`.
@@ -563,10 +570,9 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             }
             Note: If no student is found with that ID, serialized value is {}.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            student_info = database_utils.get_student_basic_info(cursor, runtime.state["user_id"])
+            student_info = await database_utils.async_get_student_basic_info(conn, runtime.state["user_id"])
             return json.dumps(student_info)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -579,7 +585,7 @@ def get_student_basic_info_tool(runtime: ToolRuntime) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken.", return_direct=True)
-def get_student_course_history_tool(runtime: ToolRuntime) -> str:
+async def get_student_course_history_tool(runtime: ToolRuntime) -> str:
     """Return course history for the current student user.
 
     Wraps `database_utils.get_student_course_history` using `runtime.state["user_id"]`.
@@ -600,10 +606,9 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
             }]
             Note: If no courses are found, serialized value is ["No courses taken"].
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            course_history = database_utils.get_student_course_history(cursor, runtime.state["user_id"])
+            course_history = await database_utils.async_get_student_course_history(conn, runtime.state["user_id"])
             return json.dumps(course_history)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -616,7 +621,7 @@ def get_student_course_history_tool(runtime: ToolRuntime) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests.", return_direct=True)
-def get_student_interests_tool(runtime: ToolRuntime) -> str:
+async def get_student_interests_tool(runtime: ToolRuntime) -> str:
     """Return interests for the current student user.
 
     Wraps `database_utils.get_student_interests` using `runtime.state["user_id"]`.
@@ -630,10 +635,9 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
             Format of list items: Interest string as stored in `Interests.Interest` (e.g. "Artificial Intelligence").
             Note: If no interests are found, serialized value is ["No interests specified"].
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            interests = database_utils.get_student_interests(cursor, runtime.state["user_id"])
+            interests = await database_utils.async_get_student_interests(conn, runtime.state["user_id"])
             return json.dumps(interests)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -646,7 +650,7 @@ def get_student_interests_tool(runtime: ToolRuntime) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections.", return_direct=True)
-def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
+async def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
     """Return tracked sections for the current student user.
 
     Wraps `database_utils.get_student_tracked_sections` using `runtime.state["user_id"]`.
@@ -667,10 +671,9 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
             }]
             Note: If no tracked sections are found, serialized value is ["No sections currently being tracked"].
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            tracked_sections = database_utils.get_student_tracked_sections(cursor, runtime.state["user_id"])
+            tracked_sections = await database_utils.async_get_student_tracked_sections(conn, runtime.state["user_id"])
             return json.dumps(tracked_sections)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -683,7 +686,7 @@ def get_student_tracked_sections_tool(runtime: ToolRuntime) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("program_requirements", description="Tool for getting the course requirements for a specific program. The input is the program name and the output is a list of required courses.", return_direct=True)
-def get_program_requirements_tool(program_name: str) -> str:
+async def get_program_requirements_tool(program_name: str) -> str:
     """Return requirement strings for a program identified by title.
 
     Wraps `database_utils.get_program_requirements_by_title`.
@@ -703,10 +706,9 @@ def get_program_requirements_tool(program_name: str) -> str:
     Warnings:
         Avoid high-volume program lookups in one call because payload size can become large. It should be used primarily for questions about course planning or if the user is curious about a specific program.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            program_requirements = database_utils.get_program_requirements_by_title(cursor, program_name)
+            program_requirements = await database_utils.async_get_program_requirements_by_title(conn, program_name)
             return json.dumps(program_requirements)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -719,7 +721,7 @@ def get_program_requirements_tool(program_name: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("upcoming_events", description="Tool for getting a list of upcoming events. The output is a list of upcoming events with their names and descriptions.", return_direct=True)
-def get_upcoming_events_tool() -> str:
+async def get_upcoming_events_tool() -> str:
     """Return upcoming events that have at least one future date.
 
     Wraps `database_utils.get_upcoming_events`.
@@ -735,10 +737,9 @@ def get_upcoming_events_tool() -> str:
                     Format: Event description as stored in `Events.Description` column (e.g. "An event where students can meet with potential employers and learn about job opportunities.")
             }]
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            upcoming_events = database_utils.get_upcoming_events(cursor)
+            upcoming_events = await database_utils.async_get_upcoming_events(conn)
             return json.dumps(upcoming_events)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -751,7 +752,7 @@ def get_upcoming_events_tool() -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("event_dates", description="Tool for getting the dates for a specific event. The input is the event name and the output is a list of dates and their locations for that event.", return_direct=True)
-def get_event_dates_tool(event_name: str) -> str:
+async def get_event_dates_tool(event_name: str) -> str:
     """Return future dates for a specific event identified by name.
 
     Wraps `database_utils.get_event_dates_by_name`.
@@ -775,10 +776,9 @@ def get_event_dates_tool(event_name: str) -> str:
             Note: If no event is found with the provided name, serialized value is ["Event not found"].
             Note: If the event exists but has no future dates, serialized value is [].
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            event_dates = database_utils.get_event_dates_by_name(cursor, event_name)
+            event_dates = await database_utils.async_get_event_dates_by_name(conn, event_name)
             return json.dumps(event_dates)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -791,7 +791,7 @@ def get_event_dates_tool(event_name: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("web_search", description="Tool for performing web searches. The input is a search query and the maximum number of results to return. The output is a list of search results with sources.", return_direct=True)
-def web_search_tool(query: str, max_results: int = 5) -> str:
+async def web_search_tool(query: str, max_results: int = 5) -> str:
     """Performs a web search for the given query and return a list of results.
 
     Args:
@@ -815,7 +815,7 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
     try:
         wrapper = DuckDuckGoSearchAPIWrapper(region="us-en", time="d", max_results=max_results)
         search = DuckDuckGoSearchResults(wrapper=wrapper, output_format="list")
-        return search.invoke(query)
+        return await search.ainvoke(query)
     except Exception as e:
         ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
@@ -827,7 +827,7 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
         return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_web_page_content", description="Tool for getting the text content of a web page. The input is the URL of the web page and the maximum number of characters to return. The output is a string containing the text content of the web page. Use this tool sparingly as it can consume a lot of tokens.", return_direct=True)
-def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
+async def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
     """Fetches the content of a web page and return it as text.
 
     Args:
@@ -844,9 +844,12 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
         Use this tool sparingly as it can consume a lot of tokens, especially for if max_chars is set to a high value. Only use this tool if you are confident that the information you need is available on the page.
     """
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-    except requests.RequestException as e:
+        timeout = aiohttp.ClientTimeout(total=10)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            async with session.get(url) as response:
+                response.raise_for_status()
+                page_text = await response.text()
+    except aiohttp.ClientError as e:
         ERROR_LOG_FILE_PATH = _get_error_log_path()
         if not os.path.exists(ERROR_LOG_FILE_PATH):
             with open(ERROR_LOG_FILE_PATH, "w") as f:
@@ -855,8 +858,17 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
             current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             f.write(f"[{current_timestamp}] Error occurred while fetching web page content from {url}: {e}\n")
         return f"Error fetching from {url}: {e}. The page may be unavailable or there may be a problem with the URL."
+    except asyncio.TimeoutError as e:
+        ERROR_LOG_FILE_PATH = _get_error_log_path()
+        if not os.path.exists(ERROR_LOG_FILE_PATH):
+            with open(ERROR_LOG_FILE_PATH, "w") as f:
+                f.write(f"Error log for {START_TIMESTAMP}\n\n")
+        with open(ERROR_LOG_FILE_PATH, "a") as f:
+            current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{current_timestamp}] Timeout error occurred while fetching web page content from {url}: {e}\n")
+        return f"Timeout error fetching from {url}: {e}. The page may be taking too long to respond or there may be a problem with the URL."
     try:
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(page_text, 'html.parser')
 
         for script in soup(["script", "style, noscript"]):
             script.decompose()
@@ -877,7 +889,7 @@ def get_web_page_content_tool(url: str, max_chars: int = 3000) -> str:
         return f"Error parsing content from {url}: {e}. The page may be formatted in a way that is difficult to extract text from."
 
 @tool("insert_student_interests", description="Tool for inserting a new interest for a student. The input is an interest to add, and the output is a confirmation message. Always check if a similar interest already exists in the database before adding it.", return_direct=True)
-def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
+async def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     """Insert an interest string for the current student user.
 
     Wraps `database_utils.insert_student_interests` with a single-item list input.
@@ -895,9 +907,9 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
     Warnings:
         Always check for close duplicates before inserting to avoid duplicate interest rows.
     """
-    with __connect() as conn:
+    async with aconnect() as conn:
         try:
-            return database_utils.insert_student_interests(conn, runtime.state["user_id"], [interest])
+            return await database_utils.async_insert_student_interests(conn, runtime.state["user_id"], [interest])
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
@@ -909,7 +921,7 @@ def insert_student_interests_tool(runtime: ToolRuntime, interest: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("insert_student_tracked_sections", description="Tool for inserting a new tracked section for a student. The input is the course code and section number for the section to track. The output is a confirmation message.", return_direct=True)
-def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
+async def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str, section_id: str) -> str:
     """Add a tracked section for the current student user.
 
     Wraps `database_utils.insert_student_tracked_section`.
@@ -930,9 +942,9 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
                 "Section already being tracked"
     """
     
-    with __connect() as conn:
+    async with aconnect() as conn:
         try:
-            return database_utils.insert_student_tracked_section(conn, runtime.state["user_id"], course_code, section_id)
+            return await database_utils.async_insert_student_tracked_section(conn, runtime.state["user_id"], course_code, section_id)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
             if not os.path.exists(ERROR_LOG_FILE_PATH):
@@ -944,7 +956,7 @@ def insert_student_tracked_sections_tool(runtime: ToolRuntime, course_code: str,
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_student_id_by_name", description="Tool for getting a student's ID based on their name. The input is the student's name and the output is the student's ID. Only works for students who have the current user as their advisor.", return_direct=True)
-def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
+async def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     """Tool for getting a student's ID based on their name.
 
     Args:
@@ -961,14 +973,14 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
     Warnings:
         Name must be an exact match. If this fails to find the student, try using the get_advisor_students tool instead.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cursor = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            advisor_id = await cursor.fetchone()
             if advisor_id is None:
                 return f"No advisor found with user ID {runtime.state['user_id']}."
-            cursor.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
-            student_id = cursor.fetchone()
+            cursor = await conn.execute("SELECT ID FROM Students WHERE name = ? and AdvisorID = ?", (student_name, advisor_id[0]))
+            student_id = await cursor.fetchone()
             if student_id:
                 return json.dumps({"Student ID": student_id[0]})
             else:
@@ -981,7 +993,7 @@ def get_student_id_by_name_tool(runtime: ToolRuntime, student_name: str) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("get_advisor_students", description="Tool for getting a list of the students assigned to the current advisor. The output is a list of student names and their IDs.", return_direct=True)
-def get_advisor_students_tool(runtime: ToolRuntime) -> str:
+async def get_advisor_students_tool(runtime: ToolRuntime) -> str:
     """Return a list of students assigned to the current advisor.
 
     Args:
@@ -998,14 +1010,14 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
             }]
         Note: If no students are found for the current advisor, returns a message indicating that no students were found.
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cursor = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            advisor_id = await cursor.fetchone()
             if advisor_id is None:
                 return f"No advisor found with user ID {runtime.state['user_id']}."
-            cursor.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
-            students = cursor.fetchall()
+            cursor = await conn.execute("SELECT Name, ID FROM Students WHERE AdvisorID = ?", (advisor_id[0],))
+            students = await cursor.fetchall()
             if students:
                 student_info = [{"name": student[0], "id": student[1]} for student in students]
                 return json.dumps({"students": student_info})
@@ -1022,7 +1034,7 @@ def get_advisor_students_tool(runtime: ToolRuntime) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_basic_info", description="Tool for getting a student's basic information, including their name, GPA, total credits, and programs of study. The output is a string containing the relevant information. Only works for students who have the current user as their advisor.", return_direct=True)
-def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
+async def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
     """Return basic profile information for an advisor-visible student.
 
     Performs advisor ownership checks, then wraps `database_utils.get_student_basic_info`.
@@ -1057,17 +1069,17 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             Access failure format: "Student with ID {student_id} is not assigned to the current user."
             Not-found format: "No student found with ID {student_id}"
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-            s_advisor_id = cursor.fetchone()
-            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cur = await conn.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = await cur.fetchone()
+            cur = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            u_advisor_id = await cur.fetchone()
             if s_advisor_id is None:
                 return f"No student found with ID {student_id}"
             elif s_advisor_id[0] != u_advisor_id[0]:
                 return f"Student with ID {student_id} is not assigned to the current user."
-            student_info = database_utils.get_student_basic_info(cursor, student_id)
+            student_info = await database_utils.async_get_student_basic_info(conn, student_id)
             return json.dumps(student_info)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -1080,7 +1092,7 @@ def a_get_student_basic_info_tool(runtime: ToolRuntime, student_id: int) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_course_history", description="Tool for getting the course codes and titles for all courses a student has taken. The output is a list of courses taken. Only works for students who have the current user as their advisor.", return_direct=True)
-def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
+async def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> str:
     """Return course history for an advisor-visible student.
 
     Performs advisor ownership checks, then wraps `database_utils.get_student_course_history`.
@@ -1105,17 +1117,17 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
             Access failure format: "Student with ID {student_id} is not assigned to the current user."
             Not-found format: "No student found with ID {student_id}"
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-            s_advisor_id = cursor.fetchone()
-            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cur = await conn.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = await cur.fetchone()
+            cur = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            u_advisor_id = await cur.fetchone()
             if s_advisor_id is None:
                 return f"No student found with ID {student_id}"
             elif s_advisor_id[0] != u_advisor_id[0]:
                 return f"Student with ID {student_id} is not assigned to the current user."
-            course_history = database_utils.get_student_course_history(cursor, student_id)
+            course_history = await database_utils.async_get_student_course_history(conn, student_id)
             return json.dumps(course_history)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -1128,7 +1140,7 @@ def a_get_student_course_history_tool(runtime: ToolRuntime, student_id: int) -> 
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_interests", description="Tool for getting a student's interests. The output is a list of interests. Only works for students who have the current user as their advisor.", return_direct=True)
-def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
+async def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
     """Return interests for an advisor-visible student.
 
     Performs advisor ownership checks, then wraps `database_utils.get_student_interests`.
@@ -1146,17 +1158,17 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
             Access failure format: "Student with ID {student_id} is not assigned to the current user."
             Not-found format: "No student found with ID {student_id}"
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-            s_advisor_id = cursor.fetchone()
-            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cur = await conn.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = await cur.fetchone()
+            cur = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            u_advisor_id = await cur.fetchone()
             if s_advisor_id is None:
                 return f"No student found with ID {student_id}"
             elif s_advisor_id[0] != u_advisor_id[0]:
                 return f"Student with ID {student_id} is not assigned to the current user."
-            interests = database_utils.get_student_interests(cursor, student_id)
+            interests = await database_utils.async_get_student_interests(conn, student_id)
             return json.dumps(interests)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -1169,7 +1181,7 @@ def a_get_student_interests_tool(runtime: ToolRuntime, student_id: int) -> str:
             return "A problem occurred. End your task early and report the issue to the planning agent."
 
 @tool("student_tracked_sections", description="Tool for getting the sections a student is currently tracking. The output is a list of tracked sections. Only works for students who have the current user as their advisor.", return_direct=True)
-def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
+async def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -> str:
     """Return tracked sections for an advisor-visible student.
 
     Performs advisor ownership checks, then wraps `database_utils.get_student_tracked_sections`.
@@ -1194,17 +1206,17 @@ def a_get_student_tracked_sections_tool(runtime: ToolRuntime, student_id: int) -
             Access failure format: "Student with ID {student_id} is not assigned to the current user."
             Not-found format: "No student found with ID {student_id}"
     """
-    with __connect() as conn:
-        cursor = conn.cursor()
+    async with aconnect() as conn:
         try:
-            cursor.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
-            s_advisor_id = cursor.fetchone()
-            u_advisor_id = cursor.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],)).fetchone()
+            cur = await conn.execute("SELECT AdvisorID FROM Students WHERE ID = ?", (student_id,))
+            s_advisor_id = await cur.fetchone()
+            cur = await conn.execute("SELECT ID FROM Advisors WHERE ParentID = ?", (runtime.state["user_id"],))
+            u_advisor_id = await cur.fetchone()
             if s_advisor_id is None:
                 return f"No student found with ID {student_id}"
             elif s_advisor_id[0] != u_advisor_id[0]:
                 return f"Student with ID {student_id} is not assigned to the current user."
-            tracked_sections = database_utils.get_student_tracked_sections(cursor, student_id)
+            tracked_sections = await database_utils.async_get_student_tracked_sections(conn, student_id)
             return json.dumps(tracked_sections)
         except Exception as e:
             ERROR_LOG_FILE_PATH = _get_error_log_path()
@@ -1246,7 +1258,11 @@ for tool in w_tools:
     if tool is not None:
         web_tools.append(tool)
 
-i_tools = [get_student_interests_tool if TOOL_CONFIG["insert-tools"]["get_student_interests_tool"] else None,
+i_tools = [course_query_tool_by_code if TOOL_CONFIG["insert-tools"]["course_query_tool_by_code"] else None,
+           course_query_tool_by_title if TOOL_CONFIG["insert-tools"]["course_query_tool_by_title"] else None,
+           course_filter_tool if TOOL_CONFIG["insert-tools"]["course_filter_tool"] else None,
+           section_filter_tool if TOOL_CONFIG["insert-tools"]["section_filter_tool"] else None,
+           get_student_interests_tool if TOOL_CONFIG["insert-tools"]["get_student_interests_tool"] else None,
            get_student_tracked_sections_tool if TOOL_CONFIG["insert-tools"]["get_student_tracked_sections_tool"] else None,
            insert_student_interests_tool if TOOL_CONFIG["insert-tools"]["insert_student_interests_tool"] else None,
            insert_student_tracked_sections_tool if TOOL_CONFIG["insert-tools"]["insert_student_tracked_sections_tool"] else None]
