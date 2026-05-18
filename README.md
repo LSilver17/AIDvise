@@ -1,6 +1,19 @@
 # Project Overview
 
-AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform its response.
+AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform and deliver its response.
+
+## Features
+
+- Two account types, students and advisors
+- ### Students:
+    - Integrated chat agent that can give academic advice based on academic data and personal details
+    - Ability to remember user interests and generate a list of events relevant to that user based on their interests
+    - Ability to track courses user is interested in to notify them of sections opening, closing, and reopening
+    - Alert view displaying events and course changes relevant to the user
+- ### Advisors:
+    - Chat agent that can report the status of students under their guidance
+    - List view of students managed by their advisor
+    - Academic data overview for each student
 
 ---
 
@@ -8,12 +21,32 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 
 ## Requirements
 
-    - pip
-    - npm
-    - Node.js 24.14.0
-    - Next.js 16.1.6
-    - Anthropic API key
-    - Python 3.12.x
+The following need to be installed for this quickstart guide:
+
+- pip
+- Node.js 20.9+ (tested on 24.14.0)
+- Python 3.12.x
+
+In addition, the user must gather these API keys:
+
+### Required
+- #### Anthropic
+    - Go to https://platform.claude.com and create an account
+    - Buy token credits under Profile (Bottom Left) -> Organization Settings -> Billing
+    - Generate and copy a key in API keys
+
+### Optional
+- #### OpenAI
+    - Go to https://platform.openai.com/home and create an account
+    - Buy token credits under
+ 
+Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenAI-backed model.
+- #### OpenRouter
+    - Go to
+Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenRouter-backed model.
+- #### LangChain
+    - 
+Needed only if you want LangSmith tracing/observability.
 
 ## Setup
 
@@ -53,7 +86,7 @@ npm install
 
 ### 5. Configure environment
 
-AIDvise depends on values in the files .env and .env.local to run
+AIDvise depends on values in the files *.env* and *.env.local* to run
 
 #### .env creation & setup
 
@@ -69,7 +102,8 @@ cd ..
 cp .env.example .env
 ```
 
-Next, open .env. The following keys are required:
+
+Next, open *.env*. The following keys are required:
 
 ```.env
 # AI API keys
@@ -81,47 +115,36 @@ LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT="AIDvise"
 ```
 
-* Note: Make sure model_select:mode is set to all-claude in config.json if using Anthropic chat model
-
-#### API Keys
-
-AIDvise uses API keys to connect to AI services. Think of a key as a private password that lets the app use a specific AI provider.
-
-- **Anthropic API key:** required for the default setup. This is the key used by the built-in Claude models.
-- **OpenAI API key:** optional. Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenAI-backed model.
-- **OpenRouter API key:** optional. Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenRouter-backed model.
-- **LangChain API key:** optional, developer-focused. Needed only if you want LangSmith tracing/observability.
-
-How to get them:
-
-- **Anthropic (required for default setup):** Go to https://console.anthropic.com/settings/keys, sign in, click **Create Key**, then copy the new key.
-- **OpenAI (optional):** Go to https://platform.openai.com/api-keys, sign in, click **Create new secret key**, then copy the key.
-- **OpenRouter (optional):** Go to https://openrouter.ai/keys, sign in, click **Create Key**, then copy the key.
-- **LangSmith / LangChain (optional, developer):** Go to https://smith.langchain.com/settings, sign in, create an API key, then copy it.
-
-If you want to switch from the default Anthropic model to OpenAI or OpenRouter, see the `Configuration (config.json)` section later in this README, specifically `Adding a New Model Profile` and `Adding a New AI Model`.
-
-After you generate a key, copy it into your `.env` file on the matching line. Never share these keys publicly or commit them to Git.
+* Note: Make sure *model_select:mode* in *config.json* is set to "all-claude" if using Anthropic chat model (assumed for this guide)
 
 #### .env.local creation & setup
 
 Windows (PowerShell):
 ```powershell
-Copy-Item frontend/.env.local.example frontend/.env.local
+cd frontend
+Copy-Item .env.local.example .env.local
 npx auth secret
 ```
 
 macOS / Linux:
 ```bash
-cp frontend/.env.local.example frontend/.env.local
+cd frontend
+cp .env.local.example .env.local
 npx auth secret
 ```
 
-Open .env.local. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
+Open *.env.local*. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
 
 ```.env.local
 NEXTAUTH_SECRET=YOUR_SECRET
 NEXTAUTH_URL=http://localhost:3000/
+```
+
+
+Finally, switch back to root:
+
+```bash
+cd ..
 ```
 
 ### 6. Set up database (Skip this step if you want to use preinitialized database)
@@ -129,13 +152,15 @@ NEXTAUTH_URL=http://localhost:3000/
 ```bash
 - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json --add_events event_data.json
 ```
-This command creates a database with the name configured in config.json under database_config:db_name. Each flag populates their respective table with the contents of the json file provided in the flag argument.
+This command creates a database with the name configured in *config.json* under *database_config:db_name*. Each flag populates their respective table with the contents of the json file provided in the flag argument.
 
-To adapt this project for your institution, the json files in data_pipeline/jsons can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
+To adapt this project for your institution, the json files in *data_pipeline/jsons* can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
 
 ### 7. Begin hosting
 
-Open a new terminal and run the following:
+Open two new terminals and run the following in each terminal:
+
+#### Terminal 1
 
 Windows (PowerShell):
 ```powershell
@@ -149,7 +174,7 @@ source .venv/bin/activate
 npx @langchain/langgraph-cli dev --port 8123 --no-browser 
 ```
 
-Open a new terminal (without closing the previous one) and run the following:
+#### Terminal 2
 
 Windows (PowerShell):
 ```powershell
@@ -169,7 +194,7 @@ npm run dev
 
 The application can be accessed at http://localhost:3000
 
-Navigate to the registration section to test with a new account. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in students_data/json and advisors_data.json to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected.
+Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in *data_pipeline/jsons/students_data.json* and *data_pipeline/jsons/advisors_data.json* to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
 
 ## Users
 
@@ -468,7 +493,7 @@ The *get_curr_context* function and its related helper functions in *@/app/lib/a
 
 Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
 
-# Documentation Links
+# Developer Documentation Links
 
 - [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
 - [Backend Documentation](https://lsilver17.github.io/AIDvise---Backend-Docs/html/index.html)
