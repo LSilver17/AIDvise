@@ -2,6 +2,19 @@
 
 AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform and deliver its response.
 
+## Features
+
+- Two account types, students and advisors
+- ### Students:
+    - Integrated chat agent that can give academic advice based on academic data and personal details
+    - Ability to remember user interests and generate a list of events relevant to that user based on their interests
+    - Ability to track courses user is interested in to notify them of sections opening, closing, and reopening
+    - Alert view displaying events and course changes relevant to the user
+- ### Advisors:
+    - Chat agent that can report the status of students under their guidance
+    - List view of students managed by their advisor
+    - Academic data overview for each student
+
 ---
 
 # Quickstart
