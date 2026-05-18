@@ -32,20 +32,42 @@ In addition, the user must gather these API keys:
 ### Required
 - #### Anthropic
     - Go to https://platform.claude.com and create an account
-    - Buy token credits under Profile (Bottom Left) -> Organization Settings -> Billing
-    - Generate and copy a key in API keys
+    - Navigate to `Profile` (Bottom Left) -> `Organization Settings`
+    - Navigate to `Billing` via the sidebar
+    - Click the pencil icon next to `Buy Credits` to update your billing info
+    - Click `Buy Credits` and select an amount to purchase
+    - Navigate to `API Keys` via the sidebar
+    - Click `Create Key` to generate an API Key
+    - Copy the generated key to use in your `.env` file
 
 ### Optional
 - #### OpenAI
     - Go to https://platform.openai.com/home and create an account
-    - Buy token credits under
- 
+    - Navigate to `Billing` via the sidebar
+    - Click `Add Payment Details` and fill out the form with billing information
+    - Select an ammount for your initial credit purchase
+    - Navigate to `API Keys` via the sidebar
+    - Click `Create New Secret Key` to generate an API key
+    - Copy the generated key to use in your `.env` file
 Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenAI-backed model.
+
 - #### OpenRouter
-    - Go to
+    - Go to https://openrouter.ai/ and create an account
+    - Click `Get API Key`
+    - Click `New Key` to generate your API Key
+    - Copy the generated key to use in your `.env` file
+    - If you plan to use a paid model:
+        - Navigate to `Credits` via the sidebar
+        - Click `Add Credits`
+        - Fill out the form with a billing method
+        - Select an amount to purchase
 Use this only if you switch one or more model slots in `config.json` (`model_select`) to an OpenRouter-backed model.
+
 - #### LangChain
-    - 
+    - Go to https://smith.langchain.com/ and create an account
+    - Navigate to settings via the sidebar
+    - Click `API Key` to generate your key
+    - Copy the generated key to use in your `.env` file
 Needed only if you want LangSmith tracing/observability.
 
 ## Setup
