@@ -203,26 +203,6 @@ The chatbot routes between two versions based on the user's account types. For s
 
 The alert graph is used for event filtering to determine what upcoming events are relivent to a user. It first gather info about upcoming events and user interests from the database, then uses an AI node to perfrom the filtering, and finally updates the database to reflect the result. This is the used by the frontend for alert generation. Like with the chatbot system, the config.json file allows for easy swithcing between AI models for the event filtering node.
 
-# Frontend Components
-
-Advise uses React components to build the frontend. App components are defined in *./frontend/app/components*. The dashboard is rendered using the Aside component in *./navigation/aside.tsx*. Page links are made with the DefaultButton component, taking the page's HREF as a prop. Dashboard pages are defined in *./app/dashboard*. If defining a page that is meant to be accessed by only an advisor/student, it is important to enforce redirection of unauthorized users in a page's *layout.tsx* file.
-
-## Session Data
-
-Developers are provided the *authSession()* hook, defined in *@/app/lib/account/authSession*. This hook returns a session object which can be used for user authorization.
-
-## User Context
-
-Upon loading the dashboard, a user context is created by pulling user information by the database based on the user's ID. This user context allows for easy access of user-specific data. This includes user data & metadata as well as account-type specific data like alerts and students for students & advisors, respectively. 
-
-### Modifying User Context
-
-The *get_curr_context* function and its related helper functions in *@/app/lib/account/account_db_utils* are used for context creation & retrieval, while the context itself is defined in *@/app/lib/account/user_context*. These two files must be modified for any modifications to user context.
-
-### Accessing User Context
-
-Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
-
 # Developer Documentation Links
 
 - [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
