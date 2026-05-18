@@ -130,11 +130,6 @@ Next, open `.env`. The following keys are required:
 ```.env
 # AI API keys
 ANTHROPIC_API_KEY=your_key
-
-# Langchain configuration
-LANGCHAIN_API_KEY=your-api-key-here
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_PROJECT="AIDvise"
 ```
 
 * Note: Make sure `model_select:mode` in `config.json` is set to "all-claude" if using Anthropic chat model (assumed for this guide)
