@@ -591,7 +591,6 @@ def _s_db_tool_testing_model() -> FakeChatModel:
                         ToolCall(name="upcoming_events", args={}, id="ue"),
 
                         # test get event dates for real event
-                        # TODO: add an event to the database for this test to work
                         ToolCall(name="event_dates", args={"event_name": "AI Career Panel"}, id="ed1"),
 
                         # test get event dates for nonexistent event
@@ -956,7 +955,6 @@ def _a_db_tool_testing_model() -> FakeChatModel:
                         ToolCall(name="upcoming_events", args={}, id="ue"),
 
                         # test get event dates for real event
-                        # TODO: add an event to the database for this test to work
                         ToolCall(name="event_dates", args={"event_name": "AI Career Panel"}, id="ed1"),
 
                         # test get event dates for nonexistent event

@@ -27,13 +27,17 @@
     - Running the following command in the frontend dir. will generate a NEXTAUTH_SECRET key and place it in .env.local:
         npx auth secret
 
-7. Set up database
+7. Set up database (Skip to step 8 to use preinitialized DB)
     To set up the database and populate catalogs run the following command in root directory:
-        python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
+        - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
     To add a term and its course section offerings to the database run the following command from root directory:
-        python data_pipeline/database/database_dev_tools.py --add_term term_data.json
+        - python data_pipeline/database/database_dev_tools.py --add_term term_data.json
+    To add events and their dates to the database runt the following command from root directory:
+        - python data_pipeline/database/database_dev_tools.py --add_events event_data.json
 
-8. Begin hosting
+8. This repo contains a pre-initialized database called AIDviseDB.db. Accounts for students and advisors exist with ID 1,2,3 and 1,2,3,4 respectively. Use these ID in the     registration section to register and test several user accounts.
+
+9. Begin hosting
     - In root directory, run:
         npx @langchain/langgraph-cli dev --port 8123 --no-browser 
     - In frontend directory, run:
@@ -82,8 +86,34 @@ Graphs are compiled and exported within constr.py files, located in *./lg_agent*
 
 ## Chat Graph
 
-WIP
+The chatbot routes between two versions based on the user's account types. For students it has access to 3 sub-agents - one for getting info from the database, one for getting info from the web, and one for adding info about the user's interests and course sections they would like to track to the database. For advisors the insertion sub-agent is not needed. For student accounts restrictions are put in place to prevent the database helper from accessing information about other students. For advisors it is instead allowed to access information about any student assigned to them, though not students assigned to other advisors. Each agents can be configered with loop limits (via the config.json file) that restrict the number of times they can run per call. config.json also allows for easily switching between several test modes and AI models. To add additional models the model_inits.py file can be modified with additional cases.
 
 ## Alert Graph
 
-WIP
+The alert graph is used for event filtering to determine what upcoming events are relivent to a user. It first gather info about upcoming events and user interests from the database, then uses an AI node to perfrom the filtering, and finally updates the database to reflect the result. This is the used by the frontend for alert generation. Like with the chatbot system, the config.json file allows for easy swithcing between AI models for the event filtering node.
+
+# Frontend Components
+
+Advise uses React components to build the frontend. App components are defined in *./frontend/app/components*. The dashboard is rendered using the Aside component in *./navigation/aside.tsx*. Page links are made with the DefaultButton component, taking the page's HREF as a prop. Dashboard pages are defined in *./app/dashboard*. If defining a page that is meant to be accessed by only an advisor/student, it is important to enforce redirection of unauthorized users in a page's *layout.tsx* file.
+
+## Session Data
+
+Developers are provided the *authSession()* hook, defined in *@/app/lib/account/authSession*. This hook returns a session object which can be used for user authorization.
+
+## User Context
+
+Upon loading the dashboard, a user context is created by pulling user information by the database based on the user's ID. This user context allows for easy access of user-specific data. This includes user data & metadata as well as account-type specific data like alerts and students for students & advisors, respectively. 
+
+### Modifying User Context
+
+The *get_curr_context* function and its related helper functions in *@/app/lib/account/account_db_utils* are used for context creation & retrieval, while the context itself is defined in *@/app/lib/account/user_context*. These two files must be modified for any modifications to user context.
+
+### Accessing User Context
+
+Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
+
+# Documentation Links
+
+- [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
+- [Backend Documentation](https://lsilver17.github.io/AIDvise---Backend-Docs/html/index.html)
+- [DataPipeline Documentation] (https://noe-qpromecode.github.io/AIdvise-data-pipeline-docs/docs/index.html)

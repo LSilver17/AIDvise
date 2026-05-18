@@ -1,18 +1,12 @@
 """
 Copyright 2026 Luca Silver
 
-Extended fake chat model for testing that adds tool binding and structured output support.
-
-Classes:
-- `GenericFakeChatModel`: Extends LangChain's fake chat model with tool binding and structured output capabilities.
-  - `bind_tools`: Binds tools to the model for simulating tool-calling scenarios during testing.
-  - `with_structured_output`: Enables structured JSON output that matches a provided Pydantic schema.
-
-Purpose:
-- Provides a test double for LangChain chat models that allows simulating tool calls and structured responses
-  without making actual API calls, enabling faster and cheaper testing of agent graphs and workflows.
+Utilities for testing: a FakeChatModel that extends GenericFakeChatModel.
+This fake model can be scripted to emit messages and tool_calls, and it
+provides a `bind_tools` helper to attach tools and runtime state for tests.
+Important: the fake model emits tool_calls but does not automatically execute
+tools that require a `ToolRuntime` — execution is left to the orchestrator.
 """
-
 import asyncio
 from typing import Any, Callable, Dict, List, Sequence, Union
 from langchain.messages import AIMessage
@@ -25,6 +19,16 @@ from langchain_core.runnables import Runnable
 from pydantic import PrivateAttr
 
 class FakeChatModel(_GenericFakeChatModel):
+    """A testing fake chat model that emits `AIMessage.tool_calls`.
+    
+    Use `bind_tools(tools, tool_choice=..., runtime_state=..., runtime_context=..., runtime_store=..., runtime_config=...)`
+    to attach tool implementations and runtime artifacts for testing. The model
+    preserves `tool_calls` on generated messages and provides helpers to
+    synchronously or asynchronously invoke bound tools in tests. It intentionally
+    avoids automatically executing runtime-dependent tools; execution should be
+    performed by the test harness or runtime orchestration to ensure proper
+    injection of runtime context.
+    """
     _bound_tools: Any = PrivateAttr(default=None)
     _bound_tool_choice: Any = PrivateAttr(default=None)
     _bound_tool_kwargs: Dict[str, Any] = PrivateAttr(default_factory=dict)
@@ -196,26 +200,3 @@ class FakeChatModel(_GenericFakeChatModel):
         structured_model._runtime_store = self._runtime_store
         structured_model._runtime_config = self._runtime_config
         return structured_model
-
-class MockToolCallingModel(SimpleChatModel):
-    """A fake chat model that returns tool-calling AIMessages for LangGraph."""
-    responses: List[Union[str, Dict[str, Any]]]
-    i: int = 0
-
-    def _generate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
-        # Cycle through scripted responses
-        response = self.responses[self.i]
-        self.i = (self.i + 1) % len(self.responses)
-
-        if isinstance(response, str):
-            message = AIMessage(content=response)
-        else:
-            # Create the AIMessage with tool calls
-            message = AIMessage(
-                content=response.get("content", ""),
-                tool_calls=response.get("tool_calls", [])
-            )
-        return ChatResult(generations=[ChatGeneration(message=message)])
-
-    @property
-    def _llm_type(self) -> str: return "mock-tool-model"
