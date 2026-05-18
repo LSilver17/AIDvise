@@ -19,7 +19,14 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 
 ### 1. Clone the repo into your desired directory
 
+Windows PowerShell:
 ```powershell
+git clone https://github.com/LSilver17/AIDvise
+cd AIDvise
+```
+
+macOS / Linux
+```bash
 git clone https://github.com/LSilver17/AIDvise
 cd AIDvise
 ```
