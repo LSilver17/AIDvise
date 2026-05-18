@@ -15,17 +15,10 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
     - Anthropic API key
     - Python 3.12.x
 
-## Setup (Windows) (PowerShell)
+## Setup
 
 ### 1. Clone the repo into your desired directory
 
-Windows PowerShell:
-```powershell
-git clone https://github.com/LSilver17/AIDvise
-cd AIDvise
-```
-
-macOS / Linux
 ```bash
 git clone https://github.com/LSilver17/AIDvise
 cd AIDvise
@@ -33,33 +26,47 @@ cd AIDvise
 
 ### 2. Create & activate your virtual environment
 
+Windows (PowerShell):
 ```powershell
 py -3.12 -m venv .venv
 .venv\Scripts\activate
 ```
 
+macOS / Linux:
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
+
 ### 3. Install python packages
 
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Install node packages
 
-```powershell
+```bash
 cd frontend
 npm install
 ```     
 
 ### 5. Configure environment
 
-AIDvise depends on values the files .env and .env.local to run
+AIDvise depends on values in the files .env and .env.local to run
 
 #### .env creation & setup
 
+Windows (PowerShell):
 ```powershell
 cd ..
 Copy-Item .env.example .env
+```
+
+macOS / Linux:
+```bash
+cd ..
+cp .env.example .env
 ```
 
 Next, open .env. The following keys are required:
@@ -78,9 +85,17 @@ LANGCHAIN_PROJECT="AIDvise"
 
 #### .env.local creation & setup
 
+Windows (PowerShell):
 ```powershell
 cd frontend
 Copy-Item .env.local.example .env.local
+npx auth secret
+```
+
+macOS / Linux:
+```bash
+cd frontend
+cp frontend/.env.local.example frontend/.env.local
 npx auth secret
 ```
 
@@ -94,20 +109,22 @@ NEXTAUTH_URL=http://localhost:3000/
 ### 6. Set up database (Skip this step if you want to use preinitialized database)
 
 To set up the database and populate catalogs run the following command in root directory: 
+```bash
 - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
-Explanation:
---setup: initializes the database structure by creating all required tables and triggers
---populate_courses courses_data.json: populates the database’s course catalog based on a provided json file (in this case courses_data.json), which should contain all courses offered by the college (this is distinct from courses offered in a given semester or course sections)
---populate_programs programs_data.json: populates the database’s programs of study catalog based on a provided json file (in this case programs_data.json), which should contain all degree and certificate programs, and their requirements, offered by the college
---add_students students_data.json: populates the database’s student catalog based on the provided json file (in this case students_data.json), which should contain a list of all students attending the college
---add_advisors advisors_data.json: populates the database’s advisor catalog based on the provided json file (in this case advisors_data.json), which should contain a list of all academic advisors at the college
+```
+This creates a database with the name configured in config.json under database_config:db_name. Each flag populates their respective table with the contents of the json file provided in the flag arguments.
 
 To add a term and its course section offerings to the database run the following command in root directory: 
-- python data_pipeline/database/database_dev_tools.py --add_term term_data.json 
+```
+- python data_pipeline/database/database_dev_tools.py --add_term term_data.json
+```
 Explanation:
 --add_term term_data.json: populates the database with a new term entry, as well as all course sections offered for that term, based on a provided json file (in this case term_data.json)
 
-To add events and their dates to the database run the following command in root directory: - python data_pipeline/database/database_dev_tools.py --add_events event_data.json
+To add events and their dates to the database run the following command in root directory: 
+```
+- python data_pipeline/database/database_dev_tools.py --add_events event_data.json
+```
 Explanation:
 --add_events event_data.json: populates the database with events, and any dates on which they occur, based on a provided json file (in this case event_data.json)
 
@@ -117,15 +134,30 @@ To adapt this project for your institution these json files can be referenced as
 
 Open a new terminal and run the following:
 
+Windows (PowerShell):
 ```powershell
 .venv/Scripts/activate
 npx @langchain/langgraph-cli dev --port 8123 --no-browser 
 ```
 
+macOS / Linux:
+```bash
+source .venv/bin/activate
+npx @langchain/langgraph-cli dev --port 8123 --no-browser 
+```
+
 Open a new terminal (without closing the previous one) and run the following:
 
+Windows (PowerShell):
 ```powershell
 .venv/Scripts/activate
+cd frontend
+npm run dev
+```
+
+macOS / Linux:
+```bash
+source .venv/bin/activate
 cd frontend
 npm run dev
 ```
