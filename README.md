@@ -108,7 +108,7 @@ npm install
 
 ### 5. Configure environment
 
-AIDvise depends on values in the files *.env* and *.env.local* to run
+AIDvise depends on values in the files `.env` and `.env.local` to run
 
 #### .env creation & setup
 
@@ -125,7 +125,7 @@ cp .env.example .env
 ```
 
 
-Next, open *.env*. The following keys are required:
+Next, open `.env`. The following keys are required:
 
 ```.env
 # AI API keys
@@ -137,7 +137,7 @@ LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT="AIDvise"
 ```
 
-* Note: Make sure *model_select:mode* in *config.json* is set to "all-claude" if using Anthropic chat model (assumed for this guide)
+* Note: Make sure `model_select:mode` in `config.json` is set to "all-claude" if using Anthropic chat model (assumed for this guide)
 
 #### .env.local creation & setup
 
@@ -155,7 +155,7 @@ cp .env.local.example .env.local
 npx auth secret
 ```
 
-Open *.env.local*. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
+Open `.env.local`. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
 
 ```.env.local
 NEXTAUTH_SECRET=YOUR_SECRET
@@ -174,9 +174,9 @@ cd ..
 ```bash
 - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json --add_events event_data.json
 ```
-This command creates a database with the name configured in *config.json* under *database_config:db_name*. Each flag populates their respective table with the contents of the json file provided in the flag argument.
+This command creates a database with the name configured in `config.json` under `database_config:db_name`. Each flag populates their respective table with the contents of the json file provided in the flag argument.
 
-To adapt this project for your institution, the json files in *data_pipeline/jsons* can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
+To adapt this project for your institution, the json files in `data_pipeline/jsons` can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
 
 ### 7. Begin hosting
 
@@ -295,9 +295,9 @@ Important notes:
 
 # Working With Agents
 
-AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in langgraph.json, located in the root directory. Graphs are defined with the following syntax: *"graph_identifier": "./graph_directory:imported_graph_name"*. These agents can then be used on the frontend by defining them within the runtime constant in _frontend\app\api\copilotkit\route.ts_. The agents are given a name and connected by using the graph ID specified in langgraph.json. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
+AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in langgraph.json, located in the root directory. Graphs are defined with the following syntax: `"graph_identifier": "./graph_directory:imported_graph_name"`. These agents can then be used on the frontend by defining them within the runtime constant in _frontend\app\api\copilotkit\route.ts_. The agents are given a name and connected by using the graph ID specified in langgraph.json. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
 
-Graphs are compiled and exported within constr.py files, located in *./lg_agent*. Nodes and other graph utilities can be defined in the _utilities_ subfolder.
+Graphs are compiled and exported within constr.py files, located in `./lg_agent`. Nodes and other graph utilities can be defined in the _utilities_ subfolder.
 
 ## Chat Graph
 
@@ -497,11 +497,11 @@ asyncio.run(main())
 
 # Frontend Components
 
-Advise uses React components to build the frontend. App components are defined in *./frontend/app/components*. The dashboard is rendered using the Aside component in *./navigation/aside.tsx*. Page links are made with the DefaultButton component, taking the page's HREF as a prop. Dashboard pages are defined in *./app/dashboard*. If defining a page that is meant to be accessed by only an advisor/student, it is important to enforce redirection of unauthorized users in a page's *layout.tsx* file.
+Advise uses React components to build the frontend. App components are defined in `./frontend/app/components`. The dashboard is rendered using the Aside component in `./navigation/aside.tsx`. Page links are made with the DefaultButton component, taking the page's HREF as a prop. Dashboard pages are defined in `./app/dashboard`. If defining a page that is meant to be accessed by only an advisor/student, it is important to enforce redirection of unauthorized users in a page's `layout.tsx` file.
 
 ## Session Data
 
-Developers are provided the *authSession()* hook, defined in *@/app/lib/account/authSession*. This hook returns a session object which can be used for user authorization.
+Developers are provided the `authSession()` hook, defined in `@/app/lib/account/authSession`. This hook returns a session object which can be used for user authorization.
 
 ## User Context
 
@@ -509,11 +509,11 @@ Upon loading the dashboard, a user context is created by pulling user informatio
 
 ### Modifying User Context
 
-The *get_curr_context* function and its related helper functions in *@/app/lib/account/account_db_utils* are used for context creation & retrieval, while the context itself is defined in *@/app/lib/account/user_context*. These two files must be modified for any modifications to user context.
+The `get_curr_context` function and its related helper functions in `@/app/lib/account/account_db_utils` are used for context creation & retrieval, while the context itself is defined in `@/app/lib/account/user_context`. These two files must be modified for any modifications to user context.
 
 ### Accessing User Context
 
-Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
+Context data can be accessed from components within the UserContextProvider wrapper by using the `useUserData()` hook defined in `@/app/lib/account/user_context`. This hook is typically used to define component state. For example, `const { userData } : {userData: StudentData} = useUserData();` allows for userData to be accessed within a component.
 
 # Developer Documentation Links
 
