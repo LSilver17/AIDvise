@@ -87,14 +87,12 @@ LANGCHAIN_PROJECT="AIDvise"
 
 Windows (PowerShell):
 ```powershell
-cd frontend
-Copy-Item .env.local.example .env.local
+Copy-Item frontend/.env.local.example frontend/.env.local
 npx auth secret
 ```
 
 macOS / Linux:
 ```bash
-cd frontend
 cp frontend/.env.local.example frontend/.env.local
 npx auth secret
 ```
@@ -108,27 +106,12 @@ NEXTAUTH_URL=http://localhost:3000/
 
 ### 6. Set up database (Skip this step if you want to use preinitialized database)
 
-To set up the database and populate catalogs run the following command in root directory: 
 ```bash
-- python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
+- python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json --add_events event_data.json
 ```
-This creates a database with the name configured in config.json under database_config:db_name. Each flag populates their respective table with the contents of the json file provided in the flag arguments.
+This command creates a database with the name configured in config.json under database_config:db_name. Each flag populates their respective table with the contents of the json file provided in the flag argument.
 
-To add a term and its course section offerings to the database run the following command in root directory: 
-```
-- python data_pipeline/database/database_dev_tools.py --add_term term_data.json
-```
-Explanation:
---add_term term_data.json: populates the database with a new term entry, as well as all course sections offered for that term, based on a provided json file (in this case term_data.json)
-
-To add events and their dates to the database run the following command in root directory: 
-```
-- python data_pipeline/database/database_dev_tools.py --add_events event_data.json
-```
-Explanation:
---add_events event_data.json: populates the database with events, and any dates on which they occur, based on a provided json file (in this case event_data.json)
-
-To adapt this project for your institution these json files can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program)
+To adapt this project for your institution, the json files in data_pipeline/jsons can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
 
 ### 7. Begin hosting
 
