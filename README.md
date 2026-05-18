@@ -174,14 +174,20 @@ interest in creates an alert. The "Generate new alerts" button invokes a seperat
 Advisors have access to a list view of all the students under their guidance as well as their own chat agent. Asking the chat agent about a student will have them
 summarize details about a student like academic information as well as their interests expressed within conversations.
 
-# Database
+## Schema & Catalogs
 
-AIDvise uses a local SQLite database to store user and academic information. 
+The database is organized into several key catalog tables:
+
+- **Courses**: Master list of college courses with department, code, title, description, credits, prerequisite notes, and semesters typically offered.
+- **Programs of Study**: Degree and certificate programs with their required courses and alternative requirement options.
+- **Terms**: Semester/year schedule data, including which courses are offered, specific class sections (instructors, dates, capacity, delivery method, status), and meeting times.
+- **Events**: Campus events (workshops, orientations, deadlines) with their scheduled dates and times.
+- **Students & Advisors**: User profiles linked to login accounts, including academic history, interests, and advising relationships.
 
 ## Accounts
 
 Student and advisor accounts are created from preexisting entries in the Student and Advisor tables, the data of which persist even when an account is deleted. 
-Registering an account involves creation of an entry in the User database which is then connected to an student/advisor entry depending on account type and ID selected in the registration form.
+Registering an account involves creation of an entry in the User database which is then connected to a student/advisor entry depending on account type and ID selected in the registration form.
 
 # Working With Agents
 
