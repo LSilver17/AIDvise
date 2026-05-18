@@ -110,13 +110,16 @@ LANGCHAIN_PROJECT="AIDvise"
 
 Windows (PowerShell):
 ```powershell
-Copy-Item frontend/.env.local.example frontend/.env.local
+cd frontend
+Copy-Item .env.local.example .env.local
 npx auth secret
 ```
 
 macOS / Linux:
 ```bash
-cp frontend/.env.local.example frontend/.env.local
+
+cd frontend
+cp .env.local.example .env.local
 npx auth secret
 ```
 
@@ -125,6 +128,12 @@ Open *.env.local*. The following keys are required (NEXTAUTH_SECRET is automatic
 ```.env.local
 NEXTAUTH_SECRET=YOUR_SECRET
 NEXTAUTH_URL=http://localhost:3000/
+```
+
+Lastly, switch back to root directory:
+
+```bash
+cd ..
 ```
 
 ### 6. Set up database (Skip this step if you want to use preinitialized database)
