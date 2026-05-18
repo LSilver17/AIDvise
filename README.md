@@ -1,56 +1,133 @@
+# Project Overview
+
+AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform its response.
+
+---
+
 # Quickstart
 
-1. Requirements
+## Requirements
+
     - pip
     - npm
-    - Node.js 15.5.12
+    - Node.js 24.14.0
+    - Next.js 16.1.6
     - Anthropic API key
     - Python 3.12.x
 
-2. Clone the repo into your desired directory
+## Setup (Windows) (PowerShell)
 
-3. Create & activate your virtual environment
-    In project directory, run:
-        python -m venv .venv (Ensure you are running the command on python 3.12, alternatively use py -3.12 -m venv .venv)
-    and activate with ".venv\Scripts\activate"
+### 1. Clone the repo into your desired directory
 
-4. Install python packages
-    With venv activated, run "pip install -r requirements.txt"
+```powershell
+git clone https://github.com/LSilver17/AIDvise
+cd AIDvise
+```
 
-5. Install node packages
-    Run:
-        cd frontend
-        npm install
+### 2. Create & activate your virtual environment
 
-6. Configure .env
-    Setup .env and ./frontend/.env.local according to example files
-    - Running the following command in the frontend dir. will generate a NEXTAUTH_SECRET key and place it in .env.local:
-        npx auth secret
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\activate
+```
 
-7. Set up database (Skip to step 8 to use preinitialized DB)
-    To set up the database and populate catalogs run the following command in root directory:
-        - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
-    To add a term and its course section offerings to the database run the following command from root directory:
-        - python data_pipeline/database/database_dev_tools.py --add_term term_data.json
-    To add events and their dates to the database runt the following command from root directory:
-        - python data_pipeline/database/database_dev_tools.py --add_events event_data.json
+### 3. Install python packages
 
-8. This repo contains a pre-initialized database called AIDviseDB.db. Accounts for students and advisors exist with ID 1,2,3 and 1,2,3,4 respectively. Use these ID in the     registration section to register and test several user accounts.
+```powershell
+pip install -r requirements.txt
+```
 
-9. Begin hosting
-    - In root directory, run:
-        npx @langchain/langgraph-cli dev --port 8123 --no-browser 
-    - In frontend directory, run:
-        npm run dev
+### 4. Install node packages
 
-    Frontend should appear on http://localhost:3000
+```powershell
+cd frontend
+npm install
+```     
 
-# Project Overview
+### 5. Configure environment
 
-AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents. The purpose of this application is to use agents
-as a virtual advisor/planner, with capabilities of offering personalized advice to students and student reporting to advisors. The purpose of this project
-is to supplement the academic advising process by providing students with a virtual advisor to answer general questions based on a students needs and
-give advisors the ability to gather information about the students under their guidance.
+AIDvise depends on values the files .env and .env.local to run
+
+#### .env creation & setup
+
+```powershell
+cd ..
+Copy-Item .env.example .env
+```
+
+Next, open .env. The following keys are required:
+
+```.env
+# AI API keys
+ANTHROPIC_API_KEY=your_key
+
+# Langchain configuration
+LANGCHAIN_API_KEY=your-api-key-here
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_PROJECT="AIDvise"
+```
+
+* Note: Make sure model_select:mode is set to all-claude in config.json if using Anthropic chat model
+
+#### .env.local creation & setup
+
+```powershell
+cd frontend
+Copy-Item .env.local.example .env.local
+npx auth secret
+```
+
+Open .env.local. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
+
+```.env.local
+NEXTAUTH_SECRET=YOUR_SECRET
+NEXTAUTH_URL=http://localhost:3000/
+```
+
+### 6. Set up database (Skip this step if you want to use preinitialized database)
+
+To set up the database and populate catalogs run the following command in root directory: 
+- python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json
+Explanation:
+--setup: initializes the database structure by creating all required tables and triggers
+--populate_courses courses_data.json: populates the database’s course catalog based on a provided json file (in this case courses_data.json), which should contain all courses offered by the college (this is distinct from courses offered in a given semester or course sections)
+--populate_programs programs_data.json: populates the database’s programs of study catalog based on a provided json file (in this case programs_data.json), which should contain all degree and certificate programs, and their requirements, offered by the college
+--add_students students_data.json: populates the database’s student catalog based on the provided json file (in this case students_data.json), which should contain a list of all students attending the college
+--add_advisors advisors_data.json: populates the database’s advisor catalog based on the provided json file (in this case advisors_data.json), which should contain a list of all academic advisors at the college
+
+To add a term and its course section offerings to the database run the following command in root directory: 
+- python data_pipeline/database/database_dev_tools.py --add_term term_data.json 
+Explanation:
+--add_term term_data.json: populates the database with a new term entry, as well as all course sections offered for that term, based on a provided json file (in this case term_data.json)
+
+To add events and their dates to the database run the following command in root directory: - python data_pipeline/database/database_dev_tools.py --add_events event_data.json
+Explanation:
+--add_events event_data.json: populates the database with events, and any dates on which they occur, based on a provided json file (in this case event_data.json)
+
+To adapt this project for your institution these json files can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program)
+
+### 7. Begin hosting
+
+Open a new terminal and run the following:
+
+```powershell
+.venv/Scripts/activate
+npx @langchain/langgraph-cli dev --port 8123 --no-browser 
+```
+
+Open a new terminal (without closing the previous one) and run the following:
+
+```powershell
+.venv/Scripts/activate
+cd frontend
+npm run dev
+```
+
+### 8. Test application
+
+The application can be accessed at http://localhost:3000
+
+Navigate to the registration section to test with a new account. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in students_data/json and advisors_data.json to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected.
 
 ## Users
 
@@ -116,4 +193,4 @@ Context data can be accessed from components within the UserContextProvider wrap
 
 - [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
 - [Backend Documentation](https://lsilver17.github.io/AIDvise---Backend-Docs/html/index.html)
-- [DataPipeline Documentation] (https://noe-qpromecode.github.io/AIdvise-data-pipeline-docs/docs/index.html)
+- [DataPipeline Documentation](https://noe-qpromecode.github.io/AIdvise-data-pipeline-docs/docs/index.html)
