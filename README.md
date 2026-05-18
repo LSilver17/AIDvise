@@ -23,14 +23,20 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 
 The following need to be installed for this quickstart guide:
 
-    - pip
-    - Node.js 24.14.0
-    - Next.js 16.1.6
-    - Python 3.12.x
+- pip
+- Node.js 24.14.0
+- Next.js 16.1.6
+- Python 3.12.x
 
-In addition, the following API keys must be gathered:
+In addition, the user must gather these API keys:
 
-    - Anthropic
+### Required
+- #### Anthropic
+    - Go to https://platform.claude.com and create an account
+    - Buy token credits under Profile (Bottom Left) -> Organization Settings -> Billing
+    - Generate and copy a key in API keys
+ 
+### Optional
 
 ## Setup
 
