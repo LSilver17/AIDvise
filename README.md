@@ -1,6 +1,6 @@
 # Project Overview
 
-AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform its response.
+AIDvise is a Next.js based web application that uses the LangGraph framework to orchestrate AI agents designed around providing academic support/advise to students and advisors. Users ask questions through a chat interface, invoking the backend agent which gathers data from a locally-hosted SQLite database and web tools in order to inform and deliver its response.
 
 ---
 
@@ -8,12 +8,16 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 
 ## Requirements
 
+The following need to be installed for this quickstart guide:
+
     - pip
-    - npm
     - Node.js 24.14.0
     - Next.js 16.1.6
-    - Anthropic API key
     - Python 3.12.x
+
+In addition, the following API keys must be gathered:
+
+    - Anthropic
 
 ## Setup
 
@@ -53,7 +57,7 @@ npm install
 
 ### 5. Configure environment
 
-AIDvise depends on values in the files .env and .env.local to run
+AIDvise depends on values in the files *.env* and *.env.local* to run
 
 #### .env creation & setup
 
@@ -69,7 +73,7 @@ cd ..
 cp .env.example .env
 ```
 
-Next, open .env. The following keys are required:
+Next, open *.env*. The following keys are required:
 
 ```.env
 # AI API keys
@@ -81,7 +85,7 @@ LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT="AIDvise"
 ```
 
-* Note: Make sure model_select:mode is set to all-claude in config.json if using Anthropic chat model
+* Note: Make sure *model_select:mode* in *config.json* is set to "all-claude" if using Anthropic chat model (assumed for this guide)
 
 #### .env.local creation & setup
 
@@ -97,7 +101,7 @@ cp frontend/.env.local.example frontend/.env.local
 npx auth secret
 ```
 
-Open .env.local. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
+Open *.env.local*. The following keys are required (NEXTAUTH_SECRET is automatically generated after running npx auth secret):
 
 ```.env.local
 NEXTAUTH_SECRET=YOUR_SECRET
@@ -109,13 +113,15 @@ NEXTAUTH_URL=http://localhost:3000/
 ```bash
 - python data_pipeline/database/database_dev_tools.py --setup --populate_courses courses_data.json --populate_programs programs_data.json --add_students students_data.json --add_advisors advisors_data.json --add_term term_data.json --add_events event_data.json
 ```
-This command creates a database with the name configured in config.json under database_config:db_name. Each flag populates their respective table with the contents of the json file provided in the flag argument.
+This command creates a database with the name configured in *config.json* under *database_config:db_name*. Each flag populates their respective table with the contents of the json file provided in the flag argument.
 
-To adapt this project for your institution, the json files in data_pipeline/jsons can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
+To adapt this project for your institution, the json files in *data_pipeline/jsons* can be referenced as an example of how to create your own of each type (whether manually or using a data scraping program).
 
 ### 7. Begin hosting
 
-Open a new terminal and run the following:
+Open two new terminals and run the following in each terminal:
+
+#### Terminal 1
 
 Windows (PowerShell):
 ```powershell
@@ -129,7 +135,7 @@ source .venv/bin/activate
 npx @langchain/langgraph-cli dev --port 8123 --no-browser 
 ```
 
-Open a new terminal (without closing the previous one) and run the following:
+#### Terminal 2
 
 Windows (PowerShell):
 ```powershell
@@ -149,7 +155,7 @@ npm run dev
 
 The application can be accessed at http://localhost:3000
 
-Navigate to the registration section to test with a new account. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in students_data/json and advisors_data.json to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected.
+Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in *data_pipeline/jsons/students_data.json* and *data_pipeline/jsons/advisors_data.json* to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
 
 ## Users
 
@@ -211,7 +217,7 @@ The *get_curr_context* function and its related helper functions in *@/app/lib/a
 
 Context data can be accessed from components within the UserContextProvider wrapper by using the *useUserData()* hook defined in *@/app/lib/account/user_context*. This hook is typically used to define component state. For example, *const { userData } : {userData: StudentData} = useUserData();* allows for userData to be accessed within a component.
 
-# Documentation Links
+# Developer Documentation Links
 
 - [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
 - [Backend Documentation](https://lsilver17.github.io/AIDvise---Backend-Docs/html/index.html)
