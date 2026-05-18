@@ -8,8 +8,7 @@
         "s-db": 3,
         "a-db": 3,
         "web": 3,
-        "insertion": 3,
-        "alerts": 3
+        "insertion": 3
      },
     "model_select": {
         "mode": "all_claude",
