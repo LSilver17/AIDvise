@@ -23,9 +23,26 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 
 The following need to be installed for this quickstart guide:
 
-- pip
-- Node.js 20.9+ (tested on 24.14.0)
-- Python 3.12.x
+- pip (Comes with Python)
+- npm (Comes with Node.js)
+- Node.js 20.9+ (Developed with 24.14.0) (https://nodejs.org/en/download)
+- Python 3.12.x (https://www.python.org/downloads/release/python-31210/)
+
+To verify installation, run:
+```bash
+node --version
+npm --version
+python --version
+pip --version
+```
+
+Expected output:
+```bash
+v20.9+
+(npm version number)
+Python 3.12.x
+(pip version number)
+```
 
 In addition, the user must gather these API keys:
 
@@ -211,7 +228,7 @@ npm run dev
 
 The application can be accessed at http://localhost:3000
 
-Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in *data_pipeline/jsons/students_data.json* and *data_pipeline/jsons/advisors_data.json* to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
+Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in `data_pipeline/jsons/students_data.json` and `data_pipeline/jsons/advisors_data.json` to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
 
 ## Users
 
@@ -317,7 +334,7 @@ Only the scraper URLs and parsing logic need to be updated per institution.
 
 # Working With Agents
 
-AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in langgraph.json, located in the root directory. Graphs are defined with the following syntax: `"graph_identifier": "./graph_directory:imported_graph_name"`. These agents can then be used on the frontend by defining them within the runtime constant in _frontend\app\api\copilotkit\route.ts_. The agents are given a name and connected by using the graph ID specified in langgraph.json. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
+AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in `langgraph.json`, located in the root directory. Graphs are defined with the following syntax: `"graph_identifier": "./graph_directory:imported_graph_name"`. These agents can then be used on the frontend by defining them within the runtime constant in `frontend\app\api\copilotkit\route.ts`. The agents are given a name and connected by using the graph ID specified in `langgraph.json`. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
 
 Graphs are compiled and exported within constr.py files, located in `./lg_agent`. Nodes and other graph utilities can be defined in the _utilities_ subfolder.
 
