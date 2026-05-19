@@ -577,3 +577,8 @@ Context data can be accessed from components within the UserContextProvider wrap
 - [Frontend Documentation](https://crystalclear1080p.github.io/Frontend-Documentation/)
 - [Backend Documentation](https://lsilver17.github.io/AIDvise---Backend-Docs/html/index.html)
 - [DataPipeline Documentation](https://noe-qpromecode.github.io/AIdvise-data-pipeline-docs/docs/index.html)
+
+# Credits
+Luca Silver | Agent & Database Design | [Profile](https://github.com/LSilver17)
+Sean Collins | Frontend Design & User Management| [Profile](https://github.com/crystalclear1080p)
+Noel Mensah | Data Management | [Profile](https://github.com/noe-Qpromecode)
