@@ -390,6 +390,25 @@ def _create_model(model_name: str, node_type: str):
 
 Once added, you can reference the new model name in your `model_select` profiles in `config.json` (e.g., `"planning": "my_custom_model"`). Make sure the corresponding API key is available in your `.env` file.
 
+#### Provider-specific `.env` setup
+
+If you stay with the default Anthropic setup, you only need `ANTHROPIC_API_KEY` in `.env`.
+
+If you switch any model slots in `config.json` to a different provider, also add the matching key in `.env`:
+
+- OpenAI models use `OPENAI_API_KEY`
+- OpenRouter models use `OPENROUTER_API_KEY`
+
+#### LangSmith tracing setup
+
+If you want to utylize LangSmith features like ein-depth graph tracing or testing datasets, add these values to `.env`:
+
+- `LANGCHAIN_API_KEY`: your LangSmith API key
+- `LANGCHAIN_TRACING_V2=true`: turns tracing on
+- `LANGCHAIN_PROJECT`: the project name you want to group traces under
+
+This setup is optional and mainly intended for developers who want to debug or inspect agent behavior. If you do not need tracing, you can leave these values out.
+
 ### Developer: Testing with `model_inits.py`
 
 Use `lg_agent/utilities/model_inits.py` to add new test profiles and `FakeChatModel` variants for the chat and alert graphs.
