@@ -237,7 +237,7 @@ The application supports the creation of two types of user accounts, students an
 ### Students
 
 Students have access to a chat agent that is capable of listening to a students goals and interests and providing relevant advice based on their personal 
-goals and preferences. Based on conversations, the AI can record information in the database, such as a student's interests, to supplement 
+goals and preferences. Based on conversations, the AI can record information in the database, such as a student's interests, to supplement its responses. 
 Based on a student's interests, the AI is capable of generating alerts for events and courses relevant to the student, which is accessible from the alerts page.
 Alerts are organized as seen and unseen and listed in order of recency. Updates to a section status (Opening, Closing, Reopening) for courses a student has expressed
 interest in creates an alert. The "Generate new alerts" button invokes a seperate agent for generating alerts based on the interests of the student.
