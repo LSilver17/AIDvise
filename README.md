@@ -579,6 +579,6 @@ Context data can be accessed from components within the UserContextProvider wrap
 - [DataPipeline Documentation](https://noe-qpromecode.github.io/AIdvise-data-pipeline-docs/docs/index.html)
 
 # Credits
-Luca Silver | Agent & Database Design | [Profile](https://github.com/LSilver17)
-Sean Collins | Frontend Design & User Management| [Profile](https://github.com/crystalclear1080p)
+Luca Silver | Agent & Database Design | [Profile](https://github.com/LSilver17)  
+Sean Collins | Frontend Design & User Management| [Profile](https://github.com/crystalclear1080p)  
 Noel Mensah | Data Management | [Profile](https://github.com/noe-Qpromecode)
