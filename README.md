@@ -331,7 +331,6 @@ The line-scanning extraction approach is flexible — update the label patterns
 The JSON output schema and backend integration do not need to change.
 Only the scraper URLs and parsing logic need to be updated per institution.
 
-
 # Working With Agents
 
 AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in `langgraph.json`, located in the root directory. Graphs are defined with the following syntax: `"graph_identifier": "./graph_directory:imported_graph_name"`. These agents can then be used on the frontend by defining them within the runtime constant in `frontend\app\api\copilotkit\route.ts`. The agents are given a name and connected by using the graph ID specified in `langgraph.json`. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
