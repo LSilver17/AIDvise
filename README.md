@@ -24,7 +24,7 @@ AIDvise is a Next.js based web application that uses the LangGraph framework to 
 The following need to be installed for this quickstart guide:
 
 - pip (Comes with Python)
-- Node.js 24.14.0+ (https://nodejs.org/en/download)
+- Node.js 20.9+ (Developed with 24.14.0) (https://nodejs.org/en/download)
 - Python 3.12.x (https://www.python.org/downloads/release/python-31210/)
 
 To verify installation, run:
@@ -35,12 +35,12 @@ python --version
 pip --version
 ```
 
-Output should be:
+Expected output:
 ```bash
-v24.14.0
-11.9.0
-Python 3.12.10
-pip 25.0.1
+v20.9+
+(npm version number)
+Python 3.12.x
+(pip version number)
 ```
 
 In addition, the user must gather these API keys:
