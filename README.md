@@ -228,7 +228,7 @@ npm run dev
 
 The application can be accessed at http://localhost:3000
 
-Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in *data_pipeline/jsons/students_data.json* and *data_pipeline/jsons/advisors_data.json* to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
+Navigate to the registration section to test with a new account. AIDvise handles account registration by connecting new users to pre-existing database entries. If using the pre-initialized database, you can register an account with IDs 1,2,3 or 1,2,3,4 for students and advisors, respectively. Otherwise, refer to the IDs listed in `data_pipeline/jsons/students_data.json` and `data_pipeline/jsons/advisors_data.json` to see what IDs are available for account creation. After logging in, test asking a question in the Chat section of the dashboard to confirm that the backend agent is connected. 
 
 ## Users
 
