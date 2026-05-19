@@ -244,8 +244,7 @@ interest in creates an alert. The "Generate new alerts" button invokes a seperat
 
 ### Advisors
 
-Advisors have access to a list view of all the students under their guidance as well as their own chat agent. Asking the chat agent about a student will have them
-summarize details about a student like academic information as well as their interests expressed within conversations.
+Advisors have access to a list view of all the students under their guidance as well as their own chat agent. Asking the chat agent about a student will have them summarize details about a student like academic information as well as their interests expressed within conversations.
 
 # Database
 
@@ -345,17 +344,27 @@ The Chat Graph powers the chat assistant you use in the dashboard. When you ask 
 - **Web helper:** searches public web pages when the database doesn't contain the needed information.
 - **Insertion helper (students only):** saves things you tell the assistant (for example, interests or course sections you want to track) into your profile.
 
-For students, the assistant can only read or write the student's own data. Advisors can access information for the students they advise. The system includes safety limits so helpers only run a few times per question—this keeps responses fast and predictable. You can change high-level behavior (which AI model is used, how many attempts helpers get, etc.) by editing `config.json`.
+For students, the assistant can only read or write the student's own data. Advisors can access information for the students they advise. The system includes safety limits so helpers only run a few times per question. This prevents agents from getting stuck in infinite loops. You can change high-level behavior (which AI model is used, how many attempts helpers get, etc.) by editing `config.json`.
 
 ## Alert Graph
 
-The Alert Graph is the background process that creates personalized alerts for students (event reminders, section status changes, etc.). In plain terms it:
+The Alert Graph is the background process that creates personalized event-based alerts for students. In plain terms it:
 
-- Collects recent campus events and the student's saved interests.
-- Uses the assistant to decide which events are relevant to that student.
+- Checks when event alerts were last generated for the student.
+- Collects recent campus events since the last check as well as the student's saved interests.
+- Uses an AI assistant to decide which events are relevant to that student based on their interests.
 - Saves the matching events so they appear on the Alerts page.
 
-Alert generation runs when you press "Generate new alerts" in the UI. The module is designed to surface useful items without flooding the student with irrelevant results. Like the chat assistant, the alert process can be configured from `config.json` to use different AI profiles.
+Alert generation runs when you press `Check for new alerts` in the UI. The module is designed to surface useful items without flooding the student with irrelevant results. Like the chat assistant, the alert process can be configured from `config.json` to use different AI profiles.
+
+## Course Alerts
+
+In addition to the event-based alerts enabled by the Alert Graph, course-based alerts are also generated. These are enabled through a seperate process that runs similtaniously with the Alert Graph in response to the `Check for new alerts` button. This process:
+
+- Checks when course alerts were last generated for the student.
+- Collects a list of all course section status changes (such as a course being closed when all seats are filled or being reopened when a student drops the class) since the last check.
+- Filters these status changes to only those for course sections the student is actively tracking.
+- Saves the remaining status changes so they appear on the Alerts page.
 
 ## Configuration (config.json)
 
