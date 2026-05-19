@@ -288,6 +288,33 @@ Important notes:
 - The script reads the database filename from `config.json` (`database_config.db_name`). Ensure that value is correct before running destructive `--reset` operations.
 - Reset options are destructive and permanently delete data. Use with caution and backups if necessary.
 
+# Data Scraping
+The data pipeline uses QCC(Quinsigamond Community College) as a proof of concept but can be adapted for other institutions. The scraper URLs and field parsing logic can be updated to target any college or university, while the JSON output schema and backend integration remain unchanged. See data_pipeline/README.md for full adaptation instructions.
+
+## Adapting for Other Institutions
+To adapt it for a different institution:
+
+### 1. Registration Data (The Q Portal / Jenzabar)
+If the institution uses Jenzabar, the scraper may work with minimal changes.
+Update the search URL in `refresh_registration.py`:
+```python
+SEARCH_URL = "https://[institution-portal-url]/..."
+TERM       = "Fall 2026"  # Update each semester accordingly
+```
+### 2. Public Course & Program Pages
+If the institution has a different website structure, update the URLs and adjust the field parsing logic in `scrape_classes_page.py` and `scrape_programs.py`:
+```python
+CLASSES_URL  = "https://[institution].edu/classes"
+PROGRAMS_URL = "https://[institution].edu/programs"
+```
+The line-scanning extraction approach is flexible — update the label patterns
+(e.g. "Credits", "Prerequisites") to match whatever labels the target site uses.
+
+### 3. JSON Output Schema
+The JSON output schema and backend integration do not need to change.
+Only the scraper URLs and parsing logic need to be updated per institution.
+
+
 # Working With Agents
 
 AIDvise comes with two agent graphs, chat_graph and alert_graph, defined in constr.py and alert_constr.py, respectively. Agents are specified within the "graphs" property in langgraph.json, located in the root directory. Graphs are defined with the following syntax: `"graph_identifier": "./graph_directory:imported_graph_name"`. These agents can then be used on the frontend by defining them within the runtime constant in _frontend\app\api\copilotkit\route.ts_. The agents are given a name and connected by using the graph ID specified in langgraph.json. An agent with the name "default" is the one called by CopilotKit's frontend components. Other agents can be programatically controlled using React hooks, detailed in this CopilotKit documentation: https://docs.copilotkit.ai/langgraph/programmatic-control
